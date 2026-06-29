@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สถาปัตยกรรมความจำ Hermes + Self-Improving KB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+<style>
+/* ===== M3 Candy Palettes (8 สีลูกกวาดสดใส) ===== */
+:root{
+  --radius-xs:8px; --radius-sm:12px; --radius-md:16px; --radius-lg:24px; --radius-xl:28px;
+  --sp:4px;
+  --font:'Sarabun',sans-serif;
+}
+
+/* Candy palette tokens — each sets primary tonal family */
+[data-palette="strawberry"]{ --seed:#E8517F; --seed-on:#FFFFFF; --seed-container:#FFD9E2; --seed-on-container:#3E0017; }
+[data-palette="grape"]{ --seed:#8E5BD4; --seed-on:#FFFFFF; --seed-container:#ECDCFF; --seed-on-container:#290055; }
+[data-palette="blueberry"]{ --seed:#4D7FE8; --seed-on:#FFFFFF; --seed-container:#D9E2FF; --seed-on-container:#001847; }
+[data-palette="mint"]{ --seed:#22B58A; --seed-on:#FFFFFF; --seed-container:#A8F4D7; --seed-on-container:#00382A; }
+[data-palette="lemon"]{ --seed:#E0A800; --seed-on:#3A2E00; --seed-container:#FFE27A; --seed-on-container:#231B00; }
+[data-palette="orange"]{ --seed:#F2742B; --seed-on:#FFFFFF; --seed-container:#FFDBC8; --seed-on-container:#341100; }
+[data-palette="bubblegum"]{ --seed:#F25FB6; --seed-on:#FFFFFF; --seed-container:#FFD8EC; --seed-on-container:#3D0027; }
+[data-palette="aqua"]{ --seed:#15B6C7; --seed-on:#FFFFFF; --seed-container:#9EEFF7; --seed-on-container:#00363C; }
+
+/* ===== Light scheme ===== */
+:root, [data-theme="light"]{
+  --bg:#FBF8FD;
+  --surface:#FBF8FD;
+  --surface-dim:#F1ECF3;
+  --surface-container-low:#F6F0F8;
+  --surface-container:#F0EAF3;
+  --surface-container-high:#EAE4ED;
+  --surface-container-highest:#E4DEE7;
+  --on-surface:#1C1B1E;
+  --on-surface-var:#49454E;
+  --outline:#7A757F;
+  --outline-var:#CBC4CF;
+  --primary:var(--seed);
+  --on-primary:var(--seed-on);
+  --primary-container:var(--seed-container);
+  --on-primary-container:var(--seed-on-container);
+  --code-bg:#2B2930;
+  --code-fg:#E6E1E9;
+  --shadow:rgba(0,0,0,0.10);
+}
+
+/* ===== Dark scheme ===== */
+[data-theme="dark"]{
+  --bg:#141218;
+  --surface:#141218;
+  --surface-dim:#141218;
+  --surface-container-low:#1D1B20;
+  --surface-container:#211F26;
+  --surface-container-high:#2B2930;
+  --surface-container-highest:#36343B;
+  --on-surface:#E6E1E9;
+  --on-surface-var:#CAC4CF;
+  --outline:#948F99;
+  --outline-var:#49454E;
+  --primary:var(--seed-container);
+  --on-primary:var(--seed-on-container);
+  --primary-container:var(--seed);
+  --on-primary-container:var(--seed-on);
+  --code-bg:#0E0D11;
+  --code-fg:#E6E1E9;
+  --shadow:rgba(0,0,0,0.45);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--on-surface);
+  line-height:1.7;
+  font-size:calc(16px * var(--fscale,1));
+  transition:background .3s ease,color .3s ease;
+  -webkit-font-smoothing:antialiased;
+}
+.sym{font-family:'Material Symbols Rounded';font-weight:normal;font-style:normal;line-height:1;vertical-align:middle;-webkit-font-feature-settings:'liga';}
+
+/* ===== App bar ===== */
+.appbar{
+  position:sticky;top:0;z-index:50;
+  background:var(--surface-container);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--outline-var);
+  padding:14px clamp(16px,4vw,40px);
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.appbar .brand{display:flex;align-items:center;gap:12px;flex:1;min-width:200px}
+.appbar .logo{
+  width:48px;height:48px;border-radius:var(--radius-md);
+  background:var(--primary-container);color:var(--on-primary-container);
+  display:grid;place-items:center;font-size:28px;flex-shrink:0;
+}
+.appbar h1{font-size:clamp(15px,2.4vw,20px);font-weight:700;line-height:1.3}
+.appbar .sub{font-size:12px;color:var(--on-surface-var);font-weight:400}
+
+/* ===== Controls ===== */
+.controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.icon-btn{
+  width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;
+  background:var(--surface-container-highest);color:var(--on-surface);
+  display:grid;place-items:center;font-size:22px;transition:.2s;
+}
+.icon-btn:hover{background:var(--primary-container);color:var(--on-primary-container)}
+.font-ctl{display:flex;align-items:center;gap:4px;background:var(--surface-container-highest);border-radius:var(--radius-xl);padding:2px}
+.font-ctl .icon-btn{width:36px;height:36px;font-size:19px;background:transparent}
+.font-pct{font-size:12.5px;font-weight:600;min-width:42px;text-align:center;color:var(--on-surface-var)}
+.palette-wrap{position:relative}
+.palette-trigger .dot-color{width:24px;height:24px;border-radius:50%;background:var(--primary);border:2px solid var(--on-primary);box-shadow:0 0 0 1px var(--outline-var)}
+.palette-pop{
+  position:absolute;top:54px;right:0;z-index:60;width:248px;
+  background:var(--surface-container-high);border:1px solid var(--outline-var);
+  border-radius:var(--radius-lg);padding:16px;box-shadow:0 8px 28px var(--shadow);
+  opacity:0;visibility:hidden;transform:translateY(-8px);transition:.2s;
+}
+.palette-pop.open{opacity:1;visibility:visible;transform:translateY(0)}
+.pop-title{font-size:13px;font-weight:700;color:var(--on-surface-var);margin-bottom:12px}
+.swatches{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:center;justify-items:center}
+.swatch{
+  width:40px;height:40px;border-radius:50%;border:2px solid var(--outline-var);
+  cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative;
+  display:grid;place-items:center;
+}
+.swatch:hover{transform:scale(1.12)}
+.swatch.active{box-shadow:0 0 0 3px var(--surface-container-high),0 0 0 5px var(--on-surface)}
+.swatch .chk{font-size:22px;color:#fff;opacity:0;transition:.15s;font-weight:700;
+  text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.swatch.active .chk{opacity:1}
+.sw-strawberry{background:#E8517F}.sw-grape{background:#8E5BD4}.sw-blueberry{background:#4D7FE8}
+.sw-mint{background:#22B58A}.sw-lemon{background:#E0A800}.sw-orange{background:#F2742B}
+.sw-bubblegum{background:#F25FB6}.sw-aqua{background:#15B6C7}
+.sw-lemon .chk{color:#3A2E00;text-shadow:none}
+
+/* ===== Layout ===== */
+.shell{display:flex;max-width:1400px;margin:0 auto;gap:0}
+.nav{
+  width:300px;flex-shrink:0;padding:20px 12px;
+  position:sticky;top:81px;height:calc(100vh - 81px);overflow-y:auto;
+  border-right:1px solid var(--outline-var);
+}
+.nav::-webkit-scrollbar{width:8px}
+.nav::-webkit-scrollbar-thumb{background:var(--outline-var);border-radius:4px}
+.nav-group{margin-bottom:4px}
+.nav-group-label{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;
+  font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--on-surface-var);padding:12px 14px 8px;cursor:pointer;border:none;
+  background:transparent;font-family:var(--font);text-align:left;border-radius:var(--radius-sm);
+  transition:.15s;
+}
+.nav-group-label:hover{background:var(--surface-container-high);color:var(--on-surface)}
+.nav-group-label .arrow{font-size:18px;transition:transform .25s}
+.nav-group.collapsed .arrow{transform:rotate(-90deg)}
+.nav-group-items{overflow:hidden;transition:max-height .3s ease;max-height:600px}
+.nav-group.collapsed .nav-group-items{max-height:0}
+.tab{
+  display:flex;align-items:center;gap:12px;width:100%;text-align:right;
+  padding:11px 16px;border:none;background:transparent;cursor:pointer;
+  border-radius:var(--radius-xl);color:var(--on-surface-var);
+  font-family:var(--font);font-size:14.5px;font-weight:500;margin-bottom:2px;
+  transition:.18s;text-align:left;
+}
+.tab .num{
+  min-width:26px;height:26px;border-radius:50%;background:var(--surface-container-high);
+  color:var(--on-surface-var);display:grid;place-items:center;font-size:12px;font-weight:700;flex-shrink:0;
+}
+.tab:hover{background:var(--surface-container-high)}
+.tab.active{background:var(--primary-container);color:var(--on-primary-container);font-weight:600}
+.tab.active .num{background:var(--primary);color:var(--on-primary)}
+
+.content{flex:1;min-width:0;padding:clamp(20px,4vw,48px);padding-bottom:120px}
+.panel{display:none;animation:fade .4s ease}
+.panel.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== Typographic content ===== */
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--primary-container);color:var(--on-primary-container);
+  padding:6px 14px;border-radius:var(--radius-xl);font-size:13px;font-weight:600;margin-bottom:16px}
+.panel h2{font-size:clamp(24px,4vw,34px);font-weight:700;margin-bottom:8px;line-height:1.25;color:var(--on-surface)}
+.panel h3{font-size:clamp(18px,3vw,22px);font-weight:600;margin:32px 0 12px;color:var(--primary);display:flex;align-items:center;gap:10px}
+.panel h3 .sym{font-size:24px}
+.panel h4{font-size:17px;font-weight:600;margin:22px 0 8px;color:var(--on-surface)}
+.panel p{margin:12px 0;color:var(--on-surface-var)}
+.lede{font-size:18px;color:var(--on-surface);margin-bottom:24px}
+
+.card{
+  background:var(--surface-container-low);border:1px solid var(--outline-var);
+  border-radius:var(--radius-lg);padding:24px;margin:18px 0;
+}
+.card.tinted{background:var(--primary-container);border-color:transparent}
+.card.tinted *{color:var(--on-primary-container)}
+.quote{
+  border-left:4px solid var(--primary);background:var(--surface-container);
+  padding:16px 20px;border-radius:0 var(--radius-md) var(--radius-md) 0;margin:18px 0;
+  font-size:17px;font-style:italic;color:var(--on-surface);
+}
+ul,ol{margin:12px 0 12px 8px;padding-left:22px}
+li{margin:7px 0;color:var(--on-surface-var)}
+ul li::marker{color:var(--primary)}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface-container-high);
+  color:var(--on-surface);padding:7px 14px;border-radius:var(--radius-xs);font-size:13.5px;font-weight:500}
+.chip .sym{font-size:18px;color:var(--primary)}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:18px 0}
+.mini{background:var(--surface-container);border-radius:var(--radius-md);padding:18px}
+.mini .ttl{display:flex;align-items:center;gap:10px;font-weight:600;margin-bottom:8px;color:var(--on-surface)}
+.mini .ttl .sym{font-size:22px;color:var(--primary)}
+.good .ttl .sym{color:#22B58A}
+.bad .ttl .sym{color:#E8517F}
+.mini ul{margin-left:0}
+.mini li{font-size:14px}
+
+pre{
+  background:var(--code-bg);color:var(--code-fg);padding:18px;border-radius:var(--radius-md);
+  overflow-x:auto;margin:16px 0;font-size:13.5px;line-height:1.55;
+  font-family:'SF Mono','Consolas','Liberation Mono',monospace;
+}
+pre.ascii{font-size:12px;line-height:1.35;white-space:pre}
+code:not(pre code){background:var(--surface-container-highest);color:var(--primary);padding:2px 7px;border-radius:6px;font-size:.9em;font-family:'SF Mono','Consolas',monospace}
+
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px;background:var(--surface-container-low);border-radius:var(--radius-md);overflow:hidden}
+th{background:var(--primary);color:var(--on-primary);padding:12px 14px;text-align:left;font-weight:600}
+td{padding:11px 14px;border-top:1px solid var(--outline-var);color:var(--on-surface-var);vertical-align:top}
+tr:hover td{background:var(--surface-container)}
+
+.steps{counter-reset:s;margin:18px 0}
+.step{display:flex;gap:14px;margin:12px 0;align-items:flex-start}
+.step .dot{counter-increment:s;min-width:34px;height:34px;border-radius:50%;background:var(--primary);color:var(--on-primary);
+  display:grid;place-items:center;font-weight:700;flex-shrink:0}
+.step .dot::before{content:counter(s)}
+.step .body{padding-top:4px}
+
+.callout{display:flex;gap:14px;background:var(--surface-container);border-radius:var(--radius-md);padding:16px 18px;margin:16px 0;border:1px solid var(--outline-var)}
+.callout .sym{font-size:26px;color:var(--primary);flex-shrink:0}
+.callout.warn .sym{color:#F2742B}
+
+.level{display:flex;gap:14px;margin:10px 0;align-items:flex-start;background:var(--surface-container-low);border-radius:var(--radius-md);padding:16px;border-left:4px solid var(--primary)}
+.level .lv{min-width:54px;height:54px;border-radius:var(--radius-sm);background:var(--primary-container);color:var(--on-primary-container);display:grid;place-items:center;font-weight:700;font-size:13px;text-align:center;flex-shrink:0;line-height:1.1}
+
+/* reference / source card */
+.ref-card{display:flex;align-items:center;gap:16px;background:var(--surface-container);
+  border:1px solid var(--outline-var);border-radius:var(--radius-lg);padding:16px 20px;margin:20px 0;
+  text-decoration:none;transition:.2s}
+.ref-card:hover{background:var(--surface-container-high);transform:translateY(-1px)}
+.ref-card .yt{width:48px;height:48px;border-radius:var(--radius-sm);background:#FF0033;color:#fff;
+  display:grid;place-items:center;font-size:28px;flex-shrink:0}
+.ref-card .meta{min-width:0}
+.ref-card .meta .t{font-weight:600;color:var(--on-surface);font-size:15px;margin-bottom:2px}
+.ref-card .meta .s{font-size:12.5px;color:var(--on-surface-var);word-break:break-all}
+.ref-card .meta .a{font-size:12.5px;color:var(--primary);font-weight:600;margin-top:2px}
+
+/* mega prompt */
+.prompt-box{background:var(--code-bg);color:var(--code-fg);border-radius:var(--radius-md);padding:22px;margin:16px 0;
+  font-family:'SF Mono','Consolas','Liberation Mono',monospace;font-size:13px;line-height:1.6;white-space:pre-wrap;
+  max-height:560px;overflow-y:auto;border:1px solid var(--outline-var)}
+.prompt-box::-webkit-scrollbar{width:10px}
+.prompt-box::-webkit-scrollbar-thumb{background:#555;border-radius:5px}
+.copy-btn{display:inline-flex;align-items:center;gap:8px;background:var(--primary);color:var(--on-primary);
+  border:none;padding:11px 22px;border-radius:var(--radius-xl);font-family:var(--font);font-size:14.5px;
+  font-weight:600;cursor:pointer;transition:.2s}
+.copy-btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.copy-btn .sym{font-size:19px}
+.phase-tag{display:inline-flex;align-items:center;gap:6px;background:var(--primary-container);color:var(--on-primary-container);
+  padding:4px 12px;border-radius:var(--radius-xs);font-size:12.5px;font-weight:700;margin:2px 4px 2px 0}
+
+/* mobile drawer */
+.scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:40}
+.menu-btn{display:none}
+@media(max-width:860px){
+  .menu-btn{display:grid}
+  .nav{position:fixed;top:0;left:0;height:100vh;transform:translateX(-100%);transition:transform .3s;z-index:45;background:var(--surface-container);width:290px;padding-top:20px}
+  .nav.open{transform:translateX(0)}
+  .scrim.open{display:block}
+  .shell{display:block}
+}
+footer{text-align:center;padding:30px;color:var(--on-surface-var);font-size:13px;border-top:1px solid var(--outline-var)}
+</style>
+</head>
+<body data-theme="dark" data-palette="strawberry">
+
+<div class="appbar">
+  <button class="icon-btn menu-btn" onclick="toggleNav()" aria-label="เมนู"><span class="sym">menu</span></button>
+  <div class="brand">
+    <div class="logo"><span class="sym">neurology</span></div>
+    <div>
+      <h1>สถาปัตยกรรมความจำ Hermes</h1>
+      <div class="sub">+ Self-Improving Knowledge Base · เอกสารกลางแบบนำไปใช้ซ้ำได้</div>
+    </div>
+  </div>
+  <div class="controls">
+    <div class="font-ctl">
+      <button class="icon-btn" onclick="adjustFont(-1)" aria-label="ลดขนาดตัวอักษร" title="ลดขนาดตัวอักษร"><span class="sym">text_decrease</span></button>
+      <span class="font-pct" id="fontPct">100%</span>
+      <button class="icon-btn" onclick="adjustFont(1)" aria-label="เพิ่มขนาดตัวอักษร" title="เพิ่มขนาดตัวอักษร"><span class="sym">text_increase</span></button>
+    </div>
+    <div class="palette-wrap">
+      <button class="icon-btn palette-trigger" id="paletteBtn" onclick="togglePalettePop(event)" aria-label="เลือกสีธีม" title="เลือกสีธีม">
+        <span class="dot-color" id="paletteDot"></span>
+      </button>
+      <div class="palette-pop" id="palettePop">
+        <div class="pop-title">เลือกสีธีม (M3 Candy)</div>
+        <div class="swatches" id="swatches">
+          <div class="swatch sw-strawberry active" data-p="strawberry" title="Strawberry"><span class="sym chk">check</span></div>
+          <div class="swatch sw-bubblegum" data-p="bubblegum" title="Bubblegum"><span class="sym chk">check</span></div>
+          <div class="swatch sw-grape" data-p="grape" title="Grape"><span class="sym chk">check</span></div>
+          <div class="swatch sw-blueberry" data-p="blueberry" title="Blueberry"><span class="sym chk">check</span></div>
+          <div class="swatch sw-aqua" data-p="aqua" title="Aqua"><span class="sym chk">check</span></div>
+          <div class="swatch sw-mint" data-p="mint" title="Mint"><span class="sym chk">check</span></div>
+          <div class="swatch sw-lemon" data-p="lemon" title="Lemon"><span class="sym chk">check</span></div>
+          <div class="swatch sw-orange" data-p="orange" title="Orange"><span class="sym chk">check</span></div>
+        </div>
+      </div>
+    </div>
+    <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" aria-label="สลับธีม"><span class="sym">light_mode</span></button>
+  </div>
+</div>
+
+<div class="scrim" id="scrim" onclick="toggleNav()"></div>
+
+<div class="shell">
+  <nav class="nav" id="nav">
+<button class="tab active" id="tab-intro" onclick="showPanel('intro')"><span class="num"><span class="sym" style="font-size:16px">home</span></span> หน้าแรก</button>
+<div class="nav-group" id="g-overview">
+<button class="nav-group-label" onclick="toggleGroup(this)"><span>ภาพรวม</span><span class="arrow sym">expand_more</span></button>
+<div class="nav-group-items">
+<button class="tab" id="tab-1" onclick="showPanel('1')"><span class="num">1</span> เป้าหมายของเอกสาร</button>
+<button class="tab" id="tab-2" onclick="showPanel('2')"><span class="num">2</span> ทำไมต้องหลายชั้นความจำ</button>
+<button class="tab" id="tab-3" onclick="showPanel('3')"><span class="num">3</span> ความจำมาตรฐานของ Hermes</button>
+<button class="tab" id="tab-4" onclick="showPanel('4')"><span class="num">4</span> ข้อจำกัดความจำมาตรฐาน</button>
+</div></div>
+<div class="nav-group" id="g-concept">
+<button class="nav-group-label" onclick="toggleGroup(this)"><span>แนวคิดหลัก</span><span class="arrow sym">expand_more</span></button>
+<div class="nav-group-items">
+<button class="tab" id="tab-5" onclick="showPanel('5')"><span class="num">5</span> Self-Improving KB (Jack Roberts)</button>
+<button class="tab" id="tab-6" onclick="showPanel('6')"><span class="num">6</span> External Memory / Wiki Layer</button>
+<button class="tab" id="tab-9" onclick="showPanel('9')"><span class="num">9</span> Memory vs Search vs Skill vs Wiki</button>
+</div></div>
+<div class="nav-group" id="g-struct">
+<button class="nav-group-label" onclick="toggleGroup(this)"><span>โครงสร้าง &amp; การไหล</span><span class="arrow sym">expand_more</span></button>
+<div class="nav-group-items">
+<button class="tab" id="tab-7" onclick="showPanel('7')"><span class="num">7</span> โครงสร้างไฟล์ที่แนะนำ</button>
+<button class="tab" id="tab-8" onclick="showPanel('8')"><span class="num">8</span> กลไกการไหลของข้อมูล</button>
+<button class="tab" id="tab-10" onclick="showPanel('10')"><span class="num">10</span> บทบาท Agent ในการดูแล</button>
+</div></div>
+<div class="nav-group" id="g-practice">
+<button class="nav-group-label" onclick="toggleGroup(this)"><span>ลงมือปฏิบัติ</span><span class="arrow sym">expand_more</span></button>
+<div class="nav-group-items">
+<button class="tab" id="tab-11" onclick="showPanel('11')"><span class="num">11</span> Workflow สำคัญ</button>
+<button class="tab" id="tab-12" onclick="showPanel('12')"><span class="num">12</span> ตัวอย่าง end-to-end</button>
+<button class="tab" id="tab-13" onclick="showPanel('13')"><span class="num">13</span> Automation ที่แนะนำ</button>
+</div></div>
+<div class="nav-group" id="g-qa">
+<button class="nav-group-label" onclick="toggleGroup(this)"><span>คุณภาพ &amp; ความปลอดภัย</span><span class="arrow sym">expand_more</span></button>
+<div class="nav-group-items">
+<button class="tab" id="tab-14" onclick="showPanel('14')"><span class="num">14</span> Quality Control / Health Check</button>
+<button class="tab" id="tab-15" onclick="showPanel('15')"><span class="num">15</span> Security และ Privacy</button>
+<button class="tab" id="tab-18" onclick="showPanel('18')"><span class="num">18</span> Anti-patterns ที่ควรเลี่ยง</button>
+</div></div>
+<div class="nav-group" id="g-deploy">
+<button class="nav-group-label" onclick="toggleGroup(this)"><span>ติดตั้ง &amp; สรุป</span><span class="arrow sym">expand_more</span></button>
+<div class="nav-group-items">
+<button class="tab" id="tab-16" onclick="showPanel('16')"><span class="num">16</span> ติดตั้งบน Hermes เครื่องใหม่</button>
+<button class="tab" id="tab-17" onclick="showPanel('17')"><span class="num">17</span> Prompt / Policy ให้ Agent</button>
+<button class="tab" id="tab-19" onclick="showPanel('19')"><span class="num">19</span> Maturity Model</button>
+<button class="tab" id="tab-20" onclick="showPanel('20')"><span class="num">20</span> สรุป Architecture</button>
+<button class="tab" id="tab-appendix" onclick="showPanel('appendix')"><span class="num">A–D</span> ภาคผนวก (ตัวอย่างไฟล์)</button>
+</div></div>
+<div class="nav-group" id="g-agent">
+<button class="nav-group-label" onclick="toggleGroup(this)"><span>ส่งงานให้ Agent</span><span class="arrow sym">expand_more</span></button>
+<div class="nav-group-items">
+<button class="tab" id="tab-megaprompt" onclick="showPanel('megaprompt')"><span class="num">★</span> Mega Prompt สำหรับ Hermes</button>
+</div></div>
+</nav>
+  <main class="content" id="content">
+<!-- ===== INTRO ===== -->
+<section class="panel active" id="panel-intro">
+  <div class="eyebrow"><span class="sym">neurology</span> เอกสารกลาง · Portable</div>
+  <h2>ระบบความจำของ Hermes แบบหลายชั้น</h2>
+  <p class="lede">เอกสารนี้อธิบายวิธีออกแบบ "ระบบความจำ" ให้ AI Agent (Hermes) ไม่ใช่แค่ "จำได้" แต่จำแบบมีโครงสร้าง — รวมแนวคิด Self-Improving Knowledge Base ที่ Agent ค่อย ๆ สะสมความรู้และปรับปรุงตัวเองจากงานที่ผ่านมา</p>
+
+  <div class="callout"><span class="sym">info</span>
+    <div>เอกสารนี้เป็น <b>generic / public</b> — ตั้งใจให้ย้ายไปใช้กับ Hermes เครื่องอื่น ทีมอื่น หรือผู้ใช้อื่นได้ โดยไม่ผูกกับข้อมูลส่วนตัวหรือสภาพแวดล้อมเฉพาะเครื่อง</div>
+  </div>
+
+  <h3><span class="sym">layers</span> 7 ชั้นความจำในระบบนี้</h3>
+  <div class="grid2">
+    <div class="mini"><div class="ttl"><span class="sym">bolt</span> Short-term context</div><p>บริบทใน conversation ปัจจุบัน</p></div>
+    <div class="mini"><div class="ttl"><span class="sym">person</span> Persistent memory</div><p>fact / preference สั้น ๆ ที่คงทน</p></div>
+    <div class="mini"><div class="ttl"><span class="sym">search</span> Session search</div><p>ค้นประวัติบทสนทนาเก่า</p></div>
+    <div class="mini"><div class="ttl"><span class="sym">build</span> Skills</div><p>procedure ที่ทำซ้ำได้</p></div>
+    <div class="mini"><div class="ttl"><span class="sym">menu_book</span> Self-improving wiki</div><p>knowledge ที่อ้างอิงซ้ำ</p></div>
+    <div class="mini"><div class="ttl"><span class="sym">inventory_2</span> Raw archive</div><p>ต้นฉบับ + provenance</p></div>
+    <div class="mini"><div class="ttl"><span class="sym">schedule</span> Automation state</div><p>state ของ cron / sync</p></div>
+  </div>
+
+  <div class="card tinted">
+    <div class="ttl" style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;margin-bottom:8px"><span class="sym">tips_and_updates</span> หัวใจของทั้งระบบ</div>
+    <p style="font-style:italic;font-size:17px">"Memory มาตรฐานควรเป็น <b>เข็มทิศ</b> ไม่ใช่ <b>คลังเอกสาร</b> — และ Wiki ไม่ใช่ที่เก็บ raw dump แต่เป็น external brain ที่ Agent มีหน้าที่ curate"</p>
+  </div>
+
+  <p style="margin-top:24px;color:var(--on-surface-var)">ใช้เมนูด้านซ้ายเพื่อเลือกอ่านทีละหมวด · ปรับธีมสว่าง/มืด และเลือกสีลูกกวาดได้ที่มุมขวาบน</p>
+</section>
+
+<!-- ===== 1 ===== -->
+<section class="panel" id="panel-1">
+  <div class="eyebrow"><span class="sym">flag</span> หมวด 1</div>
+  <h2>เป้าหมายของเอกสาร</h2>
+  <p>เอกสารนี้อธิบายระบบความจำสำหรับ Hermes Agent ที่มี 2 ชั้นหลัก:</p>
+  <div class="steps">
+    <div class="step"><div class="dot"></div><div class="body"><b>ความจำมาตรฐาน</b> ที่ Hermes มีอยู่แล้ว</div></div>
+    <div class="step"><div class="dot"></div><div class="body"><b>ความจำเสริมแบบ self-improving knowledge base</b> ที่สร้างเพิ่มเอง โดยใช้แนวคิดของ Jack Roberts / LLM Wiki / agent-maintained external memory</div></div>
+  </div>
+  <h3><span class="sym">target</span> เมื่ออ่านจบ ผู้อ่านจะเข้าใจว่า</h3>
+  <ul>
+    <li>Hermes จำอะไรได้เองอยู่แล้ว</li>
+    <li>อะไร <b>ไม่ควร</b> ยัดเข้า memory มาตรฐาน</li>
+    <li>อะไรควรเก็บใน wiki</li>
+    <li>Agent ควรดูแล wiki อย่างไรให้ดีขึ้นเรื่อย ๆ</li>
+    <li>ระบบนี้ต่างจาก RAG แบบดั้งเดิมอย่างไร</li>
+    <li>จะกันไม่ให้ความจำกลายเป็น "กองไฟล์ที่หาอะไรไม่เจอ" ได้อย่างไร</li>
+  </ul>
+
+  <h3><span class="sym">menu_book</span> แหล่งอ้างอิง</h3>
+  <a class="ref-card" href="https://www.youtube.com/watch?v=D3dQqqDx2V4" target="_blank" rel="noopener">
+    <div class="yt"><span class="sym">smart_display</span></div>
+    <div class="meta">
+      <div class="t">Build a Hermes Knowledge Base That Self-Improves</div>
+      <div class="s">https://www.youtube.com/watch?v=D3dQqqDx2V4</div>
+      <div class="a">Jack Roberts · เผยแพร่ 14 มิ.ย. 2026</div>
+    </div>
+  </a>
+  <p style="font-size:13.5px;color:var(--on-surface-var)">เอกสารนี้สังเคราะห์จากวิดีโอข้างต้น (แนวคิด LLM Wiki ของ Andrej Karpathy) ร่วมกับสถาปัตยกรรมความจำหลายชั้นของ Hermes</p>
+</section>
+
+<!-- ===== 2 ===== -->
+<section class="panel" id="panel-2">
+  <div class="eyebrow"><span class="sym">layers</span> หมวด 2</div>
+  <h2>ทำไม Hermes ต้องมี "หลายชั้นความจำ"</h2>
+  <p>Agent ที่ใช้งานจริงไม่ได้ต้องการแค่ "จำได้" แต่ต้องการความจำหลายชนิดที่มีคุณสมบัติต่างกัน:</p>
+  <div class="chips">
+    <span class="chip"><span class="sym">bolt</span> ความจำสั้นมาก: บริบท conversation</span>
+    <span class="chip"><span class="sym">history</span> ข้าม session: เคยคุยอะไร</span>
+    <span class="chip"><span class="sym">favorite</span> preference: ชอบ/ไม่ชอบอะไร</span>
+    <span class="chip"><span class="sym">list_alt</span> procedure: ขั้นตอนงานซ้ำ</span>
+    <span class="chip"><span class="sym">menu_book</span> knowledge base: runbook ยาว ๆ</span>
+    <span class="chip"><span class="sym">inventory_2</span> raw archive: ต้นฉบับยังไม่สังเคราะห์</span>
+  </div>
+  <div class="card bad" style="border-left:4px solid #E8517F">
+    <div class="ttl" style="display:flex;gap:10px;align-items:center;font-weight:600;margin-bottom:10px"><span class="sym" style="color:#E8517F">report</span> ถ้าเอาทุกอย่างใส่ memory ก้อนเดียว จะเกิดปัญหา</div>
+    <ul>
+      <li>memory เต็มเร็ว</li>
+      <li>ข้อมูลเก่าปนข้อมูลใหม่</li>
+      <li>เรื่องชั่วคราวกลายเป็นคำสั่งถาวร</li>
+      <li>Agent สับสนว่าอะไรเป็น preference อะไรเป็น historical note</li>
+      <li>ข้อมูลยาว ๆ ถูกสรุปจนเสียรายละเอียด</li>
+      <li>เอกสาร reference ถูกฝังอยู่ใน conversation history</li>
+    </ul>
+  </div>
+  <div class="quote">ระบบที่ดีควรแยก "ความจำ" ออกเป็นหลายชั้น แต่เชื่อมกันด้วย workflow ที่ชัดเจน</div>
+</section>
+
+<!-- ===== 3 ===== -->
+<section class="panel" id="panel-3">
+  <div class="eyebrow"><span class="sym">memory</span> หมวด 3</div>
+  <h2>ระบบความจำมาตรฐานของ Hermes คืออะไร</h2>
+  <p>Hermes มีความจำและ recall หลัก ๆ หลายแบบอยู่แล้ว:</p>
+
+  <h3><span class="sym">forum</span> 3.1 Conversation Context</h3>
+  <p>ข้อความในบทสนทนาปัจจุบันที่ model เห็นอยู่ใน context window</p>
+  <div class="grid2">
+    <div class="mini good"><div class="ttl"><span class="sym">check_circle</span> เหมาะกับ</div><ul><li>งานที่กำลังทำอยู่</li><li>คำถามล่าสุด</li><li>ไฟล์/output ที่เพิ่งเปิด</li><li>แผนงานใน session เดียว</li></ul></div>
+    <div class="mini bad"><div class="ttl"><span class="sym">cancel</span> ไม่เหมาะกับ</div><ul><li>ข้อมูลที่ต้องอยู่ถาวร</li><li>runbook ยาว ๆ</li><li>preference ที่ต้องใช้ทุกครั้ง</li></ul></div>
+  </div>
+
+  <h3><span class="sym">person</span> 3.2 Persistent Memory / User Profile</h3>
+  <p>memory ที่ถูก inject เข้ามาใน session ใหม่ เพื่อบอกข้อเท็จจริงถาวรเกี่ยวกับผู้ใช้หรือสภาพแวดล้อม ควรแยกเป็น 2 กลุ่ม:</p>
+  <div class="grid2">
+    <div class="mini"><div class="ttl"><span class="sym">account_circle</span> User profile</div><ul><li>ชอบให้ตอบภาษาอะไร</li><li>น้ำเสียงที่ต้องการ</li><li>ข้อห้ามส่วนตัว</li><li>preference ที่คงทน</li></ul></div>
+    <div class="mini"><div class="ttl"><span class="sym">settings</span> Agent memory / environment</div><ul><li>path สำคัญ</li><li>convention ของระบบ</li><li>tool quirks</li><li>ข้อควรระวังที่เจอซ้ำ</li></ul></div>
+  </div>
+  <div class="grid2">
+    <div class="mini good"><div class="ttl"><span class="sym">check_circle</span> เหมาะกับ</div><ul><li>preference ที่ยังจริงในอีกหลายเดือน</li><li>fact สั้น ๆ ที่ลดการถามซ้ำ</li><li>ข้อห้ามสำคัญ</li><li>environment convention ที่คงทน</li></ul></div>
+    <div class="mini bad"><div class="ttl"><span class="sym">cancel</span> ไม่เหมาะกับ</div><ul><li>งานที่ทำเสร็จแล้ว</li><li>issue/commit/PR number</li><li>log ยาว ๆ, รายชื่อไฟล์เยอะ ๆ</li><li>temporary TODO, architecture ยาว ๆ</li></ul></div>
+  </div>
+  <div class="quote">Memory มาตรฐานควรเป็น "เข็มทิศ" ไม่ใช่ "คลังเอกสาร"</div>
+
+  <h3><span class="sym">search</span> 3.3 Session Search</h3>
+  <p>การค้นหาบทสนทนาเก่า ๆ จาก database ของ Hermes</p>
+  <div class="grid2">
+    <div class="mini good"><div class="ttl"><span class="sym">thumb_up</span> ข้อดี</div><ul><li>ไม่ต้องเก็บทุกอย่างใน memory</li><li>ย้อนดู decision เก่าได้</li><li>ใช้เป็น historical trace</li></ul></div>
+    <div class="mini bad"><div class="ttl"><span class="sym">thumb_down</span> ข้อจำกัด</div><ul><li>เป็น "ประวัติการคุย" ไม่ใช่ KB ที่ curate แล้ว</li><li>อาจมีข้อมูลผิด/ชั่วคราวปน</li><li>ต้องอ่านและสังเคราะห์ใหม่ทุกครั้ง</li><li>ไม่เหมาะเป็น single source of truth</li></ul></div>
+  </div>
+
+  <h3><span class="sym">build</span> 3.4 Skills</h3>
+  <p>Skill คือ <b>procedural memory</b> ของ Hermes — ขั้นตอนทำงานซ้ำ ๆ, command ที่พิสูจน์แล้ว, pitfall ของ tool, template, วิธี troubleshoot แบบเป็น pattern</p>
+  <div class="chips">
+    <span class="chip"><span class="sym">rocket</span> วิธี deploy service</span>
+    <span class="chip"><span class="sym">terminal</span> แก้ systemd user service</span>
+    <span class="chip"><span class="sym">cloud</span> ใช้ Google Workspace API</span>
+    <span class="chip"><span class="sym">rate_review</span> วิธีทำ code review</span>
+    <span class="chip"><span class="sym">input</span> ingest source เข้า wiki</span>
+  </div>
+  <div class="grid2">
+    <div class="mini good"><div class="ttl"><span class="sym">thumb_up</span> ข้อดี</div><ul><li>โหลด skill เมื่องานตรง trigger</li><li>เก็บ procedure ละเอียดกว่า memory</li><li>ปรับปรุงได้เมื่อเจอ pitfall ใหม่</li></ul></div>
+    <div class="mini bad"><div class="ttl"><span class="sym">thumb_down</span> ข้อจำกัด</div><ul><li>ไม่ควรเป็น historical diary</li><li>ไม่ควรเก็บข้อมูล private มากเกินไป</li><li>ไม่เหมาะกับ architecture ยาวมาก ๆ สำหรับมนุษย์อ่าน</li></ul></div>
+  </div>
+
+  <h3><span class="sym">schedule</span> 3.5 Cron Jobs / Automation State</h3>
+  <p>ไม่ใช่ memory โดยตรง แต่เป็น <b>stateful automation layer</b> เหมาะกับ: ตรวจ inbox ทุกชั่วโมง, refresh dashboard, scrape feed, run health check, sync wiki ไป Drive</p>
+  <p>State ของ automation ควรอยู่ในไฟล์ state/manifest แยก เช่น:</p>
+  <pre>.wiki/.ingestion/manifests/processed-files.json
+.wiki/.ingestion/logs/healthcheck.json</pre>
+  <div class="callout warn"><span class="sym">warning</span><div>ไม่ควรเอา state เหล่านี้ไปใส่ memory มาตรฐาน เพราะจะเก่าเร็ว</div></div>
+</section>
+
+<!-- ===== 4 ===== -->
+<section class="panel" id="panel-4">
+  <div class="eyebrow"><span class="sym">warning</span> หมวด 4</div>
+  <h2>ข้อจำกัดของความจำมาตรฐาน</h2>
+  <p>ระบบความจำมาตรฐานช่วยได้มาก แต่ยังมีข้อจำกัดเมื่อใช้กับงานระยะยาว</p>
+  <div class="grid2">
+    <div class="mini"><div class="ttl"><span class="sym">sd_card_alert</span> 4.1 พื้นที่จำกัด</div><p>Persistent memory มีขนาดจำกัด ถ้าใส่เอกสารยาว จะเบียด preference สำคัญออก</p></div>
+    <div class="mini"><div class="ttl"><span class="sym">format_clear</span> 4.2 ขาดโครงสร้างเอกสาร</div><p>เป็นรายการสั้น ๆ ไม่เหมาะกับ diagram, runbook, decision log, installation guide, deep dive</p></div>
+    <div class="mini"><div class="ttl"><span class="sym">edit_off</span> 4.3 แก้/ตรวจสอบยาก</div><p>ข้อมูลยาว/ซ้ำ แก้ให้ถูกยากกว่าไฟล์ markdown ที่เปิดอ่านได้</p></div>
+    <div class="mini"><div class="ttl"><span class="sym">help</span> 4.4 ไม่มี provenance ชัด</div><p>มักไม่บอกว่า claim นี้มาจาก source ไหน เมื่อไหร่ ใครตัดสินใจ</p></div>
+  </div>
+  <h3><span class="sym">running_with_errors</span> 4.5 เสี่ยง "คำสั่งเก่า" ทับงานใหม่</h3>
+  <p>ถ้าเขียน memory เป็น imperative:</p>
+  <pre>Always run script X before doing Y.</pre>
+  <p>อนาคต Agent อาจทำตามแม้สถานการณ์เปลี่ยนแล้ว — ควรเขียนเป็น <b>declarative fact</b> แทน:</p>
+  <pre>Project A historically used script X for Y; verify current state before reuse.</pre>
+</section>
+
+<!-- ===== 5 ===== -->
+<section class="panel" id="panel-5">
+  <div class="eyebrow"><span class="sym">auto_awesome</span> หมวด 5</div>
+  <h2>Self-Improving Knowledge Base แบบ Jack Roberts</h2>
+  <div class="quote">แทนที่จะให้ Agent เริ่มคิดจากศูนย์ทุกครั้ง ให้ Agent ค่อย ๆ สร้าง wiki ที่สรุปความรู้ ถอดบทเรียน เชื่อมโยง concept และปรับปรุงตัวเองจากงานที่ผ่านมา</p></div>
+
+  <div class="grid2">
+    <div class="card">
+      <h4><span class="sym" style="color:var(--on-surface-var)">search</span> RAG แบบทั่วไป</h4>
+      <div class="steps">
+        <div class="step"><div class="dot"></div><div class="body">เก็บเอกสารจำนวนมาก</div></div>
+        <div class="step"><div class="dot"></div><div class="body">ตอนถาม ค้น chunk ที่เกี่ยวข้อง</div></div>
+        <div class="step"><div class="dot"></div><div class="body">ส่ง chunk ให้ LLM สรุปคำตอบ</div></div>
+      </div>
+      <div class="mini bad" style="margin-top:8px"><div class="ttl"><span class="sym">thumb_down</span> ข้อเสีย</div><ul><li>ทุกคำถามต้อง rediscover ใหม่</li><li>chunk อาจขาดบริบท</li><li>ไม่มีการสังเคราะห์ถาวร</li><li>ไม่มีการแก้ contradiction</li><li>คำตอบดีบ้างไม่ดีบ้างตาม retrieval</li></ul></div>
+    </div>
+    <div class="card tinted">
+      <h4><span class="sym">auto_awesome</span> Self-Improving Wiki</h4>
+      <div class="steps">
+        <div class="step"><div class="dot"></div><div class="body">เก็บ raw source เป็น immutable archive</div></div>
+        <div class="step"><div class="dot"></div><div class="body">Agent อ่านและสังเคราะห์เป็น wiki pages</div></div>
+        <div class="step"><div class="dot"></div><div class="body">Wiki pages เชื่อมกันด้วย links</div></div>
+        <div class="step"><div class="dot"></div><div class="body">มี source ใหม่ → update page เดิม ไม่สร้างซ้ำ</div></div>
+        <div class="step"><div class="dot"></div><div class="body">มี index, schema, log, health check</div></div>
+        <div class="step"><div class="dot"></div><div class="body">คำตอบที่มีคุณค่า ถูก file กลับเข้า wiki</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="mini good"><div class="ttl"><span class="sym">thumb_up</span> ข้อดีของ Self-Improving Wiki</div><ul><li>ความรู้ compounding ขึ้นเรื่อย ๆ</li><li>Agent ไม่ต้อง rediscover ทุกครั้ง</li><li>มนุษย์เปิดอ่าน/ตรวจสอบ/แก้ไขได้</li><li>มี structure และ provenance</li><li>ใช้กับ Obsidian / Git / Drive mirror ได้</li></ul></div>
+  <div class="quote">Wiki ไม่ใช่ที่เก็บ raw dump แต่เป็น external brain ที่ Agent มีหน้าที่ curate</div>
+</section>
+
+<!-- ===== 6 ===== -->
+<section class="panel" id="panel-6">
+  <div class="eyebrow"><span class="sym">hub</span> หมวด 6</div>
+  <h2>สถาปัตยกรรมเสริม: External Memory / Wiki Layer</h2>
+  <h3><span class="sym">schema</span> ภาพรวม architecture</h3>
+  <pre class="ascii">┌────────────────────────────────────────────┐
+│                   User                       │
+└─────────────────────┬────────────────────────┘
+                      │ asks / provides source
+                      ▼
+┌────────────────────────────────────────────┐
+│                Hermes Agent                  │
+│  ┌──────────────────┐ ┌────────────────────┐ │
+│  │Conversation Ctx  │ │Persistent Memory   │ │
+│  └──────────────────┘ └────────────────────┘ │
+│  ┌──────────────────┐ ┌────────────────────┐ │
+│  │Session Search    │ │Skills / Procedures │ │
+│  └──────────────────┘ └────────────────────┘ │
+└─────────────────────┬────────────────────────┘
+                      │ reads / writes
+                      ▼
+┌────────────────────────────────────────────┐
+│        External Self-Improving Wiki          │
+│  SCHEMA.md   index.md   log.md               │
+│  raw/  entities/  concepts/                  │
+│  comparisons/  queries/  _meta/              │
+│  .ingestion/  health checks  dashboards      │
+└─────────────────────┬────────────────────────┘
+                      │ optional mirror / sync
+                      ▼
+┌────────────────────────────────────────────┐
+│   Human Mirror / Obsidian / Google Drive     │
+└────────────────────────────────────────────┘</pre>
+
+  <h3><span class="sym">folder_special</span> 6.1 Canonical local wiki</h3>
+  <p>ควรมี local markdown directory เป็น source of truth เช่น <code>~/.hermes/wiki</code></p>
+  <div class="chips">
+    <span class="chip"><span class="sym">speed</span> เร็วกว่า remote drive</span>
+    <span class="chip"><span class="sym">terminal</span> ใช้ terminal tools ค้น/แก้ง่าย</span>
+    <span class="chip"><span class="sym">backup</span> backup รวมกับ Hermes ได้</span>
+    <span class="chip"><span class="sym">wifi_off</span> ไม่ขึ้นกับ browser</span>
+  </div>
+
+  <h3><span class="sym">cloud_sync</span> 6.2 Human-facing mirror</h3>
+  <p>อาจ mirror ไฟล์สำคัญไป Google Drive / Obsidian / Git เพื่อให้มนุษย์เปิดดูง่าย แต่ต้องยึดหลัก:</p>
+  <div class="quote">local wiki เป็น canonical · Drive เป็น mirror</div>
+  <div class="card bad" style="border-left:4px solid #E8517F">
+    <div class="ttl" style="display:flex;gap:10px;align-items:center;font-weight:600;margin-bottom:8px"><span class="sym" style="color:#E8517F">report</span> ถ้าให้ Drive เป็น canonical อาจเกิดปัญหา</div>
+    <ul><li>duplicate names</li><li>sync delay</li><li>API limitation</li><li>permission issue</li><li>file IDs เปลี่ยนยากต่อ automation</li></ul>
+  </div>
+</section>
+
+<!-- ===== 7 ===== -->
+<section class="panel" id="panel-7">
+  <div class="eyebrow"><span class="sym">folder</span> หมวด 7</div>
+  <h2>โครงสร้างไฟล์ที่แนะนำ</h2>
+  <pre class="ascii">wiki/
+├── SCHEMA.md
+├── index.md
+├── log.md
+├── _meta/
+│   ├── start-here.md
+│   ├── dashboard.md
+│   ├── topic-map.md
+│   ├── healthcheck-report.md
+│   └── operating-manual.md
+├── raw/
+│   ├── articles/   papers/   transcripts/
+│   ├── meeting-notes/   inbox-files/   assets/
+├── entities/
+│   ├── product-a.md   vendor-b.md   system-c.md
+├── concepts/
+│   ├── retrieval-vs-wiki-memory.md
+│   ├── incident-response-playbook.md
+│   └── ai-agent-operating-model.md
+├── comparisons/
+│   ├── option-a-vs-option-b.md
+│   └── local-first-vs-cloud-first.md
+├── queries/
+│   ├── how-should-we-design-memory-for-agents.md
+│   └── migration-plan-for-system-x.md
+└── .ingestion/
+    ├── manifests/processed-files.json
+    ├── staging/query-suggestions/
+    ├── logs/healthcheck.json
+    └── state/drive-mirror-state.json</pre>
+
+  <div class="grid2">
+    <div class="mini"><div class="ttl"><span class="sym">description</span> 7.1 SCHEMA.md</div><ul><li>บอก domain ของ wiki</li><li>บอก conventions + tags</li><li>เมื่อไหร่ควรสร้าง page ใหม่</li><li>frontmatter standard</li><li>update policy เมื่อข้อมูลขัดแย้ง</li></ul></div>
+    <div class="mini"><div class="ttl"><span class="sym">list</span> 7.2 index.md</div><ul><li>เป็น catalog หลัก</li><li>ทุก synthesized page ต้องอยู่ใน index</li><li>อ่านเพื่อ orient ก่อนทำงาน</li></ul></div>
+    <div class="mini"><div class="ttl"><span class="sym">receipt_long</span> 7.3 log.md</div><ul><li>บันทึกการเปลี่ยนแปลงแบบ chronological</li><li>เป็น knowledge operation log ไม่ใช่ audit ทุก command</li></ul></div>
+    <div class="mini"><div class="ttl"><span class="sym">lock</span> 7.4 raw/</div><ul><li>ห้ามแก้เนื้อหาหลัง ingest (ยกเว้น metadata)</li><li>เก็บ PDF text, transcript, exported chat, screenshots, meeting notes, articles</li></ul></div>
+  </div>
+  <h4>ตัวอย่าง log entry</h4>
+  <pre>## [2026-01-10] ingest | Vendor API migration notes
+- Preserved source at `raw/articles/vendor-api-migration-2026.md`
+- Updated `entities/vendor-api.md`
+- Created `queries/how-to-migrate-vendor-api-safely.md`
+- Updated `index.md`</pre>
+  <h4>7.5 Synthesized pages แบ่งเป็น</h4>
+  <div class="chips">
+    <span class="chip"><span class="sym">badge</span> entities/ — คน องค์กร software ระบบ</span>
+    <span class="chip"><span class="sym">lightbulb</span> concepts/ — แนวคิด operating model</span>
+    <span class="chip"><span class="sym">balance</span> comparisons/ — เปรียบเทียบทางเลือก</span>
+    <span class="chip"><span class="sym">quiz</span> queries/ — คำตอบ/decision memo</span>
+  </div>
+</section>
+
+<!-- ===== 8 ===== -->
+<section class="panel" id="panel-8">
+  <div class="eyebrow"><span class="sym">account_tree</span> หมวด 8</div>
+  <h2>กลไกการไหลของข้อมูล</h2>
+  <h3><span class="sym">input</span> 8.1 Source ingestion flow</h3>
+  <pre class="ascii">New source
+  ▼  Capture raw source
+  ▼  Classify source type
+  ▼  Search existing wiki pages
+  ├── related page exists ──► update page
+  └── no related page ─────► page threshold met?
+                              ├── yes ─► create synthesized page
+                              └── no ──► keep only raw + log
+  ▼  Update index.md
+  ▼  Append log.md
+  ▼  Optional mirror to Drive / Obsidian / Git</pre>
+
+  <h3><span class="sym">quiz</span> 8.2 Query filing flow</h3>
+  <pre class="ascii">User asks valuable question
+  ▼  Agent searches wiki + session history if needed
+  ▼  Agent answers user
+  ▼  Is answer reusable / expensive to reconstruct?
+  ├── no ──► do not file
+  └── yes ─► create query page → update index → append log → optionally mirror</pre>
+
+  <h3><span class="sym">autorenew</span> 8.3 Self-improvement flow</h3>
+  <pre class="ascii">Task completed / bug fixed / workflow discovered
+  ▼  Agent asks: What should be remembered?
+  ├── user preference? ──────────► memory
+  ├── repeatable procedure? ─────► skill
+  ├── long reusable explanation? ► wiki
+  ├── raw artifact? ─────────────► raw/
+  └── temporary status? ─────────► session only / log only</pre>
+</section>
+
+<!-- ===== 9 ===== -->
+<section class="panel" id="panel-9">
+  <div class="eyebrow"><span class="sym">compare_arrows</span> หมวด 9</div>
+  <h2>Memory vs Session Search vs Skill vs Wiki</h2>
+  <table>
+    <thead><tr><th>Layer</th><th>Purpose</th><th>เหมาะกับ</th><th>หลีกเลี่ยง</th></tr></thead>
+    <tbody>
+      <tr><td><b>Conversation context</b></td><td>งานใน turn/session ปัจจุบัน</td><td>active task, ไฟล์ปัจจุบัน</td><td>permanent facts</td></tr>
+      <tr><td><b>Persistent memory</b></td><td>fact/preference คงทน</td><td>user preference, env notes</td><td>เอกสารยาว, task logs</td></tr>
+      <tr><td><b>Session search</b></td><td>recall ประวัติ</td><td>"คราวก่อนคุยอะไร"</td><td>source of truth</td></tr>
+      <tr><td><b>Skills</b></td><td>procedure ทำซ้ำ</td><td>commands, pitfalls, workflows</td><td>history ยาว, private detail</td></tr>
+      <tr><td><b>Wiki</b></td><td>knowledge + runbook คงทน</td><td>architecture, decisions, concepts</td><td>raw dump รก ๆ</td></tr>
+      <tr><td><b>Raw archive</b></td><td>provenance</td><td>transcripts, articles, attachments</td><td>summary ที่ถูกแก้</td></tr>
+      <tr><td><b>Cron/state files</b></td><td>automation continuity</td><td>processed IDs, sync state</td><td>knowledge สำหรับมนุษย์</td></tr>
+    </tbody>
+  </table>
+  <h3><span class="sym">rule</span> 9.1 Decision rule — ถาม 5 ข้อ</h3>
+  <div class="steps">
+    <div class="step"><div class="dot"></div><div class="body">จะยังจริงใน 3–6 เดือนไหม?</div></div>
+    <div class="step"><div class="dot"></div><div class="body">เป็น preference หรือ fact สั้น ๆ ไหม?</div></div>
+    <div class="step"><div class="dot"></div><div class="body">เป็น procedure ที่ต้องทำซ้ำไหม?</div></div>
+    <div class="step"><div class="dot"></div><div class="body">เป็นเอกสารยาวที่มนุษย์ควรเปิดอ่านไหม?</div></div>
+    <div class="step"><div class="dot"></div><div class="body">เป็น state ชั่วคราวของ automation ไหม?</div></div>
+  </div>
+  <div class="card tinted">
+    <ul style="margin:0">
+      <li>preference → <b>memory</b></li>
+      <li>procedure → <b>skill</b></li>
+      <li>architecture/runbook/decision → <b>wiki</b></li>
+      <li>raw source → <b>raw/</b></li>
+      <li>processed state → <b>.ingestion/</b></li>
+      <li>temporary progress → <b>ไม่ต้องเก็บถาวร</b></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 10 ===== -->
+<section class="panel" id="panel-10">
+  <div class="eyebrow"><span class="sym">smart_toy</span> หมวด 10</div>
+  <h2>บทบาทของ Agent ในการดูแลความจำให้ดีขึ้นเอง</h2>
+  <div class="quote">Agent ไม่ควรเป็นแค่คนเขียนไฟล์ แต่ควรเป็น <b>curator</b></div>
+  <div class="grid2">
+    <div class="mini"><div class="ttl"><span class="sym">explore</span> 1. Orient ก่อนทำงาน</div><p>อ่าน SCHEMA → index → log ล่าสุด</p></div>
+    <div class="mini"><div class="ttl"><span class="sym">content_copy</span> 2. Avoid duplicates</div><p>search ก่อนสร้าง page · ถ้ามีอยู่ให้ update ไม่สร้างซ้ำ</p></div>
+    <div class="mini"><div class="ttl"><span class="sym">link</span> 3. Maintain links</div><p>สร้าง wikilinks · ตรวจ broken links</p></div>
+    <div class="mini"><div class="ttl"><span class="sym">fingerprint</span> 4. Preserve provenance</div><p>raw source อยู่ไหน · claim มาจากอะไร</p></div>
+    <div class="mini"><div class="ttl"><span class="sym">upgrade</span> 5. Improve procedures</div><p>เจอ pitfall ใหม่ → patch skill · runbook ขาด → update wiki</p></div>
+    <div class="mini"><div class="ttl"><span class="sym">cleaning_services</span> 6. Keep memory clean</div><p>ไม่ยัดทุกอย่างเข้า memory · ไม่บันทึก task progress ชั่วคราว</p></div>
+    <div class="mini"><div class="ttl"><span class="sym">task_alt</span> 7. Close the loop</div><p>งานใหญ่จบ → ตัดสินใจเองว่าอะไรควรเก็บ · update index/log เสมอ</p></div>
+  </div>
+</section>
+
+<!-- ===== 11 ===== -->
+<section class="panel" id="panel-11">
+  <div class="eyebrow"><span class="sym">conveyor_belt</span> หมวด 11</div>
+  <h2>Workflow สำคัญ</h2>
+  <h3><span class="sym">explore</span> 11.1 Orientation workflow</h3>
+  <pre>WIKI="$HOME/.hermes/wiki"
+# Read schema
+# Read index
+# Read recent log
+# Search relevant topic</pre>
+  <p>Agent ควรถามตัวเอง: wiki นี้ cover domain อะไร? มี page เกี่ยวข้องอยู่แล้วไหม? กฎ naming/tag/frontmatter คืออะไร? ครั้งล่าสุดมีงานอะไรเกี่ยวข้อง?</p>
+
+  <h3><span class="sym">note_add</span> 11.2 New source workflow</h3>
+  <div class="steps">
+    <div class="step"><div class="dot"></div><div class="body">Save raw source</div></div>
+    <div class="step"><div class="dot"></div><div class="body">Compute hash ถ้าทำได้</div></div>
+    <div class="step"><div class="dot"></div><div class="body">Add raw frontmatter</div></div>
+    <div class="step"><div class="dot"></div><div class="body">Extract entities / concepts</div></div>
+    <div class="step"><div class="dot"></div><div class="body">Search existing pages</div></div>
+    <div class="step"><div class="dot"></div><div class="body">Create / update synthesized pages</div></div>
+    <div class="step"><div class="dot"></div><div class="body">Update index → Append log → Mirror if configured</div></div>
+  </div>
+
+  <h3><span class="sym">quiz</span> 11.3 Query-to-wiki workflow</h3>
+  <div class="grid2">
+    <div class="mini good"><div class="ttl"><span class="sym">check_circle</span> เหมาะกับ</div><ul><li>"ออกแบบระบบนี้ยังไง"</li><li>"เปรียบเทียบทางเลือก A กับ B"</li><li>"สรุปสิ่งที่ทำไว้เป็น runbook"</li><li>"วันหลังจะอ้างอิงได้ไหม"</li></ul></div>
+    <div class="mini bad"><div class="ttl"><span class="sym">cancel</span> ไม่เหมาะกับ</div><ul><li>"ตอนนี้กี่โมง"</li><li>"ไฟล์นี้อยู่ไหน"</li><li>"คำสั่งนี้ exit code อะไร"</li></ul></div>
+  </div>
+
+  <h3><span class="sym">build</span> 11.4 Skill update workflow</h3>
+  <p>เมื่อ procedure สำเร็จหลังลองผิดลองถูก: Identify reusable steps → Add prerequisites → Add exact commands → Add pitfalls → Add verification → Patch/create skill</p>
+
+  <h3><span class="sym">edit_note</span> 11.5 Memory update workflow</h3>
+  <p>เมื่อผู้ใช้บอก preference ให้บันทึกแบบ <b>declarative</b>:</p>
+  <pre>User prefers direct console URLs when asked to change cloud settings.</pre>
+  <p>ไม่ควรเขียน:</p>
+  <pre>Always open console URL before every task.</pre>
+</section>
+
+<!-- ===== 12 ===== -->
+<section class="panel" id="panel-12">
+  <div class="eyebrow"><span class="sym">menu_book</span> หมวด 12</div>
+  <h2>ตัวอย่างสมมุติแบบ end-to-end</h2>
+
+  <h3><span class="sym">chat</span> ตัวอย่าง A: ตั้ง ChatOps ให้ Hermes ตอบในห้องทีม</h3>
+  <p><b>สถานการณ์:</b> ทีมต้องการให้ Hermes ตอบใน Google Chat / Slack / Teams เพื่อช่วยสรุปงานและตอบคำถาม</p>
+  <p><b>สิ่งที่เกิดขึ้น:</b> ตั้งค่า chat app → เชื่อม event gateway → เพิ่ม bot เข้า room → ตั้ง allowlist → ทดสอบ mention → พบ bot ตอบเฉพาะบางคน → แก้ visibility/allowlist → ส่ง onboarding message</p>
+  <h4>เก็บอะไรที่ไหน</h4>
+  <table>
+    <tbody>
+      <tr><td><b>Memory</b></td><td><code>Team prefers direct admin console URLs for manual cloud-console steps.</code></td></tr>
+      <tr><td><b>Skill</b></td><td>chatops-channel-bridge troubleshooting: verify bot membership / inbound events / publisher IAM / allowed users / test mention</td></tr>
+      <tr><td><b>Wiki</b></td><td><code>queries/chatops-hermes-integration-runbook.md</code></td></tr>
+      <tr><td><b>Raw</b></td><td><code>raw/assets/chat-console-screenshot-001.png</code>, <code>raw/meeting-notes/chatops-rollout-notes.md</code></td></tr>
+      <tr><td><b>Automation state</b></td><td><code>.ingestion/manifests/chat-space-registry.json</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="sym">mail</span> ตัวอย่าง B: เอกสารจาก meeting เข้า Drive InBox</h3>
+  <p><b>สถานการณ์:</b> meeting notes เรื่อง migration project เข้ามาใน Drive InBox</p>
+  <div class="steps">
+    <div class="step"><div class="dot"></div><div class="body">Cron job ตรวจ Drive InBox</div></div>
+    <div class="step"><div class="dot"></div><div class="body">พบไฟล์ใหม่ → ดาวน์โหลด raw ไป <code>raw/meeting-notes/</code></div></div>
+    <div class="step"><div class="dot"></div><div class="body">Agent อ่านแล้วพบว่าเกี่ยวกับระบบ <code>billing-api</code></div></div>
+    <div class="step"><div class="dot"></div><div class="body">มี entity page <code>entities/billing-api.md</code> อยู่แล้ว → update เพิ่ม section "2026 migration notes"</div></div>
+    <div class="step"><div class="dot"></div><div class="body">สร้าง query page <code>how-to-migrate-billing-api-without-downtime.md</code></div></div>
+    <div class="step"><div class="dot"></div><div class="body">Update index/log → Mirror query page ไป Drive Outbox</div></div>
+  </div>
+  <div class="callout"><span class="sym">lightbulb</span><div><b>ผลลัพธ์:</b> วันหลังถามว่า "migration billing-api เคยคุยไว้อย่างไร" Agent เริ่มจาก synthesized page ได้ทันที ไม่ต้องค้น raw meeting ใหม่ทั้งหมด</div></div>
+
+  <h3><span class="sym">bug_report</span> ตัวอย่าง C: Agent แก้ bug ได้หลังลองหลายวิธี</h3>
+  <p><b>สถานการณ์:</b> แก้ systemd service ที่ restart loop ได้ โดยพบว่า environment file path ผิด และต้องใช้ <code>systemctl --user daemon-reload</code></p>
+  <table>
+    <tbody>
+      <tr><td><b>Memory</b></td><td>ไม่ต้องเก็บว่า "วันนี้แก้ service X แล้ว" (เป็น task progress)</td></tr>
+      <tr><td><b>Skill</b></td><td>เพิ่ม pitfall: <code>If changing unit EnvironmentFile, run daemon-reload before restart; otherwise old env may persist.</code></td></tr>
+      <tr><td><b>Wiki</b></td><td>ถ้าเป็น incident สำคัญ → <code>queries/systemd-user-service-restart-loop-runbook.md</code></td></tr>
+      <tr><td><b>Session search</b></td><td>ปล่อยให้ transcript เดิมใช้ค้น historical detail ได้</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===== 13 ===== -->
+<section class="panel" id="panel-13">
+  <div class="eyebrow"><span class="sym">schedule</span> หมวด 13</div>
+  <h2>Automation ที่แนะนำ</h2>
+  <div class="grid2">
+    <div class="mini"><div class="ttl"><span class="sym">dashboard</span> 13.1 Dashboard refresh</div><p>สร้างจาก จำนวน pages, health summary, recent log, query suggestions, stale pages, Drive mirror state</p><pre style="margin-top:8px">every 1h → rebuild wiki dashboard</pre></div>
+    <div class="mini"><div class="ttl"><span class="sym">move_to_inbox</span> 13.2 Inbox ingestion</div><ul><li>list files → skip processed IDs</li><li>classify by MIME/type/name</li><li>preserve raw → optionally synthesize</li><li>update manifest</li></ul></div>
+    <div class="mini"><div class="ttl"><span class="sym">lightbulb</span> 13.3 Query filing suggester</div><p>หลัง conversation จบ: คำตอบมี reusable value → draft query suggestion · trivial → skip</p></div>
+    <div class="mini"><div class="ttl"><span class="sym">health_and_safety</span> 13.4 Health check</div><p>broken links, orphans, missing index, invalid frontmatter, tags นอก schema, raw hash drift, pages ยาวเกิน, stale pages</p></div>
+  </div>
+  <h3><span class="sym">cloud_sync</span> 13.5 Drive mirror</h3>
+  <p>สำหรับไฟล์ที่มนุษย์ต้องเปิดอ่านง่าย: start-here, dashboard, runbook สำคัญ, query pages ที่ขอส่งออก</p>
+  <div class="callout"><span class="sym">info</span><div>ควรใช้ manifest ระบุไฟล์ที่จะ mirror และ state เก็บ Drive file ID เพื่อ update ไฟล์เดิม ไม่สร้าง duplicate</div></div>
+</section>
+
+<!-- ===== 14 ===== -->
+<section class="panel" id="panel-14">
+  <div class="eyebrow"><span class="sym">health_and_safety</span> หมวด 14</div>
+  <h2>Quality Control / Health Check</h2>
+  <div class="grid2">
+    <div class="mini"><div class="ttl"><span class="sym">link_off</span> 14.1 Broken link check</div><p>ทุก <code>[[wikilink]]</code> ต้องชี้ไป page ที่มีอยู่จริง</p></div>
+    <div class="mini"><div class="ttl"><span class="sym">scatter_plot</span> 14.2 Orphan check</div><p>page ที่ไม่มี inbound link อาจหาไม่เจอใน graph (ยกเว้น index, log, _meta dashboard)</p></div>
+    <div class="mini"><div class="ttl"><span class="sym">checklist</span> 14.3 Index completeness</div><p>ทุก synthesized page ต้องอยู่ใน index</p></div>
+    <div class="mini"><div class="ttl"><span class="sym">data_object</span> 14.4 Frontmatter validation</div><p>ทุก page ต้องมี frontmatter ครบ (ดู Appendix B)</p></div>
+    <div class="mini"><div class="ttl"><span class="sym">label</span> 14.5 Tag audit</div><p>tags ต้องอยู่ใน SCHEMA.md ไม่ให้ tag งอกไร้ระบบ</p></div>
+    <div class="mini"><div class="ttl"><span class="sym">difference</span> 14.6 Source drift</div><p>ถ้า raw source มี hash ให้ recompute ดูว่าถูกแก้โดยไม่ตั้งใจไหม</p></div>
+  </div>
+  <h3><span class="sym">warning</span> 14.7 Contradiction management</h3>
+  <p>ถ้า page A และ B ขัดแย้งกัน:</p>
+  <ul><li>อย่าลบ claim เก่าทันที</li><li>บอก date/source</li><li>mark contested</li><li>flag for review</li></ul>
+  <h3><span class="sym">straighten</span> 14.8 Page size</h3>
+  <p>ถ้า page เกิน ~200–300 lines ให้ split เป็น: overview / implementation / pitfalls / examples</p>
+</section>
+
+<!-- ===== 15 ===== -->
+<section class="panel" id="panel-15">
+  <div class="eyebrow"><span class="sym">lock</span> หมวด 15</div>
+  <h2>Security และ Privacy</h2>
+  <h3><span class="sym">key_off</span> 15.1 ไม่ใส่ข้อมูลลับใน wiki ที่จะ mirror</h3>
+  <div class="card bad" style="border-left:4px solid #E8517F">
+    <div class="ttl" style="display:flex;gap:10px;align-items:center;font-weight:600;margin-bottom:8px"><span class="sym" style="color:#E8517F">block</span> ห้ามใส่</div>
+    <ul><li>password, API token, private key</li><li>personal address</li><li>customer confidential data</li><li>employee personal data</li><li>project IDs ที่ไม่ควรแชร์นอกระบบ</li></ul>
+  </div>
+  <p>ถ้าต้องบันทึก secret location ให้เขียนแบบ abstract:</p>
+  <pre>Service account key is stored in the configured Hermes secret path;
+verify permissions are 600.</pre>
+
+  <h3><span class="sym">folder_shared</span> 15.2 แยก public กับ private runbook</h3>
+  <div class="grid2">
+    <div class="mini good"><div class="ttl"><span class="sym">public</span> public architecture doc</div><ul><li>ไม่มี secrets</li><li>ไม่มีชื่อคนจริง</li><li>ไม่มี IDs เฉพาะ</li></ul></div>
+    <div class="mini"><div class="ttl"><span class="sym">lock</span> private operations doc</div><ul><li>path จริง, project IDs</li><li>service account names</li><li>incident history</li></ul></div>
+  </div>
+  <div class="callout"><span class="sym">verified</span><div>เอกสารฉบับนี้เป็น <b>public / generic architecture doc</b></div></div>
+
+  <h3><span class="sym">find_in_page</span> 15.3 Redaction checklist ก่อนส่งออก</h3>
+  <p>ก่อน upload ไป Drive Outbox หรือแชร์ ให้ค้นหา pattern: email จริง, domain บริษัทจริง, token pattern, private key header, IP จริง, hostname จริง, cloud project ID, phone, customer/personal name</p>
+  <pre>grep -Ei '(@|api[_-]?key|token|secret|BEGIN PRIVATE KEY|[0-9]{1,3}(\.[0-9]{1,3}){3})' document.md</pre>
+  <p>ถ้าจำเป็นให้ใช้ placeholder: <code>&lt;PROJECT_ID&gt;</code> <code>&lt;ORG_DOMAIN&gt;</code> <code>&lt;CHAT_SPACE_ID&gt;</code> <code>&lt;SERVICE_ACCOUNT_EMAIL&gt;</code> <code>&lt;USER_EMAIL&gt;</code></p>
+</section>
+
+<!-- ===== 16 ===== -->
+<section class="panel" id="panel-16">
+  <div class="eyebrow"><span class="sym">rocket_launch</span> หมวด 16</div>
+  <h2>วิธีติดตั้งบน Hermes เครื่องใหม่</h2>
+  <h3><span class="sym">create_new_folder</span> 16.1 สร้าง wiki directory</h3>
+  <pre>mkdir -p ~/.hermes/wiki/{_meta,raw/{articles,papers,transcripts,meeting-notes,inbox-files,assets},entities,concepts,comparisons,queries,.ingestion/{manifests,staging,logs,state}}</pre>
+  <h3><span class="sym">description</span> 16.2 สร้าง SCHEMA.md</h3>
+  <pre># Wiki Schema
+
+## Domain
+Operational knowledge base for this Hermes installation:
+agent workflows, integrations, automation runbooks,
+project decisions, and reusable technical notes.</pre>
+  <h3><span class="sym">list</span> 16.3 สร้าง index.md</h3>
+  <pre># Wiki Index
+> Content catalog for this Hermes knowledge base.
+> Last updated: YYYY-MM-DD
+> Total synthesized pages: 0
+
+## Entities
+## Concepts
+## Comparisons
+## Queries</pre>
+  <h3><span class="sym">receipt_long</span> 16.4 สร้าง log.md</h3>
+  <pre># Wiki Log
+
+## [YYYY-MM-DD] create | Wiki initialized
+- Created canonical wiki directory at `~/.hermes/wiki`.</pre>
+  <h3><span class="sym">add_task</span> 16.5 เพิ่ม skill / instruction ให้ Agent</h3>
+  <ul><li>งานซับซ้อนและ reusable → สรุปลง wiki</li><li>procedure → สร้าง/patch skill</li><li>preference → memory</li><li>ห้ามใส่ข้อมูลลับใน public/exported docs</li></ul>
+  <h3><span class="sym">data_object</span> 16.6 ตั้ง environment variable (ถ้าต้องการ)</h3>
+  <pre>WIKI_PATH=$HOME/.hermes/wiki</pre>
+  <h3><span class="sym">layers</span> 16.7 ตั้ง cron automation ทีละชั้น</h3>
+  <div class="steps">
+    <div class="step"><div class="dot"></div><div class="body">dashboard refresh</div></div>
+    <div class="step"><div class="dot"></div><div class="body">health check</div></div>
+    <div class="step"><div class="dot"></div><div class="body">Drive inbox ingest</div></div>
+    <div class="step"><div class="dot"></div><div class="body">Drive outbox mirror</div></div>
+    <div class="step"><div class="dot"></div><div class="body">query suggestion</div></div>
+  </div>
+  <div class="callout warn"><span class="sym">warning</span><div>อย่าทำทุกอย่างพร้อมกันตั้งแต่วันแรก เพราะ debug ยาก</div></div>
+</section>
+
+<!-- ===== 17 ===== -->
+<section class="panel" id="panel-17">
+  <div class="eyebrow"><span class="sym">policy</span> หมวด 17</div>
+  <h2>Prompt / Policy ที่ควรให้ Agent ทำตาม</h2>
+  <h3><span class="sym">task_alt</span> 17.1 Closing policy หลังงานซับซ้อน</h3>
+  <pre>หลังจบงานที่มีหลายขั้นตอนหรือแก้ปัญหายาก ให้ตัดสินใจว่าอะไรควรถูกบันทึก:
+- preference → persistent memory
+- repeatable procedure → skill
+- architecture/runbook/decision → wiki
+- raw source → raw archive
+- temporary progress → ไม่ต้องบันทึกถาวร
+ถ้าสร้าง wiki page ให้ update index.md และ log.md ด้วยเสมอ</pre>
+  <h3><span class="sym">explore</span> 17.2 Wiki orientation policy</h3>
+  <pre>ก่อนสร้างหรือแก้ wiki ให้ read SCHEMA.md, index.md, และ log ล่าสุดก่อนเสมอ
+แล้ว search หาหน้าเดิมก่อนสร้างหน้าใหม่</pre>
+  <h3><span class="sym">cleaning_services</span> 17.3 Sanitization policy</h3>
+  <pre>ถ้าเอกสารจะถูกส่งออกหรือใช้กับเครื่องอื่น ให้ลบข้อมูลส่วนตัว
+project IDs, emails, hostnames, tokens, paths เฉพาะเครื่อง
+และแทนด้วย placeholder</pre>
+  <h3><span class="sym">build</span> 17.4 Skill maintenance policy</h3>
+  <pre>ถ้าใช้ skill แล้วพบว่า skill ขาดขั้นตอนหรือมีคำสั่งผิด
+ให้ patch skill ทันที ไม่รอให้ผู้ใช้สั่ง</pre>
+</section>
+
+<!-- ===== 18 ===== -->
+<section class="panel" id="panel-18">
+  <div class="eyebrow"><span class="sym">block</span> หมวด 18</div>
+  <h2>Anti-patterns ที่ควรหลีกเลี่ยง</h2>
+  <div class="grid2">
+    <div class="mini bad"><div class="ttl"><span class="sym">inventory</span> 18.1 Memory hoarding</div><p>ยัดทุกอย่างเข้า memory จนเต็ม</p><p style="color:var(--primary);font-weight:600;margin-top:6px">แก้: memory เฉพาะ durable fact สั้น ๆ · long-form ไป wiki</p></div>
+    <div class="mini bad"><div class="ttl"><span class="sym">delete_sweep</span> 18.2 Wiki dumping</div><p>เอา transcript/log ยาวใส่ concepts โดยไม่สังเคราะห์</p><p style="color:var(--primary);font-weight:600;margin-top:6px">แก้: raw ไป raw/ · synthesis ไป concepts/queries/</p></div>
+    <div class="mini bad"><div class="ttl"><span class="sym">file_copy</span> 18.3 Duplicate pages</div><p>สร้างหน้าใหม่ทุกครั้งแม้เรื่องเดิมมีอยู่</p><p style="color:var(--primary);font-weight:600;margin-top:6px">แก้: search ก่อน · update เดิม · merge</p></div>
+    <div class="mini bad"><div class="ttl"><span class="sym">playlist_remove</span> 18.4 No index update</div><p>สร้าง page แล้วไม่เพิ่ม index ทำให้หาไม่เจอ</p><p style="color:var(--primary);font-weight:600;margin-top:6px">แก้: enforce index completeness check</p></div>
+    <div class="mini bad"><div class="ttl"><span class="sym">history_toggle_off</span> 18.5 No log</div><p>ไม่มี log ว่า update อะไร future agent ไม่รู้บริบท</p><p style="color:var(--primary);font-weight:600;margin-top:6px">แก้: append log ทุก material update</p></div>
+    <div class="mini bad"><div class="ttl"><span class="sym">no_encryption</span> 18.6 Private data leakage</div><p>เอา runbook ที่มีข้อมูลจริงไปแชร์</p><p style="color:var(--primary);font-weight:600;margin-top:6px">แก้: public/private split · redaction scan ก่อน export</p></div>
+    <div class="mini bad"><div class="ttl"><span class="sym">edit_off</span> 18.7 Generated page edited by hand</div><p>แก้ markdown ที่ script สร้าง การแก้จะหายตอน regenerate</p><p style="color:var(--primary);font-weight:600;margin-top:6px">แก้: patch generator script แล้ว regenerate</p></div>
+  </div>
+</section>
+
+<!-- ===== 19 ===== -->
+<section class="panel" id="panel-19">
+  <div class="eyebrow"><span class="sym">trending_up</span> หมวด 19</div>
+  <h2>Maturity Model</h2>
+  <p class="lede">ระดับความเป็นผู้ใหญ่ของระบบความจำ — ไล่จาก Level 0 ถึง Level 5</p>
+  <div class="level"><div class="lv">LV 0</div><div><b>No memory discipline</b><br>ทุกอย่างอยู่ใน chat history · ต้องถามซ้ำตลอด · ไม่มี runbook</div></div>
+  <div class="level"><div class="lv">LV 1</div><div><b>Persistent memory only</b><br>Agent จำ preference ได้ แต่เอกสารยาวยังหายใน session history</div></div>
+  <div class="level"><div class="lv">LV 2</div><div><b>Skills</b><br>procedure สำคัญถูกเก็บเป็น skill · ทำงานซ้ำได้ดีขึ้น แต่ long-form ยังไม่เป็นระบบ</div></div>
+  <div class="level"><div class="lv">LV 3</div><div><b>Wiki</b><br>มี SCHEMA/index/log · มี raw + synthesized layers · คำตอบสำคัญถูก filed</div></div>
+  <div class="level"><div class="lv">LV 4</div><div><b>Self-improving wiki</b><br>Agent update wiki หลังงานสำคัญ · มี health checks · query suggestions · dashboard · Drive/Obsidian mirror</div></div>
+  <div class="level" style="border-left-color:#22B58A"><div class="lv" style="background:#A8F4D7;color:#00382A">LV 5</div><div><b>Knowledge operations system</b><br>automation รอบด้าน · review queue · provenance/contradiction tracking · public/private export pipeline · agent หลายตัวใช้ wiki เดียวกันได้</div></div>
+</section>
+
+<!-- ===== 20 ===== -->
+<section class="panel" id="panel-20">
+  <div class="eyebrow"><span class="sym">summarize</span> หมวด 20</div>
+  <h2>สรุป Architecture</h2>
+  <p>ระบบความจำที่แนะนำสำหรับ Hermes ไม่ใช่ memory ก้อนเดียว แต่เป็น <b>layered memory architecture</b>:</p>
+  <pre class="ascii">Short-term context
+  ↓
+Persistent memory / user profile
+  ↓
+Session search
+  ↓
+Skills
+  ↓
+Self-improving wiki
+  ↓
+Raw archive + automation state
+  ↓
+Human-facing mirror</pre>
+  <h3><span class="sym">key</span> หลักสำคัญ 8 ข้อ</h3>
+  <div class="steps">
+    <div class="step"><div class="dot"></div><div class="body">Memory มาตรฐานใช้เก็บ fact/preference สั้น ๆ</div></div>
+    <div class="step"><div class="dot"></div><div class="body">Session search ใช้ recall ประวัติ ไม่ใช่ source of truth</div></div>
+    <div class="step"><div class="dot"></div><div class="body">Skills ใช้เก็บ procedure</div></div>
+    <div class="step"><div class="dot"></div><div class="body">Wiki ใช้เก็บ knowledge ที่ต้องอ้างอิงซ้ำ</div></div>
+    <div class="step"><div class="dot"></div><div class="body">Raw archive เก็บ provenance</div></div>
+    <div class="step"><div class="dot"></div><div class="body">Automation ทำให้ระบบ update ตัวเองได้</div></div>
+    <div class="step"><div class="dot"></div><div class="body">Health check ทำให้ wiki ไม่เสื่อม</div></div>
+    <div class="step"><div class="dot"></div><div class="body">Redaction ทำให้เอกสารนำไปใช้กับระบบอื่นได้อย่างปลอดภัย</div></div>
+  </div>
+  <div class="card tinted">
+    <p style="font-size:17px">ถ้าทำครบ Hermes จะไม่ใช่แค่ agent ที่ "ตอบเก่งใน session เดียว" แต่จะกลายเป็นระบบที่ค่อย ๆ สะสมความรู้ ทำงานซ้ำได้ดีขึ้น และอธิบายเหตุผลของตัวเองได้จากฐานความรู้ที่มนุษย์ตรวจสอบได้</p>
+  </div>
+</section>
+
+<!-- ===== APPENDIX ===== -->
+<section class="panel" id="panel-appendix">
+  <div class="eyebrow"><span class="sym">attachment</span> ภาคผนวก A–D</div>
+  <h2>ภาคผนวก: ตัวอย่างไฟล์</h2>
+
+  <h3><span class="sym">description</span> Appendix A: SCHEMA.md แบบย่อ</h3>
+  <pre># Wiki Schema
+
+## Domain
+Operational knowledge base for an AI agent installation.
+
+## Conventions
+- File names use lowercase kebab-case.
+- Every synthesized page has YAML frontmatter.
+- Every page must be listed in index.md.
+- Every material change must be logged in log.md.
+- Raw sources are immutable.
+
+## Tags
+- agent-memory   - integrations   - automation
+- runbook        - architecture   - operations
+- troubleshooting - security
+
+## Page Thresholds
+Create a page when:
+- the answer is likely to be reused
+- the procedure took multiple steps
+- the decision affects future operations
+- the source is important enough to preserve</pre>
+
+  <h3><span class="sym">data_object</span> Appendix B: ตัวอย่าง frontmatter</h3>
+  <pre>---
+title: ChatOps Integration Runbook
+created: 2026-01-01
+updated: 2026-01-01
+type: query
+tags: [integrations, runbook, troubleshooting]
+sources:
+  - raw/meeting-notes/chatops-rollout.md
+confidence: high
+status: active
+---</pre>
+
+  <h3><span class="sym">monitor_heart</span> Appendix C: ตัวอย่าง health check output</h3>
+  <pre>{
+  "broken_links": 0,
+  "orphans": 2,
+  "missing_from_index": 0,
+  "frontmatter_errors": 1,
+  "unknown_tags": ["misc"],
+  "oversized_pages": ["concepts/large-runbook.md"]
+}</pre>
+
+  <h3><span class="sym">fact_check</span> Appendix D: Sanitized export checklist</h3>
+  <p>ก่อนส่งเอกสารออกนอกระบบ ให้ตรวจว่าไม่มี:</p>
+  <div class="chips">
+    <span class="chip"><span class="sym">person</span> ชื่อบุคคลจริง</span>
+    <span class="chip"><span class="sym">alternate_email</span> email จริง</span>
+    <span class="chip"><span class="sym">language</span> domain จริง</span>
+    <span class="chip"><span class="sym">cloud</span> cloud project ID จริง</span>
+    <span class="chip"><span class="sym">dns</span> hostname/IP จริง</span>
+    <span class="chip"><span class="sym">folder</span> path ที่มี username จริง</span>
+    <span class="chip"><span class="sym">key</span> token/key/password</span>
+    <span class="chip"><span class="sym">group</span> customer data</span>
+    <span class="chip"><span class="sym">link</span> internal-only URLs</span>
+  </div>
+  <p>ใช้ placeholder แทน:</p>
+  <pre>&lt;USER_EMAIL&gt;
+&lt;ORG_DOMAIN&gt;
+&lt;PROJECT_ID&gt;
+&lt;CHAT_SPACE_ID&gt;
+&lt;HOSTNAME&gt;
+&lt;SECRET_PATH&gt;</pre>
+</section>
+
+<section class="panel" id="panel-megaprompt">
+  <div class="eyebrow"><span class="sym">smart_toy</span> ส่งงานให้ Agent</div>
+  <h2>Mega Prompt — ให้ Hermes สร้าง KB เองจนจบ</h2>
+  <p class="lede">prompt เดียวจบ สำหรับวางให้ Hermes Agent ทำงานแบบอัตโนมัติตั้งแต่ต้นจนจบ — สร้างโครงสร้าง wiki, เชื่อมเข้าตัวเอง, สร้าง skill, และตั้ง cron ให้ความจำเติบโตเอง</p>
+  <div class="callout"><span class="sym">menu_book</span><div>
+    รวมหลักการจาก <b>YouTube ของ Jack Roberts</b> (LLM wiki ของ Karpathy, injection workflow, two-way memory, auto-ingest ด้วย cron, contradiction flagging) เข้ากับ <b>เอกสารสถาปัตยกรรมความจำ</b> (โครงสร้างไฟล์, SCHEMA/index/log, layered memory, health check, sanitization)
+  </div></div>
+  <div class="chips">
+    <span class="phase-tag">Phase 0 · Orientation</span>
+    <span class="phase-tag">1 · Folder structure</span>
+    <span class="phase-tag">2 · Injection workflow</span>
+    <span class="phase-tag">3 · Connect to Hermes</span>
+    <span class="phase-tag">4 · Index on demand</span>
+    <span class="phase-tag">5 · Two-way memory</span>
+    <span class="phase-tag">6 · Automation (cron)</span>
+    <span class="phase-tag">7 · QA + handoff</span>
+  </div>
+  <div class="callout warn"><span class="sym">bolt</span><div>
+    prompt นี้สั่งให้ Agent ทำแบบ <b>autonomous จนจบ</b> และหยุดเฉพาะที่ STOP/VERIFY gate ของแต่ละ phase — เป็นภาษาอังกฤษเพื่อประหยัด token ตามแนวทางที่ใช้กับ TUI/agent
+  </div></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin:18px 0">
+    <button class="copy-btn" onclick="copyPrompt('mega-text',this)"><span class="sym">content_copy</span> คัดลอก Mega Prompt</button>
+  </div>
+  <div class="prompt-box" id="mega-text"># ============================================================
+# MEGA PROMPT — Build a Self-Improving Knowledge Base for Hermes
+# Source principles: Jack Roberts (YouTube D3dQqqDx2V4) + Karpathy LLM Wiki
+#   + hermes-memory-architecture-self-improving-kb.md
+# Run mode: AUTONOMOUS. Execute end-to-end. Do NOT ask for mid-task confirmation.
+# Stop only at the explicit STOP/VERIFY gates defined per phase.
+# ============================================================
+
+ROLE
+You are Hermes, acting as the BUILDER and CURATOR of a self-improving
+knowledge base (an &quot;LLM wiki&quot; in the Karpathy sense). Your job is to set up
+a layered memory architecture, wire it into your own tools, and create the
+automation that lets the wiki grow and improve itself over time — without
+polluting your standard persistent memory.
+
+GUIDING PRINCIPLES (do not violate)
+1. &quot;Hermes knows you; the wiki knows your world.&quot; Keep them separate but linked.
+2. Standard memory = compass (short durable facts/preferences), NOT a document store.
+3. The wiki is an external brain you CURATE, not a raw dump.
+4. Local markdown wiki is CANONICAL; any Drive/Obsidian copy is only a MIRROR.
+5. Raw sources are IMMUTABLE once ingested (edit metadata only).
+6. Every synthesized page must be in index.md and every material change logged in log.md.
+7. Write memory as DECLARATIVE facts, never imperative commands.
+8. On new knowledge, CHECK LINKAGES and FLAG CONTRADICTIONS — never silently overwrite.
+9. Never put secrets/PII into any file that will be mirrored or exported.
+10. Build automation ONE LAYER AT A TIME; never enable everything at once.
+
+# ------------------------------------------------------------
+PHASE 0 — ORIENTATION
+# ------------------------------------------------------------
+- Confirm the wiki root path. Default: ~/.hermes/wiki
+- If a wiki already exists there, read SCHEMA.md, index.md, and the most
+  recent log.md entries before changing anything. Do not duplicate.
+STOP/VERIFY 0: Report whether a wiki exists and the chosen root path.
+
+# ------------------------------------------------------------
+PHASE 1 — FOLDER STRUCTURE
+# ------------------------------------------------------------
+Create this structure (idempotent — skip what already exists):
+
+  ~/.hermes/wiki/
+  ├── SCHEMA.md  index.md  log.md
+  ├── _meta/{start-here,dashboard,topic-map,healthcheck-report,operating-manual}.md
+  ├── raw/{articles,papers,transcripts,meeting-notes,inbox-files,assets}/
+  ├── entities/   concepts/   comparisons/   queries/
+  └── .ingestion/{manifests,staging,logs,state}/
+
+Seed SCHEMA.md (domain, kebab-case naming, required frontmatter, allowed tags,
+page-creation thresholds, contradiction policy), index.md (empty catalog with
+Entities/Concepts/Comparisons/Queries headers), and log.md (init entry).
+STOP/VERIFY 1: List the created tree and paste SCHEMA.md back for review.
+
+# ------------------------------------------------------------
+PHASE 2 — INJECTION WORKFLOW (the heart of self-improvement)
+# ------------------------------------------------------------
+Define and document, in _meta/operating-manual.md, the standard flow that runs
+whenever ANY new source arrives:
+  1. Capture the raw source verbatim into raw/&lt;type&gt;/ (immutable). Add frontmatter
+     (title, created, source, hash if possible). 
+  2. Read &amp; discuss: classify type, extract entities/concepts.
+  3. Search existing pages BEFORE creating anything.
+  4. If a related page exists -&gt; UPDATE it (add a dated section).
+     Else, if the page threshold is met -&gt; CREATE a synthesized page in the
+     correct folder (entities/concepts/comparisons/queries).
+  5. Check linkages between pages; create [[wikilinks]].
+  6. FLAG CONTRADICTIONS: if a new claim conflicts with an existing one, mark
+     both with date/source as &quot;contested&quot; and add to a review note — do not delete.
+  7. Update index.md. Append log.md. Mirror only if configured.
+STOP/VERIFY 2: Paste the documented injection workflow.
+
+# ------------------------------------------------------------
+PHASE 3 — CONNECT THE WIKI TO HERMES (and Claude, if available)
+# ------------------------------------------------------------
+- Register the wiki root as an external knowledge source Hermes can read/search.
+- Build a reusable &quot;LLM Wiki&quot; skill (procedural memory) that triggers on
+  questions about strategy, contacts, meetings, notes, or any indexed topic.
+  The skill must: read SCHEMA -&gt; index -&gt; recent log first, search before
+  answering, and ALWAYS cite the exact file path it pulled the answer from.
+- If Claude Code / another agent shares the same machine, point it at the SAME
+  wiki path so both agents share one memory (&quot;one operating system, not a
+  thousand interfaces&quot;).
+STOP/VERIFY 3: Demonstrate the skill: index one short test note, then answer a
+question from it and cite the source file path.
+
+# ------------------------------------------------------------
+PHASE 4 — INDEX-ANY-SOURCE ON DEMAND
+# ------------------------------------------------------------
+Implement the on-demand pattern: when the user pastes an article/URL/text and
+says &quot;index this into my wiki&quot;, run the full injection workflow (Phase 2) and
+confirm where it was filed. Before creating the source page, briefly ask what
+to emphasize ONLY if the emphasis is ambiguous; otherwise proceed.
+
+# ------------------------------------------------------------
+PHASE 5 — TWO-WAY MEMORY
+# ------------------------------------------------------------
+Wire memory both directions:
+  - Hermes can READ the wiki to answer questions.
+  - Hermes can WRITE to the wiki (&quot;crystallize this big conversation into a
+    query page&quot;) WITHOUT writing it into standard persistent memory.
+Document the decision rule for every closeout:
+  preference-&gt;memory | procedure-&gt;skill | runbook/decision-&gt;wiki |
+  raw artifact-&gt;raw/ | temporary status-&gt;session/log only.
+
+# ------------------------------------------------------------
+PHASE 6 — AUTOMATION (one cron layer at a time, verify each)
+# ------------------------------------------------------------
+Add these as separate scheduled jobs, enabling and verifying ONE before the next:
+  6a. Dashboard refresh (hourly): rebuild _meta/dashboard.md from page counts,
+      health summary, recent log, stale pages, mirror state.
+  6b. Health check: broken [[links]], orphans, pages missing from index,
+      invalid frontmatter, tags outside SCHEMA, raw hash drift, oversized pages
+      (&gt;200-300 lines). Write JSON to .ingestion/logs/healthcheck.json.
+  6c. Meeting auto-ingest (e.g. 9:00am daily): check the meeting source
+      (Granola/Calendar/Gmail) for new items; if found, run injection workflow
+      and file under raw/meeting-notes/ + a synthesized page if reusable.
+      Track processed IDs in .ingestion/manifests/ to avoid re-ingesting.
+  6d. Notebook/expert-knowledge ingest: pull from NotebookLM or other research
+      sources into raw/, then synthesize. Scale gradually.
+  6e. Query-filing suggester: after valuable conversations, draft a query page
+      suggestion into .ingestion/staging/query-suggestions/ for review.
+STOP/VERIFY 6: After EACH sub-job, report the cron entry created and one test run.
+
+# ------------------------------------------------------------
+PHASE 7 — QUALITY, SECURITY, HANDOFF
+# ------------------------------------------------------------
+- Run the health check once and fix everything it reports.
+- Run a redaction scan before any mirror/export:
+    grep -Ei &#x27;(@|api[_-]?key|token|secret|BEGIN PRIVATE KEY|[0-9]{1,3}(\.[0-9]{1,3}){3})&#x27;
+  Replace real values with placeholders (&lt;USER_EMAIL&gt;, &lt;PROJECT_ID&gt;, &lt;HOSTNAME&gt;, ...).
+- Write _meta/start-here.md so a future agent/human can understand the system fast.
+FINAL REPORT: Summarize the maturity level reached (target: Level 4 —
+self-improving wiki with health checks, suggestions, dashboard, and mirror),
+list every cron job, and list any contradictions flagged for human review.
+</div>
+  <h3><span class="sym">checklist</span> วิธีใช้</h3>
+  <div class="steps">
+    <div class="step"><div class="dot"></div><div class="body">กดปุ่ม "คัดลอก Mega Prompt" ด้านบน</div></div>
+    <div class="step"><div class="dot"></div><div class="body">วางลงใน Hermes Agent (Telegram / TUI / Workspace UI)</div></div>
+    <div class="step"><div class="dot"></div><div class="body">ปรับ path ถ้าจำเป็น (ค่า default คือ <code>~/.hermes/wiki</code>) แล้วส่ง</div></div>
+    <div class="step"><div class="dot"></div><div class="body">Agent จะหยุดรายงานที่แต่ละ STOP/VERIFY gate — ตรวจผลแล้วบอกให้ไปต่อ</div></div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<footer>
+  สร้างจากเอกสาร <code>hermes-memory-architecture-self-improving-kb.md</code> · เอกสารกลางแบบ generic นำไปใช้กับ Hermes เครื่องอื่นได้
+</footer>
+
+<script>
+/* ===== Theme ===== */
+function toggleTheme(){
+  const b=document.body, t=b.getAttribute('data-theme')==='dark'?'light':'dark';
+  b.setAttribute('data-theme',t);
+  document.querySelector('#themeBtn .sym').textContent = t==='dark'?'light_mode':'dark_mode';
+}
+
+/* ===== Palette popup ===== */
+function togglePalettePop(e){
+  e.stopPropagation();
+  document.getElementById('palettePop').classList.toggle('open');
+}
+document.addEventListener('click',(e)=>{
+  const pop=document.getElementById('palettePop'), wrap=e.target.closest('.palette-wrap');
+  if(!wrap && pop.classList.contains('open')) pop.classList.remove('open');
+});
+document.querySelectorAll('.swatch').forEach(s=>{
+  s.addEventListener('click',()=>{
+    document.body.setAttribute('data-palette',s.dataset.p);
+    document.querySelectorAll('.swatch').forEach(x=>x.classList.remove('active'));
+    s.classList.add('active');
+    document.getElementById('palettePop').classList.remove('open');
+  });
+});
+
+/* ===== Font scale ===== */
+let fscale=1;
+function adjustFont(dir){
+  fscale=Math.min(1.4,Math.max(0.85,+(fscale+dir*0.1).toFixed(2)));
+  document.body.style.setProperty('--fscale',fscale);
+  document.getElementById('fontPct').textContent=Math.round(fscale*100)+'%';
+}
+
+/* ===== Nav collapse ===== */
+function toggleGroup(el){ el.parentElement.classList.toggle('collapsed'); }
+
+/* ===== Panels ===== */
+function showPanel(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+  document.getElementById('content').scrollTo({top:0});
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(window.innerWidth<=860) toggleNav(true);
+}
+function toggleNav(forceClose){
+  const n=document.getElementById('nav'), s=document.getElementById('scrim');
+  if(forceClose){n.classList.remove('open');s.classList.remove('open');return;}
+  n.classList.toggle('open');s.classList.toggle('open');
+}
+
+/* ===== Copy mega prompt ===== */
+function copyPrompt(id,btn){
+  const txt=document.getElementById(id).innerText;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const orig=btn.innerHTML;
+    btn.innerHTML='<span class="sym">check</span> คัดลอกแล้ว';
+    setTimeout(()=>btn.innerHTML=orig,1800);
+  });
+}
+</script>
+</body>
+</html>
