@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buzz × Hermes ACP — สถาปัตยกรรม Persona Layer + Runtime Layer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --buzz:#D7D72E;
+  --buzz-dim:#B4B41F;
+  --hermes:#0000F2;
+  --hermes-lift:#5B5BFF;
+  --ink:#0B0B12;
+  --paper:#E9E9E2;
+  --paper-2:#F5F5F0;
+  --line:#0B0B12;
+  --white:#FFFFFF;
+  --shadow:4px 4px 0 var(--ink);
+  --shadow-sm:3px 3px 0 var(--ink);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Sarabun","Chakra Petch",system-ui,sans-serif;
+  font-size:16.5px;line-height:1.8;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,.disp{font-family:"Chakra Petch","Sarabun",sans-serif;font-weight:700;line-height:1.2;letter-spacing:.01em;}
+code,.mono{font-family:"JetBrains Mono",ui-monospace,monospace;}
+
+/* ---------- structure ---------- */
+.band{padding:88px 0;border-top:3px solid var(--ink);}
+.wrap{max-width:1120px;margin:0 auto;padding:0 28px;}
+.band--buzz{background:var(--buzz);color:var(--ink);}
+.band--acp{background:var(--ink);color:var(--paper-2);}
+.band--hermes{background:var(--hermes);color:var(--white);}
+.band--model{background:#07070C;color:#CFCFE6;}
+.band--paper{background:var(--paper);}
+.band--paper2{background:var(--paper-2);}
+
+.eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.22em;
+  text-transform:uppercase;font-weight:700;margin:0 0 18px;
+}
+.eyebrow::before{content:"";width:34px;height:3px;background:currentColor;display:block;}
+h2.sec{font-size:clamp(28px,4.4vw,46px);margin:0 0 14px;}
+.lede{font-size:clamp(16px,1.9vw,20px);max-width:70ch;margin:0 0 42px;opacity:.9;}
+.band--hermes .lede,.band--acp .lede,.band--model .lede{opacity:.86;}
+
+/* ---------- layer stamp ---------- */
+.stamp{
+  position:fixed;top:0;left:0;right:0;z-index:60;
+  display:flex;align-items:center;gap:0;
+  border-bottom:2px solid var(--ink);
+  font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.16em;
+  text-transform:uppercase;background:var(--paper-2);
+  transition:background .35s ease,color .35s ease;
+}
+.stamp b{padding:9px 16px;border-right:2px solid currentColor;font-weight:700;}
+.stamp span{padding:9px 16px;font-weight:400;opacity:.75;}
+.stamp .bar{margin-left:auto;height:100%;}
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--ink);z-index:61;width:0;}
+.stamp[data-l="buzz"]{background:var(--buzz);color:var(--ink);}
+.stamp[data-l="acp"]{background:var(--ink);color:var(--buzz);border-bottom-color:var(--buzz);}
+.stamp[data-l="hermes"]{background:var(--hermes);color:#fff;border-bottom-color:#fff;}
+.stamp[data-l="model"]{background:#07070C;color:#9E9EFF;border-bottom-color:#9E9EFF;}
+
+/* ---------- hero ---------- */
+.hero{
+  background:
+    linear-gradient(180deg,var(--buzz) 0%,var(--buzz) 55%,var(--hermes) 55%,var(--hermes) 100%);
+  padding:96px 0 0;border-bottom:3px solid var(--ink);
+}
+.hero h1{
+  font-size:clamp(38px,7.4vw,84px);line-height:.98;margin:0 0 22px;letter-spacing:-.015em;
+}
+.hero h1 .b{background:var(--ink);color:var(--buzz);padding:0 .18em;display:inline-block;}
+.hero h1 .h{background:var(--white);color:var(--hermes);padding:0 .18em;display:inline-block;}
+.hero-sub{font-size:clamp(16px,2.1vw,21px);max-width:64ch;margin:0 0 40px;font-weight:500;}
+.hero-doc{
+  font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.2em;
+  text-transform:uppercase;margin-bottom:26px;font-weight:700;
+}
+
+/* pipeline strip */
+.pipe{
+  display:flex;flex-wrap:wrap;border:3px solid var(--ink);background:var(--paper-2);
+  box-shadow:6px 6px 0 var(--ink);margin-bottom:0;transform:translateY(46px);
+  position:relative;z-index:5;
+}
+.pipe .step{
+  flex:1 1 170px;padding:16px 18px;border-right:3px solid var(--ink);position:relative;min-width:0;
+}
+.pipe .step:last-child{border-right:0;}
+.pipe .step .k{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.18em;opacity:.6;display:block;text-transform:uppercase;}
+.pipe .step .v{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:16px;line-height:1.25;display:block;margin-top:4px;}
+.pipe .step.is-buzz{background:var(--buzz);}
+.pipe .step.is-hermes{background:var(--hermes);color:#fff;}
+.pipe .step.is-hermes .k{opacity:.75;}
+.pipe .step.is-model{background:var(--ink);color:var(--paper-2);}
+.pipe .step.is-model .k{opacity:.6;}
+
+/* ---------- brand cards ---------- */
+.brands{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:78px;}
+.brand{border:3px solid var(--ink);background:var(--paper-2);color:var(--ink);box-shadow:var(--shadow);overflow:hidden;}
+.brand .shot{aspect-ratio:16/9;background:var(--ink);position:relative;display:block;overflow:hidden;border-bottom:3px solid var(--ink);}
+.brand .shot img,.brand .shot video{width:100%;height:100%;object-fit:cover;display:block;}
+.brand .meta{padding:20px 22px 24px;}
+.brand h3{font-size:24px;margin:0 0 4px;}
+.brand .role{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;margin-bottom:12px;display:block;}
+.brand.b-buzz .role{color:var(--buzz-dim);}
+.brand.b-hermes .role{color:var(--hermes);}
+.brand p{margin:0;font-size:15px;line-height:1.7;}
+.brand .url{font-family:"JetBrains Mono",monospace;font-size:11.5px;margin-top:14px;display:block;opacity:.65;word-break:break-all;}
+
+/* fallback if remote image blocked */
+.shot.noimg{background:repeating-linear-gradient(45deg,#15151F 0 10px,#0B0B12 10px 20px);}
+.shot.noimg img,.shot.noimg video{display:none;}
+.shot.noimg::after{
+  content:attr(data-alt);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  color:#7A7A96;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;text-align:center;padding:20px;
+}
+
+/* ---------- generic blocks ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:26px;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.card{border:3px solid var(--ink);background:var(--paper-2);padding:22px 24px;box-shadow:var(--shadow-sm);}
+.band--hermes .card{background:#fff;color:var(--ink);border-color:var(--ink);}
+.band--acp .card,.band--model .card{background:#12121C;border-color:#3A3A5C;color:#DADAF0;box-shadow:none;}
+.card h4{font-size:19px;margin:0 0 10px;}
+.card p{margin:0;font-size:15px;}
+
+.kv{width:100%;border-collapse:collapse;font-size:14.5px;background:var(--paper-2);color:var(--ink);border:3px solid var(--ink);}
+.kv th,.kv td{border:1px solid var(--ink);padding:11px 14px;text-align:left;vertical-align:top;}
+.kv thead th{background:var(--ink);color:var(--paper-2);font-family:"Chakra Petch",sans-serif;font-size:13px;letter-spacing:.06em;text-transform:uppercase;border-color:var(--ink);}
+.kv tbody tr:nth-child(even){background:#DEDED6;}
+.kv td:first-child{font-weight:600;}
+.kv .mono{font-size:13px;}
+.band--hermes .kv{background:#fff;}
+.band--hermes .kv tbody tr:nth-child(even){background:#E7E7FF;}
+.tablewrap{overflow-x:auto;border:0;}
+
+.cmd{
+  display:inline-block;font-family:"JetBrains Mono",monospace;font-size:14px;font-weight:700;
+  background:var(--ink);color:var(--buzz);padding:9px 14px;border:0;white-space:nowrap;
+}
+.cmd .flag{color:#9E9EFF;}
+.band--buzz .cmd{box-shadow:var(--shadow-sm);}
+
+.quote{
+  border-left:8px solid var(--ink);padding:6px 0 6px 22px;margin:34px 0;
+  font-family:"Sarabun",sans-serif;font-weight:600;font-size:clamp(19px,2.6vw,26px);line-height:1.5;
+}
+.band--hermes .quote{border-left-color:var(--buzz);}
+.band--model .quote{border-left-color:var(--hermes-lift);}
+
+/* ---------- layer diagram ---------- */
+.stack{border:3px solid var(--ink);box-shadow:6px 6px 0 var(--ink);background:var(--paper-2);color:var(--ink);}
+.layer{display:grid;grid-template-columns:120px 1fr;border-bottom:3px solid var(--ink);}
+.layer:last-child{border-bottom:0;}
+.layer .tag{
+  display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;
+  border-right:3px solid var(--ink);padding:20px 8px;text-align:center;
+  font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.14em;font-weight:700;
+}
+.layer .tag em{font-style:normal;font-size:26px;font-family:"Chakra Petch",sans-serif;}
+.layer .body{padding:22px 26px;}
+.layer h4{margin:0 0 6px;font-size:20px;}
+.layer p{margin:0;font-size:15px;}
+.layer.l-buzz{background:var(--buzz);}
+.layer.l-buzz .tag{background:var(--ink);color:var(--buzz);}
+.layer.l-acp{background:#1B1B26;color:#E4E4F4;}
+.layer.l-acp .tag{background:var(--buzz);color:var(--ink);border-right-color:#000;}
+.layer.l-hermes{background:var(--hermes);color:#fff;}
+.layer.l-hermes .tag{background:#fff;color:var(--hermes);}
+.layer.l-model{background:#07070C;color:#C9C9E4;}
+.layer.l-model .tag{background:var(--hermes-lift);color:#07070C;}
+
+/* ---------- feature grid (hermes capabilities) ---------- */
+.feats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.feat{border:3px solid var(--ink);background:#fff;color:var(--ink);overflow:hidden;box-shadow:var(--shadow-sm);}
+.feat .shot{aspect-ratio:4/3;background:#07070C;display:block;position:relative;overflow:hidden;border-bottom:3px solid var(--ink);}
+.feat .shot img{width:100%;height:100%;object-fit:cover;display:block;}
+.feat .txt{padding:16px 18px 20px;}
+.feat .n{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--hermes);}
+.feat h4{margin:4px 0 6px;font-size:18px;}
+.feat p{margin:0;font-size:14px;line-height:1.6;}
+
+/* ---------- flow diagram ---------- */
+.flow{display:grid;grid-template-columns:1fr 46px 1fr 46px 1fr;align-items:stretch;gap:0;}
+.flow-col{display:flex;flex-direction:column;gap:16px;}
+.flow-head{
+  font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  font-weight:700;padding-bottom:10px;border-bottom:3px solid var(--ink);margin-bottom:6px;
+}
+.node{border:3px solid var(--ink);padding:14px 16px;background:var(--paper-2);color:var(--ink);box-shadow:var(--shadow-sm);}
+.node .t{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:16px;display:block;}
+.node .s{font-size:13px;display:block;opacity:.75;margin-top:3px;line-height:1.5;}
+.node.n-buzz{background:var(--buzz);}
+.node.n-acp{background:var(--ink);color:var(--buzz);}
+.node.n-acp .s{color:#9E9EFF;opacity:1;}
+.node.n-hermes{background:var(--hermes);color:#fff;}
+.node.n-hermes .s{opacity:.8;}
+.node.n-model{background:#07070C;color:#CFCFE6;}
+.arrows{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:0;padding-top:34px;}
+.arrows span{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:19px;line-height:1;padding:26px 0;opacity:.5;}
+
+/* ---------- agent cards ---------- */
+.agents{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;}
+.agent{border:3px solid var(--ink);background:var(--paper-2);color:var(--ink);box-shadow:var(--shadow);display:flex;flex-direction:column;}
+.agent .top{padding:18px 22px;border-bottom:3px solid var(--ink);background:var(--buzz);}
+.agent .top .who{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;opacity:.7;}
+.agent .top h4{margin:2px 0 0;font-size:22px;}
+.agent .mid{padding:18px 22px;flex:1;}
+.agent .mid p{margin:0 0 14px;font-size:14.5px;}
+.agent .persona{
+  font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.65;background:#DEDED6;
+  border-left:5px solid var(--ink);padding:12px 14px;margin:0 0 16px;white-space:pre-wrap;
+}
+.agent ul{margin:0;padding-left:18px;font-size:14px;}
+.agent ul li{margin-bottom:5px;}
+.agent .bot{padding:14px 22px;border-top:3px solid var(--ink);background:var(--ink);}
+.agent .bot .cmd{padding:0;box-shadow:none;}
+.agent.a-sandbox .top{background:var(--paper);}
+.agent.a-coding .top{background:var(--hermes);color:#fff;}
+.agent.a-coding .top .who{opacity:.8;}
+
+/* ---------- callout ---------- */
+.callout{border:3px solid var(--ink);padding:26px 28px;box-shadow:var(--shadow);color:var(--ink);}
+.callout.bad{background:#fff;border-left-width:14px;}
+.callout.good{background:var(--buzz);border-left-width:14px;}
+.callout .lbl{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;display:block;margin-bottom:8px;}
+.callout.bad .lbl{color:#C62828;}
+.callout p{margin:0;font-size:16px;font-weight:500;}
+
+/* ---------- checklist ---------- */
+.checks{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.check{border:3px solid var(--ink);background:var(--paper-2);color:var(--ink);box-shadow:var(--shadow-sm);}
+.check h4{margin:0;padding:14px 18px;border-bottom:3px solid var(--ink);font-size:17px;background:var(--ink);color:var(--paper-2);}
+.check ul{list-style:none;margin:0;padding:14px 18px 18px;}
+.check li{display:flex;gap:10px;align-items:flex-start;font-size:14px;padding:6px 0;line-height:1.55;}
+.check li input{appearance:none;width:18px;height:18px;border:2.5px solid var(--ink);flex:none;margin-top:3px;cursor:pointer;background:#fff;}
+.check li input:checked{background:var(--buzz);box-shadow:inset 0 0 0 3px #fff;}
+.check li input:focus-visible{outline:3px solid var(--hermes);outline-offset:2px;}
+
+/* ---------- phases ---------- */
+.phase{border:3px solid var(--ink);box-shadow:var(--shadow);background:var(--paper-2);color:var(--ink);}
+.phase .ph-h{padding:16px 22px;border-bottom:3px solid var(--ink);display:flex;align-items:baseline;gap:12px;background:var(--ink);color:var(--paper-2);}
+.phase .ph-h .num{font-family:"Chakra Petch",sans-serif;font-size:30px;font-weight:700;color:var(--buzz);line-height:1;}
+.phase .ph-h h4{margin:0;font-size:18px;}
+.phase .ph-b{padding:20px 22px;}
+.phase .row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed rgba(11,11,18,.3);}
+.phase .row:last-child{border-bottom:0;}
+.phase .row .nm{font-weight:600;font-size:15px;min-width:190px;}
+.phase .row .ar{font-family:"JetBrains Mono",monospace;opacity:.45;}
+
+/* ---------- footer ---------- */
+.foot{background:var(--ink);color:#8E8EA8;padding:52px 0;border-top:3px solid var(--buzz);font-size:13.5px;}
+.foot a{color:var(--buzz);}
+.foot .logos{display:flex;gap:18px;align-items:center;margin-bottom:22px;flex-wrap:wrap;}
+.foot .logos img{height:30px;width:auto;filter:brightness(0) invert(1);opacity:.8;}
+
+/* ---------- misc ---------- */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.in{opacity:1;transform:none;}
+.mt{margin-top:34px;}
+.mt-s{margin-top:20px;}
+hr.rule{border:0;border-top:3px solid var(--ink);margin:52px 0;}
+
+@media (max-width:900px){
+  .brands,.grid2,.agents{grid-template-columns:1fr;}
+  .grid3,.feats,.checks{grid-template-columns:1fr 1fr;}
+  .flow{grid-template-columns:1fr;}
+  .arrows{flex-direction:row;padding:6px 0;}
+  .arrows span{padding:0 26px;transform:rotate(90deg);}
+  .layer{grid-template-columns:84px 1fr;}
+  .hero{background:linear-gradient(180deg,var(--buzz) 0%,var(--buzz) 62%,var(--hermes) 62%,var(--hermes) 100%);}
+}
+@media (max-width:600px){
+  .grid3,.feats,.checks{grid-template-columns:1fr;}
+  .band{padding:60px 0;}
+  .wrap{padding:0 18px;}
+  .pipe{transform:translateY(34px);}
+}
+@media (prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none;transition:none;}
+  html{scroll-behavior:auto;}
+}
+@media print{
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .stamp,.progress{display:none;}
+  .band{padding:34px 0;break-inside:avoid;}
+  .reveal{opacity:1;transform:none;}
+  body{background:#fff;}
+}
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+<div class="stamp" id="stamp" data-l="buzz">
+  <b id="stampL">L1 · PERSONA</b><span id="stampS">Buzz Workspace</span>
+</div>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-doc">คู่มือสถาปัตยกรรม · Buzz × Hermes ACP · เลือกวิธีเดียวเพื่อลดความสับสน</div>
+    <h1><span class="b">Buzz</span> คือหน้ากาก<br><span class="h">Hermes</span> คือสมอง</h1>
+    <p class="hero-sub">สร้าง persona ใน Buzz แล้วให้ agent แต่ละตัวต่อเข้า Hermes ผ่าน ACP runtime — persona ทำให้ agent <em>ดูต่างกัน</em> ส่วน Hermes profile ทำให้ agent <em>เก่งและจำต่างกันจริง</em></p>
+
+    <div class="pipe">
+      <div class="step is-buzz"><span class="k">1 · Persona</span><span class="v">Buzz Agent</span></div>
+      <div class="step"><span class="k">2 · Bridge</span><span class="v">ACP</span></div>
+      <div class="step"><span class="k">3 · Command</span><span class="v mono" style="font-size:13px">hermes acp<br>--profile &lt;name&gt;</span></div>
+      <div class="step is-hermes"><span class="k">4 · Runtime</span><span class="v">Hermes Profile</span></div>
+      <div class="step is-model"><span class="k">5 · Brain</span><span class="v">Model Provider</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= BRAND CARDS ================= -->
+<section class="band band--paper2" style="border-top:0;padding-top:0;" data-layer="buzz" data-label="L1 · PERSONA" data-sub="Buzz Workspace">
+  <div class="wrap">
+    <div class="brands">
+      <article class="brand b-buzz reveal">
+        <div class="shot" data-alt="buzz.xyz — ภาพจากเว็บไซต์ (ต้องต่ออินเทอร์เน็ต)">
+          <img src="https://buzz.xyz/sites/buzz/og.png" alt="Buzz — your people, your agents, your project" loading="lazy"
+               onerror="this.closest('.shot').classList.add('noimg')">
+        </div>
+        <div class="meta">
+          <span class="role">Persona / Workspace Layer</span>
+          <h3>Buzz</h3>
+          <p>พื้นที่ทำงานที่มีแนวคิดเรื่อง agent อยู่ในตัวเอง สร้าง agent ตั้งชื่อ กำหนด persona และเลือกว่าจะคุยกับ agent ตัวไหน — เป็นชั้นที่ "คน" มองเห็น</p>
+          <span class="url">https://buzz.xyz</span>
+        </div>
+      </article>
+
+      <article class="brand b-hermes reveal">
+        <div class="shot" data-alt="hermes-agent.nousresearch.com — ภาพจากเว็บไซต์ (ต้องต่ออินเทอร์เน็ต)">
+          <video autoplay muted loop playsinline
+                 poster="https://hermes-agent.nousresearch.com/_next/image?url=%2Fimg%2Fdesktop%2Fhero-art.webp&w=1920&q=75">
+            <source src="https://hermes-assets.nousresearch.com/hermes-desktop.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="meta">
+          <span class="role">Runtime / Capability Layer</span>
+          <h3>Hermes Agent <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:400;opacity:.6">by Nous Research</span></h3>
+          <p>runtime จริงที่ทำงานเบื้องหลัง — ถือ memory, skills, tools, cron และ config ว่าจะเรียก model ตัวไหน เปิดให้ app ภายนอกเรียกใช้ผ่าน ACP</p>
+          <span class="url">https://hermes-agent.nousresearch.com</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= THE STACK ================= -->
+<section class="band band--paper" data-layer="buzz" data-label="L1 → L4" data-sub="ภาพรวม 4 ชั้น">
+  <div class="wrap">
+    <div class="eyebrow">Mental model</div>
+    <h2 class="sec">สี่ชั้นที่ต้องแยกให้ออก</h2>
+    <p class="lede">ปัญหาส่วนใหญ่เกิดจากการเอาสองชั้นนี้มาปนกัน อ่านจากบนลงล่าง = จากสิ่งที่ผู้ใช้เห็น ลงไปสู่สิ่งที่ลงมือทำจริง</p>
+
+    <div class="stack reveal">
+      <div class="layer l-buzz">
+        <div class="tag"><em>L1</em>PERSONA</div>
+        <div class="body">
+          <h4>Buzz Agent / Persona</h4>
+          <p>ชื่อ agent, บทบาท, น้ำเสียง, ขอบเขตงานระดับ UX และการที่ผู้ใช้เลือกว่าจะคุยกับใคร — เป็น prompt layer ไม่ใช่ security boundary</p>
+        </div>
+      </div>
+      <div class="layer l-acp">
+        <div class="tag"><em>L2</em>BRIDGE</div>
+        <div class="body">
+          <h4>ACP — Agent Client Protocol</h4>
+          <p>ช่องทางให้ app ภายนอกเรียก Hermes มาเป็น agent runtime ตัวเชื่อมคือคำสั่งเดียว <span class="cmd" style="padding:2px 8px">hermes acp <span class="flag">--profile &lt;name&gt;</span></span></p>
+        </div>
+      </div>
+      <div class="layer l-hermes">
+        <div class="tag"><em>L3</em>RUNTIME</div>
+        <div class="body">
+          <h4>Hermes Profile</h4>
+          <p>ขอบเขตความสามารถจริง: memory ระยะยาว, skills, tools ที่ลงมือทำได้, cron และ model config — ทั้งหมดแยกเป็นชุดตาม profile</p>
+        </div>
+      </div>
+      <div class="layer l-model">
+        <div class="tag"><em>L4</em>MODEL</div>
+        <div class="body">
+          <h4>Model Provider</h4>
+          <p>OpenRouter / Anthropic / OpenAI / Gemini / local model — Hermes เป็นคนเรียกตาม config ของ profile นั้น ไม่ได้ตั้งใน Buzz</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="quote">ถ้า Buzz agent ต่อเข้า profile ที่ตั้งไว้ว่าใช้ OpenRouter → agent ตัวนั้นก็ใช้ model ผ่าน OpenRouter ตามที่ Hermes ตั้งไว้</div>
+  </div>
+</section>
+
+<!-- ================= WHAT EACH SIDE OWNS ================= -->
+<section class="band band--buzz" data-layer="buzz" data-label="L1 · PERSONA" data-sub="Buzz ถืออะไรบ้าง">
+  <div class="wrap">
+    <div class="eyebrow">ชั้นที่ 1</div>
+    <h2 class="sec">Buzz ถืออะไร</h2>
+    <p class="lede">ทุกอย่างที่เกี่ยวกับ "หน้าตาและบทบาทที่ผู้ใช้เห็น" — เปลี่ยนได้เร็ว ไม่กระทบความสามารถจริง</p>
+    <div class="tablewrap reveal">
+      <table class="kv">
+        <thead><tr><th style="width:32%">ส่วนของ Buzz</th><th>ความหมาย</th></tr></thead>
+        <tbody>
+          <tr><td>Buzz Workspace</td><td>พื้นที่ทำงานร่วมกันของคนและ agent</td></tr>
+          <tr><td>Buzz Agent</td><td>ตัวแทน agent ที่ผู้ใช้เห็นและกดเลือกใน UI</td></tr>
+          <tr><td>Persona</td><td>บทบาท น้ำเสียง ขอบเขตงานระดับ UX (เขียนเป็น prompt)</td></tr>
+          <tr><td>Agent selection</td><td>ผู้ใช้เลือกว่าจะคุยกับ agent ตัวไหนในงานนี้</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ACP ================= -->
+<section class="band band--acp" data-layer="acp" data-label="L2 · BRIDGE" data-sub="ACP runtime">
+  <div class="wrap">
+    <div class="eyebrow">ชั้นที่ 2</div>
+    <h2 class="sec">สะพานคือคำสั่งเดียว</h2>
+    <p class="lede">ตรงนี้คือจุดที่ persona ตัวหนึ่งถูกผูกเข้ากับความสามารถชุดหนึ่ง เปลี่ยนคำเดียวหลัง <span class="mono">--profile</span> ก็เปลี่ยนทั้งความจำ เครื่องมือ และ model ที่ agent ตัวนั้นใช้</p>
+
+    <div style="text-align:center;margin:10px 0 40px">
+      <span class="cmd" style="font-size:clamp(15px,3vw,26px);padding:18px 26px;border:3px solid var(--buzz)">hermes acp <span class="flag">--profile</span> default</span>
+    </div>
+
+    <div class="grid3">
+      <div class="card reveal"><h4>ถ้า Buzz ให้กรอกแยกช่อง</h4><p class="mono" style="font-size:13px;margin-top:8px">Command: hermes<br>Args: acp --profile default</p></div>
+      <div class="card reveal"><h4>เปลี่ยน profile = เปลี่ยน agent</h4><p>ชื่อและ persona ยังเหมือนเดิม แต่ความจำ เครื่องมือ และสิทธิ์เปลี่ยนทั้งชุด</p></div>
+      <div class="card reveal"><h4>หมายเหตุ</h4><p>รูปแบบคำสั่งจริงต้องปรับตามที่ Buzz ตั้ง runtime / ACP command ใน UI หรือ config</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HERMES ================= -->
+<section class="band band--hermes" data-layer="hermes" data-label="L3 · RUNTIME" data-sub="Hermes Profile">
+  <div class="wrap">
+    <div class="eyebrow">ชั้นที่ 3</div>
+    <h2 class="sec">Hermes ถืออะไร</h2>
+    <p class="lede">ทุกอย่างที่เป็นความสามารถจริงและความเสี่ยงจริง — ของพวกนี้ต้องตั้งที่ Hermes ไม่ใช่เขียนใส่ persona</p>
+
+    <div class="tablewrap reveal">
+      <table class="kv">
+        <thead><tr><th style="width:30%">ส่วนของ Hermes</th><th>ความหมาย</th></tr></thead>
+        <tbody>
+          <tr><td>Hermes ACP</td><td>ช่องทางให้ external app เรียก Hermes เป็น agent runtime</td></tr>
+          <tr><td>Hermes Profile</td><td>ขอบเขต memory, skills, config, tools, cron แยกเป็นชุด ๆ</td></tr>
+          <tr><td>Hermes Memory</td><td>ความจำระยะยาวของ profile นั้น</td></tr>
+          <tr><td>Hermes Skills</td><td>procedure / workflow ที่ agent โหลดมาใช้</td></tr>
+          <tr><td>Hermes Tools</td><td>ความสามารถลงมือทำจริง เช่น terminal, files, browser, email</td></tr>
+          <tr><td>Hermes Model Config</td><td>ระบุว่าจะเรียก model / provider อะไร</td></tr>
+          <tr><td>Hermes Cron</td><td>scheduled automations ของ profile นั้น</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="mt" style="font-size:24px;margin-bottom:6px">ความสามารถที่ persona ยืมมาใช้ได้ทันที</h3>
+    <p style="margin:0 0 26px;opacity:.85;max-width:66ch">เมื่อ Buzz agent ต่อผ่าน ACP แล้ว ทุกอย่างด้านล่างนี้มาจาก Hermes ทั้งหมด ไม่ต้องตั้งซ้ำใน Buzz</p>
+
+    <div class="feats">
+      <article class="feat reveal">
+        <div class="shot" data-alt="Hermes — Lives Everywhere"><img loading="lazy" alt="Hermes lives everywhere" src="https://hermes-agent.nousresearch.com/_next/image?url=%2Fimg%2Fdesktop%2Ffeature-connect.webp&w=1080&q=75" onerror="this.closest('.shot').classList.add('noimg')"></div>
+        <div class="txt"><span class="n">#1 CONNECT</span><h4>อยู่ได้ทุกช่องทาง</h4><p>Telegram, Discord, Slack, WhatsApp, Signal, Email, CLI — agent เดียว ความจำเดียว ทุกหน้าจอ</p></div>
+      </article>
+      <article class="feat reveal">
+        <div class="shot" data-alt="Hermes — Persistent Memory"><img loading="lazy" alt="Hermes persistent memory" src="https://hermes-agent.nousresearch.com/_next/image?url=%2Fimg%2Fdesktop%2Ffeature-memory.webp&w=1080&q=75" onerror="this.closest('.shot').classList.add('noimg')"></div>
+        <div class="txt"><span class="n">#2 REMEMBER</span><h4>ความจำถาวร</h4><p>เรียนรู้ project ของเรา สร้าง skill ขึ้นเองอัตโนมัติ และไม่ลืมว่าเคยแก้ปัญหานั้นยังไง</p></div>
+      </article>
+      <article class="feat reveal">
+        <div class="shot" data-alt="Hermes — Focused Automation"><img loading="lazy" alt="Hermes automation" src="https://hermes-agent.nousresearch.com/_next/image?url=%2Fimg%2Fdesktop%2Ffeature-automation.webp&w=1080&q=75" onerror="this.closest('.shot').classList.add('noimg')"></div>
+        <div class="txt"><span class="n">#3 SCHEDULE</span><h4>cron / automation</h4><p>สั่งตารางงานด้วยภาษาธรรมดา ให้รายงาน backup หรือ briefing วิ่งเองผ่าน gateway</p></div>
+      </article>
+      <article class="feat reveal">
+        <div class="shot" data-alt="Hermes — Tasks Multiplied"><img loading="lazy" alt="Hermes subagents" src="https://hermes-agent.nousresearch.com/_next/image?url=%2Fimg%2Fdesktop%2Ffeature-tasks.webp&w=1080&q=75" onerror="this.closest('.shot').classList.add('noimg')"></div>
+        <div class="txt"><span class="n">#4 DELEGATE</span><h4>subagent แยกอิสระ</h4><p>subagent มี conversation, terminal และ RPC script ของตัวเอง แตกงานได้โดยไม่กิน context</p></div>
+      </article>
+      <article class="feat reveal">
+        <div class="shot" data-alt="Hermes — Browse the Web"><img loading="lazy" alt="Hermes browse" src="https://hermes-agent.nousresearch.com/_next/image?url=%2Fimg%2Fdesktop%2Ffeature-browse.webp&w=1080&q=75" onerror="this.closest('.shot').classList.add('noimg')"></div>
+        <div class="txt"><span class="n">#5 SEARCH</span><h4>ค้นเว็บ + ทำงานแทน</h4><p>web search, browser automation, vision, image generation, TTS และ multi-model reasoning</p></div>
+      </article>
+      <article class="feat reveal">
+        <div class="shot" data-alt="Hermes — Isolated Sandboxing"><img loading="lazy" alt="Hermes sandbox" src="https://hermes-agent.nousresearch.com/_next/image?url=%2Fimg%2Fdesktop%2Ffeature-sandbox.webp&w=1080&q=75" onerror="this.closest('.shot').classList.add('noimg')"></div>
+        <div class="txt"><span class="n">#6 EXPERIMENT</span><h4>sandbox แยกจากของจริง</h4><p>local, Docker, SSH, Singularity, Modal — แยก namespace และ hardening ระดับ container</p></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MODEL LAYER ================= -->
+<section class="band band--model" data-layer="model" data-label="L4 · MODEL" data-sub="Model Provider">
+  <div class="wrap">
+    <div class="eyebrow">ชั้นที่ 4</div>
+    <h2 class="sec">model ไม่ได้อยู่ใน Buzz</h2>
+    <p class="lede">เมื่อเลือกใช้ Hermes เป็น runtime แล้ว Buzz จะไม่ใช่คนเรียก model โดยตรง Hermes จะเป็นคนเรียกตาม config ของ profile นั้น</p>
+    <div class="tablewrap reveal">
+      <table class="kv" style="background:#12121C;border-color:#3A3A5C;color:#DADAF0">
+        <thead><tr><th style="background:var(--hermes-lift);color:#07070C;border-color:#3A3A5C">เส้นทาง</th><th style="background:var(--hermes-lift);color:#07070C;border-color:#3A3A5C">เกิดอะไรขึ้น</th></tr></thead>
+        <tbody>
+          <tr style="background:#12121C"><td style="border-color:#3A3A5C" class="mono">Buzz Agent</td><td style="border-color:#3A3A5C">ผู้ใช้เลือก persona แล้วพิมพ์คุย</td></tr>
+          <tr style="background:#181824"><td style="border-color:#3A3A5C" class="mono">→ Hermes ACP Runtime</td><td style="border-color:#3A3A5C">ส่งต่อเข้า Hermes ตาม profile ที่ระบุ</td></tr>
+          <tr style="background:#12121C"><td style="border-color:#3A3A5C" class="mono">→ Hermes profile config</td><td style="border-color:#3A3A5C">อ่านว่า profile นี้ตั้ง model อะไรไว้</td></tr>
+          <tr style="background:#181824"><td style="border-color:#3A3A5C" class="mono">→ Provider</td><td style="border-color:#3A3A5C">OpenRouter / Anthropic / OpenAI Codex / Gemini / local model</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ARCHITECTURE ================= -->
+<section class="band band--paper" data-layer="hermes" data-label="ARCHITECTURE" data-sub="ผังหลัก">
+  <div class="wrap">
+    <div class="eyebrow">Architecture</div>
+    <h2 class="sec">ผังหลัก: persona หลายตัว → profile แยกกัน</h2>
+    <p class="lede">อ่านจากซ้ายไปขวา — หน้ากากที่ผู้ใช้เลือก ผูกกับสมองคนละก้อน แต่ไปจบที่ชั้น model ที่ Hermes จัดการให้</p>
+
+    <div class="flow reveal">
+      <div class="flow-col">
+        <div class="flow-head">Buzz — persona ที่ผู้ใช้เห็น</div>
+        <div class="node n-buzz"><span class="t">Main</span><span class="s">personal operator ประสานงานหลัก</span></div>
+        <div class="node n-buzz"><span class="t">Coding</span><span class="s">coding specialist</span></div>
+        <div class="node n-buzz"><span class="t">Research / Ops</span><span class="s">analyst / operator</span></div>
+      </div>
+      <div class="arrows"><span>ACP →</span><span>ACP →</span><span>ACP →</span></div>
+      <div class="flow-col">
+        <div class="flow-head">ACP → Hermes profile</div>
+        <div class="node n-acp"><span class="t mono" style="font-size:14px">--profile default</span><span class="s">memory + skills + cron + tools หลัก</span></div>
+        <div class="node n-acp"><span class="t mono" style="font-size:14px">--profile coding</span><span class="s">coding memory + repo tools + tests</span></div>
+        <div class="node n-acp"><span class="t mono" style="font-size:14px">--profile research | ops</span><span class="s">research/ops tools + memory แยก</span></div>
+      </div>
+      <div class="arrows"><span>↘</span><span>→</span><span>↗</span></div>
+      <div class="flow-col">
+        <div class="flow-head">Model</div>
+        <div class="node n-model" style="flex:1;display:flex;flex-direction:column;justify-content:center">
+          <span class="t">Model Provider(s)</span>
+          <span class="s">ตั้งไว้ใน Hermes แยกได้ตาม profile — งาน coding ใช้ model หนึ่ง งาน research ใช้อีกตัวหนึ่งได้</span>
+        </div>
+      </div>
+    </div>
+
+    <hr class="rule">
+
+    <div class="eyebrow">Hybrid profile strategy</div>
+    <h2 class="sec">แนวทางที่แนะนำ: เริ่ม 2 ชั้น</h2>
+    <p class="lede">ไม่ต้องสร้างครบทุกตัวตั้งแต่แรก เพิ่มเมื่อเห็น pattern งานจริงแล้วเท่านั้น</p>
+
+    <div class="grid2">
+      <div class="phase reveal">
+        <div class="ph-h"><span class="num">1</span><h4>Phase 1 — เริ่มแบบปลอดภัย ไม่ซับซ้อน</h4></div>
+        <div class="ph-b">
+          <div class="row"><span class="nm">Buzz: Hermes Main</span><span class="ar">→</span><span class="cmd">--profile default</span></div>
+          <div class="row"><span class="nm">Buzz: Hermes Sandbox</span><span class="ar">→</span><span class="cmd">--profile buzz-sandbox</span></div>
+          <p style="margin:14px 0 0;font-size:14.5px">Main ใช้ memory / cron / skills ชุดเดิมที่ใช้ประจำอยู่แล้ว ส่วน Sandbox ไว้ทดลอง persona และ ACP โดยไม่แตะของจริง</p>
+        </div>
+      </div>
+      <div class="phase reveal">
+        <div class="ph-h"><span class="num">2</span><h4>Phase 2 — แยก specialist เมื่อใช้งานจริง</h4></div>
+        <div class="ph-b">
+          <div class="row"><span class="nm">Buzz: Coding</span><span class="ar">→</span><span class="cmd">--profile coding</span></div>
+          <div class="row"><span class="nm">Buzz: Research</span><span class="ar">→</span><span class="cmd">--profile research</span></div>
+          <div class="row"><span class="nm">Buzz: Ops</span><span class="ar">→</span><span class="cmd">--profile ops</span></div>
+          <p style="margin:14px 0 0;font-size:14.5px">ช่องทางเดิม (Telegram / LINE / Email / Google Chat) ยังวิ่งผ่าน Hermes Gateway เข้า profile <span class="mono">default</span> เหมือนเดิม</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt">
+      <div class="callout bad reveal">
+        <span class="lbl">ทำไมต้องแยก profile</span>
+        <p>ถ้าทุก persona ใช้ <span class="mono">default</span> ร่วมกันหมด จะเจอ: memory หลาย persona ปนกัน · agent เฉพาะทางตอบปนบริบทของตัวอื่น · แยก tool permission ไม่ได้ · cron ปนกัน · ตั้ง model ต่างกันตามงานไม่ได้</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= AGENT DESIGN ================= -->
+<section class="band band--paper2" data-layer="buzz" data-label="AGENT DESIGN" data-sub="ตารางออกแบบ agent">
+  <div class="wrap">
+    <div class="eyebrow">ตารางออกแบบ</div>
+    <h2 class="sec">agent 5 ตัวที่แนะนำ</h2>
+    <p class="lede">แต่ละใบคือคู่ของ "persona ที่เขียนใน Buzz" กับ "profile ที่รันจริงใน Hermes"</p>
+
+    <div class="agents">
+      <article class="agent reveal">
+        <div class="top"><span class="who">Buzz persona</span><h4>Hermes Main</h4></div>
+        <div class="mid">
+          <p>ผู้ช่วยส่วนตัว / ผู้ประสานงานหลัก งานทั่วไปและงานที่ต่อเนื่องมาจากช่องทางอื่น</p>
+          <div class="persona">You are Hermes Main, the primary personal operator for the user. You coordinate work across conversations, preserve continuity, and use the user's existing Hermes memory and skills.</div>
+          <ul>
+            <li><b>Memory:</b> ใช้ความจำหลัก</li>
+            <li><b>Tools:</b> ชุดหลักที่เปิดไว้อยู่แล้ว</li>
+            <li><b>Cron:</b> ใช้ cron หลัก</li>
+          </ul>
+        </div>
+        <div class="bot"><span class="cmd">hermes acp <span class="flag">--profile</span> default</span></div>
+      </article>
+
+      <article class="agent a-coding reveal">
+        <div class="top"><span class="who">Buzz persona</span><h4>Hermes Coding</h4></div>
+        <div class="mid">
+          <p>senior coding agent — อ่าน repo วางแผน แก้โค้ด รันเทส และอธิบายสิ่งที่เปลี่ยน</p>
+          <div class="persona">You are Hermes Coding, a senior software engineering agent. Do not touch production credentials. Prefer test-driven or verification-driven workflows.</div>
+          <ul>
+            <li><b>Memory:</b> เฉพาะ project / dev conventions</li>
+            <li><b>Tools:</b> file, terminal, git/github, browser เท่าที่จำเป็น</li>
+            <li><b>Model:</b> coding-capable model</li>
+            <li><b>Cron:</b> ไม่ต้องมี ยกเว้น CI / watch jobs</li>
+          </ul>
+        </div>
+        <div class="bot"><span class="cmd">hermes acp <span class="flag">--profile</span> coding</span></div>
+      </article>
+
+      <article class="agent reveal">
+        <div class="top"><span class="who">Buzz persona</span><h4>Hermes Research</h4></div>
+        <div class="mid">
+          <p>research analyst — ค้นคว้า สรุป เปรียบเทียบเอกสาร ใช้ tool แบบอ่านอย่างเดียวเป็นหลัก</p>
+          <div class="persona">You are Hermes Research/Ops, a careful research and operations assistant. Use read-only tools unless explicitly asked to take action.</div>
+          <ul>
+            <li><b>Memory:</b> แยก research memory</li>
+            <li><b>Tools:</b> web, browser, file read</li>
+            <li><b>Model:</b> reasoning / search-capable</li>
+            <li><b>Cron:</b> research monitoring</li>
+          </ul>
+        </div>
+        <div class="bot"><span class="cmd">hermes acp <span class="flag">--profile</span> research</span></div>
+      </article>
+
+      <article class="agent reveal">
+        <div class="top"><span class="who">Buzz persona</span><h4>Hermes Ops</h4></div>
+        <div class="mid">
+          <p>operations assistant — งาน operational เช่น email, Asana, Google Workspace และการเตรียม handoff</p>
+          <div class="persona">Summarize sources, compare options, prepare operational handoffs, and avoid exposing private data.</div>
+          <ul>
+            <li><b>Memory:</b> แยก ops memory</li>
+            <li><b>Tools:</b> email / asana / google workspace เฉพาะที่จำเป็น</li>
+            <li><b>Cron:</b> ops / reporting</li>
+          </ul>
+        </div>
+        <div class="bot"><span class="cmd">hermes acp <span class="flag">--profile</span> ops</span></div>
+      </article>
+
+      <article class="agent a-sandbox reveal" style="grid-column:1/-1">
+        <div class="top"><span class="who">Buzz persona</span><h4>Hermes Sandbox</h4></div>
+        <div class="mid">
+          <p>ที่ทดลอง persona / plugin / tool ใหม่ ก่อนปล่อยให้แตะ profile หลัก — memory แยก ทิ้งได้ ไม่มี cron</p>
+          <div class="persona">You are Hermes Sandbox, an experimental agent for testing Buzz/Hermes integration. Avoid production actions. Do not send emails, edit real tasks, or modify important files unless explicitly instructed.</div>
+          <ul>
+            <li>ทดลอง ACP integration และ persona ใหม่</li>
+            <li>ทดสอบ plugin / tool ก่อนเปิดใช้จริง</li>
+            <li>ลดความเสี่ยงต่อ memory หลัก</li>
+          </ul>
+        </div>
+        <div class="bot"><span class="cmd">hermes acp <span class="flag">--profile</span> buzz-sandbox</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MAPPING + DECISION ================= -->
+<section class="band band--paper" data-layer="hermes" data-label="MAPPING" data-sub="ตั้งที่ Buzz หรือ Hermes">
+  <div class="wrap">
+    <div class="eyebrow">ตั้งตรงไหน</div>
+    <h2 class="sec">คำถามนี้ตั้งที่ Buzz หรือ Hermes</h2>
+    <p class="lede">กฎง่าย ๆ: ถ้าเป็นเรื่อง "ดูเป็นใคร" ตั้งที่ Buzz — ถ้าเป็นเรื่อง "ทำอะไรได้จริง" ตั้งที่ Hermes</p>
+    <div class="tablewrap reveal">
+      <table class="kv">
+        <thead><tr><th style="width:46%">คำถาม</th><th>ควรตั้งที่</th></tr></thead>
+        <tbody>
+          <tr><td>ชื่อ agent คืออะไร</td><td>Buzz</td></tr>
+          <tr><td>agent พูดด้วยน้ำเสียงแบบไหน</td><td>Buzz persona เป็นหลัก / Hermes skill เสริมได้</td></tr>
+          <tr><td>agent มีบทบาทอะไร</td><td>Buzz persona</td></tr>
+          <tr><td>agent จำอะไรระยะยาว</td><td>Hermes profile memory</td></tr>
+          <tr><td>agent ใช้ tools อะไรได้</td><td>Hermes profile / tool config</td></tr>
+          <tr><td>agent ใช้ model อะไร</td><td>Hermes profile model config</td></tr>
+          <tr><td>agent มี cron อะไร</td><td>Hermes profile cron</td></tr>
+          <tr><td>agent เข้าถึง email / drive / asana ได้ไหม</td><td>Hermes tools + credentials + profile policy</td></tr>
+          <tr><td>agent เป็นตัวทดลองหรือ production</td><td>แยกด้วย Hermes profile</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr class="rule">
+
+    <div class="eyebrow">Decision matrix</div>
+    <h2 class="sec">สถานการณ์ไหน ใช้ profile อะไร</h2>
+    <div class="tablewrap reveal">
+      <table class="kv">
+        <thead><tr><th style="width:38%">สถานการณ์</th><th style="width:22%">แนะนำให้ใช้</th><th>เหตุผล</th></tr></thead>
+        <tbody>
+          <tr><td>อยากให้ Buzz คุยกับ Hermes ตัวเดียวกับที่ใช้ประจำ</td><td class="mono">default</td><td>ได้ memory / cron / skills ชุดเดียวกับ Hermes หลัก ถามต่อจากบริบทเดิมได้</td></tr>
+          <tr><td>อยากมีหลาย agent หลายบทบาท</td><td class="mono">แยกตาม agent</td><td>ลด memory ปนกันและคุม tools ได้ง่าย</td></tr>
+          <tr><td>อยากทดลองก่อน</td><td class="mono">buzz-sandbox</td><td>ปลอดภัยกว่า ไม่กระทบของจริง</td></tr>
+          <tr><td>อยากให้ coding agent ใช้ tools เต็ม</td><td class="mono">coding</td><td>เปิด terminal / git / github ได้เฉพาะ profile นี้</td></tr>
+          <tr><td>อยากให้ research agent อ่านข้อมูลแต่ไม่ทำ action เสี่ยง</td><td class="mono">research</td><td>จำกัด tools เป็นแบบ read-oriented</td></tr>
+          <tr><td>มีคนอื่นอยู่ใน Buzz workspace ด้วย</td><td class="mono">แยก + จำกัด tools</td><td>ลดความเสี่ยงจาก prompt / agent misuse</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SECURITY ================= -->
+<section class="band band--hermes" data-layer="hermes" data-label="SECURITY" data-sub="least privilege">
+  <div class="wrap">
+    <div class="eyebrow">Security model</div>
+    <h2 class="sec">persona ไม่ใช่กำแพงความปลอดภัย</h2>
+    <p class="lede">Hermes มี tools ที่ลงมือทำจริงได้ ทั้ง terminal, file, email, browser จึงไม่ควรให้ทุก Buzz agent มีสิทธิ์เต็มเท่ากัน</p>
+
+    <div class="grid2 mt-s">
+      <div class="callout bad reveal">
+        <span class="lbl">❌ อย่าคิดแบบนี้</span>
+        <p>ตั้ง persona ว่า "ห้ามส่งอีเมล" แล้วถือว่าปลอดภัยพอ</p>
+      </div>
+      <div class="callout good reveal">
+        <span class="lbl">✔ ควรคิดแบบนี้</span>
+        <p>ถ้าไม่อยากให้ส่งอีเมลจริง ก็ไม่ต้องเปิด email sending tools ใน profile นั้น</p>
+      </div>
+    </div>
+
+    <div class="tablewrap mt reveal">
+      <table class="kv">
+        <thead><tr><th style="width:20%">Agent</th><th>Tools ที่ควรเปิด</th><th>Tools ที่ควรระวัง</th></tr></thead>
+        <tbody>
+          <tr><td>Main</td><td>ชุดหลักที่ใช้งานประจำ</td><td>email/send, terminal ที่ทำลายข้อมูลได้</td></tr>
+          <tr><td>Coding</td><td>terminal, file, git/github</td><td>credentials, production deploy</td></tr>
+          <tr><td>Research</td><td>web, browser, file read</td><td>email send, terminal write</td></tr>
+          <tr><td>Ops</td><td>email, asana, google workspace</td><td>bulk actions, การส่งออกภายนอก</td></tr>
+          <tr><td>Sandbox</td><td>น้อยที่สุดเท่าที่ทดสอบได้</td><td>ทุกอย่างที่แตะ production</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="quote">ถ้า workspace มีหลายคน เริ่มจาก owner-only ก่อน — persona ใน Buzz เป็น prompt layer ส่วน security boundary จริงอยู่ที่ Hermes profile, tools, credentials และ policy</div>
+  </div>
+</section>
+
+<!-- ================= ANTI-PATTERNS ================= -->
+<section class="band band--paper2" data-layer="hermes" data-label="ANTI-PATTERNS" data-sub="สิ่งที่ควรเลี่ยง">
+  <div class="wrap">
+    <div class="eyebrow">Anti-patterns</div>
+    <h2 class="sec">6 อย่างที่ควรเลี่ยง</h2>
+    <div class="tablewrap reveal">
+      <table class="kv">
+        <thead><tr><th style="width:30%">Anti-pattern</th><th style="width:33%">ทำไมไม่ดี</th><th>ทางเลือกที่แนะนำ</th></tr></thead>
+        <tbody>
+          <tr><td>ทุก Buzz agent ใช้ <span class="mono">default</span> ร่วมกัน</td><td>memory และ persona ปนกัน</td><td>Main ใช้ default, specialist ใช้ profile แยก</td></tr>
+          <tr><td>ใช้ persona เป็นตัวจำกัดสิทธิ์</td><td>prompt ไม่ใช่ security boundary</td><td>จำกัด tools / credentials ที่ Hermes profile</td></tr>
+          <tr><td>เปิด terminal / email ให้ทุก agent</td><td>เสี่ยงสั่งงานผิดหรือถูก prompt misuse</td><td>เปิดเฉพาะ agent ที่จำเป็นจริง</td></tr>
+          <tr><td>ทดลองกับ profile หลักทันที</td><td>ทำ memory / cron / config ปนกัน</td><td>ใช้ <span class="mono">buzz-sandbox</span> ก่อน</td></tr>
+          <tr><td>clone profile พร้อม secrets ไปทุกที่</td><td>credentials กระจายเกินจำเป็น</td><td>ให้แต่ละ profile มีเฉพาะ credentials ที่ใช้จริง</td></tr>
+          <tr><td>สร้าง agent เยอะตั้งแต่แรก</td><td>debug ยาก เข้าใจยาก</td><td>เริ่ม 2 ตัว แล้วค่อยเพิ่ม</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CHECKLIST ================= -->
+<section class="band band--paper" data-layer="buzz" data-label="CHECKLIST" data-sub="ก่อนเปิดใช้จริง">
+  <div class="wrap">
+    <div class="eyebrow">Checklist</div>
+    <h2 class="sec">ก่อนเปิดใช้จริง</h2>
+    <p class="lede">กดติ๊กได้เลยระหว่างทำจริง (สถานะไม่ถูกบันทึกไว้เมื่อปิดหน้า)</p>
+    <div class="checks">
+      <div class="check reveal">
+        <h4>Hermes Main</h4>
+        <ul>
+          <li><input type="checkbox"><span>Buzz agent ชี้ไป <span class="mono">--profile default</span></span></li>
+          <li><input type="checkbox"><span>ทดสอบถามเรื่องที่ default ควรรู้จาก memory</span></li>
+          <li><input type="checkbox"><span>ทดสอบ tool ที่ปลอดภัย เช่น read-only หรือ query เบื้องต้น</span></li>
+          <li><input type="checkbox"><span>ตรวจว่าไม่ได้เปิดให้คนอื่นใช้โดยไม่ตั้งใจ</span></li>
+          <li><input type="checkbox"><span>ตรวจว่า cron หลักยังอยู่ profile เดิม</span></li>
+        </ul>
+      </div>
+      <div class="check reveal">
+        <h4>Specialist agent</h4>
+        <ul>
+          <li><input type="checkbox"><span>สร้าง profile แยก เช่น coding / research / ops</span></li>
+          <li><input type="checkbox"><span>ตั้ง model ให้เหมาะกับงาน</span></li>
+          <li><input type="checkbox"><span>เปิดเฉพาะ toolsets ที่จำเป็น</span></li>
+          <li><input type="checkbox"><span>เพิ่ม skills เฉพาะทาง</span></li>
+          <li><input type="checkbox"><span>ไม่ clone secrets เกินจำเป็น</span></li>
+          <li><input type="checkbox"><span>ทดสอบด้วยงานเล็กก่อน</span></li>
+          <li><input type="checkbox"><span>ตั้ง persona ให้ตรงกับขอบเขต profile</span></li>
+        </ul>
+      </div>
+      <div class="check reveal">
+        <h4>ความปลอดภัย</h4>
+        <ul>
+          <li><input type="checkbox"><span>เริ่มแบบ owner-only หรือ restricted users</span></li>
+          <li><input type="checkbox"><span>ไม่ให้ Sandbox แตะ production tools</span></li>
+          <li><input type="checkbox"><span>แยก profile ของ agent ที่ใช้ terminal / file write</span></li>
+          <li><input type="checkbox"><span>แยก profile ของ agent ที่ใช้ email / asana / workspace</span></li>
+          <li><input type="checkbox"><span>เลี่ยงการใช้ credentials ชุดเดียวกันทุก agent</span></li>
+          <li><input type="checkbox"><span>ตรวจ log และผลลัพธ์หลังใช้งานครั้งแรก</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= START HERE ================= -->
+<section class="band band--acp" data-layer="acp" data-label="START HERE" data-sub="ลำดับที่แนะนำ">
+  <div class="wrap">
+    <div class="eyebrow">Recommendation สุดท้าย</div>
+    <h2 class="sec">เริ่มวันนี้แค่ 2 ตัว</h2>
+    <p class="lede">ทดสอบจนมั่นใจแล้วค่อยเพิ่มตัวที่ 3 และ 4 — วิธีนี้ debug ง่ายที่สุดและเสี่ยงน้อยที่สุด</p>
+
+    <div class="grid2">
+      <div class="card reveal" style="border-color:var(--buzz)">
+        <h4 style="color:var(--buzz)">ตอนนี้</h4>
+        <div style="margin-top:14px">
+          <p style="margin-bottom:6px"><b>1. Buzz Agent: Hermes Main</b></p>
+          <span class="cmd" style="border:2px solid #3A3A5C">hermes acp <span class="flag">--profile</span> default</span>
+          <p style="margin:18px 0 6px"><b>2. Buzz Agent: Hermes Sandbox</b></p>
+          <span class="cmd" style="border:2px solid #3A3A5C">hermes acp <span class="flag">--profile</span> buzz-sandbox</span>
+        </div>
+      </div>
+      <div class="card reveal">
+        <h4 style="color:var(--hermes-lift)">เมื่อเห็น pattern งานจริงแล้ว</h4>
+        <div style="margin-top:14px">
+          <p style="margin-bottom:6px"><b>3. Buzz Agent: Hermes Coding</b></p>
+          <span class="cmd" style="border:2px solid #3A3A5C">hermes acp <span class="flag">--profile</span> coding</span>
+          <p style="margin:18px 0 6px"><b>4. Buzz Agent: Hermes Research / Ops</b></p>
+          <span class="cmd" style="border:2px solid #3A3A5C">hermes acp <span class="flag">--profile</span> research</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="quote" style="margin-top:46px;border-left-color:var(--buzz)">
+      ให้ Buzz เป็น persona / agent layer<br>
+      ให้ Hermes ACP เป็น runtime layer<br>
+      ให้ Hermes profiles เป็น capability &amp; memory boundary
+    </div>
+
+    <p style="max-width:70ch;opacity:.8">อธิบายให้ทีมฟังสั้น ๆ: เราใช้ Buzz เป็นที่สร้าง agent และ persona ส่วน Hermes เป็น runtime จริงผ่าน ACP — Buzz กำหนดว่า agent ชื่ออะไรและทำหน้าที่อะไร ส่วน Hermes profile กำหนดว่า agent นั้นจำอะไร ใช้เครื่องมืออะไร มี cron อะไร และใช้ model provider ไหน</p>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="logos">
+      <img src="https://hermes-agent.nousresearch.com/_next/image?url=%2Fimg%2Fdesktop%2Fnous.webp&w=256&q=75" alt="Nous Research" onerror="this.style.display='none'">
+      <span class="mono" style="font-size:12px">Hermes Agent · MIT License · Nous Research</span>
+    </div>
+    <p style="margin:0">สรุปจากเอกสาร “คู่มือแนวคิด: ใช้ Buzz Agent เป็น Persona Layer และใช้ Hermes ACP เป็น Runtime” · ภาพประกอบจาก <a href="https://buzz.xyz">buzz.xyz</a> และ <a href="https://hermes-agent.nousresearch.com">hermes-agent.nousresearch.com</a> (โหลดสดจากเว็บ ต้องต่ออินเทอร์เน็ตเพื่อให้ภาพขึ้นครบ)</p>
+    <p style="margin:10px 0 0;opacity:.6">รูปแบบคำสั่งจริงอาจต่างไปตามที่ Buzz กำหนด runtime / ACP command ใน UI หรือ config</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var stamp=document.getElementById('stamp'),
+      sL=document.getElementById('stampL'),
+      sS=document.getElementById('stampS'),
+      prog=document.getElementById('prog');
+
+  // scroll progress
+  function onScroll(){
+    var h=document.documentElement.scrollHeight-window.innerHeight;
+    prog.style.width=(h>0?(window.scrollY/h)*100:0)+'%';
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+  // layer stamp via IntersectionObserver
+  var secs=document.querySelectorAll('[data-layer]');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          stamp.setAttribute('data-l',e.target.dataset.layer);
+          sL.textContent=e.target.dataset.label;
+          sS.textContent=e.target.dataset.sub;
+        }
+      });
+    },{rootMargin:'-45% 0px -50% 0px'});
+    secs.forEach(function(s){io.observe(s);});
+
+    // reveal
+    var ro=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target);}
+      });
+    },{rootMargin:'0px 0px -8% 0px',threshold:.08});
+    document.querySelectorAll('.reveal').forEach(function(el){ro.observe(el);});
+  }else{
+    document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in');});
+  }
+
+  // video fallback -> keep poster; if poster also fails, show pattern
+  document.querySelectorAll('video').forEach(function(v){
+    v.addEventListener('error',function(){},true);
+  });
+})();
+</script>
+</body>
+</html>
