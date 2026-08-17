@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Personal Infrastructure Wiki: HomeOps & Homelab Knowledge System</title>
+<style>
+:root{--bg:#f6f8fb;--card:#fff;--ink:#101828;--muted:#667085;--line:#e4e7ec;--blue:#2563eb;--teal:#0f766e;--violet:#7c3aed;--orange:#ea580c;--red:#dc2626;--shadow:0 14px 38px rgba(16,24,40,.09)}
+*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at top left,#eff6ff 0,#f8fafc 36%,#eef2f7 100%);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink);line-height:1.58}
+header,main{max-width:1180px;margin:auto;padding:28px}.hero{margin-top:18px;padding:40px;border-radius:32px;background:linear-gradient(135deg,#0f172a,#1d4ed8 48%,#0f766e 100%);color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden}.hero:after{content:"";position:absolute;right:-90px;top:-80px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.12)}
+h1{font-size:40px;line-height:1.04;margin:0;letter-spacing:-.05em;max-width:880px}.subtitle{margin-top:12px;font-size:18px;color:rgba(255,255,255,.88);max-width:860px}.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}.chip{font-size:13px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.24)}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}.card{grid-column:span 6;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:var(--shadow)}.wide{grid-column:1/-1}.third{grid-column:span 4}.quarter{grid-column:span 3}h2{font-size:23px;margin:0 0 12px;letter-spacing:-.025em}h3{font-size:16px;margin:18px 0 8px}p{margin:8px 0}.muted{color:var(--muted)}ul,ol{padding-left:22px}li{margin:6px 0}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#f2f4f7;border:1px solid #e4e7ec;border-radius:7px;padding:2px 6px}pre{white-space:pre-wrap;overflow:auto;background:#0f172a;color:#e5e7eb;border-radius:18px;padding:18px;font-size:13px;line-height:1.45}
+.table{width:100%;border-collapse:collapse;margin-top:8px}.table th,.table td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left;vertical-align:top}.table th{background:#f8fafc;color:#475467;font-size:13px}.callout{border-radius:18px;padding:16px;border:1px solid #bfdbfe;background:#eff6ff;color:#1e3a8a}.ok{border-color:#a7f3d0;background:#ecfdf5;color:#065f46}.warn{border-color:#fde68a;background:#fffbeb;color:#92400e}.danger{border-color:#fecaca;background:#fef2f2;color:#991b1b}
+.kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.k{background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:15px}.k b{display:block;font-size:24px;letter-spacing:-.03em}.blue{color:var(--blue)}.teal{color:var(--teal)}.violet{color:var(--violet)}.orange{color:var(--orange)}
+textarea{width:100%;min-height:560px;border:1px solid #cbd5e1;border-radius:18px;padding:16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.45;background:#0b1220;color:#e5e7eb}.small{font-size:13px;color:var(--muted)}
+@media(max-width:880px){.card,.third,.quarter{grid-column:1/-1}.kpi{grid-template-columns:repeat(2,1fr)}h1{font-size:31px}header,main{padding:18px}}
+</style>
+</head>
+<body>
+<header><section class="hero"><h1>Personal Infrastructure Wiki</h1><div class="subtitle">A public-safe blueprint for an AI-readable knowledge system covering HomeOps, smart homes, networks, homelabs, servers, virtual machines, containers, NAS, backups, monitoring, and runbooks.</div><div class="chips"><span class="chip">HomeOps</span><span class="chip">Homelab</span><span class="chip">Personal Infrastructure</span><span class="chip">Public-safe</span><span class="chip">AI-readable</span></div></section></header>
+<main class="grid">
+<section class="card wide"><h2>Purpose</h2><p>This document describes how to build a durable knowledge system for personal infrastructure. Instead of forcing an AI assistant to remember every device, automation, server, VM, and NAS detail in short memory, the system separates knowledge into short memory, a markdown wiki, YAML inventories, and reusable runbooks.</p><div class="callout ok"><b>Public-safe version:</b> this file is generic by design. It contains no real site names, people names, private directories, entity IDs, IP addresses, domains, account IDs, bot tokens, passwords, or secret values.</div></section>
+<section class="card"><h2>Why this matters</h2><p>Personal infrastructure grows quickly. Smart-home automations, network devices, servers, VMs, containers, NAS shares, backups, and alerts become too detailed for one chat or a small memory block. A structured wiki lets the AI assistant load the right knowledge only when needed.</p></section>
+<section class="card"><h2>Who can use it?</h2><ul><li>Home Assistant users</li><li>Homelab builders</li><li>NAS and backup administrators</li><li>Self-hosters</li><li>People running AI assistants for home operations</li><li>Anyone who wants infrastructure knowledge to persist across sessions</li></ul></section>
+<section class="card wide"><h2>The four-layer model</h2><div class="kpi"><div class="k"><b class="blue">1</b><span>Short memory for routing facts</span></div><div class="k"><b class="teal">2</b><span>Markdown wiki for durable knowledge</span></div><div class="k"><b class="violet">3</b><span>YAML inventory for precise maps</span></div><div class="k"><b class="orange">4</b><span>Skills/runbooks for repeatable work</span></div></div></section>
+<section class="card"><h2>Short Memory</h2><p>Use memory only for compact facts the assistant needs every time: the active profile, safety preferences, common aliases, and pointers to the wiki. Do not store large maps or secrets here.</p></section>
+<section class="card"><h2>Markdown Wiki</h2><p>Use the wiki for durable explanations: topology, architecture, devices, automations, services, alerts, decisions, incidents, and operational notes.</p></section>
+<section class="card"><h2>YAML Inventory</h2><p>Use YAML for machine-readable facts: devices, entity placeholders, host lists, VM lists, containers, NAS shares, backup jobs, alert routes, and service dependencies.</p></section>
+<section class="card"><h2>Skills / Runbooks</h2><p>Use runbooks for procedures: add a device, add an alert route, debug snapshots, restart a service, rotate secrets, recover a failed update, or restore from backup.</p></section>
+<section class="card wide"><h2>Recommended structure</h2><pre>wiki/
+├── SCHEMA
+├── index
+├── log
+├── raw/
+└── infrastructure/
+    ├── index
+    ├── smart-home/
+    ├── network/
+    ├── homelab/
+    ├── storage/
+    ├── observability/
+    ├── security/
+    ├── inventory/
+    ├── runbooks/
+    ├── decisions/
+    └── incidents/</pre></section>
+<section class="card third"><h2>Smart Home</h2><ul><li>Home automation</li><li>Dashboards</li><li>Cameras</li><li>Speakers and alerts</li><li>Command layer</li></ul></section>
+<section class="card third"><h2>Network</h2><ul><li>Topology</li><li>Subnets/VLANs</li><li>Firewall</li><li>DNS/DHCP</li><li>Remote access</li></ul></section>
+<section class="card third"><h2>Homelab</h2><ul><li>Hosts</li><li>Hypervisors</li><li>VMs</li><li>Containers</li><li>Self-hosted services</li></ul></section>
+<section class="card third"><h2>Storage</h2><ul><li>NAS</li><li>Shares</li><li>Snapshots</li><li>Backups</li><li>Restore procedures</li></ul></section>
+<section class="card third"><h2>Observability</h2><ul><li>Health checks</li><li>Logs</li><li>Disk alerts</li><li>Backup status</li><li>Certificate expiry</li></ul></section>
+<section class="card third"><h2>Security</h2><ul><li>Secrets policy</li><li>Access control</li><li>Patch policy</li><li>Remote access rules</li><li>Incident response</li></ul></section>
+<section class="card wide"><h2>How to use it</h2><ol><li>Create the wiki skeleton and schema.</li><li>Add only non-secret system facts and placeholder examples at first.</li><li>Move frequently used details into YAML inventories.</li><li>Write runbooks for repeated operations.</li><li>Tell the AI assistant: read memory pointers, then the wiki index, then the relevant page and inventory before acting.</li><li>After each durable change, update the wiki, inventory, and log.</li><li>Before public export, run a redaction scan.</li></ol></section>
+<section class="card wide"><h2>What to never publish</h2><div class="callout danger">Never publish real names, home/site names, private URLs, internal IP addresses, domains, tokens, passwords, private keys, secret hashes, local paths, account IDs, or real smart-home entity IDs. Use placeholders and <code>[REDACTED]</code>.</div></section>
+<section class="card wide"><h2>Benefits</h2><table class="table"><tr><th>Benefit</th><th>Why it helps</th></tr><tr><td>Less AI confusion</td><td>The assistant can find canonical mappings instead of guessing.</td></tr><tr><td>Scales beyond memory</td><td>Large device/server inventories live in wiki/YAML, not the prompt every time.</td></tr><tr><td>Safer operations</td><td>Runbooks and decision logs reduce accidental destructive actions.</td></tr><tr><td>Better troubleshooting</td><td>Incidents and known issues become searchable history.</td></tr><tr><td>Portable architecture</td><td>The same pattern works for smart homes, homelabs, NAS, networks, and self-hosted services.</td></tr></table></section>
+<section class="card wide"><h2>Mega prompt</h2><p class="muted">Copy this prompt into another AI system to generate a similar public-safe Personal Infrastructure Wiki.</p><textarea readonly>You are an expert AI systems architect, home-lab operator, and documentation engineer. Design and initialize a public-safe “Personal Infrastructure Wiki” for an AI assistant to understand, operate, and maintain a user&#x27;s personal infrastructure over many future sessions.
+
+Goal:
+Create a durable, structured, privacy-safe knowledge base for a complex personal infrastructure environment. It should cover smart home systems, Home Assistant, automations, messaging alerts, cameras, networks, remote access, homelab hosts, virtual machines, containers, NAS/storage, backups, monitoring, runbooks, decisions, and incidents.
+
+Privacy and safety requirements:
+- Do not include real personal names, home names, addresses, device nicknames from a real site, internal IP addresses, domains, private URLs, account IDs, email addresses, phone numbers, Telegram usernames, Home Assistant entity IDs from a real system, bot tokens, API keys, passwords, private keys, secret hashes, or local filesystem paths.
+- Use placeholders only: &lt;SITE_NAME&gt;, &lt;ASSISTANT_PROFILE&gt;, &lt;BOT_NAME&gt;, &lt;HOME_ASSISTANT_URL&gt;, &lt;ENTITY_ID&gt;, &lt;DEVICE_NAME&gt;, &lt;HOSTNAME&gt;, &lt;INTERNAL_IP&gt;, &lt;VLAN_ID&gt;, &lt;NAS_HOST&gt;, &lt;VM_NAME&gt;, &lt;SERVICE_NAME&gt;, &lt;SECRET_NAME&gt;, [REDACTED].
+- If source material contains secrets, redact them and store only the logical secret name or where it is stored, never the value.
+
+Knowledge architecture:
+Use four layers:
+1. Short Memory: compact facts and pointers that the AI needs every session.
+2. Markdown Wiki: durable human-readable knowledge for systems, devices, decisions, and explanations.
+3. YAML Inventory: machine-readable maps of devices, entities, hosts, VMs, containers, networks, NAS shares, and alert routes.
+4. Skills / Runbooks: repeatable procedures and safety workflows.
+
+Recommended wiki structure:
+wiki/
+├── SCHEMA.md
+├── index.md
+├── log.md
+├── raw/
+│   ├── smart-home/
+│   ├── network/
+│   ├── homelab/
+│   ├── storage/
+│   └── screenshots/
+├── infrastructure/
+│   ├── index
+│   ├── smart-home/
+│   │   ├── overview
+│   │   ├── entity-map
+│   │   ├── automations
+│   │   ├── dashboards
+│   │   ├── cameras
+│   │   ├── speakers-and-alerts
+│   │   └── command-layer
+│   ├── network/
+│   │   ├── overview
+│   │   ├── topology
+│   │   ├── subnets-vlans
+│   │   ├── router-firewall
+│   │   ├── switches
+│   │   ├── wifi
+│   │   ├── dns-dhcp
+│   │   └── remote-access
+│   ├── homelab/
+│   │   ├── overview
+│   │   ├── physical-hosts
+│   │   ├── hypervisors
+│   │   ├── virtual-machines
+│   │   ├── containers
+│   │   ├── services
+│   │   ├── gpu-ai-workloads
+│   │   └── updates-maintenance
+│   ├── storage/
+│   │   ├── overview
+│   │   ├── nas
+│   │   ├── shares
+│   │   ├── snapshots
+│   │   ├── backup-policy
+│   │   └── restore-procedures
+│   ├── observability/
+│   │   ├── monitoring
+│   │   ├── alerts
+│   │   ├── logs
+│   │   └── health-checks
+│   ├── security/
+│   │   ├── overview
+│   │   ├── secrets-policy
+│   │   ├── access-control
+│   │   ├── patching-policy
+│   │   └── incident-response
+│   ├── inventory/
+│   │   ├── smart-home/entities.yaml
+│   │   ├── smart-home/automations.yaml
+│   │   ├── network/devices.yaml
+│   │   ├── network/subnets.yaml
+│   │   ├── homelab/hosts.yaml
+│   │   ├── homelab/vms.yaml
+│   │   ├── homelab/containers.yaml
+│   │   ├── storage/shares.yaml
+│   │   └── alerts/routes.yaml
+│   ├── runbooks/
+│   │   ├── add-new-device
+│   │   ├── add-alert-route
+│   │   ├── camera-snapshot-debug
+│   │   ├── dashboard-editing
+│   │   ├── restart-service
+│   │   ├── recover-failed-update
+│   │   ├── restore-from-backup
+│   │   └── rotate-secret
+│   ├── decisions/
+│   │   ├── memory-vs-wiki
+│   │   ├── command-layer-design
+│   │   ├── bot-and-alert-separation
+│   │   ├── remote-access-design
+│   │   └── backup-strategy
+│   └── incidents/
+│       ├── outage-notes
+│       ├── automation-regressions
+│       ├── backup-failures
+│       └── hardware-failures
+
+SCHEMA requirements:
+- Define page types: entity, concept, runbook, decision, incident, query, meta.
+- Require frontmatter: title, type, status, created, updated, sources, confidence, tags.
+- Define tags: infrastructure, smart-home, home-assistant, automation, network, vlan, firewall, remote-access, homelab, server, vm, container, nas, storage, backup, monitoring, security, runbook, decision, incident, public-safe, private, raw.
+- Every synthesized page must appear in index.
+- Every material change must append to log.
+- Contradictions must be preserved and marked, not silently overwritten.
+- Secrets must be redacted.
+
+Initial deliverables:
+1. A top-level index explaining the four-layer memory model.
+2. Starter pages for smart home, network, homelab, storage, observability, and security.
+3. YAML inventory templates with placeholders only.
+4. Runbooks for common operations.
+5. Decision pages for key architecture choices.
+6. Incident pages for future troubleshooting notes.
+7. A public-safe HTML reference summarizing the architecture.
+8. A verification report confirming that no private identifiers or secrets are present.
+
+Assistant operating rules:
+- For complex requests, read memory pointers first, then the wiki index, then the relevant topic page, then the YAML inventory.
+- For live operations, inspect the current system state before acting and verify afterward.
+- For infrastructure changes, prefer reversible steps, backup config first, and document the decision/runbook.
+- For public exports, run redaction scans for private names, IPs, URLs, paths, entity IDs, tokens, passwords, and secret assignments.</textarea></section>
+</main>
+</body>
+</html>
