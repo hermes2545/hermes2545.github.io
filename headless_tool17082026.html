@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Infographic: Headless Browser สำหรับ AI ใช้อะไรดีที่สุด</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f8ff;
+      --panel: rgba(255,255,255,0.82);
+      --panel-strong: #ffffff;
+      --ink: #16324f;
+      --muted: #5f7390;
+      --line: #d9e6fb;
+      --blue: #4f7cff;
+      --teal: #10b7a4;
+      --purple: #7b61ff;
+      --amber: #ffb547;
+      --red: #ff6b6b;
+      --shadow: 0 18px 50px rgba(52, 94, 181, 0.14);
+      --radius: 26px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Sarabun', system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top right, rgba(123,97,255,.12), transparent 24%),
+        radial-gradient(circle at left 20%, rgba(79,124,255,.10), transparent 20%),
+        linear-gradient(180deg, #f9fbff 0%, var(--bg) 100%);
+      line-height: 1.55;
+    }
+    .wrap {
+      width: min(1200px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 28px 0 64px;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 24px;
+      align-items: stretch;
+      margin-bottom: 24px;
+    }
+    .card {
+      background: var(--panel);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,255,255,.7);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .hero-copy {
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: .02em;
+      color: var(--blue);
+      background: rgba(79,124,255,.10);
+      border: 1px solid rgba(79,124,255,.18);
+      padding: 8px 14px;
+      border-radius: 999px;
+    }
+    h1 {
+      margin: 18px 0 12px;
+      font-size: clamp(30px, 5vw, 52px);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+    }
+    .subtitle {
+      margin: 0 0 18px;
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--muted);
+      max-width: 58ch;
+    }
+    .decision-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+    .decision {
+      border-radius: 22px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #fff, #f7fbff);
+    }
+    .decision .label {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .decision .value {
+      margin-top: 8px;
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.15;
+    }
+    .decision small {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+    }
+    .hero-art {
+      overflow: hidden;
+      min-height: 380px;
+      position: relative;
+      background: linear-gradient(135deg, #edf4ff, #ffffff 40%, #eefdfb);
+    }
+    .hero-art img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .meta-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 14px;
+      margin: 18px 0 28px;
+    }
+    .meta-box {
+      padding: 16px 18px;
+      border-radius: 22px;
+      background: var(--panel-strong);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+    .meta-box .k { color: var(--muted); font-size: 13px; font-weight: 700; text-transform: uppercase; }
+    .meta-box .v { margin-top: 7px; font-size: 18px; font-weight: 800; }
+    .section-title {
+      margin: 34px 0 16px;
+      font-size: clamp(24px, 3vw, 34px);
+      line-height: 1.15;
+    }
+    .section-subtitle {
+      margin: -6px 0 18px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+    .why {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .mini-card {
+      padding: 20px;
+    }
+    .mini-card h3 { margin: 0 0 8px; font-size: 20px; }
+    .mini-card p { margin: 0; color: var(--muted); }
+    .repos {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 18px;
+      margin-top: 18px;
+    }
+    .repo {
+      padding: 22px;
+      position: relative;
+    }
+    .repo header {
+      display: flex;
+      gap: 14px;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .repo h3 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.15;
+    }
+    .role { color: var(--muted); font-size: 15px; margin-top: 6px; }
+    .stars {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 800;
+      font-size: 14px;
+      background: linear-gradient(180deg, #fff8e9, #fff1c9);
+      color: #9a6700;
+      border: 1px solid #ffe1a1;
+    }
+    .url {
+      display: inline-block;
+      margin: 8px 0 14px;
+      color: var(--blue);
+      text-decoration: none;
+      word-break: break-word;
+      font-weight: 700;
+    }
+    .url:hover { text-decoration: underline; }
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 10px;
+      margin: 10px 0 14px;
+    }
+    .score {
+      background: #f7faff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px;
+    }
+    .score .label { font-size: 13px; color: var(--muted); font-weight: 700; }
+    .bar {
+      margin-top: 8px;
+      height: 10px;
+      border-radius: 999px;
+      background: #e8effd;
+      overflow: hidden;
+    }
+    .bar > span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue), var(--teal));
+    }
+    .lists {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 10px;
+    }
+    .pill-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .good { background: rgba(16,183,164,.12); color: #0b7f71; }
+    .bad { background: rgba(255,107,107,.12); color: #c24c4c; }
+    ul { margin: 0; padding-left: 18px; }
+    li + li { margin-top: 8px; }
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 24px;
+      background: var(--panel-strong);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+      margin-top: 18px;
+    }
+    .compare-table th, .compare-table td {
+      padding: 14px 16px;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid #e8eefc;
+    }
+    .compare-table th {
+      font-size: 14px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: .04em;
+      background: #f7faff;
+    }
+    .tag {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      background: #eef3ff;
+      color: var(--blue);
+      border: 1px solid #dce6ff;
+    }
+    .legend {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .sources {
+      margin-top: 26px;
+      padding: 24px;
+    }
+    .sources h3 { margin-top: 0; }
+    .sources ol { margin: 10px 0 0; padding-left: 20px; }
+    .sources li { margin-bottom: 10px; }
+    .sources a { color: var(--blue); }
+    .footer-note {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    @media (max-width: 920px) {
+      .hero, .why, .repos, .meta-strip, .decision-grid, .lists { grid-template-columns: 1fr; }
+      .score-grid { grid-template-columns: 1fr; }
+      .hero-art { min-height: 240px; }
+      .wrap { width: min(100vw - 20px, 1200px); }
+      h1 { font-size: 34px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-copy card">
+        <div class="eyebrow">🔎 เทียบจาก repo ยอดนิยม + README + งานวิจัย anti-bot</div>
+        <h1>Headless Browser ตัวไหน<br>โดน block น้อย และเหมาะกับ AI มากที่สุด?</h1>
+        <p class="subtitle">สรุปให้ดูง่ายแบบภาพเดียวจบ: ดูทั้งความ stealth, ความเหมาะกับ AI agent, ecosystem, และข้อแลกเปลี่ยนของแต่ละตัว พร้อม URL ไปยัง repo ต้นทางค่ะ</p>
+        <div class="decision-grid">
+          <div class="decision">
+            <div class="label">โดน block น้อยสุด (โอเพนซอร์สยอดนิยม)</div>
+            <div class="value">nodriver</div>
+            <small>เพราะตัดร่องรอย webdriver / Selenium ออก และใช้ direct CDP มากขึ้น</small>
+          </div>
+          <div class="decision">
+            <div class="label">ดีที่สุดสำหรับ AI ใช้งานจริง</div>
+            <div class="value">Playwright + rebrowser patches</div>
+            <small>ได้ทั้งความเก่งของ Playwright และลดรอยรั่วเรื่อง automation detection</small>
+          </div>
+        </div>
+      </div>
+      <div class="hero-art card">
+        <img src="hero.png" alt="ภาพประกอบ browser automation tools" />
+      </div>
+    </section>
+
+    <section class="meta-strip">
+      <div class="meta-box"><div class="k">ฐานข้อมูลที่ดู</div><div class="v">8 repos หลัก</div></div>
+      <div class="meta-box"><div class="k">มุมที่เทียบ</div><div class="v">Stealth / AI-fit / Ecosystem</div></div>
+      <div class="meta-box"><div class="k">แหล่งอ้างอิง</div><div class="v">GitHub README + repo stats + DataDome</div></div>
+      <div class="meta-box"><div class="k">อัปเดต</div><div class="v">2026-08-16 21:10 +07</div></div>
+    </section>
+
+    <h2 class="section-title">อ่านภาพนี้ยังไงดี</h2>
+    <p class="section-subtitle">ถ้าหัวหน้าจะเลือกใช้งานจริง หนูแนะนำให้ดูตาม 3 คำถามนี้ก่อนค่ะ</p>
+    <section class="why">
+      <div class="mini-card card">
+        <h3>1) ถ้าเว็บกันบอทโหด</h3>
+        <p>อย่าดูแค่ว่า script รันได้ไหม ต้องดูด้วยว่ามีร่องรอย CDP, webdriver, headless หรือเปล่าค่ะ</p>
+      </div>
+      <div class="mini-card card">
+        <h3>2) ถ้าให้ AI ใช้เอง</h3>
+        <p>ตัวที่ agent-friendly จะสำคัญมาก เช่น action ที่เสถียร, debug ง่าย, และมี ecosystem รองรับค่ะ</p>
+      </div>
+      <div class="mini-card card">
+        <h3>3) ถ้าจะดูแลงานยาว ๆ</h3>
+        <p>ของที่ stealth มาก แต่ ecosystem เล็ก อาจดูแลยากกว่า stack หลักที่มี community ใหญ่ค่ะ</p>
+      </div>
+    </section>
+
+    <h2 class="section-title">สรุปแต่ละตัวแบบเข้าใจง่าย</h2>
+    <p class="section-subtitle">คะแนนด้านล่างเป็น “Hermes practical summary” จากข้อมูล repo/README ที่ตรวจมา ไม่ใช่ benchmark ทางวิทยาศาสตร์ค่ะ</p>
+
+    <section class="repos">
+      <article class="repo card">
+        <header>
+          <div>
+            <h3>nodriver</h3>
+            <div class="role">Direct-CDP automation framework</div>
+          </div>
+          <div class="stars">★ 4.7k</div>
+        </header>
+        <a class="url" href="https://github.com/ultrafunkamsterdam/nodriver">https://github.com/ultrafunkamsterdam/nodriver</a>
+        <div class="score-grid">
+          <div class="score"><div class="label">Stealth</div><div class="bar"><span style="width:92%"></span></div></div>
+          <div class="score"><div class="label">AI-friendly</div><div class="bar"><span style="width:68%"></span></div></div>
+          <div class="score"><div class="label">Maturity</div><div class="bar"><span style="width:66%"></span></div></div>
+        </div>
+        <div class="lists">
+          <div>
+            <div class="pill-title good">✅ ข้อดี</div>
+            <ul>
+              <li>เป็น successor ของ undetected-chromedriver</li>
+              <li>README บอกตรง ๆ ว่า “no more webdriver, no more selenium”</li>
+              <li>เหมาะกับโจทย์ที่อยากลดการโดน anti-bot จับ</li>
+            </ul>
+          </div>
+          <div>
+            <div class="pill-title bad">⚠️ ข้อเสีย</div>
+            <ul>
+              <li>ecosystem เล็กกว่า Playwright</li>
+              <li>เครื่องมือรอบตัวสำหรับ AI agent ยังไม่กว้างเท่า stack ใหญ่</li>
+              <li>เน้น Python เป็นหลัก</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="repo card">
+        <header>
+          <div>
+            <h3>Playwright + rebrowser patches</h3>
+            <div class="role">Modern agent stack + stealth patch layer</div>
+          </div>
+          <div class="stars">★ 94.6k + 1.4k</div>
+        </header>
+        <a class="url" href="https://github.com/microsoft/playwright">https://github.com/microsoft/playwright</a><br>
+        <a class="url" href="https://github.com/rebrowser/rebrowser-patches">https://github.com/rebrowser/rebrowser-patches</a>
+        <div class="score-grid">
+          <div class="score"><div class="label">Stealth</div><div class="bar"><span style="width:87%"></span></div></div>
+          <div class="score"><div class="label">AI-friendly</div><div class="bar"><span style="width:96%"></span></div></div>
+          <div class="score"><div class="label">Maturity</div><div class="bar"><span style="width:93%"></span></div></div>
+        </div>
+        <div class="lists">
+          <div>
+            <div class="pill-title good">✅ ข้อดี</div>
+            <ul>
+              <li>Playwright แข็งมากสำหรับ AI, MCP, cross-browser และ debugging</li>
+              <li>rebrowser ออกแบบมาเพื่ออุดรอยรั่ว automation detection โดยตรง</li>
+              <li>บาลานซ์ดีสุดระหว่าง “ใช้จริงง่าย” กับ “หลบ block ได้ดีขึ้น”</li>
+            </ul>
+          </div>
+          <div>
+            <div class="pill-title bad">⚠️ ข้อเสีย</div>
+            <ul>
+              <li>ถ้าใช้ Playwright แบบ stock เฉย ๆ ยังโดนจับได้ง่ายกว่าสาย stealth</li>
+              <li>patch approach อาจเปราะเมื่อ upstream เปลี่ยนเร็ว</li>
+              <li>ยังต้องดูเรื่อง proxy / fingerprint / พฤติกรรมประกอบ</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="repo card">
+        <header>
+          <div>
+            <h3>browser-use</h3>
+            <div class="role">AI agent layer</div>
+          </div>
+          <div class="stars">★ 109.4k</div>
+        </header>
+        <a class="url" href="https://github.com/browser-use/browser-use">https://github.com/browser-use/browser-use</a>
+        <div class="score-grid">
+          <div class="score"><div class="label">Stealth</div><div class="bar"><span style="width:48%"></span></div></div>
+          <div class="score"><div class="label">AI-friendly</div><div class="bar"><span style="width:95%"></span></div></div>
+          <div class="score"><div class="label">Maturity</div><div class="bar"><span style="width:84%"></span></div></div>
+        </div>
+        <div class="lists">
+          <div>
+            <div class="pill-title good">✅ ข้อดี</div>
+            <ul>
+              <li>ดังมากในสาย AI browser agents</li>
+              <li>เล่า task เป็นภาษาคนแล้วให้ agent ลุยต่อได้ง่าย</li>
+              <li>เหมาะทำ workflow อัตโนมัติเร็ว ๆ</li>
+            </ul>
+          </div>
+          <div>
+            <div class="pill-title bad">⚠️ ข้อเสีย</div>
+            <ul>
+              <li>ไม่ใช่ stealth core เอง</li>
+              <li>สุดท้ายยังพึ่ง browser stack ข้างล่าง</li>
+              <li>ถ้าเว็บกันบอทหนัก ต้องเสริมชั้น stealth อยู่ดี</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="repo card">
+        <header>
+          <div>
+            <h3>Stagehand</h3>
+            <div class="role">SDK for browser agents</div>
+          </div>
+          <div class="stars">★ 24.0k</div>
+        </header>
+        <a class="url" href="https://github.com/browserbase/stagehand">https://github.com/browserbase/stagehand</a>
+        <div class="score-grid">
+          <div class="score"><div class="label">Stealth</div><div class="bar"><span style="width:52%"></span></div></div>
+          <div class="score"><div class="label">AI-friendly</div><div class="bar"><span style="width:92%"></span></div></div>
+          <div class="score"><div class="label">Maturity</div><div class="bar"><span style="width:80%"></span></div></div>
+        </div>
+        <div class="lists">
+          <div>
+            <div class="pill-title good">✅ ข้อดี</div>
+            <ul>
+              <li>สร้างมาเพื่อ agent โดยตรง</li>
+              <li>มี self-healing actions และ context ที่อ่านโดย LLM ได้ดี</li>
+              <li>เหมาะงาน production agent มาก</li>
+            </ul>
+          </div>
+          <div>
+            <div class="pill-title bad">⚠️ ข้อเสีย</div>
+            <ul>
+              <li>ไม่ใช่ stealth browser core</li>
+              <li>เรื่องโดน block ยังขึ้นกับฐาน browser ข้างล่าง</li>
+              <li>มองเป็นชั้น orchestration มากกว่าตัวกันจับ</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="repo card">
+        <header>
+          <div>
+            <h3>Puppeteer</h3>
+            <div class="role">CDP-first automation framework</div>
+          </div>
+          <div class="stars">★ 95.5k</div>
+        </header>
+        <a class="url" href="https://github.com/puppeteer/puppeteer">https://github.com/puppeteer/puppeteer</a>
+        <div class="score-grid">
+          <div class="score"><div class="label">Stealth</div><div class="bar"><span style="width:46%"></span></div></div>
+          <div class="score"><div class="label">AI-friendly</div><div class="bar"><span style="width:78%"></span></div></div>
+          <div class="score"><div class="label">Maturity</div><div class="bar"><span style="width:92%"></span></div></div>
+        </div>
+        <div class="lists">
+          <div>
+            <div class="pill-title good">✅ ข้อดี</div>
+            <ul>
+              <li>ดังมาก ใช้ง่าย และ ecosystem ใหญ่</li>
+              <li>เหมาะกับงาน Chrome automation พื้นฐานถึงกลาง</li>
+              <li>ต่อยอดกับ patch/stealth layer ได้</li>
+            </ul>
+          </div>
+          <div>
+            <div class="pill-title bad">⚠️ ข้อเสีย</div>
+            <ul>
+              <li>headless/CDP signals เป็นจุดที่โดนจับได้ง่ายกว่า</li>
+              <li>สำหรับเว็บกันหนัก ๆ มักต้องเสริมเพิ่ม</li>
+              <li>โดยรวมหนูยังให้น้ำหนักน้อยกว่า patched Playwright</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="repo card">
+        <header>
+          <div>
+            <h3>Playwright (stock)</h3>
+            <div class="role">Core browser automation framework</div>
+          </div>
+          <div class="stars">★ 94.6k</div>
+        </header>
+        <a class="url" href="https://github.com/microsoft/playwright">https://github.com/microsoft/playwright</a>
+        <div class="score-grid">
+          <div class="score"><div class="label">Stealth</div><div class="bar"><span style="width:44%"></span></div></div>
+          <div class="score"><div class="label">AI-friendly</div><div class="bar"><span style="width:95%"></span></div></div>
+          <div class="score"><div class="label">Maturity</div><div class="bar"><span style="width:95%"></span></div></div>
+        </div>
+        <div class="lists">
+          <div>
+            <div class="pill-title good">✅ ข้อดี</div>
+            <ul>
+              <li>ดีที่สุดตัวหนึ่งสำหรับ agent actions ที่เสถียร</li>
+              <li>cross-browser, trace/debug ดีมาก</li>
+              <li>เป็นฐานที่ดีมากถ้าจะสร้าง AI browser stack</li>
+            </ul>
+          </div>
+          <div>
+            <div class="pill-title bad">⚠️ ข้อเสีย</div>
+            <ul>
+              <li>แบบ stock ยังไม่ stealth พอสำหรับเป้าหมาย anti-bot ยาก ๆ</li>
+              <li>README ของ rebrowser ชี้ว่ามี leak หลายจุดที่ตรวจจับได้</li>
+              <li>ควรเสริม patch หรือ custom browser เมื่อเจอเว็บโหด</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="repo card">
+        <header>
+          <div>
+            <h3>undetected-chromedriver</h3>
+            <div class="role">Patched Selenium Chromedriver</div>
+          </div>
+          <div class="stars">★ 12.8k</div>
+        </header>
+        <a class="url" href="https://github.com/ultrafunkamsterdam/undetected-chromedriver">https://github.com/ultrafunkamsterdam/undetected-chromedriver</a>
+        <div class="score-grid">
+          <div class="score"><div class="label">Stealth</div><div class="bar"><span style="width:79%"></span></div></div>
+          <div class="score"><div class="label">AI-friendly</div><div class="bar"><span style="width:58%"></span></div></div>
+          <div class="score"><div class="label">Maturity</div><div class="bar"><span style="width:69%"></span></div></div>
+        </div>
+        <div class="lists">
+          <div>
+            <div class="pill-title good">✅ ข้อดี</div>
+            <ul>
+              <li>ดังมากในสาย anti-detect แบบ Selenium</li>
+              <li>เริ่มต้นง่ายสำหรับคนมีของเดิมบน Selenium</li>
+              <li>ยังมีประโยชน์กับบางงาน scraping/automation</li>
+            </ul>
+          </div>
+          <div>
+            <div class="pill-title bad">⚠️ ข้อเสีย</div>
+            <ul>
+              <li>ยังติดกับโลก Selenium/Chromedriver</li>
+              <li>เจ้าของ repo เตือนเองว่า IP reputation สำคัญมาก</li>
+              <li>issue backlog ใหญ่และไม่ใช่ตัวที่หนูเลือกอันดับ 1 แล้ว</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="repo card">
+        <header>
+          <div>
+            <h3>Selenium</h3>
+            <div class="role">WebDriver ecosystem</div>
+          </div>
+          <div class="stars">★ 34.4k</div>
+        </header>
+        <a class="url" href="https://github.com/SeleniumHQ/selenium">https://github.com/SeleniumHQ/selenium</a>
+        <div class="score-grid">
+          <div class="score"><div class="label">Stealth</div><div class="bar"><span style="width:28%"></span></div></div>
+          <div class="score"><div class="label">AI-friendly</div><div class="bar"><span style="width:62%"></span></div></div>
+          <div class="score"><div class="label">Maturity</div><div class="bar"><span style="width:96%"></span></div></div>
+        </div>
+        <div class="lists">
+          <div>
+            <div class="pill-title good">✅ ข้อดี</div>
+            <ul>
+              <li>เก่าแก่ แข็งแรง และรองรับหลายภาษา</li>
+              <li>enterprise ใช้กันเยอะ</li>
+              <li>เหมาะกับ testing/compatibility มาก</li>
+            </ul>
+          </div>
+          <div>
+            <div class="pill-title bad">⚠️ ข้อเสีย</div>
+            <ul>
+              <li>ไม่ใช่ตัวเลือกแรกถ้าเน้น stealth หนัก ๆ</li>
+              <li>WebDriver fingerprints เป็นของที่ anti-bot มองก่อนเลย</li>
+              <li>สำหรับ AI browser agent รุ่นใหม่ มักมีตัวเลือกที่เหมาะกว่า</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <h2 class="section-title">สรุปเร็ว ถ้าจะเลือกใช้งานจริง</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>โจทย์</th>
+          <th>ตัวที่เหมาะ</th>
+          <th>เหตุผลแบบบ้าน ๆ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tag">เน้นโดน block น้อยสุด</span></td>
+          <td><strong>nodriver</strong></td>
+          <td>ลดร่องรอย webdriver/Selenium ชัดที่สุดในกลุ่มยอดนิยมที่ดูมา</td>
+        </tr>
+        <tr>
+          <td><span class="tag">เน้น AI ใช้งานจริงระยะยาว</span></td>
+          <td><strong>Playwright + rebrowser patches</strong></td>
+          <td>ตัวหลักเก่งมากเรื่อง agent + มี patch ช่วยลด automation leaks</td>
+        </tr>
+        <tr>
+          <td><span class="tag">เน้น workflow agent สำเร็จรูป</span></td>
+          <td><strong>browser-use / Stagehand</strong></td>
+          <td>ใช้ง่ายสำหรับ agent แต่ถ้าเจอเว็บกันหนักก็ยังต้องเสริมฐาน stealth</td>
+        </tr>
+        <tr>
+          <td><span class="tag">มี Selenium เดิมอยู่แล้ว</span></td>
+          <td><strong>undetected-chromedriver</strong></td>
+          <td>ย้ายงานเดิมต่อได้ง่าย แต่ไม่ใช่คำตอบที่ดีที่สุดสำหรับอนาคต AI stack</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="legend">
+      <span>💡 หลักสำคัญ: stealth ไม่ได้มาจาก browser อย่างเดียว</span>
+      <span>• proxy / IP reputation</span>
+      <span>• fingerprint coherence</span>
+      <span>• human-like behavior</span>
+      <span>• timing & flow ของการใช้งาน</span>
+    </div>
+
+    <section class="sources card">
+      <h3>Sources / URL อ้างอิง</h3>
+      <ol>
+        <li><a href="https://github.com/browser-use/browser-use">browser-use/browser-use</a></li>
+        <li><a href="https://github.com/browserbase/stagehand">browserbase/stagehand</a></li>
+        <li><a href="https://github.com/microsoft/playwright">microsoft/playwright</a></li>
+        <li><a href="https://github.com/puppeteer/puppeteer">puppeteer/puppeteer</a></li>
+        <li><a href="https://github.com/SeleniumHQ/selenium">SeleniumHQ/selenium</a></li>
+        <li><a href="https://github.com/ultrafunkamsterdam/undetected-chromedriver">ultrafunkamsterdam/undetected-chromedriver</a></li>
+        <li><a href="https://github.com/ultrafunkamsterdam/nodriver">ultrafunkamsterdam/nodriver</a></li>
+        <li><a href="https://github.com/rebrowser/rebrowser-patches">rebrowser/rebrowser-patches</a></li>
+        <li><a href="https://datadome.co/threat-research/how-new-headless-chrome-the-cdp-signal-are-impacting-bot-detection/">DataDome: How New Headless Chrome & the CDP Signal Are Impacting Bot Detection</a></li>
+      </ol>
+      <div class="footer-note">หมายเหตุ: ดาว GitHub และข้อสรุปนี้อิงจากข้อมูลที่เช็คในรอบนี้ ส่วนคะแนน stealth / AI-friendly / maturity เป็นการสรุปเชิงปฏิบัติจาก repo ยอดนิยมและคำอธิบายใน README ค่ะ</div>
+    </section>
+  </div>
+</body>
+</html>
