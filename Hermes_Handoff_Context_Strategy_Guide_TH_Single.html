@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="th" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>คู่มือ Handoff &amp; Context Strategy สำหรับ Hermes Agent — Hermes Agent Documentation</title>
+<style>
+:root{--bg:#f4f7fb;--panel:#fff;--panel2:#f8fafc;--text:#1b2638;--muted:#64748b;--line:#dbe3ee;--brand:#164e87;--brand2:#0f7d77;--accent:#e7f0fb;--code:#111827;--codeText:#e5edf7;--shadow:0 8px 30px rgba(15,35,60,.08);--fs:16px;--topbar-h:64px}
+html[data-theme="dark"]{--bg:#0d1420;--panel:#111b2a;--panel2:#162235;--text:#e8eef7;--muted:#9dafc5;--line:#2a3a50;--brand:#79b7ff;--brand2:#64d1c5;--accent:#172a43;--code:#08101b;--codeText:#dce7f5;--shadow:0 8px 30px rgba(0,0,0,.28)}
+*{box-sizing:border-box}html{font-size:var(--fs)}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"Noto Sans Thai","Segoe UI",Tahoma,Arial,sans-serif;line-height:1.65;overflow-x:hidden}button{font:inherit}.topbar{position:fixed;inset:0 0 auto 0;height:var(--topbar-h);background:color-mix(in srgb,var(--panel) 94%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);z-index:40;display:flex;align-items:center;justify-content:space-between;padding:0 22px}.brand{display:flex;gap:12px;align-items:center;font-weight:750;min-width:0}.logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;color:white;font-weight:900;flex:0 0 auto}.brand-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.controls{display:flex;gap:8px;align-items:center}.iconbtn,.langbtn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:9px;height:38px;padding:0 11px;cursor:pointer}.iconbtn{min-width:39px}.iconbtn:hover,.langbtn:hover{background:var(--panel2)}.langswitch{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--panel)}.langbtn{border:0;border-radius:0;height:36px;min-width:42px;padding:0 10px}.langbtn.active{background:var(--brand);color:white}.layout{display:grid;grid-template-columns:280px minmax(0,1fr);min-height:100vh;padding-top:var(--topbar-h)}aside{position:fixed;left:0;top:var(--topbar-h);bottom:0;width:280px;overflow:auto;border-right:1px solid var(--line);background:var(--panel);padding:22px 16px;z-index:30}.nav-label{font-size:.72rem;color:var(--muted);font-weight:800;letter-spacing:.12em;margin:4px 10px 12px}nav a{display:flex;gap:10px;align-items:flex-start;text-decoration:none;color:var(--text);padding:9px 10px;border-radius:8px;font-size:.88rem;line-height:1.35;margin:2px 0}nav a .num{font-size:.72rem;color:var(--brand);font-weight:800;min-width:22px;margin-top:2px}nav a:hover,nav a.active{background:var(--accent);color:var(--brand)}main{grid-column:2;width:min(1080px,100%);padding:42px 52px 80px;margin:0 auto}.doc-section{margin-bottom:24px}.hero{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:36px 38px;box-shadow:var(--shadow)}.eyebrow{font-size:.76rem;letter-spacing:.16em;font-weight:800;color:var(--brand2)}h1{font-size:clamp(2rem,4vw,3.15rem);line-height:1.12;margin:.5rem 0 1rem;letter-spacing:-.035em}.lead{font-size:1.08rem;color:var(--muted);max-width:900px}h2{font-size:1.62rem;line-height:1.25;margin:0 0 18px;padding:18px 0 12px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center}.sec-num{font-size:.76rem;background:var(--accent);color:var(--brand);padding:5px 8px;border-radius:7px;letter-spacing:.06em}h3{font-size:1.08rem;margin:24px 0 10px}h4{font-size:.98rem;margin:20px 0 8px}p{margin:9px 0 14px}ul,ol{margin:8px 0 16px;padding-left:1.4rem}li{margin:3px 0}code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:.88em}p code,li code,td code{background:var(--accent);padding:.12em .38em;border-radius:5px;color:var(--brand)}blockquote{margin:18px 0;padding:14px 18px;border-left:4px solid var(--brand2);background:var(--panel2);font-size:1.02rem}.notice,.important{padding:14px 16px;border:1px solid var(--line);background:var(--panel2);border-radius:10px;margin:18px 0}.important{border-left:4px solid var(--brand2)}.layer-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:14px 0}.layer-card h3{margin-top:0;color:var(--brand)}.code-wrap{border:1px solid #25354a;border-radius:10px;overflow:hidden;margin:12px 0 18px;background:var(--code);max-width:100%}.code-head{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 10px 0 13px;background:#182235;color:#aebdd0;font-size:.72rem;letter-spacing:.04em;text-transform:uppercase}.copy-btn{background:#26354b;color:#f2f6fb;border:1px solid #3a4b63;border-radius:6px;padding:4px 9px;cursor:pointer;font-size:.72rem}pre{margin:0;padding:16px 18px;overflow:auto;max-height:430px;color:var(--codeText);font-size:.84rem;line-height:1.55;max-width:100%}pre code{font-size:inherit;white-space:pre}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px;margin:12px 0 18px}table{border-collapse:collapse;width:100%;min-width:620px;background:var(--panel)}th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:var(--panel2);font-size:.82rem}.page-nav{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:42px;padding-top:20px;border-top:1px solid var(--line)}.page-link{display:block;text-decoration:none;color:var(--text);border:1px solid var(--line);background:var(--panel);border-radius:11px;padding:12px 14px}.page-link:hover{background:var(--panel2)}.page-link.next{text-align:right}.page-link small{display:block;color:var(--muted);font-size:.72rem}.footer{color:var(--muted);font-size:.82rem;padding-top:18px;margin-top:24px}.mobile-menu{display:none}.nav-overlay{display:none}p,li,td,th,blockquote{overflow-wrap:anywhere}img,svg,video,canvas{max-width:100%;height:auto}
+@media(max-width:900px){:root{--topbar-h:58px}.topbar{padding:0 max(10px,env(safe-area-inset-right)) 0 max(10px,env(safe-area-inset-left));gap:8px}.layout{display:block}.mobile-menu{display:inline-grid;place-items:center}.brand{gap:8px}.logo{width:32px;height:32px}.brand-text{font-size:.92rem}.brand-text small{display:none}.controls{gap:5px}.iconbtn{min-width:35px;width:35px;height:35px;padding:0}.langswitch{height:35px}.langbtn{height:33px;min-width:38px;padding:0 8px;font-size:.8rem}aside{left:min(-86vw,-320px);width:min(86vw,320px);transition:left .22s ease;box-shadow:0 18px 50px rgba(0,0,0,.25);padding:18px 14px}aside.open{left:0}.nav-overlay{display:block;position:fixed;inset:var(--topbar-h) 0 0 0;background:rgba(4,12,22,.42);z-index:29;opacity:0;pointer-events:none;transition:opacity .22s ease}body.nav-open .nav-overlay{opacity:1;pointer-events:auto}body.nav-open{overflow:hidden}main{width:100%;padding:24px clamp(14px,4vw,22px) max(56px,env(safe-area-inset-bottom));margin:0}.hero{padding:24px clamp(16px,4vw,24px)}h1{font-size:clamp(1.72rem,7vw,2.35rem)}h2{font-size:1.35rem;align-items:flex-start}.layer-card{padding:15px 16px}pre{padding:14px 15px;font-size:.79rem;max-height:52dvh}table{min-width:560px}.page-nav{grid-template-columns:1fr}}
+@media(max-width:560px){.brand-text{display:none}.logo{display:none}.controls{margin-left:auto;gap:4px}.iconbtn{min-width:33px;width:33px;height:33px;font-size:.76rem}.langswitch{height:33px}.langbtn{height:31px;min-width:34px;padding:0 6px;font-size:.74rem}main{padding-left:13px;padding-right:13px}.hero{padding:20px 16px}h1{font-size:clamp(1.55rem,8vw,2rem)}h2{font-size:1.23rem}pre{font-size:.75rem;padding:12px 13px}}
+@media print{.topbar,aside,.page-nav{display:none}.layout{display:block;padding:0}main{padding:0;width:100%}.copy-btn{display:none}}
+
+nav button{width:100%;display:flex;gap:10px;align-items:flex-start;text-align:left;border:0;background:transparent;color:var(--text);padding:9px 10px;border-radius:8px;font-size:.88rem;line-height:1.35;margin:2px 0;cursor:pointer;font-family:inherit}nav button .num{font-size:.72rem;color:var(--brand);font-weight:800;min-width:22px;margin-top:2px}nav button:hover,nav button.active{background:var(--accent);color:var(--brand)}.manual-page[hidden]{display:none!important}.manual-page{animation:pageIn .16s ease}@keyframes pageIn{from{opacity:.35;transform:translateY(3px)}to{opacity:1;transform:none}}.page-nav button{width:100%;font:inherit;text-align:left;cursor:pointer}.page-nav button.next{text-align:right}.page-nav button:disabled{visibility:hidden}.page-position{font-size:.74rem;color:var(--muted);margin-bottom:10px}.topbar-page{display:none}@media(max-width:900px){.topbar-page{display:inline;color:var(--muted);font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:34vw}}</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><button class="iconbtn mobile-menu" id="menuBtn" aria-label="Open menu">☰</button><div class="logo">H</div><div class="brand-text">Hermes Agent <small style="color:var(--muted);font-weight:500">Documentation</small></div><span class="topbar-page" id="topbarPage"></span></div>
+  <div class="controls"><div class="langswitch" aria-label="Language"><button class="langbtn active" data-lang="th">TH</button><button class="langbtn" data-lang="en">EN</button></div><button class="iconbtn" id="fontDown" title="ลดขนาดตัวอักษร">A−</button><button class="iconbtn" id="fontReset" title="ขนาดมาตรฐาน">A</button><button class="iconbtn" id="fontUp" title="เพิ่มขนาดตัวอักษร">A+</button><button class="iconbtn" id="themeBtn" title="Light / Dark mode">◐</button></div>
+</header>
+<div class="layout">
+<aside id="sidebar"><div class="nav-label" data-th="สารบัญคู่มือ" data-en="DOCUMENT CONTENTS">สารบัญคู่มือ</div><nav><button type="button" class="nav-page active" data-page="00"><span class="num">00</span><span class="navtxt" data-th="ภาพรวมและวัตถุประสงค์" data-en="Overview &amp; Purpose">ภาพรวมและวัตถุประสงค์</span></button><button type="button" class="nav-page " data-page="01"><span class="num">01</span><span class="navtxt" data-th="เหตุผลที่ Hermes อาจ “ลืม” หลังใช้ /new" data-en="Why Hermes may forget after /new">เหตุผลที่ Hermes อาจ “ลืม” หลังใช้ /new</span></button><button type="button" class="nav-page " data-page="02"><span class="num">02</span><span class="navtxt" data-th="Five-layer Context Strategy" data-en="Five-layer Context Strategy">Five-layer Context Strategy</span></button><button type="button" class="nav-page " data-page="03"><span class="num">03</span><span class="navtxt" data-th="Handoff Strategy" data-en="Handoff Strategy">Handoff Strategy</span></button><button type="button" class="nav-page " data-page="04"><span class="num">04</span><span class="navtxt" data-th="การเริ่ม New Session อย่างมีประสิทธิภาพ" data-en="Starting a New Session Effectively">การเริ่ม New Session อย่างมีประสิทธิภาพ</span></button><button type="button" class="nav-page " data-page="05"><span class="num">05</span><span class="navtxt" data-th="Profile และ Bot Strategy" data-en="Profile &amp; Bot Strategy">Profile และ Bot Strategy</span></button><button type="button" class="nav-page " data-page="06"><span class="num">06</span><span class="navtxt" data-th="Public-safe Documentation Strategy" data-en="Public-safe Documentation Strategy">Public-safe Documentation Strategy</span></button><button type="button" class="nav-page " data-page="07"><span class="num">07</span><span class="navtxt" data-th="Recommended Operating Playbooks" data-en="Recommended Operating Playbooks">Recommended Operating Playbooks</span></button><button type="button" class="nav-page " data-page="08"><span class="num">08</span><span class="navtxt" data-th="Copy-paste Prompt Library" data-en="Copy-paste Prompt Library">Copy-paste Prompt Library</span></button><button type="button" class="nav-page " data-page="09"><span class="num">09</span><span class="navtxt" data-th="Checklist เพื่อประสิทธิภาพสูงสุด" data-en="Maximum Efficiency Checklist">Checklist เพื่อประสิทธิภาพสูงสุด</span></button><button type="button" class="nav-page " data-page="10"><span class="num">10</span><span class="navtxt" data-th="Core Principle" data-en="Core Principle">Core Principle</span></button></nav></aside>
+<div class="nav-overlay" id="navOverlay"></div>
+<main>
+<div class="page-position" id="pagePosition"></div>
+<article class="manual-page" data-page="00" data-title-th="คู่มือ Handoff &amp; Context Strategy สำหรับ Hermes Agent" data-title-en="Hermes Agent Handoff &amp; Context Strategy Guide" ><section class="doc-section">
+<div class="eyebrow">HERMES AGENT · USER GUIDE</div>
+<h1 data-en="Hermes Agent Handoff &amp; Context Strategy Guide" data-th="คู่มือ Handoff &amp; Context Strategy สำหรับ Hermes Agent">คู่มือ Handoff &amp; Context Strategy สำหรับ Hermes Agent</h1>
+<p class="lead">คู่มือฉบับ Public-safe สำหรับการทำงานกับ Hermes Agent ในบทสนทนาระยะยาว การใช้ <code>/new</code> หลาย chat surfaces, bots, profiles, project folders, skills, memory และ handoff files โดยไม่สูญเสีย context สำคัญ</p>
+<div class="notice"><strong>Public-safe version</strong><br/>คู่มือนี้ใช้ generic placeholders เท่านั้นโดยตั้งใจ และไม่มี private names, real device names, entity IDs, URLs, IP addresses, tokens, emails, house-specific details หรือ account-specific identifiers</div>
+<h3 data-en="Purpose" data-th="วัตถุประสงค์">วัตถุประสงค์</h3>
+<p>เอกสารนี้อธิบายวิธีทำงานกับ Hermes Agent ในสถานการณ์ที่บทสนทนายาว มีการเริ่ม <code>/new</code> session ใช้งานผ่าน chat surfaces ที่แตกต่างกัน ใช้ bots หรือ profiles หลายตัว รวมถึงการจัดการ project folders, skills, memory และ handoff files โดยไม่ทำให้ context สำคัญสูญหาย</p>
+<p>แนวคิดหลักคือ:</p>
+<blockquote>อย่าพยายามให้ Hermes เก็บรายละเอียดทุกอย่างไว้ใน short-term chat context หรือ permanent memory แต่ให้สร้าง layered context system ที่ทำให้ Hermes รู้เสมอว่าควรไปค้นข้อมูลจากที่ใด</blockquote>
+<div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>Short-term chat context = current reasoning and active discussion
+Persistent memory       = compact pointers and durable preferences
+Project files           = current state, TODOs, decisions, verification logs
+Wiki / knowledge base    = durable system knowledge and reference material
+Skills                  = repeatable procedures and workflows
+Session search          = recovery from older conversations
+Handoff summaries        = clean transfer between sessions</code></pre></div></section></article><article class="manual-page" data-page="01" data-title-th="เหตุผลที่ Hermes อาจ “ลืม” หลังใช้ /new" data-title-en="Why Hermes may “forget” after /new" hidden><section class="doc-section"><h2 data-en="Why Hermes may “forget” after /new" data-th="เหตุผลที่ Hermes อาจ “ลืม” หลังใช้ /new"><span class="sec-num">1</span><span class="i18n-heading-title">เหตุผลที่ Hermes อาจ “ลืม” หลังใช้ /new</span></h2>
+<p>เมื่อเริ่ม <code>/new</code> ระบบจะสร้าง conversation context ใหม่ แม้ session ใหม่นั้นอาจยังเข้าถึง tools เช่น memory, skills, files, wiki และ session search ได้ แต่รายละเอียดทั้งหมดจาก chat ก่อนหน้าจะไม่ได้ถูกโหลดเข้าสู่ working context ของ model โดยอัตโนมัติ</p>
+<p>พฤติกรรมนี้เป็นเรื่องปกติและตั้งใจออกแบบไว้ เพื่อให้ session ทำงานได้เร็วขึ้น ประหยัดกว่า และ reasoning ได้ง่ายขึ้น</p>
+<h3 data-en="What generally persists across sessions" data-th="สิ่งที่โดยทั่วไปยังคงอยู่ข้าม sessions">สิ่งที่โดยทั่วไปยังคงอยู่ข้าม sessions</h3>
+<ul><li>Persistent memory</li><li>User profile preferences</li><li>Skills</li><li>Files on disk</li><li>Project context files เช่น <code>.hermes.md</code> หรือ <code>AGENTS.md</code></li><li>Wiki pages</li><li>Session transcripts ที่เข้าถึงได้ผ่าน session search</li><li>Cron jobs หรือ durable background jobs</li><li>External system state เช่น repositories, dashboards, documents และ APIs</li></ul>
+<h3 data-en="What may not be preserved automatically" data-th="สิ่งที่อาจไม่ถูกเก็บต่อโดยอัตโนมัติ">สิ่งที่อาจไม่ถูกเก็บต่อโดยอัตโนมัติ</h3>
+<ul><li>Full chat history จาก session ล่าสุด</li><li>Temporary reasoning steps</li><li>Tool outputs ถ้าไม่ได้บันทึกไว้ที่อื่น</li><li>สถานะงานปัจจุบันที่แน่นอน หากไม่ได้เขียนลงไฟล์</li><li>การตัดสินใจที่คุยกันแบบไม่เป็นทางการใน chat แต่ไม่ได้บันทึก</li><li>รายละเอียดที่ฝังอยู่ใน transcript ยาว ๆ โดยไม่มี searchable summary</li></ul>
+<h3 data-en="Practical rule" data-th="กฎใช้งานจริง">กฎใช้งานจริง</h3><p>ก่อนจบหรือ reset session ที่ยาว ควรบันทึกสถานะที่มีประโยชน์ไว้ในพื้นที่แบบ durable</p>
+<p><strong>ใช้ prompt นี้:</strong></p><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>Before we start a new session, create a handoff summary with:
+- goal
+- current status
+- files changed
+- commands run
+- verification results
+- unresolved issues
+- next exact steps
+- assumptions and constraints
+Save it to STATUS.md and also provide a copy-paste version.</code></pre></div></section></article><article class="manual-page" data-page="02" data-title-th="Five-layer Context Strategy" data-title-en="Five-layer Context Strategy" hidden><section class="doc-section"><h2 data-en="Five-layer Context Strategy" data-th="Five-layer Context Strategy"><span class="sec-num">2</span><span class="i18n-heading-title">Five-layer Context Strategy</span></h2><div class="layer-card"><h3 data-en="Layer 1: Current chat context" data-th="Layer 1: Current chat context">Layer 1: Current chat context</h3><p><strong>เหมาะสำหรับ:</strong></p><ul><li>Active conversation</li><li>Immediate reasoning</li><li>Back-and-forth debugging</li><li>Clarifications</li><li>Short-term task execution</li></ul><p><strong>ไม่ควรพึ่งพาสำหรับ:</strong></p><ul><li>Multi-day project state</li><li>Long-term knowledge</li><li>รายละเอียดที่ต้องอยู่รอดหลัง <code>/new</code></li><li>Critical system mappings หรือ procedures</li></ul><p><strong>Best practice:</strong></p><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>If this matters tomorrow, write it down outside the chat.</code></pre></div></div>
+<div class="layer-card"><h3 data-en="Layer 2: Persistent memory" data-th="Layer 2: Persistent memory">Layer 2: Persistent memory</h3><p>Memory ควรเก็บ facts ที่กระชับและคงทน ซึ่งช่วยลดการอธิบายซ้ำ</p><p><strong>ตัวอย่าง memory ที่ดี:</strong></p><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>The user prefers concise status replies in Thai.</code></pre></div><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>The main infrastructure knowledge base is stored in a local wiki under a known root path.</code></pre></div><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>A specific automation bot uses a separate Hermes profile from the main assistant.</code></pre></div><p><strong>ตัวอย่าง memory ที่ไม่ดี:</strong></p><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>Yesterday the dashboard script failed on line 123.</code></pre></div><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>The current task is half done and needs command X next.</code></pre></div><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>A temporary file was created at /tmp/example-123.</code></pre></div><p><strong>เหตุผลที่ตัวอย่างเหล่านี้ไม่เหมาะ:</strong></p><ul><li>ข้อมูลล้าสมัยเร็ว</li><li>ใช้พื้นที่ memory ที่มีจำกัด</li><li>อาจทำให้ future sessions สับสน</li><li>เหมาะกับการเก็บใน <code>STATUS.md</code>, <code>VERIFY.md</code> หรือ project log มากกว่า</li></ul><h4 data-en="Prompt for saving memory" data-th="Prompt สำหรับบันทึก memory">Prompt สำหรับบันทึก memory</h4><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>Please remember this as a durable preference/fact: [short fact].</code></pre></div><h4 data-en="Prompt to avoid memory pollution" data-th="Prompt เพื่อหลีกเลี่ยง memory pollution">Prompt เพื่อหลีกเลี่ยง memory pollution</h4><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>Do not save this to memory. Put it in the project STATUS.md instead.</code></pre></div></div>
+<div class="layer-card"><h3 data-en="Layer 3: Project folder" data-th="Layer 3: Project folder">Layer 3: Project folder</h3><p>สำหรับงานระยะยาว ให้สร้าง project folder และเก็บ state files ไว้ภายใน</p><p><strong>โครงสร้างแนะนำ:</strong></p><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>project-name/
+  .hermes.md
+  STATUS.md
+  TODO.md
+  DECISIONS.md
+  VERIFY.md
+  CHANGELOG.md
+  scripts/
+  docs/
+  references/
+  artifacts/</code></pre></div><h4 data-en="Purpose of each file" data-th="หน้าที่ของแต่ละไฟล์">หน้าที่ของแต่ละไฟล์</h4><div class="table-wrap"><table><thead><tr><th>File</th><th>Purpose</th></tr></thead><tbody><tr><td><code>.hermes.md</code></td><td>Project-specific instructions และ stable rules</td></tr><tr><td><code>STATUS.md</code></td><td>Current project state และ next steps</td></tr><tr><td><code>TODO.md</code></td><td>Task list, backlog, priorities</td></tr><tr><td><code>DECISIONS.md</code></td><td>Important decisions และเหตุผล</td></tr><tr><td><code>VERIFY.md</code></td><td>Test results, commands run, proof of completion</td></tr><tr><td><code>CHANGELOG.md</code></td><td>Human-readable history ของ major changes</td></tr><tr><td><code>scripts/</code></td><td>Reusable scripts ที่ Hermes หรือคนใช้งาน</td></tr><tr><td><code>docs/</code></td><td>Project documentation</td></tr><tr><td><code>references/</code></td><td>Supporting reference material</td></tr><tr><td><code>artifacts/</code></td><td>Generated files, reports, screenshots, exports</td></tr></tbody></table></div><h4 data-en="Minimal project starter" data-th="Minimal project starter">Minimal project starter</h4><p>คัดลอกข้อความนี้ไปไว้ใน project folder ใหม่</p><div class="code-wrap"><div class="code-head"><span>markdown</span><button class="copy-btn">Copy</button></div><pre><code># Project Context
+
+## Project goal
+Describe the goal in one or two paragraphs.
+
+## Important constraints
+- Do not expose secrets.
+- Do not publish private identifiers.
+- Verify changes before reporting success.
+- Prefer durable files over relying on chat memory.
+
+## Key files
+- STATUS.md: current state and next steps
+- TODO.md: task list
+- DECISIONS.md: decisions and rationale
+- VERIFY.md: commands run and verification results
+
+## Workflow
+1. Read STATUS.md before starting.
+2. Read DECISIONS.md before changing direction.
+3. Update VERIFY.md after tests or checks.
+4. Update STATUS.md before ending the session.
+5. If a reusable workflow is discovered, turn it into a skill.</code></pre></div></div>
+<div class="layer-card"><h3 data-en="Layer 4: Wiki or knowledge base" data-th="Layer 4: Wiki หรือ knowledge base">Layer 4: Wiki หรือ knowledge base</h3><p>ใช้ wiki สำหรับ durable knowledge ที่กว้างกว่า project เดียว</p><p><strong>เนื้อหาที่เหมาะกับ wiki:</strong></p><ul><li>System architecture</li><li>Device หรือ service inventories</li><li>Naming conventions</li><li>Operational runbooks</li><li>Common troubleshooting notes</li><li>Public-safe documentation</li><li>Cross-project knowledge</li></ul><p><strong>โครงสร้างแนะนำ:</strong></p><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>wiki/
+  index.md
+  systems/
+    overview.md
+    services.md
+    network.md
+  automation/
+    dashboards.md
+    devices.md
+    scenes.md
+  hermes/
+    profiles.md
+    bots.md
+    toolsets.md
+    troubleshooting.md</code></pre></div><h4 data-en="Wiki index template" data-th="Wiki index template">Wiki index template</h4><div class="code-wrap"><div class="code-head"><span>markdown</span><button class="copy-btn">Copy</button></div><pre><code># Knowledge Base Index
+
+## Purpose
+This wiki stores durable context that should survive across sessions.
+
+## Main sections
+- systems/: architecture and service inventory
+- automation/: automations, dashboards, and device categories
+- hermes/: profiles, bots, toolsets, and operating notes
+
+## Rules
+- Keep secrets out of the wiki.
+- Use placeholders for public-safe pages.
+- Link to project folders for active work state.
+- Keep long-term facts here; keep temporary progress in STATUS.md.</code></pre></div></div>
+<div class="layer-card"><h3 data-en="Layer 5: Skills" data-th="Layer 5: Skills">Layer 5: Skills</h3><p>Skills คือ reusable procedures ไม่ใช่เพียง notes แต่เป็น operational playbooks</p><p><strong>ใช้ skills สำหรับ:</strong></p><ul><li>Repeated troubleshooting workflow</li><li>Deployment procedure</li><li>Dashboard update process</li><li>Document generation process</li><li>QA checklist</li><li>Known multi-step integration</li></ul><p><strong>ไม่ควรใช้ skills สำหรับ:</strong></p><ul><li>One-time status updates</li><li>Temporary TODOs</li><li>Personal secrets</li><li>Large raw data dumps</li></ul><h4 data-en="Skill creation prompt" data-th="Skill creation prompt">Skill creation prompt</h4><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>Please save the workflow we just used as a skill. Include:
+- when to use it
+- prerequisites
+- exact steps
+- commands or tools to run
+- verification steps
+- common pitfalls
+- what not to do</code></pre></div><h4 data-en="Skill update prompt" data-th="Skill update prompt">Skill update prompt</h4><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>The skill we loaded is missing an important pitfall we discovered. Patch the skill now before finishing.</code></pre></div></div></section></article><article class="manual-page" data-page="03" data-title-th="Handoff Strategy" data-title-en="Handoff Strategy" hidden><section class="doc-section"><h2 data-en="Handoff Strategy" data-th="Handoff Strategy"><span class="sec-num">3</span><span class="i18n-heading-title">Handoff Strategy</span></h2><p>Handoff คือ summary ที่กระชับแต่ครบถ้วน ทำให้ fresh session สามารถทำงานต่อได้โดยไม่ต้องเดา</p><p><strong>ใช้ handoff เมื่อ:</strong></p><ul><li>กำลังจะใช้ <code>/new</code></li><li>Conversation ยาวมากแล้ว</li><li>กำลังสลับจาก bot/profile หนึ่งไปอีกตัว</li><li>กำลังส่งมอบงานจาก agent หนึ่งไปอีก agent</li><li>ต้องการรักษาสถานะปัจจุบันแบบ exact</li><li>Task ใช้เวลาหลายวัน</li></ul><h3 data-en="Handoff template" data-th="Handoff template">Handoff template</h3><div class="code-wrap"><div class="code-head"><span>markdown</span><button class="copy-btn">Copy</button></div><pre><code># Handoff Summary
+
+## Project
+Project name or short description.
+
+## Goal
+The final outcome we are trying to achieve.
+
+## Current status
+What is true right now.
+
+## What changed in this session
+- Change 1
+- Change 2
+- Change 3
+
+## Files created or modified
+- `path/to/file`: why it matters
+- `path/to/another-file`: why it matters
+
+## Commands or tools run
+```bash
+command example here
+```
+
+## Verification performed
+- Check 1: result
+- Check 2: result
+- Check 3: result
+
+## Known issues
+- Issue 1
+- Issue 2
+
+## Assumptions
+- Assumption 1
+- Assumption 2
+
+## Security and privacy notes
+- Do not expose secrets.
+- Do not include private identifiers in public artifacts.
+- Use placeholders when creating public documentation.
+
+## Next exact steps
+1. Read this handoff.
+2. Read project context files.
+3. Run the next command or perform the next action.
+4. Verify the result.
+5. Update STATUS.md and VERIFY.md.
+
+## Suggested prompt for the next session
+```text
+Continue this project from the handoff below. First summarize the current state, then inspect the referenced files, then proceed with the next exact steps. Do not assume missing details; read the files or ask.
+
+[PASTE HANDOFF HERE]
+```</code></pre></div></section></article><article class="manual-page" data-page="04" data-title-th="การเริ่ม New Session อย่างมีประสิทธิภาพ" data-title-en="Starting a New Session Effectively" hidden><section class="doc-section"><h2 data-en="Starting a New Session Effectively" data-th="การเริ่ม New Session อย่างมีประสิทธิภาพ"><span class="sec-num">4</span><span class="i18n-heading-title">การเริ่ม New Session อย่างมีประสิทธิภาพ</span></h2><p><strong>Bad prompt:</strong></p><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>Continue from before.</code></pre></div><p><strong>Better prompt:</strong></p><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>Continue the project from the handoff below. Read STATUS.md and VERIFY.md first. Then summarize the current state before taking action.
+
+[PASTE HANDOFF]</code></pre></div><p><strong>Best prompt:</strong></p><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>Continue the project in this folder:
+/path/to/project
+
+First read:
+1. .hermes.md
+2. STATUS.md
+3. DECISIONS.md
+4. VERIFY.md
+
+Then:
+- summarize the current state
+- identify the next exact step
+- perform the step
+- verify the result
+- update STATUS.md and VERIFY.md before finishing</code></pre></div><p>สำหรับงานแบบ public-safe ให้เพิ่ม:</p><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>This output is for public distribution. Do not include personal names, real device names, entity IDs, URLs, IP addresses, tokens, account identifiers, private paths, or any details that can identify a person, home, or organization. Use generic placeholders only.</code></pre></div></section></article><article class="manual-page" data-page="05" data-title-th="Profile และ Bot Strategy" data-title-en="Profile &amp; Bot Strategy" hidden><section class="doc-section"><h2 data-en="Profile &amp; Bot Strategy" data-th="Profile และ Bot Strategy"><span class="sec-num">5</span><span class="i18n-heading-title">Profile และ Bot Strategy</span></h2><p>Hermes สามารถรันหลาย profiles หรือ bots ได้ และ bot ใหม่อาจไม่มี tools, memory, skills หรือ config แบบเดียวกับอีก bot</p><p><strong>ควรตรวจให้ชัดเจนเสมอว่า:</strong></p><ul><li>Profile ใด active อยู่?</li><li>ใช้งานผ่าน platform ใด?</li><li>Bot ใดกำลังรับ message?</li><li>Toolsets ใดถูก enable สำหรับ profile และ platform นั้น?</li><li>Bot มี terminal, file, browser, code execution, Home Assistant, email หรือ tools อื่นที่งานนี้ต้องใช้หรือไม่?</li><li>หลังเปลี่ยน tools จำเป็นต้อง reset session หรือไม่?</li></ul><h3 data-en="Generic diagnostic prompt" data-th="Generic diagnostic prompt">Generic diagnostic prompt</h3><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>Check which Hermes profile and platform this bot is using. Then list the enabled toolsets for this platform. Compare them with the tools needed for the task. Do not modify config by editing files directly; use Hermes CLI commands where appropriate.</code></pre></div><h3 data-en="Toolset troubleshooting pattern" data-th="Toolset troubleshooting pattern">Toolset troubleshooting pattern</h3><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>If a tool is missing:
+1. Identify the active Hermes profile.
+2. Identify the platform, such as telegram, cli, api_server, or desktop.
+3. Check enabled toolsets for that platform.
+4. Enable the required toolset using Hermes CLI.
+5. Reset the session or restart the gateway if required.
+6. Verify the tool appears in a new session.</code></pre></div><h3 data-en="Generic command pattern" data-th="Generic command pattern">Generic command pattern</h3><div class="code-wrap"><div class="code-head"><span>bash</span><button class="copy-btn">Copy</button></div><pre><code>HERMES_HOME=/path/to/profile hermes tools enable --platform &lt;platform&gt; &lt;toolset-name&gt;</code></pre></div><p><strong>ตัวอย่างด้วย placeholders:</strong></p><div class="code-wrap"><div class="code-head"><span>bash</span><button class="copy-btn">Copy</button></div><pre><code>HERMES_HOME=/path/to/profile hermes tools enable --platform telegram terminal code_execution</code></pre></div><div class="code-wrap"><div class="code-head"><span>bash</span><button class="copy-btn">Copy</button></div><pre><code>HERMES_HOME=/path/to/profile hermes tools enable --platform api_server file terminal code_execution</code></pre></div><div class="important"><strong>Important</strong><br/>Tool changes โดยทั่วไปจะไม่ปรากฏใน active conversation เดิม ให้เริ่ม new session หรือ reset session หลังเปลี่ยน toolsets</div></section></article><article class="manual-page" data-page="06" data-title-th="Public-safe Documentation Strategy" data-title-en="Public-safe Documentation Strategy" hidden><section class="doc-section"><h2 data-en="Public-safe Documentation Strategy" data-th="Public-safe Documentation Strategy"><span class="sec-num">6</span><span class="i18n-heading-title">Public-safe Documentation Strategy</span></h2><p>เมื่อสร้าง material สำหรับ public sharing ห้ามใส่ข้อมูลต่อไปนี้:</p><ul><li>Real personal names</li><li>Private email addresses</li><li>Real home names</li><li>Real device names</li><li>Entity IDs</li><li>Internal URLs</li><li>IP addresses</li><li>Hostnames</li><li>API tokens</li><li>Passwords</li><li>Account IDs</li><li>Chat IDs</li><li>Bot usernames</li><li>File paths ที่เปิดเผย identity</li><li>Screenshots ที่มี private data</li><li>House-specific floor plans หรือ layouts</li></ul><p><strong>ใช้ placeholders:</strong></p><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>&lt;PROJECT_NAME&gt;
+&lt;PROFILE_NAME&gt;
+&lt;BOT_NAME&gt;
+&lt;PLATFORM&gt;
+&lt;HOME_AUTOMATION_SERVER&gt;
+&lt;ENTITY_ID&gt;
+&lt;INTERNAL_URL&gt;
+&lt;EMAIL_ADDRESS&gt;
+&lt;LOCAL_PATH&gt;
+&lt;API_TOKEN&gt;</code></pre></div><h3 data-en="Public-safe instruction block" data-th="Public-safe instruction block">Public-safe instruction block</h3><p>คัดลอกข้อความนี้ไปใส่ใน prompt เมื่อต้องการ:</p><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>Public-safe output required. Use generic examples only. Do not include personal details, real device names, entity IDs, URLs, IP addresses, tokens, passwords, account identifiers, bot usernames, chat IDs, local paths, or anything that can identify a person, home, organization, or deployment. Replace all such details with placeholders.</code></pre></div></section></article><article class="manual-page" data-page="07" data-title-th="Recommended Operating Playbooks" data-title-en="Recommended Operating Playbooks" hidden><section class="doc-section"><h2 data-en="Recommended Operating Playbooks" data-th="Recommended Operating Playbooks"><span class="sec-num">7</span><span class="i18n-heading-title">Recommended Operating Playbooks</span></h2><h3 data-en="Playbook A: Long-running project" data-th="Playbook A: Long-running project">Playbook A: Long-running project</h3><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>1. Create a project folder.
+2. Add .hermes.md with project rules.
+3. Add STATUS.md, TODO.md, DECISIONS.md, VERIFY.md.
+4. Start every session by reading those files.
+5. End every session by updating STATUS.md and VERIFY.md.
+6. Store reusable procedures as skills.
+7. Store broad durable facts in the wiki.
+8. Store only compact pointers and preferences in memory.</code></pre></div><h3 data-en="Playbook B: Before /new" data-th="Playbook B: Before /new">Playbook B: Before /new</h3><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>1. Ask Hermes to summarize the current state.
+2. Ask Hermes to write or update STATUS.md.
+3. Ask Hermes to write or update VERIFY.md.
+4. Ask Hermes to produce a copy-paste handoff.
+5. Start the new session with that handoff.</code></pre></div><h3 data-en="Playbook C: After /new" data-th="Playbook C: After /new">Playbook C: After /new</h3><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>1. Paste the handoff.
+2. Tell Hermes where the project folder is.
+3. Tell Hermes to read .hermes.md, STATUS.md, DECISIONS.md, VERIFY.md.
+4. Ask Hermes to summarize before acting.
+5. Let Hermes continue only after it has grounded itself in the files.</code></pre></div><h3 data-en="Playbook D: Repeated workflow" data-th="Playbook D: Repeated workflow">Playbook D: Repeated workflow</h3><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>1. Complete the workflow once.
+2. Verify that it works.
+3. Ask Hermes to convert the workflow into a skill.
+4. Next time, explicitly ask Hermes to load and follow that skill.
+5. If the skill is wrong or incomplete, patch it immediately.</code></pre></div><h3 data-en="Playbook E: Public artifact" data-th="Playbook E: Public artifact">Playbook E: Public artifact</h3><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>1. State that the output is public-safe.
+2. Forbid private identifiers explicitly.
+3. Ask Hermes to use placeholders.
+4. Ask Hermes to inspect the final output for accidental private data.
+5. Only then export or send the artifact.</code></pre></div></section></article><article class="manual-page" data-page="08" data-title-th="Copy-paste Prompt Library" data-title-en="Copy-paste Prompt Library" hidden><section class="doc-section"><h2 data-en="Copy-paste Prompt Library" data-th="Copy-paste Prompt Library"><span class="sec-num">8</span><span class="i18n-heading-title">Copy-paste Prompt Library</span></h2><h3 data-en="Create a project context system" data-th="Create a project context system">Create a project context system</h3><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>Create a durable context system for this project. Make these files:
+- .hermes.md
+- STATUS.md
+- TODO.md
+- DECISIONS.md
+- VERIFY.md
+
+Use generic, public-safe placeholders where appropriate. Do not include secrets. Explain how I should use these files across sessions.</code></pre></div><h3 data-en="Update state before ending" data-th="Update state before ending">Update state before ending</h3><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>Before finishing, update STATUS.md and VERIFY.md with everything done in this session. Include commands run, files changed, verification results, known issues, and next exact steps. Then produce a copy-paste handoff for a new Hermes session.</code></pre></div><h3 data-en="Start from project files" data-th="Start from project files">Start from project files</h3><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>Continue this project from the folder below:
+&lt;PROJECT_FOLDER&gt;
+
+First read:
+- .hermes.md
+- STATUS.md
+- DECISIONS.md
+- VERIFY.md
+
+Then summarize the state and continue with the next exact step. Do not rely on memory alone.</code></pre></div><h3 data-en="Start from previous conversation" data-th="Start from previous conversation">Start from previous conversation</h3><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>Search previous sessions for:
+&lt;KEYWORDS&gt;
+
+Find the most relevant session, summarize the goal, current state, decisions, files, verification results, and next steps. Then ask me before making changes if anything is ambiguous.</code></pre></div><h3 data-en="Save durable memory" data-th="Save durable memory">Save durable memory</h3><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>Remember this as a durable preference/fact only if it will still be useful in future sessions:
+&lt;FACT&gt;</code></pre></div><h3 data-en="Save a skill" data-th="Save a skill">Save a skill</h3><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>Convert the workflow we just used into a reusable Hermes skill. Include trigger conditions, prerequisites, exact steps, commands/tools, verification, pitfalls, and what not to do.</code></pre></div><h3 data-en="Public-safe output" data-th="Public-safe output">Public-safe output</h3><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>This is for public sharing. Do not include personal names, real device names, entity IDs, URLs, IP addresses, tokens, passwords, account identifiers, bot usernames, chat IDs, local paths, or anything that can identify a person, home, organization, or deployment. Use generic placeholders only.</code></pre></div></section></article><article class="manual-page" data-page="09" data-title-th="Checklist เพื่อประสิทธิภาพสูงสุด" data-title-en="Maximum Efficiency Checklist" hidden><section class="doc-section"><h2 data-en="Maximum Efficiency Checklist" data-th="Checklist เพื่อประสิทธิภาพสูงสุด"><span class="sec-num">9</span><span class="i18n-heading-title">Checklist เพื่อประสิทธิภาพสูงสุด</span></h2><h3 data-en="Before starting work" data-th="ก่อนเริ่มงาน">ก่อนเริ่มงาน</h3><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>[ ] Is this a one-off question or a long-running project?
+[ ] If long-running, is there a project folder?
+[ ] Is there a .hermes.md file?
+[ ] Is STATUS.md current?
+[ ] Is there a VERIFY.md file?
+[ ] Are reusable workflows saved as skills?
+[ ] Are durable facts saved in memory or wiki?
+[ ] Are private details excluded from public outputs?</code></pre></div><h3 data-en="Before ending work" data-th="ก่อนจบงาน">ก่อนจบงาน</h3><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>[ ] Did Hermes actually run/verify the requested action?
+[ ] Are changed files listed?
+[ ] Are commands and outputs summarized?
+[ ] Are next steps explicit?
+[ ] Is STATUS.md updated?
+[ ] Is VERIFY.md updated?
+[ ] Is a handoff summary available?
+[ ] Should a skill be created or patched?</code></pre></div><h3 data-en="Before public sharing" data-th="ก่อน public sharing">ก่อน public sharing</h3><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>[ ] No personal names
+[ ] No private email addresses
+[ ] No real bot usernames
+[ ] No real profile names if identifying
+[ ] No hostnames
+[ ] No URLs
+[ ] No IP addresses
+[ ] No entity IDs
+[ ] No tokens or passwords
+[ ] No local paths revealing identity
+[ ] No screenshots with private data
+[ ] Placeholders used consistently</code></pre></div></section></article><article class="manual-page" data-page="10" data-title-th="Core Principle" data-title-en="Core Principle" hidden><section class="doc-section"><h2 data-en="Core Principle" data-th="Core Principle"><span class="sec-num">10</span><span class="i18n-heading-title">Core Principle</span></h2><p>วิธีที่เชื่อถือได้มากที่สุดในการป้องกัน context loss ไม่ใช่การบังคับให้ context ทั้งหมดอยู่ใน model แต่คือการสร้าง durable trail ที่ Hermes สามารถกลับมาอ่านได้</p><p><strong>ใช้ mental model นี้:</strong></p><div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-btn">Copy</button></div><pre><code>If Hermes needs it only now, keep it in chat.
+If Hermes needs it next session, write it to STATUS.md.
+If Hermes needs it across projects, write it to the wiki.
+If Hermes needs to do it repeatedly, make it a skill.
+If Hermes needs to remember a stable preference, save it to memory.
+If Hermes needs to recover an old discussion, use session search.</code></pre></div><p>แนวทางนี้ทำให้ Hermes มีความน่าเชื่อถือมากขึ้นเมื่อทำงานข้าม <code>/new</code>, ใช้หลาย bots, ใช้ profiles ที่แตกต่างกัน, ทำงานใน long projects และสร้าง public-safe documentation workflows</p></section></article>
+<div class="page-nav">
+  <button type="button" class="page-link" id="prevBtn"><small id="prevLabel" data-th="หน้าก่อนหน้า" data-en="Previous">หน้าก่อนหน้า</small><span id="prevTitle"></span></button>
+  <button type="button" class="page-link next" id="nextBtn"><small id="nextLabel" data-th="หน้าถัดไป" data-en="Next">หน้าถัดไป</small><span id="nextTitle"></span></button>
+</div>
+<div class="footer">Hermes Agent Documentation · Handoff &amp; Context Strategy Guide · Single HTML Edition</div>
+</main>
+</div>
+<script>
+const PAGE_IDS=['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10'];
+const PAGE_TITLES=[('คู่มือ Handoff & Context Strategy สำหรับ Hermes Agent', 'Hermes Agent Handoff & Context Strategy Guide'), ('เหตุผลที่ Hermes อาจ “ลืม” หลังใช้ /new', 'Why Hermes may “forget” after /new'), ('Five-layer Context Strategy', 'Five-layer Context Strategy'), ('Handoff Strategy', 'Handoff Strategy'), ('การเริ่ม New Session อย่างมีประสิทธิภาพ', 'Starting a New Session Effectively'), ('Profile และ Bot Strategy', 'Profile & Bot Strategy'), ('Public-safe Documentation Strategy', 'Public-safe Documentation Strategy'), ('Recommended Operating Playbooks', 'Recommended Operating Playbooks'), ('Copy-paste Prompt Library', 'Copy-paste Prompt Library'), ('Checklist เพื่อประสิทธิภาพสูงสุด', 'Maximum Efficiency Checklist'), ('Core Principle', 'Core Principle')];
+const root=document.documentElement, sidebar=document.getElementById('sidebar');
+let fs=parseInt(localStorage.getItem('hermes-fs')||'16',10); root.style.setProperty('--fs',fs+'px');
+root.dataset.theme=localStorage.getItem('hermes-theme')||'light';
+let currentPage='00';
+function closeNav(){sidebar.classList.remove('open');document.body.classList.remove('nav-open')}
+function currentLang(){return localStorage.getItem('hermes-lang')||'th'}
+function showPage(id, push=true){
+  if(!PAGE_IDS.includes(id)) id='00';
+  currentPage=id;
+  document.querySelectorAll('.manual-page').forEach(p=>p.hidden=p.dataset.page!==id);
+  document.querySelectorAll('.nav-page').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+  const i=PAGE_IDS.indexOf(id), lang=currentLang();
+  const title=PAGE_TITLES[i][lang==='th'?0:1];
+  document.title=title+' — Hermes Agent Documentation';
+  document.getElementById('topbarPage').textContent=title;
+  document.getElementById('pagePosition').textContent=(lang==='th'?'หน้า ':'Page ')+(i+1)+' / '+PAGE_IDS.length;
+  const prev=document.getElementById('prevBtn'), next=document.getElementById('nextBtn');
+  prev.disabled=i===0; next.disabled=i===PAGE_IDS.length-1;
+  if(i>0) document.getElementById('prevTitle').textContent=PAGE_TITLES[i-1][lang==='th'?0:1];
+  if(i<PAGE_IDS.length-1) document.getElementById('nextTitle').textContent=PAGE_TITLES[i+1][lang==='th'?0:1];
+  if(push) history.replaceState(null,'','#page='+id);
+  window.scrollTo({top:0,behavior:'instant'});
+  closeNav();
+}
+function setLang(lang){
+  localStorage.setItem('hermes-lang',lang);root.lang=lang;
+  document.querySelectorAll('.langbtn').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));
+  document.querySelectorAll('[data-th][data-en]').forEach(el=>{const val=el.dataset[lang];if(!val)return;if(el.matches('h2')){const t=el.querySelector('.i18n-heading-title');if(t)t.textContent=val;else el.textContent=val;}else el.textContent=val;});
+  document.querySelectorAll('.copy-btn').forEach(b=>b.textContent=lang==='th'?'คัดลอก':'Copy');
+  showPage(currentPage,false);
+}
+document.getElementById('menuBtn').addEventListener('click',()=>{sidebar.classList.toggle('open');document.body.classList.toggle('nav-open')});
+document.getElementById('navOverlay').addEventListener('click',closeNav);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeNav()});
+document.getElementById('fontDown').addEventListener('click',()=>{fs=Math.max(13,fs-1);root.style.setProperty('--fs',fs+'px');localStorage.setItem('hermes-fs',fs)});
+document.getElementById('fontReset').addEventListener('click',()=>{fs=16;root.style.setProperty('--fs','16px');localStorage.setItem('hermes-fs',16)});
+document.getElementById('fontUp').addEventListener('click',()=>{fs=Math.min(21,fs+1);root.style.setProperty('--fs',fs+'px');localStorage.setItem('hermes-fs',fs)});
+document.getElementById('themeBtn').addEventListener('click',()=>{root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';localStorage.setItem('hermes-theme',root.dataset.theme)});
+document.querySelectorAll('.langbtn').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
+document.querySelectorAll('.nav-page').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+document.getElementById('prevBtn').addEventListener('click',()=>{const i=PAGE_IDS.indexOf(currentPage);if(i>0)showPage(PAGE_IDS[i-1])});
+document.getElementById('nextBtn').addEventListener('click',()=>{const i=PAGE_IDS.indexOf(currentPage);if(i<PAGE_IDS.length-1)showPage(PAGE_IDS[i+1])});
+document.querySelectorAll('.copy-btn').forEach(btn=>btn.addEventListener('click',async()=>{const code=btn.closest('.code-wrap').querySelector('pre code').innerText;const lang=currentLang();try{await navigator.clipboard.writeText(code)}catch(e){const ta=document.createElement('textarea');ta.value=code;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}btn.textContent=lang==='th'?'คัดลอกแล้ว':'Copied';setTimeout(()=>btn.textContent=lang==='th'?'คัดลอก':'Copy',1200)}));
+const initial=(location.hash.match(/page=(\d{2})/)||[])[1]||'00';
+currentPage=PAGE_IDS.includes(initial)?initial:'00';
+setLang(localStorage.getItem('hermes-lang')||'th');
+showPage(currentPage,false);
+</script>
+</body></html>
