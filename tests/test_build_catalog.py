@@ -19,6 +19,20 @@ class HomepageBuildTests(unittest.TestCase):
             self.assertEqual(self.html.count(f'href="{book["href"]}"'), 1)
             self.assertIn(html.escape(book["short_title"]), self.html)
 
+    def test_books_open_in_a_new_tab_with_safe_rel(self):
+        self.assertEqual(self.html.count('target="_blank"'), len(self.books))
+        self.assertEqual(self.html.count('rel="noopener"'), len(self.books))
+
+    def test_books_are_sorted_newest_first_and_show_publish_date(self):
+        timestamps = [book["published_at"] for book in self.books]
+        self.assertEqual(timestamps, sorted(timestamps, reverse=True))
+        expected_first = 'Grok vs Hermes'
+        self.assertEqual(self.books[0]["short_title"], expected_first)
+        self.assertIn('publish on 22/08/2026', self.html)
+        first_card = self.html.index('class="book-card"')
+        first_title = self.html.index(expected_first)
+        self.assertGreater(first_title, first_card)
+
     def test_homepage_is_semantic_accessible_and_progressive(self):
         required = [
             '<html lang="th">',

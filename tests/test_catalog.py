@@ -25,7 +25,7 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(html_files - allowed_aliases, catalog_targets)
 
     def test_required_fields_and_unique_ids_and_links(self):
-        required = {"id", "title", "short_title", "href", "cover", "category", "summary", "accent", "order"}
+        required = {"id", "title", "short_title", "href", "cover", "category", "summary", "accent", "published_at"}
         self.assertTrue(self.books)
         self.assertEqual(len(self.books), 11)
         self.assertEqual(len({book["id"] for book in self.books}), len(self.books))
@@ -34,6 +34,7 @@ class CatalogTests(unittest.TestCase):
             self.assertTrue(required <= book.keys(), book)
             self.assertFalse(book["href"].startswith(("http://", "https://", "/")))
             self.assertRegex(book["accent"], r"^#[0-9A-Fa-f]{6}$")
+            self.assertRegex(book["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
 
     def test_targets_and_covers_exist_and_are_nonempty(self):
         for book in self.books:

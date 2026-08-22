@@ -65,7 +65,7 @@ body::before {
 
 .library-header {
   position: relative;
-  padding: clamp(2.6rem, 7vw, 6rem) 1.25rem clamp(2rem, 5vw, 4rem);
+  padding: clamp(1.8rem, 4vw, 3.4rem) 1.25rem clamp(1.4rem, 3vw, 2.4rem);
 }
 .header-inner {
   width: min(1160px, 100%);
@@ -76,7 +76,7 @@ body::before {
   gap: clamp(1rem, 3vw, 2.5rem);
 }
 .library-mark {
-  width: clamp(64px, 9vw, 104px);
+  width: clamp(52px, 6vw, 76px);
   aspect-ratio: 1;
   display: grid;
   place-items: center;
@@ -99,7 +99,7 @@ body::before {
 h1, h2, h3 { font-family: var(--serif); }
 h1 {
   margin: 0;
-  font-size: clamp(2.7rem, 7.4vw, 6.6rem);
+  font-size: clamp(2.2rem, 5.6vw, 4.7rem);
   font-weight: 500;
   line-height: .95;
   letter-spacing: -.045em;
@@ -107,12 +107,12 @@ h1 {
 }
 .subtitle {
   max-width: 42rem;
-  margin: 1rem 0 0;
+  margin: .65rem 0 0;
   color: var(--ink-muted);
-  font-size: clamp(.98rem, 2vw, 1.18rem);
+  font-size: clamp(.88rem, 1.5vw, 1.02rem);
 }
 .collection-seal {
-  width: 84px;
+  width: 68px;
   aspect-ratio: 1;
   display: grid;
   place-content: center;
@@ -123,29 +123,29 @@ h1 {
   background: rgba(8, 20, 16, .55);
   box-shadow: inset 0 0 0 5px rgba(198,160,90,.07);
 }
-.collection-seal strong { font: 500 1.65rem/1 var(--serif); }
+.collection-seal strong { font: 500 1.3rem/1 var(--serif); }
 .collection-seal span { margin-top: .3rem; font-size: .48rem; letter-spacing: .2em; }
 
 main { display: block; }
 .catalog-tools {
   width: min(1160px, calc(100% - 2rem));
-  margin: 0 auto clamp(2.5rem, 7vw, 5rem);
+  margin: 0 auto clamp(1.8rem, 4vw, 3rem);
   display: grid;
   grid-template-columns: minmax(240px, .75fr) minmax(360px, 1.25fr);
-  gap: clamp(1.5rem, 5vw, 5rem);
+  gap: clamp(1.25rem, 3vw, 3rem);
   align-items: end;
-  padding-top: clamp(1.5rem, 4vw, 3rem);
+  padding-top: clamp(1.1rem, 2.6vw, 2rem);
   border-top: 1px solid rgba(229,201,135,.28);
 }
 .catalog-intro h2 {
   margin: 0;
-  font-size: clamp(1.9rem, 4vw, 3.35rem);
+  font-size: clamp(1.55rem, 3vw, 2.45rem);
   font-weight: 500;
   line-height: 1.16;
 }
 .catalog-intro > p:last-child { max-width: 36rem; margin: .7rem 0 0; color: var(--ink-muted); }
 .librarian-desk {
-  padding: 1.15rem;
+  padding: .85rem;
   border: 1px solid rgba(198,160,90,.22);
   background: rgba(19, 46, 38, .62);
   box-shadow: inset 0 1px rgba(255,255,255,.04), 0 18px 42px rgba(0,0,0,.17);
@@ -169,8 +169,8 @@ main { display: block; }
 }
 .search-field input {
   width: 100%;
-  min-height: 48px;
-  padding: .75rem 3.2rem .75rem 2.75rem;
+  min-height: 42px;
+  padding: .58rem 3.2rem .58rem 2.75rem;
   color: var(--ink);
   border: 1px solid rgba(229,201,135,.32);
   border-radius: 0;
@@ -194,8 +194,8 @@ main { display: block; }
 }
 .filters { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .85rem; }
 .filter-button {
-  min-height: 38px;
-  padding: .48rem .78rem;
+  min-height: 32px;
+  padding: .4rem .65rem;
   color: var(--ink-muted);
   border: 1px solid rgba(229,201,135,.2);
   background: transparent;
@@ -215,30 +215,30 @@ main { display: block; }
 }
 
 .bookshelf-room {
-  width: min(1260px, calc(100% - 1rem));
+  width: min(1180px, calc(100% - 1rem));
   margin: 0 auto;
-  padding: clamp(1rem, 3vw, 2rem) clamp(.6rem, 3vw, 2.5rem) 3rem;
+  padding: clamp(.7rem, 2vw, 1.3rem) clamp(.5rem, 2vw, 1.5rem) 2.2rem;
   background:
     linear-gradient(90deg, rgba(0,0,0,.23), transparent 8%, transparent 92%, rgba(0,0,0,.23)),
     rgba(9, 22, 18, .4);
   border-inline: 1px solid rgba(198,160,90,.1);
 }
-.shelf { position: relative; margin-bottom: clamp(3.5rem, 8vw, 6rem); }
-.shelf:last-of-type { margin-bottom: 2.8rem; }
+.shelf { position: relative; margin-bottom: clamp(2.8rem, 5vw, 3.8rem); }
+.shelf:last-of-type { margin-bottom: 2.1rem; }
 .book-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(.65rem, 2.2vw, 1.65rem);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(.55rem, 1.5vw, 1.1rem);
   align-items: end;
-  padding: 0 clamp(.35rem, 2vw, 1.5rem) 1.2rem;
-  min-height: 21rem;
+  padding: 0 clamp(.3rem, 1.4vw, 1rem) .85rem;
+  min-height: 15rem;
 }
 .shelf-plank {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -1.5rem;
-  height: 2.8rem;
+  bottom: -1.15rem;
+  height: 2.15rem;
   border-top: 2px solid #be8451;
   border-bottom: 5px solid #24130c;
   background:
@@ -268,7 +268,7 @@ main { display: block; }
 .book-link { display: block; color: inherit; text-decoration: none; }
 .book-cover-wrap {
   position: relative;
-  max-width: 230px;
+  max-width: 145px;
   margin: 0 auto;
   aspect-ratio: 2 / 3;
   background: #1d2823;
@@ -291,12 +291,12 @@ main { display: block; }
   object-fit: cover;
   border: 0;
 }
-.book-meta { max-width: 230px; margin: .85rem auto 0; }
+.book-meta { max-width: 165px; margin: .55rem auto 0; }
 .book-category {
   display: block;
   margin-bottom: .22rem;
   color: var(--brass-light);
-  font-size: .62rem;
+  font-size: .54rem;
   font-weight: 700;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -305,10 +305,22 @@ main { display: block; }
   margin: 0;
   color: var(--ink);
   font-family: var(--serif);
-  font-size: clamp(.9rem, 1.7vw, 1.08rem);
+  font-size: clamp(.76rem, 1.15vw, .92rem);
   font-weight: 500;
   line-height: 1.35;
   text-wrap: balance;
+}
+.publish-date {
+  display: inline-block;
+  margin-top: .3rem;
+  padding: .1rem .38rem;
+  color: #d8ccb8;
+  border: 1px solid rgba(229,201,135,.22);
+  background: rgba(7,17,14,.52);
+  font-size: .5rem;
+  line-height: 1.35;
+  letter-spacing: .035em;
+  text-transform: lowercase;
 }
 .book-summary { display: none; }
 .book-card[hidden], .shelf[hidden] { display: none; }
@@ -337,23 +349,26 @@ main { display: block; }
   .header-inner { grid-template-columns: auto 1fr; }
   .collection-seal { display: none; }
   .catalog-tools { grid-template-columns: 1fr; align-items: start; }
-  .book-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .book-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 @media (max-width: 650px) {
-  .library-header { padding-top: 2.7rem; }
+  .library-header { padding-top: 2rem; }
   .header-inner { display: block; }
   .library-mark { width: 58px; margin-bottom: 1.5rem; }
-  h1 { font-size: clamp(2.8rem, 15vw, 4.8rem); }
+  h1 { font-size: clamp(2.25rem, 12vw, 3.7rem); }
   .catalog-tools { width: min(100% - 1.25rem, 1160px); }
   .librarian-desk { padding: .85rem; }
   .search-field kbd { display: none; }
   .search-field input { padding-right: .8rem; }
   .bookshelf-room { width: calc(100% - .5rem); padding-inline: .3rem; }
-  .book-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; min-height: 18rem; padding-inline: .45rem; }
+  .book-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; min-height: 13rem; padding-inline: .4rem; }
   .book-cover-wrap { box-shadow: -5px 7px 0 #24160f, -7px 10px 13px rgba(0,0,0,.38); }
   .book-meta { margin-top: .65rem; }
   .book-title { font-size: .88rem; }
   .book-category { font-size: .54rem; }
+}
+@media (max-width: 480px) {
+  .book-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 380px) {
   .book-grid { gap: .48rem; }

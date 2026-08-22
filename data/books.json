@@ -8,7 +8,7 @@
     "category": "เปรียบเทียบ AI",
     "summary": "เปรียบเทียบแนวคิด การทำงานร่วมกัน ความสามารถของ Agent, Memory, Skills และความปลอดภัย",
     "accent": "#D96C4B",
-    "order": 1
+    "published_at": "2026-08-22T10:30:46+07:00"
   },
   {
     "id": "headless-browser-redesigned",
@@ -19,7 +19,7 @@
     "category": "Browser Automation",
     "summary": "ฉบับออกแบบใหม่สำหรับเลือกเครื่องมือ Headless Browser ที่เหมาะกับ AI Agent",
     "accent": "#C48A3A",
-    "order": 2
+    "published_at": "2026-08-21T00:18:24+07:00"
   },
   {
     "id": "handoff-context",
@@ -30,7 +30,7 @@
     "category": "Hermes Guide",
     "summary": "วางกลยุทธ์ส่งต่องานและบริบทระหว่าง Session เพื่อให้ Agent ทำงานต่อเนื่องอย่างมีประสิทธิภาพ",
     "accent": "#5E8C73",
-    "order": 3
+    "published_at": "2026-08-19T12:45:40+07:00"
   },
   {
     "id": "personal-infrastructure-wiki",
@@ -41,7 +41,7 @@
     "category": "Infrastructure",
     "summary": "ระบบฐานความรู้สำหรับ HomeOps, Homelab และโครงสร้างพื้นฐานส่วนบุคคล",
     "accent": "#507C8A",
-    "order": 4
+    "published_at": "2026-08-17T21:02:10+07:00"
   },
   {
     "id": "buzz-hermes-acp",
@@ -52,7 +52,7 @@
     "category": "สถาปัตยกรรม AI",
     "summary": "อธิบายสถาปัตยกรรมที่แยก Persona Layer และ Runtime Layer ของ Buzz กับ Hermes ACP",
     "accent": "#8A6A9C",
-    "order": 5
+    "published_at": "2026-08-02T01:39:49+07:00"
   },
   {
     "id": "grok-vs-hermes",
@@ -63,7 +63,7 @@
     "category": "เปรียบเทียบ AI",
     "summary": "เทียบข้อดีข้อเสีย Decision Matrix ความปลอดภัย ต้นทุน และรูปแบบการใช้งาน",
     "accent": "#A85548",
-    "order": 6
+    "published_at": "2026-08-22T11:04:19+07:00"
   },
   {
     "id": "headless-browser-original",
@@ -74,7 +74,7 @@
     "category": "Browser Automation",
     "summary": "ฉบับต้นฉบับสำหรับทำความเข้าใจและเลือกชุดเครื่องมือ Browser Automation สำหรับ AI",
     "accent": "#B17B42",
-    "order": 7
+    "published_at": "2026-08-17T15:24:56+07:00"
   },
   {
     "id": "hermes-token-guide",
@@ -85,7 +85,7 @@
     "category": "Hermes Guide",
     "summary": "ตั้งค่าให้คุ้ม ใช้งานได้หลายงาน และควบคุมงบประมาณ Token ไม่ให้บานปลาย",
     "accent": "#B28B45",
-    "order": 8
+    "published_at": "2026-08-17T22:23:07+07:00"
   },
   {
     "id": "network-guardian",
@@ -96,7 +96,7 @@
     "category": "Security",
     "summary": "ออกแบบ Agent Profile สำหรับดูแลความปลอดภัยเครือข่ายบ้าน IoT, Homelab และ Incident Response",
     "accent": "#3F7D6B",
-    "order": 9
+    "published_at": "2026-08-21T17:07:29+07:00"
   },
   {
     "id": "hermes-unstoppable",
@@ -107,7 +107,7 @@
     "category": "Hermes Guide",
     "summary": "One-page infographic สรุปความสามารถที่ทำให้ Hermes Agent ทำงานได้ทรงพลังยิ่งขึ้น",
     "accent": "#C45B3E",
-    "order": 10
+    "published_at": "2026-08-08T19:56:37+07:00"
   },
   {
     "id": "hermes-mega-prompt",
@@ -118,6 +118,6 @@
     "category": "AI Operations",
     "summary": "ภาพรวมการสร้างทีม AI สำหรับธุรกิจที่บริหารโดยคนเดียว พร้อมแนวคิดระบบและการเชื่อมต่อเครื่องมือ",
     "accent": "#80633F",
-    "order": 11
+    "published_at": "2026-08-01T10:44:13+07:00"
   }
 ]

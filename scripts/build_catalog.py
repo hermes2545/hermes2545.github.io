@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from datetime import datetime
 import html
 import json
 from pathlib import Path
@@ -13,12 +14,12 @@ ROOT = Path(__file__).resolve().parents[1]
 CATALOG_PATH = ROOT / "data" / "books.json"
 TEMPLATE_PATH = ROOT / "templates" / "index.template.html"
 INDEX_PATH = ROOT / "index.html"
-SHELF_SIZE = 4
+SHELF_SIZE = 5
 
 
 def load_books(path: Path = CATALOG_PATH) -> list[dict]:
     books = json.loads(path.read_text(encoding="utf-8"))
-    return sorted(books, key=lambda book: (book["order"], book["title"]))
+    return sorted(books, key=lambda book: (book["published_at"], book["title"]), reverse=True)
 
 
 def esc(value: object, *, quote: bool = True) -> str:
@@ -35,14 +36,16 @@ def render_filter(category: str, *, active: bool = False) -> str:
 
 def render_book(book: dict) -> str:
     searchable = " ".join((book["title"], book["short_title"], book["category"], book["summary"]))
+    published = datetime.fromisoformat(book["published_at"]).strftime("%d/%m/%Y")
     return f'''<article class="book-card" data-category="{esc(book["category"])}" data-search="{esc(searchable)}" style="--book-accent:{esc(book["accent"])}">
-  <a class="book-link" href="{esc(book["href"])}" aria-label="เปิดอ่าน {esc(book["title"])}">
+  <a class="book-link" href="{esc(book["href"])}" target="_blank" rel="noopener" aria-label="เปิดอ่าน {esc(book["title"])} ในแท็บใหม่">
     <div class="book-cover-wrap">
       <img class="book-cover" src="{esc(book["cover"])}" alt="ปกหนังสือ {esc(book["short_title"])}" width="600" height="900" loading="lazy">
     </div>
     <div class="book-meta">
       <span class="book-category">{esc(book["category"])}</span>
       <h3 class="book-title">{esc(book["short_title"])}</h3>
+      <time class="publish-date" datetime="{esc(book["published_at"])}">publish on {published}</time>
       <p class="book-summary">{esc(book["summary"])}</p>
     </div>
   </a>
