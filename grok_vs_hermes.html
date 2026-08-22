@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="คู่มือเปรียบเทียบ Grok Bot และ Hermes Desktop Bot — สรุป Pros/Cons, Decision Matrix, Security, Cost และคำแนะนำตามรูปแบบการใช้งาน" />
+  <title>Grok Bot vs Hermes Desktop Bot — Comparison Guide</title>
+  <style>
+    :root{
+      --font-scale:1;
+      --bg:#f5f7fb;
+      --surface:#ffffff;
+      --surface-2:#f0f3f8;
+      --surface-3:#e9edf5;
+      --text:#172033;
+      --muted:#667085;
+      --line:#dbe2ea;
+      --shadow:0 16px 40px rgba(20,34,64,.08);
+      --shadow-sm:0 6px 18px rgba(20,34,64,.07);
+      --blue:#2563eb;
+      --blue-2:#dbeafe;
+      --indigo:#4f46e5;
+      --cyan:#0891b2;
+      --green:#0f9f6e;
+      --green-2:#d1fae5;
+      --red:#dc2626;
+      --red-2:#fee2e2;
+      --amber:#d97706;
+      --amber-2:#fef3c7;
+      --purple:#7c3aed;
+      --purple-2:#ede9fe;
+      --grok:#111827;
+      --hermes:#5b21b6;
+      --sidebar:292px;
+      --radius:18px;
+      --radius-sm:12px;
+    }
+    html[data-theme="dark"]{
+      --bg:#0c111b;
+      --surface:#131a27;
+      --surface-2:#182233;
+      --surface-3:#202b3e;
+      --text:#eef3fb;
+      --muted:#a8b3c6;
+      --line:#2a374b;
+      --shadow:0 20px 45px rgba(0,0,0,.28);
+      --shadow-sm:0 8px 22px rgba(0,0,0,.23);
+      --blue-2:#172d58;
+      --green-2:#123d31;
+      --red-2:#4a2024;
+      --amber-2:#4a3615;
+      --purple-2:#302257;
+      --grok:#e5e7eb;
+      --hermes:#c4b5fd;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,"Noto Sans Thai","Leelawadee UI",Tahoma,Arial,sans-serif;font-size:calc(16px * var(--font-scale));}
+    body{overflow:hidden}
+    button,a{font:inherit}
+    button{color:inherit}
+    a{color:var(--blue);text-decoration:none}
+    a:hover{text-decoration:underline}
+    svg{display:block}
+    .app{display:grid;grid-template-columns:var(--sidebar) 1fr;min-height:100vh;transition:grid-template-columns .25s ease}
+    .app.sidebar-collapsed{grid-template-columns:82px 1fr}
+    .sidebar{height:100vh;background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;position:relative;z-index:30;min-width:0}
+    .brand{display:flex;align-items:center;gap:12px;padding:18px 18px 14px;border-bottom:1px solid var(--line);min-height:78px}
+    .brand-mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#111827 0 48%,#7c3aed 48% 100%);display:grid;place-items:center;color:#fff;font-weight:800;box-shadow:var(--shadow-sm);flex:0 0 auto}
+    .brand-copy{min-width:0;transition:opacity .2s ease}
+    .brand-title{font-weight:800;letter-spacing:-.02em;font-size:.95rem;white-space:nowrap}
+    .brand-sub{font-size:.72rem;color:var(--muted);margin-top:2px;white-space:nowrap}
+    .app.sidebar-collapsed .brand-copy,.app.sidebar-collapsed .nav-label,.app.sidebar-collapsed .nav-section-label,.app.sidebar-collapsed .sidebar-foot-copy{display:none}
+    .app.sidebar-collapsed .brand{justify-content:center;padding-left:10px;padding-right:10px}
+    .nav{padding:14px 10px;overflow:auto;flex:1}
+    .nav-section-label{font-size:.69rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;padding:10px 10px 6px}
+    .nav-btn{width:100%;border:0;background:transparent;border-radius:11px;padding:10px 11px;display:flex;align-items:center;gap:11px;cursor:pointer;text-align:left;color:var(--muted);margin:2px 0;transition:.18s ease}
+    .nav-btn:hover{background:var(--surface-2);color:var(--text)}
+    .nav-btn.active{background:var(--blue-2);color:var(--blue);font-weight:750}
+    .nav-icon{width:20px;height:20px;display:grid;place-items:center;flex:0 0 20px}
+    .nav-icon svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+    .sidebar-foot{padding:12px;border-top:1px solid var(--line)}
+    .sidebar-foot-card{padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);display:flex;gap:10px;align-items:center}
+    .sidebar-foot-copy{font-size:.72rem;color:var(--muted);line-height:1.45}
+    .main{height:100vh;min-width:0;display:flex;flex-direction:column}
+    .topbar{height:72px;background:color-mix(in srgb,var(--surface) 88%, transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 22px;gap:12px;flex:0 0 auto;z-index:20}
+    .topbar-left{display:flex;align-items:center;gap:12px;min-width:0}
+    .icon-btn{width:40px;height:40px;border:1px solid var(--line);border-radius:11px;background:var(--surface);display:grid;place-items:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.025)}
+    .icon-btn:hover{background:var(--surface-2)}
+    .icon-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .page-kicker{font-size:.7rem;color:var(--muted);font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .page-title{font-size:1.03rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:55vw}
+    .controls{display:flex;align-items:center;gap:8px}
+    .font-control{display:flex;align-items:center;border:1px solid var(--line);background:var(--surface);border-radius:11px;overflow:hidden}
+    .font-control button{height:38px;min-width:38px;border:0;background:transparent;cursor:pointer;font-weight:800}
+    .font-control button:hover{background:var(--surface-2)}
+    .font-control span{font-size:.72rem;color:var(--muted);padding:0 4px}
+    .content{overflow:auto;padding:22px 24px 34px;scroll-behavior:smooth}
+    .page{display:none;max-width:1380px;margin:0 auto;animation:fade .22s ease}
+    .page.active{display:block}
+    @keyframes fade{from{opacity:.35;transform:translateY(4px)}to{opacity:1;transform:none}}
+    .hero{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:24px;background:linear-gradient(120deg,var(--surface),var(--surface-2));box-shadow:var(--shadow);padding:26px}
+    .hero:after{content:"";position:absolute;right:-80px;top:-120px;width:340px;height:340px;background:radial-gradient(circle,rgba(124,58,237,.16),transparent 67%);pointer-events:none}
+    .hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;position:relative;z-index:1}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 9px;border-radius:999px;background:var(--blue-2);color:var(--blue);font-size:.7rem;font-weight:850;letter-spacing:.04em;text-transform:uppercase}
+    h1,h2,h3,p{margin-top:0}
+    h1{font-size:clamp(1.75rem,3.1vw,3rem);line-height:1.12;letter-spacing:-.04em;margin:14px 0 10px}
+    h2{font-size:1.5rem;line-height:1.2;letter-spacing:-.025em;margin-bottom:8px}
+    h3{font-size:1rem;margin-bottom:6px}
+    .lead{color:var(--muted);line-height:1.72;max-width:840px;font-size:.98rem}
+    .date-chip{font-size:.72rem;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:7px 10px;background:var(--surface);white-space:nowrap}
+    .versus{display:grid;grid-template-columns:1fr 84px 1fr;gap:14px;align-items:stretch;margin-top:22px;position:relative;z-index:1}
+    .product-card{border:1px solid var(--line);border-radius:20px;background:var(--surface);padding:20px;box-shadow:var(--shadow-sm);min-width:0}
+    .product-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .product-id{display:flex;align-items:center;gap:12px;min-width:0}
+    .product-logo{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-weight:900;font-size:1.15rem;flex:0 0 auto}
+    .product-logo.grok{background:#111827;color:#fff}
+    .product-logo.hermes{background:linear-gradient(135deg,#5b21b6,#8b5cf6);color:#fff}
+    .product-name{font-size:1.12rem;font-weight:850}
+    .product-desc{font-size:.78rem;color:var(--muted);margin-top:2px}
+    .badge{font-size:.68rem;font-weight:800;padding:6px 8px;border-radius:999px;white-space:nowrap}
+    .badge.black{background:#111827;color:#fff}.badge.purple{background:var(--purple-2);color:var(--purple)}
+    .vs-badge{align-self:center;justify-self:center;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-sm);font-weight:950;color:var(--muted)}
+    .chip-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+    .chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:6px 9px;font-size:.72rem;color:var(--muted)}
+    .chip-dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+    .infographic-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;margin-top:16px}
+    .panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow-sm)}
+    .panel-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+    .panel-title{font-weight:850;font-size:1rem}
+    .panel-sub{font-size:.72rem;color:var(--muted);margin-top:2px}
+    .scorecards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .scorecard{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--surface-2)}
+    .score-label{font-size:.72rem;color:var(--muted);font-weight:700}.score-value{font-size:1.65rem;font-weight:900;line-height:1.05;margin-top:4px}.score-note{font-size:.7rem;color:var(--muted);margin-top:5px}
+    .bar-wrap{margin-top:12px}.bar-label{display:flex;justify-content:space-between;gap:10px;font-size:.75rem;margin-bottom:5px}.bar{height:9px;border-radius:999px;background:var(--surface-3);overflow:hidden}.fill{height:100%;border-radius:inherit}.fill.grok{background:linear-gradient(90deg,#111827,#4b5563)}.fill.hermes{background:linear-gradient(90deg,#6d28d9,#8b5cf6)}
+    .matrix-mini{display:grid;gap:10px}
+    .matrix-row{display:grid;grid-template-columns:minmax(150px,1.2fr) 1fr 1fr;gap:10px;align-items:center;font-size:.76rem}
+    .matrix-name{font-weight:750}.mini-score{display:flex;align-items:center;gap:7px}.mini-score b{width:20px}.mini-bar{height:7px;background:var(--surface-3);border-radius:999px;overflow:hidden;flex:1}.mini-bar i{display:block;height:100%;border-radius:999px}.mini-bar i.g{background:#4b5563}.mini-bar i.h{background:#7c3aed}
+    .proscons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+    .pc-card{border:1px solid var(--line);border-radius:14px;padding:13px}
+    .pc-card.pro{background:color-mix(in srgb,var(--green-2) 65%,var(--surface))}.pc-card.con{background:color-mix(in srgb,var(--red-2) 60%,var(--surface))}
+    .pc-title{display:flex;align-items:center;gap:7px;font-weight:850;font-size:.82rem;margin-bottom:8px}.pc-list{display:grid;gap:7px}.pc-item{display:flex;gap:8px;font-size:.75rem;line-height:1.45;color:var(--muted)}.bullet-dot{width:7px;height:7px;border-radius:50%;margin-top:.45em;flex:0 0 auto}.pro .bullet-dot{background:var(--green)}.con .bullet-dot{background:var(--red)}
+    .verdict{margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .verdict-card{border:1px solid var(--line);border-radius:15px;padding:14px;background:var(--surface)}
+    .verdict-icon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;margin-bottom:9px;font-size:1.05rem}.verdict-card:nth-child(1) .verdict-icon{background:var(--blue-2)}.verdict-card:nth-child(2) .verdict-icon{background:var(--purple-2)}.verdict-card:nth-child(3) .verdict-icon{background:var(--amber-2)}
+    .verdict-card b{display:block;font-size:.82rem}.verdict-card p{font-size:.72rem;color:var(--muted);line-height:1.5;margin:4px 0 0}
+    .section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:16px}
+    .section-head p{color:var(--muted);line-height:1.65;max-width:820px;margin-bottom:0}
+    .section-icon{width:48px;height:48px;border-radius:15px;background:var(--blue-2);color:var(--blue);display:grid;place-items:center;flex:0 0 auto}.section-icon svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .compare-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px;background:var(--surface);box-shadow:var(--shadow-sm)}
+    table{width:100%;border-collapse:collapse;min-width:800px;font-size:.8rem}
+    th,td{padding:12px 13px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.48}
+    th{background:var(--surface-2);text-align:left;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0;z-index:2}
+    tr:last-child td{border-bottom:0}.score-cell{text-align:center;font-weight:850}.win-cell{background:color-mix(in srgb,var(--green-2) 45%,transparent)}
+    .cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.feature-card{border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:16px;display:flex;gap:12px;box-shadow:var(--shadow-sm)}
+    .feature-num{width:34px;height:34px;border-radius:11px;background:var(--surface-2);display:grid;place-items:center;font-size:.78rem;font-weight:900;flex:0 0 auto}.feature-card p{font-size:.8rem;color:var(--muted);line-height:1.58;margin:5px 0 0}.feature-card strong{font-size:.9rem}
+    .callout{border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:14px;padding:14px 16px;background:var(--surface);margin:14px 0;color:var(--muted);font-size:.82rem;line-height:1.6}.callout strong{color:var(--text)}
+    .callout.warn{border-left-color:var(--amber);background:color-mix(in srgb,var(--amber-2) 35%,var(--surface))}.callout.good{border-left-color:var(--green);background:color-mix(in srgb,var(--green-2) 35%,var(--surface))}
+    .scenario-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.scenario{border:1px solid var(--line);border-radius:17px;padding:16px;background:var(--surface);box-shadow:var(--shadow-sm);position:relative;overflow:hidden}.scenario:before{content:"";height:4px;position:absolute;left:0;right:0;top:0;background:var(--blue)}.scenario.hermes:before{background:var(--purple)}.scenario .who{font-size:.72rem;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.05em}.scenario .pick{font-weight:900;font-size:1.2rem;margin:8px 0}.scenario p{font-size:.8rem;color:var(--muted);line-height:1.58;margin:0}
+    .decision-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}.decision-card{border:1px solid var(--line);border-radius:18px;background:var(--surface);padding:18px;box-shadow:var(--shadow-sm)}.decision-card.grok{border-top:5px solid #111827}.decision-card.hermes{border-top:5px solid var(--purple)}.decision-card ul{padding-left:18px;margin:12px 0 0;color:var(--muted);font-size:.81rem;line-height:1.68}
+    .source-list{display:grid;gap:10px}.source-item{display:grid;grid-template-columns:36px 1fr;gap:11px;align-items:start;border:1px solid var(--line);border-radius:14px;padding:13px;background:var(--surface)}.source-num{width:30px;height:30px;border-radius:10px;background:var(--surface-2);display:grid;place-items:center;font-weight:900;font-size:.74rem}.source-item b{font-size:.85rem}.source-item p{margin:4px 0 0;color:var(--muted);font-size:.75rem;overflow-wrap:anywhere}.footnote{margin-top:14px;font-size:.72rem;color:var(--muted);line-height:1.55}
+    .mobile-only{display:none}
+    .mobile-overlay{display:none}
+    .page-footer{margin-top:18px;text-align:right;font-size:.69rem;color:var(--muted)}
+    .legend{display:flex;gap:10px;flex-wrap:wrap}.legend span{display:flex;align-items:center;gap:5px;font-size:.7rem;color:var(--muted)}.legend i{width:9px;height:9px;border-radius:3px;display:inline-block}.lg-g{background:#4b5563}.lg-h{background:#7c3aed}
+    .pill{display:inline-flex;align-items:center;border-radius:999px;padding:5px 8px;font-size:.68rem;font-weight:800}.pill.green{background:var(--green-2);color:var(--green)}.pill.amber{background:var(--amber-2);color:var(--amber)}.pill.purple{background:var(--purple-2);color:var(--purple)}.pill.blue{background:var(--blue-2);color:var(--blue)}
+    .icon-inline{display:inline-flex;vertical-align:-3px;margin-right:4px}.icon-inline svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    @media(max-width:980px){
+      body{overflow:auto}.app,.app.sidebar-collapsed{grid-template-columns:1fr}.main{height:100vh}.sidebar{position:fixed;left:0;top:0;width:min(310px,86vw);transform:translateX(-102%);box-shadow:var(--shadow);transition:transform .24s ease}.sidebar.mobile-open{transform:translateX(0)}.mobile-overlay{position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:25}.mobile-overlay.show{display:block}.mobile-only{display:grid}.desktop-collapse{display:none}.topbar{padding:0 14px}.content{padding:16px}.versus{grid-template-columns:1fr}.vs-badge{width:48px;height:48px}.infographic-grid{grid-template-columns:1fr}.verdict{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.scenario-grid{grid-template-columns:1fr}.decision-cards{grid-template-columns:1fr}.page-title{max-width:48vw}.app.sidebar-collapsed .brand-copy,.app.sidebar-collapsed .nav-label,.app.sidebar-collapsed .nav-section-label,.app.sidebar-collapsed .sidebar-foot-copy{display:block}.app.sidebar-collapsed .brand{justify-content:flex-start;padding:18px 18px 14px}
+    }
+    @media(max-width:640px){.hero{padding:18px}.hero-top{display:block}.date-chip{display:inline-block;margin-top:8px}.scorecards{grid-template-columns:1fr 1fr}.proscons{grid-template-columns:1fr}.matrix-row{grid-template-columns:1fr 1fr 1fr;gap:6px}.product-card{padding:16px}.controls .font-control span{display:none}.page-kicker{display:none}.page-title{max-width:44vw;font-size:.9rem}.content{padding:12px}.topbar{height:64px}.section-head{gap:10px}.section-icon{width:42px;height:42px}.score-value{font-size:1.4rem}}
+    @media print{body{overflow:visible;background:#fff}.sidebar,.topbar{display:none!important}.app,.app.sidebar-collapsed{display:block}.main{height:auto}.content{overflow:visible;padding:0}.page{display:block!important;page-break-after:always}.hero,.panel,.feature-card,.scenario,.decision-card,.compare-table-wrap{box-shadow:none}.page-footer{display:none}}
+  </style>
+</head>
+<body>
+<div class="mobile-overlay" id="overlay"></div>
+<div class="app" id="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">G↔H</div>
+      <div class="brand-copy">
+        <div class="brand-title">Agent Bot Comparison</div>
+        <div class="brand-sub">Grok Bot vs Hermes Desktop Bot</div>
+      </div>
+    </div>
+    <nav class="nav" id="nav">
+      <div class="nav-section-label">ภาพรวม</div>
+      <button class="nav-btn active" data-page="overview"><span class="nav-icon" data-icon="home"></span><span class="nav-label">Infographic สรุป</span></button>
+      <button class="nav-btn" data-page="positioning"><span class="nav-icon" data-icon="layers"></span><span class="nav-label">วางตัวต่างกันอย่างไร</span></button>
+      <button class="nav-btn" data-page="quick-compare"><span class="nav-icon" data-icon="columns"></span><span class="nav-label">ตารางเปรียบเทียบหลัก</span></button>
+      <div class="nav-section-label">จุดเด่น / ข้อจำกัด</div>
+      <button class="nav-btn" data-page="grok-pros"><span class="nav-icon" data-icon="check"></span><span class="nav-label">Grok — จุดเด่น</span></button>
+      <button class="nav-btn" data-page="grok-cons"><span class="nav-icon" data-icon="alert"></span><span class="nav-label">Grok — จุดควรระวัง</span></button>
+      <button class="nav-btn" data-page="hermes-pros"><span class="nav-icon" data-icon="spark"></span><span class="nav-label">Hermes — จุดเด่น</span></button>
+      <button class="nav-btn" data-page="hermes-cons"><span class="nav-icon" data-icon="tool"></span><span class="nav-label">Hermes — จุดควรระวัง</span></button>
+      <div class="nav-section-label">การตัดสินใจ</div>
+      <button class="nav-btn" data-page="matrix"><span class="nav-icon" data-icon="chart"></span><span class="nav-label">Decision Matrix</span></button>
+      <button class="nav-btn" data-page="security"><span class="nav-icon" data-icon="shield"></span><span class="nav-label">Security & Isolation</span></button>
+      <button class="nav-btn" data-page="cost"><span class="nav-icon" data-icon="wallet"></span><span class="nav-label">Cost & Operator Effort</span></button>
+      <button class="nav-btn" data-page="scenarios"><span class="nav-icon" data-icon="users"></span><span class="nav-label">เลือกตามสถานการณ์</span></button>
+      <button class="nav-btn" data-page="final"><span class="nav-icon" data-icon="flag"></span><span class="nav-label">ข้อสรุปสุดท้าย</span></button>
+      <div class="nav-section-label">อ้างอิง</div>
+      <button class="nav-btn" data-page="sources"><span class="nav-icon" data-icon="book"></span><span class="nav-label">Sources</span></button>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="sidebar-foot-card">
+        <span class="nav-icon" data-icon="info"></span>
+        <div class="sidebar-foot-copy">สรุปจากเอกสาร 3 ไฟล์<br>อัปเดต 22 Aug 2026</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="icon-btn mobile-only" id="mobileMenu" aria-label="เปิดเมนู"><span data-icon="menu"></span></button>
+        <button class="icon-btn desktop-collapse" id="collapseBtn" aria-label="ย่อหรือขยายเมนู"><span data-icon="panel"></span></button>
+        <div>
+          <div class="page-kicker">Grok Bot vs Hermes Desktop Bot</div>
+          <div class="page-title" id="currentTitle">Infographic สรุป</div>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="font-control" aria-label="ปรับขนาดตัวอักษร">
+          <button id="fontDown" title="ลดขนาดตัวอักษร">A−</button><span>FONT</span><button id="fontUp" title="เพิ่มขนาดตัวอักษร">A+</button>
+        </div>
+        <button class="icon-btn" id="themeBtn" aria-label="เปลี่ยนโหมดสี" title="Dark / Light mode"><span id="themeIcon" data-icon="moon"></span></button>
+      </div>
+    </header>
+
+    <div class="content" id="content">
+      <section class="page active" id="overview" data-title="Infographic สรุป">
+        <div class="hero">
+          <div class="hero-top">
+            <div>
+              <span class="eyebrow">2026 Agent Bot Comparison</span>
+              <h1>Grok Bot <span style="color:var(--muted)">vs</span> Hermes Desktop Bot</h1>
+              <p class="lead">สองระบบดูคล้ายกันเพราะต่างก็เป็น “ผู้ช่วยหลายบอท” แต่ปรัชญาคนละแบบ: Grok เน้น <b>managed cloud teammate ที่พร้อมใช้</b> ส่วน Hermes เน้น <b>agent framework ที่ผู้ใช้ควบคุมและต่อยอดได้ลึก</b></p>
+            </div>
+            <span class="date-chip">Updated · 22 Aug 2026</span>
+          </div>
+
+          <div class="versus">
+            <article class="product-card">
+              <div class="product-head">
+                <div class="product-id"><div class="product-logo grok">G</div><div><div class="product-name">Grok Bot</div><div class="product-desc">Managed cloud teammate</div></div></div>
+                <span class="badge black">FAST START</span>
+              </div>
+              <div class="chip-row"><span class="chip"><span class="chip-dot"></span>Persistent cloud computer</span><span class="chip"><span class="chip-dot"></span>Approvals / Auto Review</span><span class="chip"><span class="chip-dot"></span>Bot handoff</span></div>
+              <div class="proscons">
+                <div class="pc-card pro"><div class="pc-title">✓ Pros</div><div class="pc-list"><div class="pc-item"><span class="bullet-dot"></span>เริ่มง่ายและเร็ว</div><div class="pc-item"><span class="bullet-dot"></span>ไม่ต้องดูแล backend เองมาก</div><div class="pc-item"><span class="bullet-dot"></span>หลายบอทร่วมงานบนเครื่องเดียวกันได้สะดวก</div></div></div>
+                <div class="pc-card con"><div class="pc-title">! Cons</div><div class="pc-list"><div class="pc-item"><span class="bullet-dot"></span>แชร์ไฟล์ / sessions / logins บน cloud computer</div><div class="pc-item"><span class="bullet-dot"></span>Bot ไม่ใช่ security boundary</div><div class="pc-item"><span class="bullet-dot"></span>Bot access อยู่ใน SuperGrok Plus $100/mo</div></div></div>
+              </div>
+            </article>
+
+            <div class="vs-badge">VS</div>
+
+            <article class="product-card">
+              <div class="product-head">
+                <div class="product-id"><div class="product-logo hermes">H</div><div><div class="product-name">Hermes Desktop Bot</div><div class="product-desc">Self-controlled agent framework</div></div></div>
+                <span class="badge purple">POWER USER</span>
+              </div>
+              <div class="chip-row"><span class="chip" style="color:var(--purple)"><span class="chip-dot"></span>Profiles</span><span class="chip" style="color:var(--purple)"><span class="chip-dot"></span>CLI / Gateway / Cron</span><span class="chip" style="color:var(--purple)"><span class="chip-dot"></span>Remote machines</span></div>
+              <div class="proscons">
+                <div class="pc-card pro"><div class="pc-title">✓ Pros</div><div class="pc-list"><div class="pc-item"><span class="bullet-dot"></span>แยก config / memory / skills / credentials ต่อ profile</div><div class="pc-item"><span class="bullet-dot"></span>CLI parity และต่อ infra ได้ลึก</div><div class="pc-item"><span class="bullet-dot"></span>เหมาะกับ self-host และหลายเครื่อง</div></div></div>
+                <div class="pc-card con"><div class="pc-title">! Cons</div><div class="pc-list"><div class="pc-item"><span class="bullet-dot"></span>ตั้งค่าและดูแลระบบมากกว่า</div><div class="pc-item"><span class="bullet-dot"></span>Security / networking ต้องออกแบบเอง</div><div class="pc-item"><span class="bullet-dot"></span>ซับซ้อนกว่าสำหรับผู้ใช้ทั่วไป</div></div></div>
+              </div>
+            </article>
+          </div>
+
+          <div class="infographic-grid">
+            <div class="panel">
+              <div class="panel-header"><div><div class="panel-title">Decision Matrix — ภาพรวมคะแนน</div><div class="panel-sub">คะแนนถ่วงน้ำหนักจากเกณฑ์ 14 หัวข้อในเอกสาร</div></div><div class="legend"><span><i class="lg-g"></i>Grok</span><span><i class="lg-h"></i>Hermes</span></div></div>
+              <div class="scorecards"><div class="scorecard"><div class="score-label">GROK BOT</div><div class="score-value">201</div><div class="bar-wrap"><div class="bar"><div class="fill grok" style="width:72.6%"></div></div></div><div class="score-note">เด่น: เริ่มเร็ว · ใช้ง่าย · Managed</div></div><div class="scorecard"><div class="score-label">HERMES DESKTOP BOT</div><div class="score-value" style="color:var(--purple)">277</div><div class="bar-wrap"><div class="bar"><div class="fill hermes" style="width:100%"></div></div></div><div class="score-note">เด่น: Flexibility · Control · Infra</div></div></div>
+              <div class="matrix-mini" style="margin-top:15px">
+                <div class="matrix-row"><div class="matrix-name">เริ่มใช้งานเร็ว</div><div class="mini-score"><b>5</b><span class="mini-bar"><i class="g" style="width:100%"></i></span></div><div class="mini-score"><b>3</b><span class="mini-bar"><i class="h" style="width:60%"></i></span></div></div>
+                <div class="matrix-row"><div class="matrix-name">ความยืดหยุ่น</div><div class="mini-score"><b>3</b><span class="mini-bar"><i class="g" style="width:60%"></i></span></div><div class="mini-score"><b>5</b><span class="mini-bar"><i class="h" style="width:100%"></i></span></div></div>
+                <div class="matrix-row"><div class="matrix-name">ควบคุม environment</div><div class="mini-score"><b>2</b><span class="mini-bar"><i class="g" style="width:40%"></i></span></div><div class="mini-score"><b>5</b><span class="mini-bar"><i class="h" style="width:100%"></i></span></div></div>
+                <div class="matrix-row"><div class="matrix-name">Multi-bot collaboration</div><div class="mini-score"><b>5</b><span class="mini-bar"><i class="g" style="width:100%"></i></span></div><div class="mini-score"><b>4</b><span class="mini-bar"><i class="h" style="width:80%"></i></span></div></div>
+                <div class="matrix-row"><div class="matrix-name">CLI / shell / infra</div><div class="mini-score"><b>2</b><span class="mini-bar"><i class="g" style="width:40%"></i></span></div><div class="mini-score"><b>5</b><span class="mini-bar"><i class="h" style="width:100%"></i></span></div></div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-header"><div><div class="panel-title">เลือกเร็วใน 30 วินาที</div><div class="panel-sub">คำตอบขึ้นกับรูปแบบงาน มากกว่าคำว่า “ใครเก่งกว่า”</div></div></div>
+              <div class="verdict" style="grid-template-columns:1fr">
+                <div class="verdict-card"><div class="verdict-icon">⚡</div><b>อยากเริ่มวันนี้ ไม่อยากดูแล infra</b><p><span class="pill blue">เลือก Grok Bot</span> เหมาะกับ founder / operator / ผู้ใช้ทั่วไปที่ต้องการ managed experience</p></div>
+                <div class="verdict-card"><div class="verdict-icon">🧩</div><b>อยากสร้างระบบ Agent ของตัวเองระยะยาว</b><p><span class="pill purple">เลือก Hermes</span> เหมาะกับ power user / dev / automation-heavy workflow</p></div>
+                <div class="verdict-card"><div class="verdict-icon">🔐</div><b>ต้องแยก bot context / profile ชัดเจน</b><p><span class="pill purple">Hermes ได้เปรียบ</span> เพราะแต่ละบอทเป็นคนละ profile จริง</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="page-footer">Sources: [1][2][3][4][5] · สรุปจากเอกสารต้นฉบับที่แนบมา</div>
+      </section>
+
+      <section class="page" id="positioning" data-title="วางตัวต่างกันอย่างไร">
+        <div class="section-head"><div><h2>มองให้แฟร์ก่อนเทียบ</h2><p>ทั้งคู่เป็น “บอทผู้ช่วยหลายตัว” แต่แกนการออกแบบต่างกันมาก จึงไม่ควรตัดสินจากจำนวนฟีเจอร์อย่างเดียว</p></div><div class="section-icon"><span data-icon="layers"></span></div></div>
+        <div class="decision-cards">
+          <article class="decision-card grok"><span class="pill blue">GROK BOT</span><h3 style="margin-top:12px">Managed cloud teammate</h3><p class="lead" style="font-size:.84rem">มี persistent cloud computer ให้บอทใช้ เน้นให้ผู้ใช้สั่งงานผ่านแชต แล้วบอทไปทำงานใน browser / filesystem / terminal / apps พร้อม collaboration และ approval UX ที่เตรียมมาให้ [1][2]</p><ul><li>จุดขายหลัก: พร้อมใช้และเรียนรู้ง่าย</li><li>ผู้ให้บริการจัด environment หลักให้</li><li>handoff ระหว่าง bots สะดวกเพราะแชร์ computer เดียวกัน</li></ul></article>
+          <article class="decision-card hermes"><span class="pill purple">HERMES DESKTOP BOT</span><h3 style="margin-top:12px">Desktop UI บน agent framework เต็มตัว</h3><p class="lead" style="font-size:.84rem">Bot ใน Desktop คือ Hermes profile จริง และใช้ agent core เดียวกับ CLI / gateway / sessions เดิม ทำให้เชื่อม profiles, skills, cron, MCP, plugins และ remote machines ได้ลึก [4][5]</p><ul><li>จุดขายหลัก: คุมเองและต่อยอดได้มาก</li><li>Desktop เป็นอีก surface ของระบบเดิม ไม่ได้ล็อกระบบไว้ใน UI</li><li>เหมาะกับ self-host / multi-machine / automation stack</li></ul></article>
+        </div>
+        <div class="callout good"><strong>สรุปสั้น:</strong> Grok ชนะในเกม “เริ่มเร็วและ managed” ส่วน Hermes ชนะในเกม “flexibility, control และ integration เชิงลึก” [1][4][5]</div>
+      </section>
+
+      <section class="page" id="quick-compare" data-title="ตารางเปรียบเทียบหลัก">
+        <div class="section-head"><div><h2>ตารางเปรียบเทียบหัวข้อสำคัญ</h2><p>รวมใจความจากเอกสารหลักให้เหลือแกนที่ใช้ตัดสินใจได้ทันที</p></div><div class="section-icon"><span data-icon="columns"></span></div></div>
+        <div class="compare-table-wrap"><table>
+          <thead><tr><th style="width:22%">หัวข้อ</th><th>Grok Bot</th><th>Hermes Desktop Bot</th></tr></thead>
+          <tbody>
+            <tr><td><b>แนวทางหลัก</b></td><td>Managed cloud teammate [1]</td><td>Desktop UI บน agent framework เต็มตัว [4][5]</td></tr>
+            <tr><td><b>เริ่มใช้งาน</b></td><td class="win-cell">ง่ายกว่า / เร็วกว่า [1]</td><td>ต้อง setup runtime / provider / backend มากกว่า [5]</td></tr>
+            <tr><td><b>คอมพิวเตอร์ให้ Bot ใช้</b></td><td>Persistent cloud computer พร้อมใช้ [1]</td><td class="win-cell">Local หรือ remote Hermes backend ที่ผู้ใช้จัดเอง [5]</td></tr>
+            <tr><td><b>การแยก Bot</b></td><td>แชร์ cloud computer, files, sessions, app logins [1][2]</td><td class="win-cell">แยกเป็น profiles พร้อม config / memory / skills / credentials [4]</td></tr>
+            <tr><td><b>ความยืดหยุ่น</b></td><td>สูงภายใต้ product ของผู้ให้บริการ [1][2]</td><td class="win-cell">สูงมาก: profiles, gateway, cron, MCP, plugins, remote machines [4][5]</td></tr>
+            <tr><td><b>Human approval</b></td><td class="win-cell">Allow once / Deny / Always allow + Auto Review [2]</td><td>มี approval model แต่เน้นประกอบระบบเองมากกว่า [5]</td></tr>
+            <tr><td><b>CLI / Infra</b></td><td>ไม่ใช่จุดเด่นหลัก</td><td class="win-cell">CLI parity สูง และโยง shell / gateways / backend ได้ตรง [4][5]</td></tr>
+            <tr><td><b>Self-host / Remote</b></td><td>Managed cloud model [1]</td><td class="win-cell">รองรับ remote backend / หลาย gateways โดยตรง [4][5]</td></tr>
+            <tr><td><b>ค่าเข้าฟีเจอร์ Bot</b></td><td>SuperGrok Plus $100/เดือน ตาม pricing ที่อ้างในเอกสาร [3]</td><td>เอกสารที่ใช้ไม่ระบุ paywall แยกสำหรับ Bot Mode [4][5]</td></tr>
+            <tr><td><b>ต้นทุนคนดูแล</b></td><td class="win-cell">ต่ำกว่า เพราะ managed [1]</td><td>สูงกว่า เพราะต้องดูแล setup / backend / networking [5]</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section class="page" id="grok-pros" data-title="Grok — จุดเด่น">
+        <div class="section-head"><div><h2>Grok Bot — จุดเด่น</h2><p>เหมาะกับคนที่ต้องการบอท “พร้อมลงงาน” มากกว่าการประกอบระบบ agent ด้วยตัวเอง</p></div><div class="section-icon" style="background:#e5e7eb;color:#111827"><span data-icon="check"></span></div></div>
+        <div class="cards">
+          <div class="feature-card"><div class="feature-num">01</div><div><strong>เริ่มง่ายมาก</strong><p>สร้าง Bot แล้วคุยได้เลย ไม่ต้องเริ่มจาก workflow builder หรือ setup ระบบซับซ้อนก่อน ใช้ได้จาก desktop app และ iOS [1]</p></div></div>
+          <div class="feature-card"><div class="feature-num">02</div><div><strong>Persistent cloud computer พร้อม</strong><p>มี browser, filesystem, terminal และใช้งาน apps / websites ได้ ช่วยให้งานจบในเครื่องมือจริง ไม่ใช่แค่คำตอบในแชต [1]</p></div></div>
+          <div class="feature-card"><div class="feature-num">03</div><div><strong>Multi-bot collaboration ในตัว</strong><p>หลาย Bots รันขนาน แชร์ context และส่งต่องานกันได้ ลดภาระการ handoff ด้วยมือ [1]</p></div></div>
+          <div class="feature-card"><div class="feature-num">04</div><div><strong>สอน Routine จากการสาธิต</strong><p>พา Bot ทำ workflow หลายขั้นตอนหนึ่งรอบ แล้วบันทึกเป็น routine เพื่อเรียกซ้ำหรือรันตามเวลาได้ [1]</p></div></div>
+          <div class="feature-card"><div class="feature-num">05</div><div><strong>Approval UX สำเร็จรูป</strong><p>มี Allow once / Deny / Always allow และ Auto Review rules ช่วยกำหนด human gate ได้ง่าย [2]</p></div></div>
+        </div>
+      </section>
+
+      <section class="page" id="grok-cons" data-title="Grok — จุดควรระวัง">
+        <div class="section-head"><div><h2>Grok Bot — ข้อจำกัด / จุดควรระวัง</h2><p>ความสะดวกจาก shared cloud computer เป็นทั้ง “จุดแข็ง” และ “ข้อจำกัด” โดยเฉพาะเรื่องการแยกสิทธิ์และข้อมูล</p></div><div class="section-icon" style="background:var(--red-2);color:var(--red)"><span data-icon="alert"></span></div></div>
+        <div class="cards">
+          <div class="feature-card"><div class="feature-num">01</div><div><strong>ทุก Bot แชร์ cloud computer</strong><p>แชร์ files, browser sessions และ app logins; เอกสารเตือนว่าไม่ควรใช้ “คนละ Bot” เป็น security boundary [1][2]</p></div></div>
+          <div class="feature-card"><div class="feature-num">02</div><div><strong>ต้องจัดการข้อมูลค้างเอง</strong><p>ควร sign out, ลบไฟล์ชั่วคราว และถอน connector เมื่อเลิกใช้; การลบ Bot ไม่ได้ลบ files หรือ browser sessions บนเครื่องร่วมอัตโนมัติ [2]</p></div></div>
+          <div class="feature-card"><div class="feature-num">03</div><div><strong>มีค่าใช้จ่ายระดับ SuperGrok Plus</strong><p>Pricing ที่อ้างในเอกสารระบุ Grok Bot access ใน SuperGrok Plus $100/เดือน [3]</p></div></div>
+          <div class="feature-card"><div class="feature-num">04</div><div><strong>Privacy / control ผูกกับบัญชีและ storage model</strong><p>เอกสารระบุ Cursor authentication / account data settings และ Grok Bot ต้องมี data storage; ไม่รองรับ Legacy Privacy Mode [2]</p></div></div>
+          <div class="feature-card"><div class="feature-num">05</div><div><strong>Auto Review ไม่เท่ากับ isolation</strong><p>Approval rules ช่วยลดความเสี่ยง แต่เอกสารยังแนะนำ least privilege และ explicit approvals [2]</p></div></div>
+        </div>
+        <div class="callout warn"><strong>ใจความสำคัญ:</strong> ถ้างานต้องแยก secret / account / session แบบเข้มงวด ต้องออกแบบเพิ่ม อย่าอาศัยการแยกชื่อ Bot เพียงอย่างเดียว [1][2]</div>
+      </section>
+
+      <section class="page" id="hermes-pros" data-title="Hermes — จุดเด่น">
+        <div class="section-head"><div><h2>Hermes Desktop Bot — จุดเด่น</h2><p>เหมาะกับคนที่มอง Bot Mode เป็น “หน้าต่าง” เข้าสู่ agent system ที่มี profiles, tools, CLI และ infrastructure ของตัวเอง</p></div><div class="section-icon" style="background:var(--purple-2);color:var(--purple)"><span data-icon="spark"></span></div></div>
+        <div class="cards">
+          <div class="feature-card"><div class="feature-num">01</div><div><strong>Bot คือ Hermes profile จริง</strong><p>แต่ละ Bot มี config, memory, skills, credentials และ chat history แยกในระดับ profile [4]</p></div></div>
+          <div class="feature-card"><div class="feature-num">02</div><div><strong>ใช้ agent core เดียวกับ CLI / Gateway</strong><p>Desktop ใช้ core เดียวกับ CLI และ gateway; config, API keys, sessions, skills และ memory เดิมใช้ร่วมกันได้ [5]</p></div></div>
+          <div class="feature-card"><div class="feature-num">03</div><div><strong>ต่อยอด workflow ได้ลึก</strong><p>เชื่อม cron, profiles, MCP, toolsets, remote gateways, multi-profile, plugins และ self-host workflow ได้โดยตรง [4][5]</p></div></div>
+          <div class="feature-card"><div class="feature-num">04</div><div><strong>ทำงานหลายเครื่องได้ดี</strong><p>Roster เดียวรวม Bots จากหลาย gateway / หลายเครื่อง และแยกชื่อซ้ำด้วย @name-device ได้ [4][5]</p></div></div>
+          <div class="feature-card"><div class="feature-num">05</div><div><strong>CLI parity สูง</strong><p>งานจาก Bot Mode กลับไปคุมจาก shell ได้ เช่น chat, profile files และ routines ด้วย hermes cron list [4]</p></div></div>
+          <div class="feature-card"><div class="feature-num">06</div><div><strong>Bot Mode ไม่ยึดข้อมูลไว้ใน UI</strong><p>ปิด plugin แล้ว profiles, sessions และ cron jobs ยังอยู่ เพราะ UI เป็นเพียงชั้น render ของระบบเดิม [4]</p></div></div>
+        </div>
+      </section>
+
+      <section class="page" id="hermes-cons" data-title="Hermes — จุดควรระวัง">
+        <div class="section-head"><div><h2>Hermes Desktop Bot — ข้อจำกัด / จุดควรระวัง</h2><p>ความยืดหยุ่นสูงแลกกับภาระ operator: ต้องเข้าใจ runtime, backend, network และ security มากขึ้น</p></div><div class="section-icon" style="background:var(--amber-2);color:var(--amber)"><span data-icon="tool"></span></div></div>
+        <div class="cards">
+          <div class="feature-card"><div class="feature-num">01</div><div><strong>Setup และ maintenance มากกว่า</strong><p>ต้องมี runtime, provider/model setup และกรณี remote backend ต้องดูแล hermes serve เอง [5]</p></div></div>
+          <div class="feature-card"><div class="feature-num">02</div><div><strong>Remote backend ต้องรันพร้อมเอง</strong><p>Desktop app ไม่ได้ start backend ระยะไกลให้ ต้องมี hermes serve ที่เข้าถึงได้อยู่ก่อน [5]</p></div></div>
+          <div class="feature-card"><div class="feature-num">03</div><div><strong>Security / Networking ต้องออกแบบเอง</strong><p>เอกสารแนะนำ remote backend แบบ username/password เฉพาะ trusted network หรือ VPN เช่น Tailscale และไม่ควรเปิด public internet ตรง ๆ [5]</p></div></div>
+          <div class="feature-card"><div class="feature-num">04</div><div><strong>Concept เยอะสำหรับผู้ใช้ทั่วไป</strong><p>Profiles, gateways, plugins, MCP, cron, remote machines และ multi-connection อาจเกินจำเป็นถ้าต้องการแค่ผู้ช่วยพร้อมใช้ [4][5]</p></div></div>
+          <div class="feature-card"><div class="feature-num">05</div><div><strong>Bot-to-bot ยังไม่ใช่ live interrupt เต็มรูปแบบ</strong><p>การส่งข้อความเป็น per-invocation; ฝั่งรับ pick message ตอนรันรอบถัดไป ขณะที่ live interrupt ยังเป็น future work [4]</p></div></div>
+        </div>
+      </section>
+
+      <section class="page" id="matrix" data-title="Decision Matrix">
+        <div class="section-head"><div><h2>Decision Matrix — คะแนนเต็ม 5</h2><p>คะแนน 1 = เหมาะน้อย, 3 = กลาง ๆ, 5 = เด่นมาก; “คะแนนถ่วงน้ำหนัก” = คะแนน × น้ำหนัก ชุดนี้เน้นมุมใช้งานจริงทั่วไปที่ต้องเลือกเครื่องมือไปทำงานต่อ</p></div><div class="section-icon"><span data-icon="chart"></span></div></div>
+        <div class="callout"><strong>ผลรวม:</strong> Grok Bot = <b>201</b> · Hermes Desktop Bot = <b style="color:var(--purple)">277</b>. ผลนี้เกิดจากน้ำหนักที่ให้ความสำคัญสูงกับ flexibility, control, profile separation, CLI/infra และ remote machines [4][5]</div>
+        <div class="compare-table-wrap"><table id="matrixTable"><thead><tr><th>เกณฑ์</th><th>น้ำหนัก</th><th>Grok</th><th>Grok × W</th><th>Hermes</th><th>Hermes × W</th><th>เหตุผลย่อ</th></tr></thead><tbody></tbody></table></div>
+        <div class="footnote">หมายเหตุ: คะแนนเป็น decision framework จากเอกสารที่แนบ ไม่ใช่ benchmark ประสิทธิภาพเชิงวิทยาศาสตร์ และอาจเปลี่ยนได้ถ้าปรับน้ำหนักตามบทบาท founder / ops / dev team</div>
+      </section>
+
+      <section class="page" id="security" data-title="Security & Isolation">
+        <div class="section-head"><div><h2>Security & Isolation</h2><p>หัวข้อนี้เป็นจุดที่แนวคิดของสองระบบต่างกันชัดที่สุด: Grok เน้น shared environment เพื่อ collaboration ส่วน Hermes แยก profile แต่ให้ผู้ใช้รับผิดชอบ infra เองมากกว่า</p></div><div class="section-icon" style="background:var(--green-2);color:var(--green)"><span data-icon="shield"></span></div></div>
+        <div class="decision-cards">
+          <article class="decision-card grok"><span class="pill amber">SHARED ENVIRONMENT</span><h3 style="margin-top:12px">Grok Bot</h3><ul><li>Bots แชร์ files, browser sessions, app logins บน cloud computer [1][2]</li><li>เอกสารระบุชัดว่า Bot separation ไม่ใช่ security boundary [2]</li><li>มี approval + auto-review สำเร็จรูป แต่ไม่ควรใช้แทน least privilege [2]</li><li>ควร sign out / ลบ temporary files / ถอน connector เมื่องานจบ [2]</li></ul></article>
+          <article class="decision-card hermes"><span class="pill green">PROFILE SEPARATION</span><h3 style="margin-top:12px">Hermes Desktop Bot</h3><ul><li>แต่ละ Bot = profile พร้อม config / memory / skills / credentials แยก [4]</li><li>ได้โครงสร้างแยกบริบทชัดกว่าในระดับ agent profile</li><li>แต่ network exposure, VPN, backend authentication และ host security ต้องออกแบบเอง [5]</li><li>เอกสารแนะนำ trusted network / VPN เช่น Tailscale สำหรับ remote backend [5]</li></ul></article>
+        </div>
+        <div class="callout warn"><strong>ข้อควรจำ:</strong> “แยก profile” ไม่ได้แปลว่า “ระบบปลอดภัยอัตโนมัติ” — Hermes ให้ control มากขึ้น แต่ภาระ security design ก็อยู่กับ operator มากขึ้น [4][5]</div>
+      </section>
+
+      <section class="page" id="cost" data-title="Cost & Operator Effort">
+        <div class="section-head"><div><h2>Cost & Operator Effort</h2><p>ต้นทุนต้องมองสองมิติพร้อมกัน: “เงินที่จ่ายให้บริการ” และ “เวลาคนดูแลระบบ”</p></div><div class="section-icon" style="background:var(--amber-2);color:var(--amber)"><span data-icon="wallet"></span></div></div>
+        <div class="scenario-grid">
+          <article class="scenario"><div class="who">Cash cost</div><div class="pick">Grok: ชัดเจนกว่า</div><p>เอกสารอ้าง pricing ว่า Grok Bot access อยู่ใน SuperGrok Plus <b>$100/เดือน</b> [3]</p></article>
+          <article class="scenario hermes"><div class="who">Operator effort</div><div class="pick">Hermes: สูงกว่า</div><p>ต้องดูแล runtime, provider/model, hermes serve, remote backend, network และ security เองมากกว่า [5]</p></article>
+          <article class="scenario hermes"><div class="who">Control value</div><div class="pick">Hermes: ได้ control มากกว่า</div><p>แลก effort ที่สูงขึ้นกับการควบคุม environment, profiles, CLI, cron, MCP, plugins และ remote machines [4][5]</p></article>
+        </div>
+        <div class="callout"><strong>อ่านให้ถูก:</strong> “Hermes ถูกกว่า” ไม่ใช่ข้อสรุปที่เอกสารรองรับโดยตรง เพราะต้นทุน provider / compute / operator ขึ้นกับระบบที่ผู้ใช้เลือกเอง; ต้นฉบับเพียงระบุว่าไม่พบ paywall แยกสำหรับ Bot Mode ใน docs ที่อ่าน [4][5]</div>
+      </section>
+
+      <section class="page" id="scenarios" data-title="เลือกตามสถานการณ์">
+        <div class="section-head"><div><h2>Recommendation ตามสถานการณ์</h2><p>Decision Matrix ไม่ได้แปลว่า Hermes ชนะทุกกรณี หากโจทย์เน้น “เริ่มเร็ว / ใช้ง่าย / ไม่ดูแล backend” คะแนน Grok จะดีขึ้นมาก</p></div><div class="section-icon"><span data-icon="users"></span></div></div>
+        <div class="scenario-grid">
+          <article class="scenario"><div class="who">Scenario 1 · Founder / Operator</div><div class="pick">เลือก Grok Bot</div><p>ต้องการของสำเร็จรูป เริ่มเร็ว ใช้ง่าย และไม่ต้องแบกภาระ setup / backend มาก [1][2]</p></article>
+          <article class="scenario hermes"><div class="who">Scenario 2 · Power User / Dev</div><div class="pick">เลือก Hermes</div><p>ต้องต่อ profile, skills, cron, MCP, CLI, remote backends และหลายเครื่องเข้าด้วยกันเป็น agent system [4][5]</p></article>
+          <article class="scenario hermes"><div class="who">Scenario 3 · Context Separation</div><div class="pick">เลือก Hermes</div><p>ต้องการแยก Bot / context / capability ชัด เพราะแต่ละ Bot เป็น profile จริง ขณะที่ Grok roster แชร์ cloud computer [1][2][4]</p></article>
+        </div>
+        <div class="callout good"><strong>กรณี Grok อาจชนะ Decision Matrix:</strong> เพิ่มน้ำหนักให้ “เริ่มเร็ว”, “ง่ายสำหรับคนทั่วไป”, “ไม่ดูแล backend”, “approval UX สำเร็จรูป” [1][2]</div>
+      </section>
+
+      <section class="page" id="final" data-title="ข้อสรุปสุดท้าย">
+        <div class="section-head"><div><h2>ข้อสรุปสุดท้าย</h2><p>ไม่ควรสรุปว่าเครื่องมือหนึ่ง “ดีกว่า” แบบสัมบูรณ์ — คำถามที่ถูกคือ “ระบบไหนเข้ากับวิธีทำงานและระดับ control ที่เราต้องการ”</p></div><div class="section-icon" style="background:var(--purple-2);color:var(--purple)"><span data-icon="flag"></span></div></div>
+        <div class="decision-cards">
+          <article class="decision-card grok"><span class="pill blue">GROK WINS WHEN…</span><h3 style="margin-top:12px">ง่าย · พร้อมใช้ · Managed</h3><ul><li>อยากเริ่มเร็วที่สุด</li><li>อยากให้ provider ดูแล environment หลัก</li><li>งานหลักคือสั่งผ่าน chat แล้วให้ Bot ทำบน cloud computer</li><li>ยอมรับ shared computer / sessions model ได้</li><li>ต้องการ approval UX สำเร็จรูป</li></ul></article>
+          <article class="decision-card hermes"><span class="pill purple">HERMES WINS WHEN…</span><h3 style="margin-top:12px">ยืดหยุ่น · คุมเอง · ต่อ Infra ลึก</h3><ul><li>ต้องการ agent profiles แยกจริง</li><li>ใช้ CLI / gateway / cron / MCP / plugins</li><li>มี local / remote servers หลายเครื่อง</li><li>ต้องการ self-host / custom workflow</li><li>ทีมพร้อมรับภาระ setup และ security design เอง</li></ul></article>
+        </div>
+        <div class="panel" style="margin-top:14px">
+          <div class="panel-title">คำตอบแบบสั้นที่สุด</div>
+          <div class="verdict">
+            <div class="verdict-card"><div class="verdict-icon">👤</div><b>ผู้ใช้ทั่วไป / Founder / Operator</b><p>เอนเอียงไป <b>Grok Bot</b> ถ้าเป้าหมายคือเริ่มเร็วและลดภาระ infra [1][2]</p></div>
+            <div class="verdict-card"><div class="verdict-icon">🛠️</div><b>Power User / Dev / Automation</b><p>เอนเอียงไป <b>Hermes Desktop Bot</b> ถ้าต้องการประกอบ agent system ของตัวเอง [4][5]</p></div>
+            <div class="verdict-card"><div class="verdict-icon">🏁</div><b>Decision Matrix ชุดปัจจุบัน</b><p><b>Hermes 277 vs Grok 201</b> เพราะน้ำหนักไปทาง flexibility, control และ infra</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="sources" data-title="Sources">
+        <div class="section-head"><div><h2>Sources</h2><p>ลิงก์อ้างอิงตามที่ระบุในเอกสารต้นฉบับทั้งสามไฟล์</p></div><div class="section-icon"><span data-icon="book"></span></div></div>
+        <div class="source-list">
+          <div class="source-item"><div class="source-num">1</div><div><b>xAI Docs — Grok Bot Overview</b><p><a href="https://docs.x.ai/grok-bot/overview" target="_blank" rel="noopener">https://docs.x.ai/grok-bot/overview</a></p></div></div>
+          <div class="source-item"><div class="source-num">2</div><div><b>xAI Docs — Approvals, Security and Privacy</b><p><a href="https://docs.x.ai/grok-bot/approvals-security-and-privacy" target="_blank" rel="noopener">https://docs.x.ai/grok-bot/approvals-security-and-privacy</a></p></div></div>
+          <div class="source-item"><div class="source-num">3</div><div><b>xAI Pricing</b><p><a href="https://x.ai/pricing" target="_blank" rel="noopener">https://x.ai/pricing</a></p></div></div>
+          <div class="source-item"><div class="source-num">4</div><div><b>Hermes Agent Docs — Bot Mode</b><p><a href="https://hermes-agent.nousresearch.com/docs/user-guide/bot-mode" target="_blank" rel="noopener">https://hermes-agent.nousresearch.com/docs/user-guide/bot-mode</a></p></div></div>
+          <div class="source-item"><div class="source-num">5</div><div><b>Hermes Agent Docs — Desktop</b><p><a href="https://hermes-agent.nousresearch.com/docs/user-guide/desktop" target="_blank" rel="noopener">https://hermes-agent.nousresearch.com/docs/user-guide/desktop</a></p></div></div>
+        </div>
+        <div class="callout warn"><strong>Scope:</strong> HTML นี้เป็นการจัดหมวดหมู่และสรุปใหม่จากเอกสารที่แนบมา โดยไม่ได้ทำ web research เพิ่มเติม ดังนั้นข้อมูลราคา/feature เป็นไปตามแหล่งอ้างอิงและวันที่ในเอกสารต้นฉบับ (22 Aug 2026)</div>
+      </section>
+    </div>
+  </main>
+</div>
+<script>
+  const icons={
+    home:'<svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-6h5v6"/></svg>',
+    layers:'<svg viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 16 9 5 9-5"/></svg>',
+    columns:'<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16"/></svg>',
+    check:'<svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>',
+    alert:'<svg viewBox="0 0 24 24"><path d="M10.3 3.6 2.7 17a2 2 0 0 0 1.8 3h15a2 2 0 0 0 1.8-3L13.7 3.6a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>',
+    spark:'<svg viewBox="0 0 24 24"><path d="m12 3-1.2 4.3A4 4 0 0 1 8 10.1L3.7 11.3 8 12.5a4 4 0 0 1 2.8 2.8L12 19.6l1.2-4.3a4 4 0 0 1 2.8-2.8l4.3-1.2-4.3-1.2a4 4 0 0 1-2.8-2.8L12 3Z"/></svg>',
+    tool:'<svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5 5L3 18l3 3 6.7-6.7a4 4 0 0 0 5-5l-2.5 2.5-3-3 2.5-2.5Z"/></svg>',
+    chart:'<svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20V7"/></svg>',
+    shield:'<svg viewBox="0 0 24 24"><path d="M12 3 20 6v6c0 5-3.4 8-8 9-4.6-1-8-4-8-9V6l8-3Z"/><path d="m9 12 2 2 4-4"/></svg>',
+    wallet:'<svg viewBox="0 0 24 24"><path d="M4 6h14a2 2 0 0 1 2 2v10H5a2 2 0 0 1-2-2V7a3 3 0 0 1 3-3h11"/><path d="M16 11h5v4h-5a2 2 0 0 1 0-4Z"/></svg>',
+    users:'<svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/></svg>',
+    flag:'<svg viewBox="0 0 24 24"><path d="M5 22V4"/><path d="M5 5h11l-1 4 1 4H5"/></svg>',
+    book:'<svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5v13Z"/><path d="M8 7h8"/><path d="M8 10h6"/></svg>',
+    info:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>',
+    menu:'<svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
+    panel:'<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg>',
+    moon:'<svg viewBox="0 0 24 24"><path d="M20 15.2A8 8 0 0 1 8.8 4 8.5 8.5 0 1 0 20 15.2Z"/></svg>',
+    sun:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'
+  };
+  document.querySelectorAll('[data-icon]').forEach(el=>{el.innerHTML=icons[el.dataset.icon]||''});
+
+  const matrix=[
+    ['เริ่มใช้งานเร็ว',5,5,25,3,15,'Grok สร้างบอทแล้วใช้ได้เร็วกว่า; Hermes ต้องมี runtime / provider / setup มากกว่า [1][5]'],
+    ['ความง่ายสำหรับผู้ใช้ทั่วไป',5,5,25,3,15,'Grok เป็น managed product; Hermes มี profiles, gateways, plugins, MCP มากกว่า [1][4][5]'],
+    ['ความยืดหยุ่นในการปรับแต่ง',5,3,15,5,25,'Hermes เชื่อม profiles, skills, cron, MCP, plugins, remote backends ได้ลึก [4][5]'],
+    ['ควบคุมสภาพแวดล้อมเอง',5,2,10,5,25,'Grok ใช้ shared cloud computer; Hermes ใช้ local/remote backend ที่ผู้ใช้จัดเอง [1][5]'],
+    ['การแยกบอท/แยกบริบท',4,2,8,5,20,'Grok แชร์ files/sessions/logins; Hermes แยก profile จริง [1][2][4]'],
+    ['การทำงานหลายบอทร่วมกัน',4,5,20,4,16,'Grok เด่น collaboration/handoff ใน shared computer; Hermes มี group chat/bot messaging [1][4]'],
+    ['Workflow automation / routine',4,4,16,5,20,'Grok มี routines จาก demonstration; Hermes มี cron/routines บน agent system [1][4]'],
+    ['เชื่อม CLI / shell / infra',5,2,10,5,25,'Hermes มี CLI parity และเชื่อม shell / remote gateways / backend ตรงกว่า [4][5]'],
+    ['Self-host / remote machine',4,1,4,5,20,'Hermes รองรับ remote backend และหลาย gateway; Grok เป็น managed cloud model [1][5]'],
+    ['Approval / human gate สำเร็จรูป',4,5,20,4,16,'Grok มี approvals + auto-review ชัดเจน; Hermes เน้นประกอบระบบเองมากกว่า [2][5]'],
+    ['Security boundary ชัดเจน',4,2,8,4,16,'Grok เตือนว่า Bot ไม่ใช่ security boundary; Hermes แยก profiles แต่ infra ต้องออกแบบเอง [2][4][5]'],
+    ['ต้นทุนเงินเพื่อเข้าฟีเจอร์ bot',4,2,8,4,16,'Grok Bot access = SuperGrok Plus $100/mo; Hermes docs ที่อ่านไม่ระบุ paywall แยก [3][4][5]'],
+    ['ต้นทุนคนดูแลระบบ',4,5,20,2,8,'Grok ดูแลง่ายกว่าเพราะ managed; Hermes ต้องดูแล setup/backend มากกว่า [1][5]'],
+    ['การพกพางานข้าม surface',4,3,12,5,20,'Hermes ใช้ core เดียวกับ CLI, gateway, desktop, sessions จึงต่อเนื่องกว่า [4][5]']
+  ];
+  const tbody=document.querySelector('#matrixTable tbody');
+  matrix.forEach(r=>{
+    const tr=document.createElement('tr');
+    const winnerG=r[2]>r[4],winnerH=r[4]>r[2];
+    tr.innerHTML=`<td><b>${r[0]}</b></td><td class="score-cell">${r[1]}</td><td class="score-cell ${winnerG?'win-cell':''}">${r[2]}</td><td class="score-cell">${r[3]}</td><td class="score-cell ${winnerH?'win-cell':''}">${r[4]}</td><td class="score-cell">${r[5]}</td><td>${r[6]}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  const app=document.getElementById('app'), sidebar=document.getElementById('sidebar'), overlay=document.getElementById('overlay'), title=document.getElementById('currentTitle'), content=document.getElementById('content');
+  function showPage(id){
+    document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+    const page=document.getElementById(id); title.textContent=page?.dataset.title||'Comparison'; content.scrollTop=0;
+    history.replaceState(null,'','#'+id); sidebar.classList.remove('mobile-open'); overlay.classList.remove('show');
+  }
+  document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+  document.getElementById('collapseBtn').addEventListener('click',()=>app.classList.toggle('sidebar-collapsed'));
+  document.getElementById('mobileMenu').addEventListener('click',()=>{sidebar.classList.add('mobile-open');overlay.classList.add('show')});
+  overlay.addEventListener('click',()=>{sidebar.classList.remove('mobile-open');overlay.classList.remove('show')});
+
+  let scale=parseFloat(localStorage.getItem('g-h-font-scale')||'1');
+  function applyScale(){scale=Math.min(1.22,Math.max(.88,scale));document.documentElement.style.setProperty('--font-scale',scale);localStorage.setItem('g-h-font-scale',scale.toFixed(2));}
+  applyScale();
+  document.getElementById('fontDown').addEventListener('click',()=>{scale-=.06;applyScale()});
+  document.getElementById('fontUp').addEventListener('click',()=>{scale+=.06;applyScale()});
+
+  const themeBtn=document.getElementById('themeBtn'),themeIcon=document.getElementById('themeIcon');
+  function setTheme(theme){document.documentElement.dataset.theme=theme;localStorage.setItem('g-h-theme',theme);themeIcon.innerHTML=icons[theme==='dark'?'sun':'moon'];themeBtn.title=theme==='dark'?'เปลี่ยนเป็น Light mode':'เปลี่ยนเป็น Dark mode';}
+  const saved=localStorage.getItem('g-h-theme');
+  setTheme(saved||((window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'));
+  themeBtn.addEventListener('click',()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark'));
+
+  const hash=location.hash.slice(1); if(hash&&document.getElementById(hash)) showPage(hash);
+  window.addEventListener('keydown',e=>{if(e.key==='Escape'){sidebar.classList.remove('mobile-open');overlay.classList.remove('show')}});
+</script>
+</body>
+</html>
