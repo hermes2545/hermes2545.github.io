@@ -266,7 +266,7 @@ main { display: block; }
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: clamp(.55rem, 1.5vw, 1.1rem);
   align-items: end;
-  padding: 0 clamp(.3rem, 1.4vw, 1rem) 0;
+  padding: 0 clamp(.3rem, 1.4vw, 1rem) 1.25rem;
   min-height: 15rem;
 }
 .shelf-plank {

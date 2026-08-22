@@ -58,9 +58,9 @@ class AudioLibraryTests(unittest.TestCase):
         for card in cards:
             self.assertLess(card.index('class="book-meta audio-meta"'), card.index('class="book-cover-wrap audio-cover-wrap"'))
 
-    def test_book_bottoms_have_no_gap_above_the_shelf(self):
+    def test_book_bottoms_keep_small_clearance_above_the_shelf(self):
         stylesheet = (ROOT / "assets" / "css" / "library.css").read_text(encoding="utf-8")
-        self.assertIn("padding: 0 clamp(.3rem, 1.4vw, 1rem) 0;", stylesheet)
+        self.assertIn("padding: 0 clamp(.3rem, 1.4vw, 1rem) 1.25rem;", stylesheet)
         self.assertIn(".book-cover-wrap {\n  position: relative;\n  width: 100%;", stylesheet)
 
     def test_responsive_layout_rebuilds_one_shelf_per_visual_row(self):
