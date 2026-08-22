@@ -39,14 +39,14 @@ def render_book(book: dict) -> str:
     published = datetime.fromisoformat(book["published_at"]).strftime("%d/%m/%Y")
     return f'''<article class="book-card" data-category="{esc(book["category"])}" data-search="{esc(searchable)}" style="--book-accent:{esc(book["accent"])}">
   <a class="book-link" href="{esc(book["href"])}" target="_blank" rel="noopener" aria-label="เปิดอ่าน {esc(book["title"])} ในแท็บใหม่">
-    <div class="book-cover-wrap">
-      <img class="book-cover" src="{esc(book["cover"])}" alt="ปกหนังสือ {esc(book["short_title"])}" width="600" height="900" loading="lazy">
-    </div>
     <div class="book-meta">
       <span class="book-category">{esc(book["category"])}</span>
       <h3 class="book-title">{esc(book["short_title"])}</h3>
       <time class="publish-date" datetime="{esc(book["published_at"])}">publish on {published}</time>
       <p class="book-summary">{esc(book["summary"])}</p>
+    </div>
+    <div class="book-cover-wrap">
+      <img class="book-cover" src="{esc(book["cover"])}" alt="ปกหนังสือ {esc(book["short_title"])}" width="600" height="900" loading="lazy">
     </div>
   </a>
 </article>'''

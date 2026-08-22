@@ -23,6 +23,12 @@ class HomepageBuildTests(unittest.TestCase):
         self.assertEqual(self.html.count('target="_blank"'), len(self.books))
         self.assertEqual(self.html.count('rel="noopener"'), len(self.books))
 
+    def test_reading_text_is_above_each_book_cover(self):
+        cards = self.html.split('<article class="book-card"')[1:]
+        self.assertEqual(len(cards), len(self.books))
+        for card in cards:
+            self.assertLess(card.index('class="book-meta"'), card.index('class="book-cover-wrap"'))
+
     def test_books_are_sorted_newest_first_and_show_publish_date(self):
         timestamps = [book["published_at"] for book in self.books]
         self.assertEqual(timestamps, sorted(timestamps, reverse=True))

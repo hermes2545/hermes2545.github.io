@@ -52,6 +52,22 @@ class AudioLibraryTests(unittest.TestCase):
         self.assertEqual(self.page.count('class="audio-play-panel"'), 44)
         self.assertEqual(self.page.count('class="audio-play-button"'), 44)
 
+    def test_audio_text_is_above_each_book_cover(self):
+        cards = self.page.split('<article class="book-card audio-card"')[1:]
+        self.assertEqual(len(cards), 44)
+        for card in cards:
+            self.assertLess(card.index('class="book-meta audio-meta"'), card.index('class="book-cover-wrap audio-cover-wrap"'))
+
+    def test_book_bottoms_have_no_gap_above_the_shelf(self):
+        stylesheet = (ROOT / "assets" / "css" / "library.css").read_text(encoding="utf-8")
+        self.assertIn("padding: 0 clamp(.3rem, 1.4vw, 1rem) 0;", stylesheet)
+        self.assertIn(".book-cover-wrap {\n  position: relative;\n  width: 100%;", stylesheet)
+
+    def test_responsive_layout_rebuilds_one_shelf_per_visual_row(self):
+        script = (ROOT / "assets" / "js" / "library.js").read_text(encoding="utf-8")
+        self.assertIn("function layoutShelves()", script)
+        self.assertIn("function columnsForViewport()", script)
+
     def test_new_brand_navigation_icons_and_library_favicon(self):
         self.assertIn("The Knowledge Shelf", self.page)
         self.assertIn("Curated Guides, Ideas &amp; Audio", self.page)
