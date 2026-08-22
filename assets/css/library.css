@@ -83,6 +83,16 @@ body::before {
   text-decoration: none;
   font-size: .74rem;
   font-weight: 700;
+  gap: .42rem;
+}
+.nav-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .site-nav a:hover { color: var(--ink); }
 .site-nav a[aria-current="page"] { color: var(--brass-light); border-bottom-color: var(--brass-light); }
@@ -114,6 +124,7 @@ body::before {
   font: 700 clamp(2rem, 5vw, 4rem)/1 var(--serif);
 }
 .library-mark span { transform: translateY(-.03em); }
+.library-logo { width: 70%; height: 70%; display: block; }
 .eyebrow, .section-kicker {
   margin: 0 0 .55rem;
   color: var(--brass-light);
@@ -338,11 +349,12 @@ main { display: block; }
 .publish-date {
   display: inline-block;
   margin-top: .3rem;
-  padding: .1rem .38rem;
+  padding: .16rem .48rem;
   color: #d8ccb8;
   border: 1px solid rgba(229,201,135,.22);
   background: rgba(7,17,14,.52);
-  font-size: .5rem;
+  font-size: .62rem;
+  font-weight: 700;
   line-height: 1.35;
   letter-spacing: .035em;
   text-transform: lowercase;

@@ -4,8 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#17352d">
-  <meta name="description" content="Hermes Library — รวมคู่มือ AI Agent, Hermes, Browser Automation และ Personal Infrastructure ในรูปแบบหนังสือดิจิทัล">
-  <title>Hermes Library — ห้องสมุดคู่มือ AI</title>
+  <meta name="description" content="The Knowledge Shelf — Curated Guides, Ideas &amp; Audio">
+  <title>The Knowledge Shelf — Curated Guides, Ideas &amp; Audio</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icons/library.svg">
   <link rel="stylesheet" href="assets/css/library.css">
   <script src="assets/js/library.js" defer></script>
 </head>
@@ -14,18 +15,16 @@
 
   <div class="ambient-light" aria-hidden="true"></div>
   <nav class="site-nav" aria-label="เมนูห้องสมุด">
-    <a href="index.html" aria-current="page">หนังสืออ่าน</a>
-    <a href="audio-library.html">หนังสือเสียง</a>
+    <a href="index.html" aria-current="page"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="7" cy="14" r="4"></circle><circle cx="17" cy="14" r="4"></circle><path d="M11 14h2M3 13l1-5M21 13l-1-5"></path></svg>หนังสืออ่าน</a>
+    <a href="audio-library.html"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"></path><rect x="3" y="13" width="4" height="7" rx="2"></rect><rect x="17" y="13" width="4" height="7" rx="2"></rect></svg>หนังสือเสียง</a>
   </nav>
   <header class="library-header">
     <div class="header-inner">
-      <div class="library-mark" aria-hidden="true">
-        <span>H</span>
-      </div>
+      <div class="library-mark" aria-hidden="true"><img class="library-logo" src="assets/icons/library.svg" alt=""></div>
       <div class="title-block">
         <p class="eyebrow">A CURATED DIGITAL COLLECTION</p>
-        <h1>Hermes Library</h1>
-        <p class="subtitle">ห้องสมุดคู่มือสำหรับคนที่อยากทำงานกับ AI ให้เก่งขึ้น</p>
+        <h1>The Knowledge Shelf</h1>
+        <p class="subtitle">Curated Guides, Ideas &amp; Audio</p>
       </div>
       <div class="collection-seal" aria-label="มีหนังสือ {{BOOK_COUNT}} เล่ม">
         <strong>{{BOOK_COUNT}}</strong>
@@ -57,7 +56,7 @@
       <p class="result-status" id="result-status" aria-live="polite">แสดงหนังสือทั้ง {{BOOK_COUNT}} เล่ม</p>
     </section>
 
-    <section class="bookshelf-room" aria-label="ชั้นหนังสือ Hermes Library">
+    <section class="bookshelf-room" aria-label="ชั้นหนังสือ The Knowledge Shelf">
       {{BOOKSHELVES}}
       <div class="empty-state" id="empty-state" hidden>
         <span aria-hidden="true">∅</span>
@@ -73,8 +72,8 @@
 
   <footer class="library-footer">
     <div class="footer-rule" aria-hidden="true"><span></span></div>
-    <p><strong>Hermes Library</strong> · คู่มือที่เขียนเพื่ออ่านจริง ใช้งานจริง และกลับมาเปิดซ้ำได้</p>
-    <p class="updated">Curated by Hermes · Digital collection</p>
+    <p><strong>The Knowledge Shelf</strong> · Curated Guides, Ideas &amp; Audio</p>
+    <p class="updated">A digital reading and listening collection</p>
   </footer>
 </body>
 </html>

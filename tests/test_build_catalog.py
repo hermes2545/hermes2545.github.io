@@ -47,6 +47,12 @@ class HomepageBuildTests(unittest.TestCase):
         for marker in required:
             self.assertIn(marker, self.html)
 
+    def test_new_brand_navigation_icons_and_library_favicon(self):
+        self.assertIn("The Knowledge Shelf", self.html)
+        self.assertIn("Curated Guides, Ideas &amp; Audio", self.html)
+        self.assertIn('href="assets/icons/library.svg"', self.html)
+        self.assertEqual(self.html.count('class="nav-icon"'), 2)
+
     def test_homepage_escapes_catalog_text(self):
         book = dict(self.books[0])
         book["title"] = '<script>alert("x")</script>'

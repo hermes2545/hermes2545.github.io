@@ -29,37 +29,58 @@
 .playlist-button:focus-visible { outline: 3px solid #fff1d9; outline-offset: 4px; }
 .audio-bookshelf { background: linear-gradient(90deg, rgba(0,0,0,.22), transparent 8%, transparent 92%, rgba(0,0,0,.22)), rgba(28,18,12,.48); }
 .audio-card .book-cover-wrap { background: #2a1e16; }
-.audio-cover-wrap { overflow: hidden; }
+.audio-cover-wrap {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.audio-thumbnail-frame {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  flex: 0 0 auto;
+  overflow: hidden;
+  background: #0c0a08;
+  border-bottom: 1px solid rgba(236,198,143,.3);
+}
 .audio-cover {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   object-position: center;
-  filter: saturate(.88) contrast(1.04) brightness(.86);
-  transform: scale(1.32);
+  filter: saturate(.94) contrast(1.02);
+  transform: none;
 }
-.audio-cover-wrap::after {
-  position: absolute;
-  inset: 0;
-  content: "";
-  pointer-events: none;
-  background: linear-gradient(180deg, rgba(16,9,5,.03) 38%, rgba(16,9,5,.68) 100%);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.1), inset 7px 0 rgba(24,12,6,.35);
+.audio-play-panel {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
+  color: var(--brass-light);
+  background:
+    radial-gradient(circle at 50% 36%, rgba(236,198,143,.13), transparent 50%),
+    linear-gradient(145deg, #3a281a, #1d140e);
+  box-shadow: inset 7px 0 rgba(24,12,6,.28);
 }
-.audio-mark {
-  position: absolute;
-  z-index: 2;
-  right: .55rem;
-  bottom: .55rem;
-  width: 1.7rem;
+.audio-play-button {
+  width: clamp(2.7rem, 4vw, 3.35rem);
   aspect-ratio: 1;
   display: grid;
   place-items: center;
-  padding-left: .08rem;
+  padding-left: .12rem;
   color: #2a180d;
   background: var(--brass-light);
   border-radius: 50%;
-  box-shadow: 0 4px 14px rgba(0,0,0,.35);
-  font-size: .62rem;
+  box-shadow: 0 6px 18px rgba(0,0,0,.4), 0 0 0 4px rgba(236,198,143,.1);
+  font-size: 1rem;
 }
+.audio-play-label { font: 700 .46rem/1 var(--sans); letter-spacing: .13em; }
 .audio-meta { position: relative; }
 .audio-card .book-title {
   min-height: 2.5em;

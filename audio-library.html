@@ -4,8 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#302419">
-  <meta name="description" content="Hermes Audio Library — ชั้นหนังสือเสียงจาก Playlist เทคโนโลยีและ AI">
-  <title>Hermes Audio Library — ชั้นหนังสือเสียง</title>
+  <meta name="description" content="The Knowledge Shelf — Curated Guides, Ideas &amp; Audio">
+  <title>The Knowledge Shelf — Audio Collection</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icons/library.svg">
   <link rel="stylesheet" href="assets/css/library.css">
   <link rel="stylesheet" href="assets/css/audio-library.css">
   <script src="assets/js/library.js" defer></script>
@@ -15,17 +16,17 @@
   <div class="ambient-light" aria-hidden="true"></div>
 
   <nav class="site-nav" aria-label="เมนูห้องสมุด">
-    <a href="index.html">หนังสืออ่าน</a>
-    <a href="audio-library.html" aria-current="page">หนังสือเสียง</a>
+    <a href="index.html"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="7" cy="14" r="4"></circle><circle cx="17" cy="14" r="4"></circle><path d="M11 14h2M3 13l1-5M21 13l-1-5"></path></svg>หนังสืออ่าน</a>
+    <a href="audio-library.html" aria-current="page"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"></path><rect x="3" y="13" width="4" height="7" rx="2"></rect><rect x="17" y="13" width="4" height="7" rx="2"></rect></svg>หนังสือเสียง</a>
   </nav>
 
   <header class="library-header audio-header">
     <div class="header-inner">
-      <div class="library-mark audio-library-mark" aria-hidden="true"><span>♫</span></div>
+      <div class="library-mark audio-library-mark" aria-hidden="true"><img class="library-logo" src="assets/icons/library.svg" alt=""></div>
       <div class="title-block">
         <p class="eyebrow">THE LISTENING ROOM</p>
-        <h1>Audio Library</h1>
-        <p class="subtitle">ชั้นหนังสือเสียงเรื่องเทคโนโลยีและ AI เรียงจากตอนใหม่ล่าสุด</p>
+        <h1>The Knowledge Shelf</h1>
+        <p class="subtitle">Curated Guides, Ideas &amp; Audio</p>
       </div>
       <div class="collection-seal" aria-label="มีหนังสือเสียง 44 รายการ">
         <strong>44</strong>
@@ -55,14 +56,19 @@
       <p class="result-status" id="result-status" aria-live="polite">แสดงหนังสือเสียงทั้ง 44 รายการ</p>
     </section>
 
-    <section class="bookshelf-room audio-bookshelf" aria-label="ชั้นหนังสือเสียง Hermes Audio Library">
+    <section class="bookshelf-room audio-bookshelf" aria-label="ชั้นหนังสือเสียง The Knowledge Shelf">
       <section class="shelf" aria-label="ชั้นหนังสือเสียงที่ 1">
   <div class="book-grid">
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="Grok bot vs. Hermes bot, which one is better? So many choices! 🤣(8/22/2026) manny calavara 22/08/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=80KhdtCCeOg&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง Grok bot vs. Hermes bot, which one is better? So many choices! 🤣(8/22/2026) ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/80KhdtCCeOg.jpg" alt="ปกหนังสือเสียง Grok bot vs. Hermes bot, which one is better? So many choices! 🤣(8/22/2026)" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/80KhdtCCeOg.jpg" alt="ปกหนังสือเสียง Grok bot vs. Hermes bot, which one is better? So many choices! 🤣(8/22/2026)" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -75,8 +81,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="จะจ้าง Buzz ai หรือ Hermes AI bot ? manny calavara 22/08/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=i5o-YTwpJkE&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง จะจ้าง Buzz ai หรือ Hermes AI bot ? ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/i5o-YTwpJkE.jpg" alt="ปกหนังสือเสียง จะจ้าง Buzz ai หรือ Hermes AI bot ?" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/i5o-YTwpJkE.jpg" alt="ปกหนังสือเสียง จะจ้าง Buzz ai หรือ Hermes AI bot ?" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -89,8 +100,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="เมื่อซีอีโอ AI ปิดบังความจริงเรื่องอนาคตของมนุษย์แรงงาน manny calavara 08/08/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=QDUZUIEvIos&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง เมื่อซีอีโอ AI ปิดบังความจริงเรื่องอนาคตของมนุษย์แรงงาน ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/QDUZUIEvIos.jpg" alt="ปกหนังสือเสียง เมื่อซีอีโอ AI ปิดบังความจริงเรื่องอนาคตของมนุษย์แรงงาน" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/QDUZUIEvIos.jpg" alt="ปกหนังสือเสียง เมื่อซีอีโอ AI ปิดบังความจริงเรื่องอนาคตของมนุษย์แรงงาน" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -103,8 +119,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="12 บทเรียนเปลี่ยนคุณเป็นเซียน AI จากประสบการณ์ 5,000 ชั่วโมง manny calavara 08/08/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=6P9UtaBiAs8&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง 12 บทเรียนเปลี่ยนคุณเป็นเซียน AI จากประสบการณ์ 5,000 ชั่วโมง ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/6P9UtaBiAs8.jpg" alt="ปกหนังสือเสียง 12 บทเรียนเปลี่ยนคุณเป็นเซียน AI จากประสบการณ์ 5,000 ชั่วโมง" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/6P9UtaBiAs8.jpg" alt="ปกหนังสือเสียง 12 บทเรียนเปลี่ยนคุณเป็นเซียน AI จากประสบการณ์ 5,000 ชั่วโมง" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -117,8 +138,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="เฮอร์มีส_สมองซีกซ้ายที่จัดระเบียบความรู้แทนเรา manny calavara 22/07/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=zJtkIBz0S8Y&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง เฮอร์มีส_สมองซีกซ้ายที่จัดระเบียบความรู้แทนเรา ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/zJtkIBz0S8Y.jpg" alt="ปกหนังสือเสียง เฮอร์มีส_สมองซีกซ้ายที่จัดระเบียบความรู้แทนเรา" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/zJtkIBz0S8Y.jpg" alt="ปกหนังสือเสียง เฮอร์มีส_สมองซีกซ้ายที่จัดระเบียบความรู้แทนเรา" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -136,8 +162,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="รัฐบาลสหรัฐสั่งแบน claude Fable 5 ฟ้าผ่า manny calavara 22/06/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=kTlltyavWog&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง รัฐบาลสหรัฐสั่งแบน claude Fable 5 ฟ้าผ่า ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/kTlltyavWog.jpg" alt="ปกหนังสือเสียง รัฐบาลสหรัฐสั่งแบน claude Fable 5 ฟ้าผ่า" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/kTlltyavWog.jpg" alt="ปกหนังสือเสียง รัฐบาลสหรัฐสั่งแบน claude Fable 5 ฟ้าผ่า" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -150,8 +181,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="เมื่อ AI ทำงานแทนจนเงินไร้ค่า manny calavara 22/06/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=On4xdXWmrYo&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง เมื่อ AI ทำงานแทนจนเงินไร้ค่า ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/On4xdXWmrYo.jpg" alt="ปกหนังสือเสียง เมื่อ AI ทำงานแทนจนเงินไร้ค่า" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/On4xdXWmrYo.jpg" alt="ปกหนังสือเสียง เมื่อ AI ทำงานแทนจนเงินไร้ค่า" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -164,8 +200,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="อาณาจักร AI การกดขี่ ทรัพยากร และภัยคุกคามต่อมนุษยชาติ manny calavara 22/06/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=2r4mBVPrD40&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง อาณาจักร AI การกดขี่ ทรัพยากร และภัยคุกคามต่อมนุษยชาติ ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/2r4mBVPrD40.jpg" alt="ปกหนังสือเสียง อาณาจักร AI การกดขี่ ทรัพยากร และภัยคุกคามต่อมนุษยชาติ" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/2r4mBVPrD40.jpg" alt="ปกหนังสือเสียง อาณาจักร AI การกดขี่ ทรัพยากร และภัยคุกคามต่อมนุษยชาติ" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -178,8 +219,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="การสร้างเอไอระดับซูเปอร์อินเทลลิเจนซ์ที่ปลอดภัยนั้นเป็นสิ่งที่เป็นไปไม่ได้ manny calavara 22/06/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=LEt_4nHrQ3A&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง การสร้างเอไอระดับซูเปอร์อินเทลลิเจนซ์ที่ปลอดภัยนั้นเป็นสิ่งที่เป็นไปไม่ได้ ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/LEt_4nHrQ3A.jpg" alt="ปกหนังสือเสียง การสร้างเอไอระดับซูเปอร์อินเทลลิเจนซ์ที่ปลอดภัยนั้นเป็นสิ่งที่เป็นไปไม่ได้" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/LEt_4nHrQ3A.jpg" alt="ปกหนังสือเสียง การสร้างเอไอระดับซูเปอร์อินเทลลิเจนซ์ที่ปลอดภัยนั้นเป็นสิ่งที่เป็นไปไม่ได้" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -192,8 +238,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="ฟองสบู่ดาต้าเซ็นเตอร์เอไอกำลังจะแตก manny calavara 22/06/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=Y6z4-ICHrZY&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง ฟองสบู่ดาต้าเซ็นเตอร์เอไอกำลังจะแตก ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/Y6z4-ICHrZY.jpg" alt="ปกหนังสือเสียง ฟองสบู่ดาต้าเซ็นเตอร์เอไอกำลังจะแตก" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/Y6z4-ICHrZY.jpg" alt="ปกหนังสือเสียง ฟองสบู่ดาต้าเซ็นเตอร์เอไอกำลังจะแตก" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -211,8 +262,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="ทำไมคนอเมริกันเกลียด_AI manny calavara 22/06/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=AWJDdoWQMpQ&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง ทำไมคนอเมริกันเกลียด_AI ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/AWJDdoWQMpQ.jpg" alt="ปกหนังสือเสียง ทำไมคนอเมริกันเกลียด_AI" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/AWJDdoWQMpQ.jpg" alt="ปกหนังสือเสียง ทำไมคนอเมริกันเกลียด_AI" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -225,8 +281,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="ระบบส่ง slip เพื่อแปลงเป็น google sheet manny calavara 22/06/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=mvaZReiKT1E&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง ระบบส่ง slip เพื่อแปลงเป็น google sheet ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/mvaZReiKT1E.jpg" alt="ปกหนังสือเสียง ระบบส่ง slip เพื่อแปลงเป็น google sheet" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/mvaZReiKT1E.jpg" alt="ปกหนังสือเสียง ระบบส่ง slip เพื่อแปลงเป็น google sheet" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -239,8 +300,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="คู่มือการตลาด 100x AI สำหรับธุรกิจคนเดียว โดยณัฐพล ยงค์ไพบูลย์ manny calavara 22/06/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=w_IRp8Hdtmk&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง คู่มือการตลาด 100x AI สำหรับธุรกิจคนเดียว โดยณัฐพล ยงค์ไพบูลย์ ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/w_IRp8Hdtmk.jpg" alt="ปกหนังสือเสียง คู่มือการตลาด 100x AI สำหรับธุรกิจคนเดียว โดยณัฐพล ยงค์ไพบูลย์" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/w_IRp8Hdtmk.jpg" alt="ปกหนังสือเสียง คู่มือการตลาด 100x AI สำหรับธุรกิจคนเดียว โดยณัฐพล ยงค์ไพบูลย์" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -253,8 +319,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="กลลวงปั่นหุ้นวันสิ้นโลกของศาสดาเอไอ โดย  Scott Galloway manny calavara 22/06/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=hI86B1cR7CI&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง กลลวงปั่นหุ้นวันสิ้นโลกของศาสดาเอไอ โดย  Scott Galloway ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/hI86B1cR7CI.jpg" alt="ปกหนังสือเสียง กลลวงปั่นหุ้นวันสิ้นโลกของศาสดาเอไอ โดย  Scott Galloway" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/hI86B1cR7CI.jpg" alt="ปกหนังสือเสียง กลลวงปั่นหุ้นวันสิ้นโลกของศาสดาเอไอ โดย  Scott Galloway" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -267,8 +338,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="Testing multi-agent task execution via Kanban board. manny calavara 22/06/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=OtaoQ1d1VHw&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง Testing multi-agent task execution via Kanban board. ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/OtaoQ1d1VHw.jpg" alt="ปกหนังสือเสียง Testing multi-agent task execution via Kanban board." width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/OtaoQ1d1VHw.jpg" alt="ปกหนังสือเสียง Testing multi-agent task execution via Kanban board." width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -286,8 +362,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="ทดสอบระบบส่งไม้ต่องานใน office agent 5 ตัว manny calavara 22/06/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=vj76YTcNIK0&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง ทดสอบระบบส่งไม้ต่องานใน office agent 5 ตัว ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/vj76YTcNIK0.jpg" alt="ปกหนังสือเสียง ทดสอบระบบส่งไม้ต่องานใน office agent 5 ตัว" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/vj76YTcNIK0.jpg" alt="ปกหนังสือเสียง ทดสอบระบบส่งไม้ต่องานใน office agent 5 ตัว" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -300,8 +381,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="22.05.2026 เทคนิคประหยัด token และถนอม quota การใช้ Claude manny calavara 22/05/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=dFDC0b-lIDM&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง 22.05.2026 เทคนิคประหยัด token และถนอม quota การใช้ Claude ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/dFDC0b-lIDM.jpg" alt="ปกหนังสือเสียง 22.05.2026 เทคนิคประหยัด token และถนอม quota การใช้ Claude" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/dFDC0b-lIDM.jpg" alt="ปกหนังสือเสียง 22.05.2026 เทคนิคประหยัด token และถนอม quota การใช้ Claude" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -314,8 +400,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="ทดสอบการใช้ Multi Agent claude claw ในการทำงานเอกสารที่ Google Drive manny calavara 22/05/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=-O6IDSM1OAc&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง ทดสอบการใช้ Multi Agent claude claw ในการทำงานเอกสารที่ Google Drive ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/-O6IDSM1OAc.jpg" alt="ปกหนังสือเสียง ทดสอบการใช้ Multi Agent claude claw ในการทำงานเอกสารที่ Google Drive" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/-O6IDSM1OAc.jpg" alt="ปกหนังสือเสียง ทดสอบการใช้ Multi Agent claude claw ในการทำงานเอกสารที่ Google Drive" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -328,8 +419,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="กลยุทธ์การใช้งาน OpenClaw และ Hermes แบบคู่ขนานอย่างมีประสิทธิภาพ manny calavara 22/05/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=wrmquGT8Cis&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง กลยุทธ์การใช้งาน OpenClaw และ Hermes แบบคู่ขนานอย่างมีประสิทธิภาพ ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/wrmquGT8Cis.jpg" alt="ปกหนังสือเสียง กลยุทธ์การใช้งาน OpenClaw และ Hermes แบบคู่ขนานอย่างมีประสิทธิภาพ" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/wrmquGT8Cis.jpg" alt="ปกหนังสือเสียง กลยุทธ์การใช้งาน OpenClaw และ Hermes แบบคู่ขนานอย่างมีประสิทธิภาพ" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -342,8 +438,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="กลยุทธ์ประหยัดโทเคนและวิธีใช้ Claude ให้คุ้มค่าสูงสุด manny calavara 22/05/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=Kb0M5LHLdNk&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง กลยุทธ์ประหยัดโทเคนและวิธีใช้ Claude ให้คุ้มค่าสูงสุด ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/Kb0M5LHLdNk.jpg" alt="ปกหนังสือเสียง กลยุทธ์ประหยัดโทเคนและวิธีใช้ Claude ให้คุ้มค่าสูงสุด" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/Kb0M5LHLdNk.jpg" alt="ปกหนังสือเสียง กลยุทธ์ประหยัดโทเคนและวิธีใช้ Claude ให้คุ้มค่าสูงสุด" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -361,8 +462,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="Claude&#x27;s memory manny calavara 22/04/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=IBXG37iztyc&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง Claude&#x27;s memory ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/IBXG37iztyc.jpg" alt="ปกหนังสือเสียง Claude&#x27;s memory" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/IBXG37iztyc.jpg" alt="ปกหนังสือเสียง Claude&#x27;s memory" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -375,8 +481,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="จะเกิดอะไรขึ้นหลังจาก Ai เอางานของมนุษย์ไปทำเกือบทั้งหมด manny calavara 22/03/2026">
   <a class="book-link" href="https://www.youtube.com/watch?v=jPP3_IFvTPo&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง จะเกิดอะไรขึ้นหลังจาก Ai เอางานของมนุษย์ไปทำเกือบทั้งหมด ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/jPP3_IFvTPo.jpg" alt="ปกหนังสือเสียง จะเกิดอะไรขึ้นหลังจาก Ai เอางานของมนุษย์ไปทำเกือบทั้งหมด" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/jPP3_IFvTPo.jpg" alt="ปกหนังสือเสียง จะเกิดอะไรขึ้นหลังจาก Ai เอางานของมนุษย์ไปทำเกือบทั้งหมด" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -389,8 +500,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="อีริค สมิทช เตือนว่าเอไอจะมีสติปัญญาด้วยตนเอง 18.12.2025 manny calavara 22/12/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=NOIpIDUF--8&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง อีริค สมิทช เตือนว่าเอไอจะมีสติปัญญาด้วยตนเอง 18.12.2025 ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/NOIpIDUF--8.jpg" alt="ปกหนังสือเสียง อีริค สมิทช เตือนว่าเอไอจะมีสติปัญญาด้วยตนเอง 18.12.2025" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/NOIpIDUF--8.jpg" alt="ปกหนังสือเสียง อีริค สมิทช เตือนว่าเอไอจะมีสติปัญญาด้วยตนเอง 18.12.2025" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -403,8 +519,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="Ilya Sutskever กับ OpenAi อิลยา ซุตสเคเวอร์ กับ AI ที่ปลอดภัย manny calavara 22/12/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=punp0wHkRnQ&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง Ilya Sutskever กับ OpenAi อิลยา ซุตสเคเวอร์ กับ AI ที่ปลอดภัย ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/punp0wHkRnQ.jpg" alt="ปกหนังสือเสียง Ilya Sutskever กับ OpenAi อิลยา ซุตสเคเวอร์ กับ AI ที่ปลอดภัย" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/punp0wHkRnQ.jpg" alt="ปกหนังสือเสียง Ilya Sutskever กับ OpenAi อิลยา ซุตสเคเวอร์ กับ AI ที่ปลอดภัย" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -417,8 +538,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="มาทำความรู้จักกับ Ilya Sutskever ผู้ที่อยู่ขั้วตรงข้ามกับ Sam Altman  แห่ง OpenAi manny calavara 22/12/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=wVb93ObezNA&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง มาทำความรู้จักกับ Ilya Sutskever ผู้ที่อยู่ขั้วตรงข้ามกับ Sam Altman  แห่ง OpenAi ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/wVb93ObezNA.jpg" alt="ปกหนังสือเสียง มาทำความรู้จักกับ Ilya Sutskever ผู้ที่อยู่ขั้วตรงข้ามกับ Sam Altman  แห่ง OpenAi" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/wVb93ObezNA.jpg" alt="ปกหนังสือเสียง มาทำความรู้จักกับ Ilya Sutskever ผู้ที่อยู่ขั้วตรงข้ามกับ Sam Altman  แห่ง OpenAi" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -436,8 +562,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="ชีวิตของมนุษย์หลัง AGI manny calavara 22/11/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=UPw09Dll9Sc&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง ชีวิตของมนุษย์หลัง AGI ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/UPw09Dll9Sc.jpg" alt="ปกหนังสือเสียง ชีวิตของมนุษย์หลัง AGI" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/UPw09Dll9Sc.jpg" alt="ปกหนังสือเสียง ชีวิตของมนุษย์หลัง AGI" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -450,8 +581,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="การอดอาหารเพื่อสุขภาพและการเผาผลาญไขมันเลวที่เร็วที่สุด manny calavara 22/11/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=PJMVBR_M5zw&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง การอดอาหารเพื่อสุขภาพและการเผาผลาญไขมันเลวที่เร็วที่สุด ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/PJMVBR_M5zw.jpg" alt="ปกหนังสือเสียง การอดอาหารเพื่อสุขภาพและการเผาผลาญไขมันเลวที่เร็วที่สุด" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/PJMVBR_M5zw.jpg" alt="ปกหนังสือเสียง การอดอาหารเพื่อสุขภาพและการเผาผลาญไขมันเลวที่เร็วที่สุด" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -464,8 +600,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="Things to know about 3i Atlas, October 28, 2025. manny calavara 22/11/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=XGbkD8xNZf8&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง Things to know about 3i Atlas, October 28, 2025. ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/XGbkD8xNZf8.jpg" alt="ปกหนังสือเสียง Things to know about 3i Atlas, October 28, 2025." width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/XGbkD8xNZf8.jpg" alt="ปกหนังสือเสียง Things to know about 3i Atlas, October 28, 2025." width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -478,8 +619,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="AI พลิกโลกงาน ทำไม Gen Z ถึงเทใจให้งานช่าง ทิ้งออฟฟิศรายได้ดีกว่าที่คิด! manny calavara 21/08/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=-QPwTRbH--4&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง AI พลิกโลกงาน ทำไม Gen Z ถึงเทใจให้งานช่าง ทิ้งออฟฟิศรายได้ดีกว่าที่คิด! ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/-QPwTRbH--4.jpg" alt="ปกหนังสือเสียง AI พลิกโลกงาน ทำไม Gen Z ถึงเทใจให้งานช่าง ทิ้งออฟฟิศรายได้ดีกว่าที่คิด!" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/-QPwTRbH--4.jpg" alt="ปกหนังสือเสียง AI พลิกโลกงาน ทำไม Gen Z ถึงเทใจให้งานช่าง ทิ้งออฟฟิศรายได้ดีกว่าที่คิด!" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -492,8 +638,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="เคล็ดลับการใช้ notebookLM ในชีวิตประจำวัน manny calavara 21/08/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=0UsGZgY28fk&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง เคล็ดลับการใช้ notebookLM ในชีวิตประจำวัน ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/0UsGZgY28fk.jpg" alt="ปกหนังสือเสียง เคล็ดลับการใช้ notebookLM ในชีวิตประจำวัน" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/0UsGZgY28fk.jpg" alt="ปกหนังสือเสียง เคล็ดลับการใช้ notebookLM ในชีวิตประจำวัน" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -511,8 +662,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="สรุปข่าว AI รอบโลกธุรกิจ EP100 : เจาะลึก การอยู่รอดของธนาคารในยุค AI 11.08.68 iPhenomenon 21/08/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=Oykoo4uwqWI&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง สรุปข่าว AI รอบโลกธุรกิจ EP100 : เจาะลึก การอยู่รอดของธนาคารในยุค AI 11.08.68 ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/Oykoo4uwqWI.jpg" alt="ปกหนังสือเสียง สรุปข่าว AI รอบโลกธุรกิจ EP100 : เจาะลึก การอยู่รอดของธนาคารในยุค AI 11.08.68" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/Oykoo4uwqWI.jpg" alt="ปกหนังสือเสียง สรุปข่าว AI รอบโลกธุรกิจ EP100 : เจาะลึก การอยู่รอดของธนาคารในยุค AI 11.08.68" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -525,8 +681,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="ความก้าวหน้าของ Neuralink  สมองสู่คอมพิวเตอร์ manny calavara 21/08/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=poKPTwxKeZk&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง ความก้าวหน้าของ Neuralink  สมองสู่คอมพิวเตอร์ ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/poKPTwxKeZk.jpg" alt="ปกหนังสือเสียง ความก้าวหน้าของ Neuralink  สมองสู่คอมพิวเตอร์" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/poKPTwxKeZk.jpg" alt="ปกหนังสือเสียง ความก้าวหน้าของ Neuralink  สมองสู่คอมพิวเตอร์" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -539,8 +700,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="เทคนิคการอ่านอย่างลึกซึ้งด้วย Ai manny calavara 21/08/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=bc8qGerRzJo&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง เทคนิคการอ่านอย่างลึกซึ้งด้วย Ai ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/bc8qGerRzJo.jpg" alt="ปกหนังสือเสียง เทคนิคการอ่านอย่างลึกซึ้งด้วย Ai" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/bc8qGerRzJo.jpg" alt="ปกหนังสือเสียง เทคนิคการอ่านอย่างลึกซึ้งด้วย Ai" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -553,8 +719,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="พนักงาน tech ตกงานแล้วไปไหน manny calavara 21/08/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=HSd8bstemH4&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง พนักงาน tech ตกงานแล้วไปไหน ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/HSd8bstemH4.jpg" alt="ปกหนังสือเสียง พนักงาน tech ตกงานแล้วไปไหน" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/HSd8bstemH4.jpg" alt="ปกหนังสือเสียง พนักงาน tech ตกงานแล้วไปไหน" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -567,8 +738,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="ปัญญาประดิษฐ์ จิตสำนึก และการใช้ชีวิตอย่างอิสระโดย Sadhguru manny calavara 21/08/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=W8ZK48xByBA&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง ปัญญาประดิษฐ์ จิตสำนึก และการใช้ชีวิตอย่างอิสระโดย Sadhguru ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/W8ZK48xByBA.jpg" alt="ปกหนังสือเสียง ปัญญาประดิษฐ์ จิตสำนึก และการใช้ชีวิตอย่างอิสระโดย Sadhguru" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/W8ZK48xByBA.jpg" alt="ปกหนังสือเสียง ปัญญาประดิษฐ์ จิตสำนึก และการใช้ชีวิตอย่างอิสระโดย Sadhguru" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -586,8 +762,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="เจ้าพ่อ Ai ฝากคำเตือนถึงมนุษยชาติ manny calavara 21/08/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=py_Yz9aF4oI&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง เจ้าพ่อ Ai ฝากคำเตือนถึงมนุษยชาติ ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/py_Yz9aF4oI.jpg" alt="ปกหนังสือเสียง เจ้าพ่อ Ai ฝากคำเตือนถึงมนุษยชาติ" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/py_Yz9aF4oI.jpg" alt="ปกหนังสือเสียง เจ้าพ่อ Ai ฝากคำเตือนถึงมนุษยชาติ" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -600,8 +781,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="Gary Vee เอไอ, ความจริง และการสร้างแบรนด์ manny calavara 21/08/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=N8j6Sy0k72s&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง Gary Vee เอไอ, ความจริง และการสร้างแบรนด์ ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/N8j6Sy0k72s.jpg" alt="ปกหนังสือเสียง Gary Vee เอไอ, ความจริง และการสร้างแบรนด์" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/N8j6Sy0k72s.jpg" alt="ปกหนังสือเสียง Gary Vee เอไอ, ความจริง และการสร้างแบรนด์" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -614,8 +800,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="แนวทางการใช้ ai ให้ถูกต้อง manny calavara 21/08/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=HeB5MhErHoI&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง แนวทางการใช้ ai ให้ถูกต้อง ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/HeB5MhErHoI.jpg" alt="ปกหนังสือเสียง แนวทางการใช้ ai ให้ถูกต้อง" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/HeB5MhErHoI.jpg" alt="ปกหนังสือเสียง แนวทางการใช้ ai ให้ถูกต้อง" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -628,8 +819,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="เจ้าพ่อเอไอ ทำนายว่าเอไอจะยึดครองโลก manny calavara 21/08/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=fDsJYo4tSyk&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง เจ้าพ่อเอไอ ทำนายว่าเอไอจะยึดครองโลก ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/fDsJYo4tSyk.jpg" alt="ปกหนังสือเสียง เจ้าพ่อเอไอ ทำนายว่าเอไอจะยึดครองโลก" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/fDsJYo4tSyk.jpg" alt="ปกหนังสือเสียง เจ้าพ่อเอไอ ทำนายว่าเอไอจะยึดครองโลก" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -642,8 +838,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="อีก 2-3 ปีตกงาน 40% ทั่วโลก manny calavara 21/08/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=WXqjDAgU0S4&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง อีก 2-3 ปีตกงาน 40% ทั่วโลก ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/WXqjDAgU0S4.jpg" alt="ปกหนังสือเสียง อีก 2-3 ปีตกงาน 40% ทั่วโลก" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/WXqjDAgU0S4.jpg" alt="ปกหนังสือเสียง อีก 2-3 ปีตกงาน 40% ทั่วโลก" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -661,8 +862,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="ลักษณะอาชีพและตำแหน่งที่จะถูกถีบออกจากงานก่อน manny calavara 21/08/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=KciNhEEwJGQ&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง ลักษณะอาชีพและตำแหน่งที่จะถูกถีบออกจากงานก่อน ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/KciNhEEwJGQ.jpg" alt="ปกหนังสือเสียง ลักษณะอาชีพและตำแหน่งที่จะถูกถีบออกจากงานก่อน" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/KciNhEEwJGQ.jpg" alt="ปกหนังสือเสียง ลักษณะอาชีพและตำแหน่งที่จะถูกถีบออกจากงานก่อน" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -675,8 +881,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="ตกงานกันหมดเพราะ Ai ?! manny calavara 21/08/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=aMWc-QkfHNI&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง ตกงานกันหมดเพราะ Ai ?! ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/aMWc-QkfHNI.jpg" alt="ปกหนังสือเสียง ตกงานกันหมดเพราะ Ai ?!" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/aMWc-QkfHNI.jpg" alt="ปกหนังสือเสียง ตกงานกันหมดเพราะ Ai ?!" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -689,8 +900,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="สยบ Ai ก่อนวิกฤต manny calavara 21/08/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=bRO0g8G-Mv0&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง สยบ Ai ก่อนวิกฤต ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/bRO0g8G-Mv0.jpg" alt="ปกหนังสือเสียง สยบ Ai ก่อนวิกฤต" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/bRO0g8G-Mv0.jpg" alt="ปกหนังสือเสียง สยบ Ai ก่อนวิกฤต" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -703,8 +919,13 @@
 <article class="book-card audio-card" data-category="หนังสือเสียง" data-search="วิศวกรซอฟต์แวร์จะตกงานเพราะ Ai ?! manny calavara 21/08/2025">
   <a class="book-link" href="https://www.youtube.com/watch?v=oFYt38esjJM&amp;list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl" target="_blank" rel="noopener" aria-label="เปิดฟัง วิศวกรซอฟต์แวร์จะตกงานเพราะ Ai ?! ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="assets/audio-covers/oFYt38esjJM.jpg" alt="ปกหนังสือเสียง วิศวกรซอฟต์แวร์จะตกงานเพราะ Ai ?!" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="assets/audio-covers/oFYt38esjJM.jpg" alt="ปกหนังสือเสียง วิศวกรซอฟต์แวร์จะตกงานเพราะ Ai ?!" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>
@@ -729,7 +950,7 @@
 
   <footer class="library-footer">
     <div class="footer-rule" aria-hidden="true"><span></span></div>
-    <p><strong>Hermes Audio Library</strong> · 44 เรื่องจาก Playlist tech (Ai)</p>
+    <p><strong>The Knowledge Shelf</strong> · Curated Guides, Ideas &amp; Audio</p>
     <p class="updated">Audio opens on YouTube in a new tab</p>
   </footer>
 </body>

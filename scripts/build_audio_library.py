@@ -40,8 +40,13 @@ def render_audio_book(item: dict) -> str:
     return f'''<article class="book-card audio-card" data-category="หนังสือเสียง" data-search="{esc(searchable)}">
   <a class="book-link" href="{esc(item["youtube_url"])}" target="_blank" rel="noopener" aria-label="เปิดฟัง {esc(item["title"])} ในแท็บใหม่">
     <div class="book-cover-wrap audio-cover-wrap">
-      <img class="book-cover audio-cover" src="{esc(item["cover"])}" alt="ปกหนังสือเสียง {esc(item["title"])}" width="480" height="360" loading="lazy">
-      <span class="audio-mark" aria-hidden="true">▶</span>
+      <div class="audio-thumbnail-frame">
+        <img class="book-cover audio-cover" src="{esc(item["cover"])}" alt="ปกหนังสือเสียง {esc(item["title"])}" width="480" height="360" loading="lazy">
+      </div>
+      <div class="audio-play-panel" aria-hidden="true">
+        <span class="audio-play-button">▶</span>
+        <span class="audio-play-label">LISTEN ON YOUTUBE</span>
+      </div>
     </div>
     <div class="book-meta audio-meta">
       <span class="book-category">AUDIO BOOK</span>

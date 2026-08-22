@@ -47,6 +47,21 @@ class AudioLibraryTests(unittest.TestCase):
         self.assertIn('publish on 22/08/2026', self.page)
         self.assertIn('35:40', self.page)
 
+    def test_audio_covers_show_full_four_by_three_thumbnail_over_play_panel(self):
+        self.assertEqual(self.page.count('class="audio-thumbnail-frame"'), 44)
+        self.assertEqual(self.page.count('class="audio-play-panel"'), 44)
+        self.assertEqual(self.page.count('class="audio-play-button"'), 44)
+
+    def test_new_brand_navigation_icons_and_library_favicon(self):
+        self.assertIn("The Knowledge Shelf", self.page)
+        self.assertIn("Curated Guides, Ideas &amp; Audio", self.page)
+        self.assertIn('href="assets/icons/library.svg"', self.page)
+        self.assertEqual(self.page.count('class="nav-icon"'), 2)
+
+    def test_publish_badge_is_visibly_larger_on_both_pages(self):
+        stylesheet = (ROOT / "assets" / "css" / "library.css").read_text(encoding="utf-8")
+        self.assertIn("font-size: .62rem;", stylesheet)
+
     def test_checked_in_audio_page_matches_generator(self):
         checked_in = (ROOT / "audio-library.html").read_text(encoding="utf-8")
         self.assertEqual(checked_in, self.page)
