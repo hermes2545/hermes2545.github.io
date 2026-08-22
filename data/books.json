@@ -1,0 +1,123 @@
+[
+  {
+    "id": "buzz-vs-hermes",
+    "title": "Buzz.xyz vs Hermes Desktop Bot — Comparison Guide",
+    "short_title": "Buzz vs Hermes",
+    "href": "Buzz_vs_Hermes_bot.html",
+    "cover": "assets/covers/buzz-vs-hermes.svg",
+    "category": "เปรียบเทียบ AI",
+    "summary": "เปรียบเทียบแนวคิด การทำงานร่วมกัน ความสามารถของ Agent, Memory, Skills และความปลอดภัย",
+    "accent": "#D96C4B",
+    "order": 1
+  },
+  {
+    "id": "headless-browser-redesigned",
+    "title": "Headless Browser สำหรับ AI ใช้อะไรดีที่สุด — Redesigned Edition",
+    "short_title": "Headless Browser AI",
+    "href": "Headless_Browser_AI_Guide_Redesigned_with_Immigration_Hero_Wide_Header.html",
+    "cover": "assets/covers/headless-browser-redesigned.svg",
+    "category": "Browser Automation",
+    "summary": "ฉบับออกแบบใหม่สำหรับเลือกเครื่องมือ Headless Browser ที่เหมาะกับ AI Agent",
+    "accent": "#C48A3A",
+    "order": 2
+  },
+  {
+    "id": "handoff-context",
+    "title": "คู่มือ Handoff & Context Strategy สำหรับ Hermes Agent",
+    "short_title": "Handoff & Context",
+    "href": "Hermes_Handoff_Context_Strategy_Guide_TH_Single.html",
+    "cover": "assets/covers/handoff-context.svg",
+    "category": "Hermes Guide",
+    "summary": "วางกลยุทธ์ส่งต่องานและบริบทระหว่าง Session เพื่อให้ Agent ทำงานต่อเนื่องอย่างมีประสิทธิภาพ",
+    "accent": "#5E8C73",
+    "order": 3
+  },
+  {
+    "id": "personal-infrastructure-wiki",
+    "title": "Personal Infrastructure Wiki: HomeOps & Homelab Knowledge System",
+    "short_title": "Infrastructure Wiki",
+    "href": "Personal_Infrastructure_Wiki_Public_Ref_2026-08-17.html",
+    "cover": "assets/covers/personal-infrastructure-wiki.svg",
+    "category": "Infrastructure",
+    "summary": "ระบบฐานความรู้สำหรับ HomeOps, Homelab และโครงสร้างพื้นฐานส่วนบุคคล",
+    "accent": "#507C8A",
+    "order": 4
+  },
+  {
+    "id": "buzz-hermes-acp",
+    "title": "Buzz × Hermes ACP — Persona Layer + Runtime Layer",
+    "short_title": "Buzz × Hermes ACP",
+    "href": "buzz-hermes/buzz-hermes-infographic.html",
+    "cover": "assets/covers/buzz-hermes-acp.svg",
+    "category": "สถาปัตยกรรม AI",
+    "summary": "อธิบายสถาปัตยกรรมที่แยก Persona Layer และ Runtime Layer ของ Buzz กับ Hermes ACP",
+    "accent": "#8A6A9C",
+    "order": 5
+  },
+  {
+    "id": "grok-vs-hermes",
+    "title": "Grok Bot vs Hermes Desktop Bot — Comparison Guide",
+    "short_title": "Grok vs Hermes",
+    "href": "grok_vs_hermes.html",
+    "cover": "assets/covers/grok-vs-hermes.svg",
+    "category": "เปรียบเทียบ AI",
+    "summary": "เทียบข้อดีข้อเสีย Decision Matrix ความปลอดภัย ต้นทุน และรูปแบบการใช้งาน",
+    "accent": "#A85548",
+    "order": 6
+  },
+  {
+    "id": "headless-browser-original",
+    "title": "Headless Browser สำหรับ AI ใช้อะไรดีที่สุด — Original Edition",
+    "short_title": "Headless Tools",
+    "href": "headless_tool17082026.html",
+    "cover": "assets/covers/headless-browser-original.svg",
+    "category": "Browser Automation",
+    "summary": "ฉบับต้นฉบับสำหรับทำความเข้าใจและเลือกชุดเครื่องมือ Browser Automation สำหรับ AI",
+    "accent": "#B17B42",
+    "order": 7
+  },
+  {
+    "id": "hermes-token-guide",
+    "title": "คู่มือประหยัด Token สำหรับ Hermes Desktop",
+    "short_title": "ประหยัด Token",
+    "href": "hermes-token-guide/index.html",
+    "cover": "assets/covers/hermes-token-guide.svg",
+    "category": "Hermes Guide",
+    "summary": "ตั้งค่าให้คุ้ม ใช้งานได้หลายงาน และควบคุมงบประมาณ Token ไม่ให้บานปลาย",
+    "accent": "#B28B45",
+    "order": 8
+  },
+  {
+    "id": "network-guardian",
+    "title": "Hermes Network Guardian — Public Guide",
+    "short_title": "Network Guardian",
+    "href": "hermes_network_guardian.html",
+    "cover": "assets/covers/network-guardian.svg",
+    "category": "Security",
+    "summary": "ออกแบบ Agent Profile สำหรับดูแลความปลอดภัยเครือข่ายบ้าน IoT, Homelab และ Incident Response",
+    "accent": "#3F7D6B",
+    "order": 9
+  },
+  {
+    "id": "hermes-unstoppable",
+    "title": "หยุดไม่อยู่! ทำไม Hermes Agent ถึงโหดขนาดนี้",
+    "short_title": "Hermes Unstoppable",
+    "href": "hermes_unstopped.html",
+    "cover": "assets/covers/hermes-unstoppable.svg",
+    "category": "Hermes Guide",
+    "summary": "One-page infographic สรุปความสามารถที่ทำให้ Hermes Agent ทำงานได้ทรงพลังยิ่งขึ้น",
+    "accent": "#C45B3E",
+    "order": 10
+  },
+  {
+    "id": "hermes-mega-prompt",
+    "title": "Hermes Mega Prompt — จุดเริ่มต้นสร้างทีมงานและพนักงาน AI",
+    "short_title": "Hermes Mega Prompt",
+    "href": "mega-prompt/index.html",
+    "cover": "assets/covers/hermes-mega-prompt.svg",
+    "category": "AI Operations",
+    "summary": "ภาพรวมการสร้างทีม AI สำหรับธุรกิจที่บริหารโดยคนเดียว พร้อมแนวคิดระบบและการเชื่อมต่อเครื่องมือ",
+    "accent": "#80633F",
+    "order": 11
+  }
+]

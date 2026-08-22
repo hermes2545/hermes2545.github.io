@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="900" viewBox="0 0 600 900" role="img" aria-labelledby="title desc">
+<title id="title">HERMES UNSTOPPABLE</title><desc id="desc">Illustrated book cover for the Hermes Library</desc>
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#35231F"/><stop offset="1" stop-color="#111713"/></linearGradient><pattern id="grain" width="14" height="14" patternUnits="userSpaceOnUse"><path d="M0 13 13 0M7 14l7-7" stroke="#fff" stroke-opacity=".025"/></pattern></defs>
+<rect width="600" height="900" rx="12" fill="url(#bg)"/><rect width="600" height="900" rx="12" fill="url(#grain)"/>
+<rect x="28" y="28" width="544" height="844" rx="8" fill="none" stroke="#C45B3E" stroke-width="3"/><rect x="48" y="48" width="504" height="804" rx="4" fill="none" stroke="#F3D7AE" stroke-opacity=".34"/>
+<text x="300" y="105" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" letter-spacing="5" fill="#F3D7AE">HERMES LIBRARY</text>
+<path d="m336 167-140 208h94l-25 161 139-225h-93l25-144Z" fill="none" stroke="#F3D7AE" stroke-width="9" stroke-linejoin="round"/><path d="m313 247-55 81h55l-10 63 52-83h-52l10-61Z" fill="#C45B3E"/>
+<path d="M130 513h340" stroke="#C45B3E" stroke-width="4"/><circle cx="300" cy="513" r="8" fill="#F3D7AE"/>
+<text x="300" y="575" text-anchor="middle" font-family="Georgia, Noto Serif Thai, serif" font-size="52" font-weight="700" letter-spacing="1" fill="#FFF6E8">HERMES</text><text x="300" y="650" text-anchor="middle" font-family="Georgia, Noto Serif Thai, serif" font-size="52" font-weight="700" letter-spacing="1" fill="#FFF6E8">UNSTOPPABLE</text>
+<text x="300" y="820" text-anchor="middle" font-family="Arial, Noto Sans Thai, sans-serif" font-size="17" letter-spacing="2" fill="#F3D7AE">หยุดไม่อยู่!</text>
+</svg>
