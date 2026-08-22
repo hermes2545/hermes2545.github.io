@@ -1,0 +1,82 @@
+.audio-page {
+  --brass: #d19a5b;
+  --brass-light: #ecc68f;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(209, 154, 91, .15), transparent 34rem),
+    repeating-linear-gradient(90deg, transparent 0 59px, rgba(255,255,255,.01) 60px),
+    #17120e;
+}
+.audio-page .ambient-light { background: radial-gradient(ellipse, rgba(222,157,83,.18), transparent 63%); }
+.audio-library-mark { background: linear-gradient(145deg, #513925, #261a12); }
+.audio-library-mark span { font-family: var(--serif); font-size: .78em; }
+.audio-tools { grid-template-columns: minmax(250px, .9fr) minmax(360px, 1.1fr); }
+.playlist-button {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  min-height: 38px;
+  margin-top: .9rem;
+  padding: .46rem .78rem;
+  color: #24170e;
+  background: var(--brass-light);
+  border: 1px solid var(--brass-light);
+  text-decoration: none;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .03em;
+}
+.playlist-button:hover { background: #f5d5a6; }
+.playlist-button:focus-visible { outline: 3px solid #fff1d9; outline-offset: 4px; }
+.audio-bookshelf { background: linear-gradient(90deg, rgba(0,0,0,.22), transparent 8%, transparent 92%, rgba(0,0,0,.22)), rgba(28,18,12,.48); }
+.audio-card .book-cover-wrap { background: #2a1e16; }
+.audio-cover-wrap { overflow: hidden; }
+.audio-cover {
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(.88) contrast(1.04) brightness(.86);
+  transform: scale(1.32);
+}
+.audio-cover-wrap::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(16,9,5,.03) 38%, rgba(16,9,5,.68) 100%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.1), inset 7px 0 rgba(24,12,6,.35);
+}
+.audio-mark {
+  position: absolute;
+  z-index: 2;
+  right: .55rem;
+  bottom: .55rem;
+  width: 1.7rem;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  padding-left: .08rem;
+  color: #2a180d;
+  background: var(--brass-light);
+  border-radius: 50%;
+  box-shadow: 0 4px 14px rgba(0,0,0,.35);
+  font-size: .62rem;
+}
+.audio-meta { position: relative; }
+.audio-card .book-title {
+  min-height: 2.5em;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.audio-duration {
+  display: inline-block;
+  margin-top: .3rem;
+  color: var(--brass-light);
+  font: 700 .54rem/1 var(--sans);
+  letter-spacing: .06em;
+}
+.audio-card .publish-date { margin-left: .28rem; }
+@media (max-width: 650px) {
+  .audio-tools { grid-template-columns: 1fr; }
+  .audio-card .book-title { min-height: 2.6em; }
+}

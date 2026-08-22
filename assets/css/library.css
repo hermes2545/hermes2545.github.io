@@ -63,6 +63,31 @@ body::before {
   pointer-events: none;
 }
 
+.site-nav {
+  position: relative;
+  z-index: 3;
+  width: min(1160px, calc(100% - 2rem));
+  margin: 1rem auto 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: .2rem;
+  border-bottom: 1px solid rgba(229,201,135,.18);
+}
+.site-nav a {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  padding: .45rem .78rem;
+  color: var(--ink-muted);
+  border-bottom: 2px solid transparent;
+  text-decoration: none;
+  font-size: .74rem;
+  font-weight: 700;
+}
+.site-nav a:hover { color: var(--ink); }
+.site-nav a[aria-current="page"] { color: var(--brass-light); border-bottom-color: var(--brass-light); }
+.site-nav a:focus-visible { outline: 3px solid #f3d7ae; outline-offset: 2px; }
+
 .library-header {
   position: relative;
   padding: clamp(1.8rem, 4vw, 3.4rem) 1.25rem clamp(1.4rem, 3vw, 2.4rem);

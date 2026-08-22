@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#302419">
+  <meta name="description" content="Hermes Audio Library — ชั้นหนังสือเสียงจาก Playlist เทคโนโลยีและ AI">
+  <title>Hermes Audio Library — ชั้นหนังสือเสียง</title>
+  <link rel="stylesheet" href="assets/css/library.css">
+  <link rel="stylesheet" href="assets/css/audio-library.css">
+  <script src="assets/js/library.js" defer></script>
+</head>
+<body class="audio-page">
+  <a class="skip-link" href="#main-content">ข้ามไปยังชั้นหนังสือเสียง</a>
+  <div class="ambient-light" aria-hidden="true"></div>
+
+  <nav class="site-nav" aria-label="เมนูห้องสมุด">
+    <a href="index.html">หนังสืออ่าน</a>
+    <a href="audio-library.html" aria-current="page">หนังสือเสียง</a>
+  </nav>
+
+  <header class="library-header audio-header">
+    <div class="header-inner">
+      <div class="library-mark audio-library-mark" aria-hidden="true"><span>♫</span></div>
+      <div class="title-block">
+        <p class="eyebrow">THE LISTENING ROOM</p>
+        <h1>Audio Library</h1>
+        <p class="subtitle">ชั้นหนังสือเสียงเรื่องเทคโนโลยีและ AI เรียงจากตอนใหม่ล่าสุด</p>
+      </div>
+      <div class="collection-seal" aria-label="มีหนังสือเสียง {{ITEM_COUNT}} รายการ">
+        <strong>{{ITEM_COUNT}}</strong>
+        <span>TRACKS</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="catalog-tools audio-tools" aria-labelledby="audio-heading">
+      <div class="catalog-intro">
+        <p class="section-kicker">TECH (AI) PLAYLIST</p>
+        <h2 id="audio-heading">เลือกฟังจากชั้น</h2>
+        <p>รายการใหม่ล่าสุดอยู่ซ้ายบน แล้วเรียงจากซ้ายไปขวาและลงสู่ชั้นถัดไป</p>
+        <a class="playlist-button" href="{{PLAYLIST_URL}}" target="_blank" rel="noopener">เปิดทั้ง Playlist <span aria-hidden="true">↗</span></a>
+      </div>
+
+      <div class="librarian-desk" role="search">
+        <label for="book-search">ค้นหาในหนังสือเสียง</label>
+        <div class="search-field">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m16 16 5 5"></path></svg>
+          <input id="book-search" type="search" autocomplete="off" placeholder="ชื่อเรื่องหรือวันที่เผยแพร่…" aria-label="ค้นหาหนังสือเสียง">
+          <kbd aria-hidden="true">/</kbd>
+        </div>
+      </div>
+
+      <p class="result-status" id="result-status" aria-live="polite">แสดงหนังสือเสียงทั้ง {{ITEM_COUNT}} รายการ</p>
+    </section>
+
+    <section class="bookshelf-room audio-bookshelf" aria-label="ชั้นหนังสือเสียง Hermes Audio Library">
+      {{AUDIO_SHELVES}}
+      <div class="empty-state" id="empty-state" hidden>
+        <span aria-hidden="true">∅</span>
+        <h2>ยังไม่พบรายการนี้</h2>
+        <p>ลองค้นหาด้วยคำอื่นเพื่อกลับมาฟังจากชั้นค่ะ</p>
+      </div>
+    </section>
+
+    <noscript><p class="noscript-note">การค้นหาต้องใช้ JavaScript แต่คุณยังเปิดฟังทุกเล่มจากชั้นได้</p></noscript>
+  </main>
+
+  <footer class="library-footer">
+    <div class="footer-rule" aria-hidden="true"><span></span></div>
+    <p><strong>Hermes Audio Library</strong> · 44 เรื่องจาก Playlist tech (Ai)</p>
+    <p class="updated">Audio opens on YouTube in a new tab</p>
+  </footer>
+</body>
+</html>

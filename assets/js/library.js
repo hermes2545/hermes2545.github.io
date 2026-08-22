@@ -7,6 +7,9 @@
   const shelves = [...document.querySelectorAll(".shelf")];
   const status = document.querySelector("#result-status");
   const empty = document.querySelector("#empty-state");
+  const isAudio = document.body.classList.contains("audio-page");
+  const itemName = isAudio ? "หนังสือเสียง" : "หนังสือ";
+  const itemUnit = isAudio ? "รายการ" : "เล่ม";
   let activeCategory = "ทั้งหมด";
 
   const normalize = (value) => value.toLocaleLowerCase("th").normalize("NFKC").trim();
@@ -28,8 +31,8 @@
 
     empty.hidden = visible !== 0;
     status.textContent = visible === cards.length
-      ? `แสดงหนังสือทั้ง ${visible} เล่ม`
-      : `พบหนังสือ ${visible} เล่ม จากทั้งหมด ${cards.length} เล่ม`;
+      ? `แสดง${itemName}ทั้ง ${visible} ${itemUnit}`
+      : `พบ${itemName} ${visible} ${itemUnit} จากทั้งหมด ${cards.length} ${itemUnit}`;
   }
 
   search.addEventListener("input", updateCatalog);

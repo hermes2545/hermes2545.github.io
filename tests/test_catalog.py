@@ -17,7 +17,7 @@ class CatalogTests(unittest.TestCase):
             for path in ROOT.rglob("*.html")
             if ".git" not in path.parts
             and "templates" not in path.relative_to(ROOT).parts
-            and path.relative_to(ROOT) != Path("index.html")
+            and path.relative_to(ROOT) not in {Path("index.html"), Path("audio-library.html")}
         }
         catalog_targets = {unquote(urlparse(book["href"]).path) for book in self.books}
         # The root token guide and folder token guide are byte-identical aliases.
