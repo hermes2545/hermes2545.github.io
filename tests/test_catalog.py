@@ -36,6 +36,12 @@ class CatalogTests(unittest.TestCase):
             self.assertRegex(book["accent"], r"^#[0-9A-Fa-f]{6}$")
             self.assertRegex(book["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
 
+    def test_every_reading_book_uses_a_facebook_post_cover(self):
+        self.assertEqual(len(self.books), 11)
+        for book in self.books:
+            self.assertTrue(book["cover"].startswith("assets/covers/facebook/"), book["cover"])
+            self.assertEqual(Path(book["cover"]).suffix, ".webp")
+
     def test_targets_and_covers_exist_and_are_nonempty(self):
         for book in self.books:
             target = ROOT / unquote(urlparse(book["href"]).path)
