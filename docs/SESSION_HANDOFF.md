@@ -1,9 +1,13 @@
 # The Knowledge Shelf — Session Handoff
 
-**Closed:** 2026-08-23  
-**Public site:** https://hermes2545.github.io/  
-**Audio collection:** https://hermes2545.github.io/audio-library.html  
-**Source repository:** https://github.com/hermes2545/hermes2545.github.io  
+**Closed:** 2026-08-23
+
+**Public site:** https://hermes2545.github.io/
+
+**Audio collection:** https://hermes2545.github.io/audio-library.html
+
+**Source repository:** https://github.com/hermes2545/hermes2545.github.io
+
 **Private mirror:** https://github.com/hermes2545/hermes2545.github.io-backup-private
 
 ## Current state
