@@ -64,6 +64,24 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(book["cover"], "assets/covers/custom/dedicated-library-agent-profile.webp")
         self.assertEqual(book["published_at"], "2026-08-23T15:22:54+07:00")
 
+    def test_all_reading_books_use_approved_thai_titles(self):
+        expected = {
+            "dedicated-library-agent-profile": "สร้าง AI Agent ดูแลห้องสมุด",
+            "grok-vs-hermes": "Grok หรือ Hermes เลือกแบบไหนดี",
+            "buzz-vs-hermes": "Buzz หรือ Hermes เหมาะกับงานแบบไหน",
+            "network-guardian": "AI ผู้พิทักษ์เครือข่ายบ้าน",
+            "headless-browser-redesigned": "เลือก Headless Browser สำหรับ AI — ฉบับใหม่",
+            "handoff-context": "ส่งต่องานโดยไม่เสียบริบท",
+            "hermes-token-guide": "ใช้ Hermes ให้ประหยัด Token",
+            "personal-infrastructure-wiki": "วิกิ HomeOps และ Homelab",
+            "headless-browser-original": "เลือก Headless Browser สำหรับ AI — ต้นฉบับ",
+            "hermes-unstoppable": "Hermes Agent ทำงานลื่นขึ้นอย่างไร",
+            "buzz-hermes-acp": "Buzz คือหน้ากาก Hermes คือสมอง",
+            "hermes-mega-prompt": "สร้างทีม AI สำหรับธุรกิจคนเดียว",
+        }
+        actual = {book["id"]: book["short_title"] for book in self.books}
+        self.assertEqual(actual, expected)
+
 
 if __name__ == "__main__":
     unittest.main()

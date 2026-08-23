@@ -2,7 +2,7 @@
   {
     "id": "dedicated-library-agent-profile",
     "title": "Dedicated Library AI Agent Profile Blueprint",
-    "short_title": "Library AI Agent",
+    "short_title": "สร้าง AI Agent ดูแลห้องสมุด",
     "href": "DEDICATED_LIBRARY_AGENT_PROFILE_BLUEPRINT.html",
     "cover": "assets/covers/custom/dedicated-library-agent-profile.webp",
     "category": "สถาปัตยกรรม AI",
@@ -13,7 +13,7 @@
   {
     "id": "buzz-vs-hermes",
     "title": "Buzz.xyz vs Hermes Desktop Bot — Comparison Guide",
-    "short_title": "Buzz vs Hermes",
+    "short_title": "Buzz หรือ Hermes เหมาะกับงานแบบไหน",
     "href": "Buzz_vs_Hermes_bot.html",
     "cover": "assets/covers/facebook/buzz-vs-hermes.webp",
     "category": "เปรียบเทียบ AI",
@@ -24,7 +24,7 @@
   {
     "id": "headless-browser-redesigned",
     "title": "Headless Browser สำหรับ AI ใช้อะไรดีที่สุด — Redesigned Edition",
-    "short_title": "Headless Browser AI",
+    "short_title": "เลือก Headless Browser สำหรับ AI — ฉบับใหม่",
     "href": "Headless_Browser_AI_Guide_Redesigned_with_Immigration_Hero_Wide_Header.html",
     "cover": "assets/covers/facebook/headless-browser-redesigned.webp",
     "category": "Browser Automation",
@@ -35,7 +35,7 @@
   {
     "id": "handoff-context",
     "title": "คู่มือ Handoff & Context Strategy สำหรับ Hermes Agent",
-    "short_title": "Handoff & Context",
+    "short_title": "ส่งต่องานโดยไม่เสียบริบท",
     "href": "Hermes_Handoff_Context_Strategy_Guide_TH_Single.html",
     "cover": "assets/covers/facebook/handoff-context.webp",
     "category": "Hermes Guide",
@@ -46,7 +46,7 @@
   {
     "id": "personal-infrastructure-wiki",
     "title": "Personal Infrastructure Wiki: HomeOps & Homelab Knowledge System",
-    "short_title": "Infrastructure Wiki",
+    "short_title": "วิกิ HomeOps และ Homelab",
     "href": "Personal_Infrastructure_Wiki_Public_Ref_2026-08-17.html",
     "cover": "assets/covers/facebook/personal-infrastructure-wiki.webp",
     "category": "Infrastructure",
@@ -57,7 +57,7 @@
   {
     "id": "buzz-hermes-acp",
     "title": "Buzz × Hermes ACP — Persona Layer + Runtime Layer",
-    "short_title": "Buzz × Hermes ACP",
+    "short_title": "Buzz คือหน้ากาก Hermes คือสมอง",
     "href": "buzz-hermes/buzz-hermes-infographic.html",
     "cover": "assets/covers/facebook/buzz-hermes-acp.webp",
     "category": "สถาปัตยกรรม AI",
@@ -68,7 +68,7 @@
   {
     "id": "grok-vs-hermes",
     "title": "Grok Bot vs Hermes Desktop Bot — Comparison Guide",
-    "short_title": "Grok vs Hermes",
+    "short_title": "Grok หรือ Hermes เลือกแบบไหนดี",
     "href": "grok_vs_hermes.html",
     "cover": "assets/covers/facebook/grok-vs-hermes.webp",
     "category": "เปรียบเทียบ AI",
@@ -79,7 +79,7 @@
   {
     "id": "headless-browser-original",
     "title": "Headless Browser สำหรับ AI ใช้อะไรดีที่สุด — Original Edition",
-    "short_title": "Headless Tools",
+    "short_title": "เลือก Headless Browser สำหรับ AI — ต้นฉบับ",
     "href": "headless_tool17082026.html",
     "cover": "assets/covers/facebook/headless-browser-original.webp",
     "category": "Browser Automation",
@@ -90,7 +90,7 @@
   {
     "id": "hermes-token-guide",
     "title": "คู่มือประหยัด Token สำหรับ Hermes Desktop",
-    "short_title": "ประหยัด Token",
+    "short_title": "ใช้ Hermes ให้ประหยัด Token",
     "href": "hermes-token-guide/index.html",
     "cover": "assets/covers/facebook/hermes-token-guide.webp",
     "category": "Hermes Guide",
@@ -101,7 +101,7 @@
   {
     "id": "network-guardian",
     "title": "Hermes Network Guardian — Public Guide",
-    "short_title": "Network Guardian",
+    "short_title": "AI ผู้พิทักษ์เครือข่ายบ้าน",
     "href": "hermes_network_guardian.html",
     "cover": "assets/covers/facebook/network-guardian.webp",
     "category": "Security",
@@ -112,7 +112,7 @@
   {
     "id": "hermes-unstoppable",
     "title": "หยุดไม่อยู่! ทำไม Hermes Agent ถึงโหดขนาดนี้",
-    "short_title": "Hermes Unstoppable",
+    "short_title": "Hermes Agent ทำงานลื่นขึ้นอย่างไร",
     "href": "hermes_unstopped.html",
     "cover": "assets/covers/facebook/hermes-unstoppable.webp",
     "category": "Hermes Guide",
@@ -123,7 +123,7 @@
   {
     "id": "hermes-mega-prompt",
     "title": "Hermes Mega Prompt — จุดเริ่มต้นสร้างทีมงานและพนักงาน AI",
-    "short_title": "Hermes Mega Prompt",
+    "short_title": "สร้างทีม AI สำหรับธุรกิจคนเดียว",
     "href": "mega-prompt/index.html",
     "cover": "assets/covers/facebook/hermes-mega-prompt.webp",
     "category": "AI Operations",

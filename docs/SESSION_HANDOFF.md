@@ -18,6 +18,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 
 - 12 standalone HTML guides indexed from `data/books.json`.
 - `DEDICATED_LIBRARY_AGENT_PROFILE_BLUEPRINT.html` is the newest guide, with a custom 600×900 WebP architecture cover.
+- All 12 shelf-facing short titles use Thai-first labels while retaining necessary product and technical terms.
 - Newest publication appears at the upper-left, then flows right and downward.
 - Every guide opens in a new browser tab.
 - Reading books use vertical WebP covers built from matching original public Facebook artwork by default; the Library Agent blueprint is an explicitly approved custom-cover exception.
