@@ -1,0 +1,81 @@
+# The Knowledge Shelf — Session Handoff
+
+**Closed:** 2026-08-23  
+**Public site:** https://hermes2545.github.io/  
+**Audio collection:** https://hermes2545.github.io/audio-library.html  
+**Source repository:** https://github.com/hermes2545/hermes2545.github.io  
+**Private mirror:** https://github.com/hermes2545/hermes2545.github.io-backup-private
+
+## Current state
+
+The site is a static GitHub Pages library branded **The Knowledge Shelf** with the subtitle **Curated Guides, Ideas & Audio**.
+
+### Reading collection
+
+- 11 standalone HTML guides indexed from `data/books.json`.
+- Newest publication appears at the upper-left, then flows right and downward.
+- Every guide opens in a new browser tab.
+- Every book uses a vertical WebP cover built from the matching image in the owner's original public Facebook post.
+- Source artwork is preserved under `assets/covers/facebook-source/` and generated covers under `assets/covers/facebook/`.
+
+### Audio collection
+
+- 44 YouTube playlist entries indexed from `data/audio-books.json`.
+- Newest publication appears at the upper-left.
+- Local thumbnail assets are stored under `assets/audio-covers/`.
+- Each audio cover shows the full 4:3 thumbnail in the upper half and a large play control below.
+- Each item and the playlist button open YouTube in a new tab.
+
+### Shared visual behavior
+
+- Responsive shelves rebuild to one real shelf per visual row: 5/4/3/2 books at desktop/tablet/mobile breakpoints.
+- Category, title, date, and duration text sit above the physical book cover.
+- Book covers rest 3–4px above the shelf lip, leaving enough clearance for the 12px hover lift without overlapping the shelf.
+- Navigation includes reading-glasses and headphones icons.
+- `assets/icons/library.svg` is the shared site icon and favicon.
+- Search and category filtering use `assets/js/library.js`.
+
+## Sources of truth
+
+- Reading catalog: `data/books.json`
+- Audio catalog: `data/audio-books.json`
+- Reading generator: `scripts/build_catalog.py`
+- Audio generator: `scripts/build_audio_library.py`
+- Facebook-cover generator: `scripts/build_facebook_covers.py`
+- Shared template/styles: `templates/`, `assets/css/`, `assets/js/`
+- Tests: `tests/`
+
+## Verification commands
+
+```bash
+python -m unittest discover -s tests -v
+python scripts/build_catalog.py --check
+python scripts/build_audio_library.py --check
+git diff --check
+```
+
+Expected verified result at close: **25 tests passed**, both generated pages current, and no diff-check errors.
+
+## Publication workflow
+
+1. Change catalog/source/template files.
+2. Regenerate the appropriate page.
+3. Run the verification commands above.
+4. Preview desktop and mobile layouts over local HTTP.
+5. Run a pre-share scan.
+6. Commit and push `main` to both `origin` and `backup`.
+7. Verify the GitHub Pages build and read back the production URL.
+
+## Intentional boundaries
+
+- The dedicated Library profile has no cron jobs and persistent memory is disabled.
+- Browser sessions, cookies, credentials, local `.hermes/` working notes, `AGENTS.md`, and `PROJECT.md` are not part of the public repository.
+- The private backup mirrors committed Git history only.
+
+## Next recommended step
+
+When a new HTML guide is supplied, match it to its original post image, generate the new vertical cover, add `published_at` metadata, rebuild the reading page, and verify both responsive shelf layout and production links.
+
+## Resume phrase
+
+`เปิด session Library ต่อ`
