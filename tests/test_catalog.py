@@ -27,7 +27,7 @@ class CatalogTests(unittest.TestCase):
     def test_required_fields_and_unique_ids_and_links(self):
         required = {"id", "title", "short_title", "href", "cover", "category", "summary", "accent", "published_at"}
         self.assertTrue(self.books)
-        self.assertEqual(len(self.books), 12)
+        self.assertEqual(len(self.books), 14)
         self.assertEqual(len({book["id"] for book in self.books}), len(self.books))
         self.assertEqual(len({book["href"] for book in self.books}), len(self.books))
         for book in self.books:
@@ -37,7 +37,7 @@ class CatalogTests(unittest.TestCase):
             self.assertRegex(book["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
 
     def test_every_reading_book_uses_an_approved_custom_cover(self):
-        self.assertEqual(len(self.books), 12)
+        self.assertEqual(len(self.books), 14)
         for book in self.books:
             self.assertEqual(book["cover"], f'assets/covers/custom/{book["id"]}.webp')
             self.assertEqual(Path(book["cover"]).suffix, ".webp")
@@ -75,9 +75,35 @@ class CatalogTests(unittest.TestCase):
             "hermes-unstoppable": "Hermes Agent ทำงานลื่นขึ้นอย่างไร",
             "buzz-hermes-acp": "Buzz คือหน้ากาก Hermes คือสมอง",
             "hermes-mega-prompt": "สร้างทีม AI สำหรับธุรกิจคนเดียว",
+            "hermes-memory-kb": "Hermes จำอย่างไรให้เก่งขึ้น",
+            "hermes-profile-guardian": "ระบบเฝ้าระวังและซ่อม Hermes",
         }
         actual = {book["id"]: book["short_title"] for book in self.books}
         self.assertEqual(actual, expected)
+
+    def test_imported_repository_guides_preserve_provenance(self):
+        registry = json.loads((ROOT / "data" / "imported-sources.json").read_text(encoding="utf-8"))
+        expected = {
+            "hermes-memory-kb": {
+                "source_repository": "https://github.com/hermes2545/hermes-memory",
+                "imported_path": "hermes-memory/hermes-memory-kb.html",
+            },
+            "hermes-profile-guardian": {
+                "source_repository": "https://github.com/hermes2545/hermes-guardian",
+                "imported_path": "hermes-guardian/index.html",
+            },
+        }
+        actual = {item["book_id"]: item for item in registry}
+        for book_id, fields in expected.items():
+            self.assertIn(book_id, actual)
+            for key, value in fields.items():
+                self.assertEqual(actual[book_id][key], value)
+            self.assertTrue(actual[book_id]["source_commit"])
+            self.assertTrue((ROOT / fields["imported_path"]).is_file())
+
+    def test_duplicate_audit_exists_for_imported_guides(self):
+        report = ROOT / "docs" / "reports" / "IMPORTED_CONTENT_DUPLICATE_AUDIT.md"
+        self.assertTrue(report.is_file())
 
 
 if __name__ == "__main__":

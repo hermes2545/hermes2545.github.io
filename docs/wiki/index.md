@@ -36,6 +36,10 @@ tags: [library, index]
 
 - [Dedicated Library AI Agent Profile Blueprint](../DEDICATED_LIBRARY_AGENT_PROFILE_BLUEPRINT.md)
 
+## Reports
+
+- [Imported content duplicate audit](../reports/IMPORTED_CONTENT_DUPLICATE_AUDIT.md)
+
 ## Continuity
 
 - [Durable change log](log.md)

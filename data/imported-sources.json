@@ -1,0 +1,24 @@
+[
+  {
+    "book_id": "hermes-memory-kb",
+    "source_repository": "https://github.com/hermes2545/hermes-memory",
+    "source_commit": "ee4f6924aa94a04a93c1f43353624e2f595df085",
+    "source_default_branch": "main",
+    "source_published_at": "2026-06-29T15:39:55+07:00",
+    "import_method": "git-subtree-with-history",
+    "imported_path": "hermes-memory/hermes-memory-kb.html",
+    "legacy_public_url": "https://hermes2545.github.io/hermes-memory/hermes-memory-kb.html",
+    "duplicate_result": "distinct-content"
+  },
+  {
+    "book_id": "hermes-profile-guardian",
+    "source_repository": "https://github.com/hermes2545/hermes-guardian",
+    "source_commit": "371e77551ff2cff403286321f86ce3c3a1af6e32",
+    "source_default_branch": "main",
+    "source_published_at": "2026-08-18T00:39:55+07:00",
+    "import_method": "git-subtree-with-history",
+    "imported_path": "hermes-guardian/index.html",
+    "legacy_public_url": "https://hermes2545.github.io/hermes-guardian/",
+    "duplicate_result": "distinct-content-name-overlap-only"
+  }
+]

@@ -130,5 +130,27 @@
     "summary": "ภาพรวมการสร้างทีม AI สำหรับธุรกิจที่บริหารโดยคนเดียว พร้อมแนวคิดระบบและการเชื่อมต่อเครื่องมือ",
     "accent": "#80633F",
     "published_at": "2026-08-01T10:44:13+07:00"
+  },
+  {
+    "id": "hermes-memory-kb",
+    "title": "สถาปัตยกรรมความจำ Hermes + Self-Improving KB",
+    "short_title": "Hermes จำอย่างไรให้เก่งขึ้น",
+    "href": "hermes-memory/hermes-memory-kb.html",
+    "cover": "assets/covers/custom/hermes-memory-kb.webp",
+    "category": "Knowledge Systems",
+    "summary": "สถาปัตยกรรมความจำหลายชั้น ตั้งแต่ Conversation, Persistent memory, Session search และ Skills ไปจนถึง Self-improving Wiki, Raw archive และ Automation state",
+    "accent": "#7C3AED",
+    "published_at": "2026-06-29T15:39:55+07:00"
+  },
+  {
+    "id": "hermes-profile-guardian",
+    "title": "แนวทาง Monitor Profile ส่งต่อให้ Operator Profile ตรวจและซ่อมอัตโนมัติ",
+    "short_title": "ระบบเฝ้าระวังและซ่อม Hermes",
+    "href": "hermes-guardian/index.html",
+    "cover": "assets/covers/custom/hermes-profile-guardian.webp",
+    "category": "AI Operations",
+    "summary": "ออกแบบ Monitor, Triage และ Operator profiles ให้ตรวจ Scheduled tasks, Execution/Delivery health และซ่อมระบบอย่างมีขอบเขตพร้อม Verification",
+    "accent": "#E85D3F",
+    "published_at": "2026-08-18T00:39:55+07:00"
   }
 ]
