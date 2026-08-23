@@ -81,12 +81,12 @@ Expected verified result at close: **28 tests passed**, both generated pages cur
 
 When a new HTML guide is supplied, match it to its original post image, generate the new vertical cover, add `published_at` metadata, rebuild the reading page, and verify both responsive shelf layout and production links.
 
-## Approved publication artifact
+## Published artifact
 
 - `DEDICATED_LIBRARY_AGENT_PROFILE_BLUEPRINT.md` has been rendered as a self-contained interactive HTML manual.
 - The review copy is stored in the user-designated Google Drive folder and registered locally for update-in-place sync.
 - Reader-facing HTML prose omits the polite particle `ค่ะ`; keep the Markdown source unchanged unless the user explicitly requests otherwise.
-- The user approved adding it to the public shelf in the current publication run; it is catalogued as the newest reading guide.
+- Published and verified as the newest reading guide at `https://hermes2545.github.io/DEDICATED_LIBRARY_AGENT_PROFILE_BLUEPRINT.html`.
 
 ## Resume phrase
 

@@ -23,4 +23,4 @@ tags: [library, changelog]
 - Initialized minimal agent-readable wiki, decision records, and runbooks.
 - Added a public-safe dedicated agent profile blueprint with a portable master prompt for other AI systems.
 - Rendered the blueprint as a 19-view interactive single-file HTML manual, verified desktop/mobile behavior, and stored the review copy in the designated Drive folder without adding it to the public shelf.
-- Approved the blueprint for publication, recorded a scoped custom-cover exception under `assets/covers/custom/`, added its catalog entry, and prepared it as the twelfth reading guide.
+- Published the blueprint as the twelfth reading guide, recorded its scoped custom-cover exception under `assets/covers/custom/`, and verified the live shelf, guide, and cover against local hashes.
