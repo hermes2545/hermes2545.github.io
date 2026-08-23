@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="th" data-mode="light" data-theme="blue">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>แนวทาง Monitor Profile ส่งต่อให้ Operator Profile ตรวจและซ่อมอัตโนมัติ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --shadow-1: 0 2px 10px rgba(25, 32, 56, .08);
+      --shadow-2: 0 16px 44px rgba(25, 32, 56, .16);
+      --font: 'Sarabun', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --max: 1180px;
+      --accent: #2563eb;
+      --accent-2: #06b6d4;
+      --accent-3: #8b5cf6;
+      --accent-soft: rgba(37, 99, 235, .13);
+      --surface: #ffffff;
+      --surface-2: #f7f9ff;
+      --surface-3: #eef3ff;
+      --text: #142033;
+      --muted: #64748b;
+      --line: rgba(34, 49, 75, .12);
+      --success: #0f9f6e;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --hero-grad: radial-gradient(circle at 5% 10%, rgba(37,99,235,.28), transparent 35%), radial-gradient(circle at 95% 20%, rgba(6,182,212,.22), transparent 30%), linear-gradient(135deg, #f8fbff 0%, #eef5ff 55%, #ffffff 100%);
+    }
+    html[data-mode="dark"]{
+      --surface: #101623;
+      --surface-2: #151d2d;
+      --surface-3: #1e293b;
+      --text: #edf4ff;
+      --muted: #a7b4c7;
+      --line: rgba(226, 232, 240, .13);
+      --shadow-1: 0 2px 12px rgba(0,0,0,.25);
+      --shadow-2: 0 22px 56px rgba(0,0,0,.36);
+      --hero-grad: radial-gradient(circle at 5% 10%, rgba(96,165,250,.20), transparent 34%), radial-gradient(circle at 95% 20%, rgba(34,211,238,.18), transparent 31%), linear-gradient(135deg, #0b1020 0%, #111827 55%, #0f172a 100%);
+    }
+    html[data-theme="violet"]{--accent:#7c3aed;--accent-2:#ec4899;--accent-3:#38bdf8;--accent-soft:rgba(124,58,237,.14)}
+    html[data-theme="green"]{--accent:#059669;--accent-2:#84cc16;--accent-3:#14b8a6;--accent-soft:rgba(5,150,105,.14)}
+    html[data-theme="orange"]{--accent:#ea580c;--accent-2:#f59e0b;--accent-3:#ef4444;--accent-soft:rgba(234,88,12,.14)}
+    html[data-theme="pink"]{--accent:#db2777;--accent-2:#f43f5e;--accent-3:#a855f7;--accent-soft:rgba(219,39,119,.14)}
+    html[data-theme="cyan"]{--accent:#0891b2;--accent-2:#22c55e;--accent-3:#6366f1;--accent-soft:rgba(8,145,178,.14)}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:var(--font);background:var(--surface-2);color:var(--text);font-size:15px;line-height:1.62;transition:background .25s,color .25s}
+    button, textarea{font-family:var(--font)}
+    .app{min-height:100vh;background:var(--hero-grad)}
+    .topbar{position:sticky;top:0;z-index:20;backdrop-filter:blur(18px);background:color-mix(in srgb, var(--surface) 82%, transparent);border-bottom:1px solid var(--line)}
+    .topbar-inner{max-width:var(--max);margin:auto;padding:12px 20px;display:flex;gap:14px;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em;white-space:nowrap}
+    .brand-mark{width:38px;height:38px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:var(--shadow-1);color:white}
+    .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .pill-btn{border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:999px;padding:8px 13px;font-weight:700;cursor:pointer;box-shadow:var(--shadow-1);display:flex;align-items:center;gap:7px}
+    .swatches{display:flex;gap:6px;padding:5px;background:var(--surface);border:1px solid var(--line);border-radius:999px;box-shadow:var(--shadow-1)}
+    .swatch{width:24px;height:24px;border:2px solid transparent;border-radius:50%;cursor:pointer}
+    .swatch[aria-selected="true"]{border-color:var(--text);box-shadow:0 0 0 3px var(--accent-soft)}
+    .swatch.blue{background:#2563eb}.swatch.violet{background:#7c3aed}.swatch.green{background:#059669}.swatch.orange{background:#ea580c}.swatch.pink{background:#db2777}.swatch.cyan{background:#0891b2}
+    main{max-width:var(--max);margin:auto;padding:26px 20px 46px}
+    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:stretch;margin-top:8px}
+    .hero-card{background:color-mix(in srgb, var(--surface) 92%, transparent);border:1px solid var(--line);border-radius:var(--radius-xl);box-shadow:var(--shadow-2);padding:28px;overflow:hidden;position:relative}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;background:var(--accent-soft);border:1px solid color-mix(in srgb, var(--accent) 30%, transparent);border-radius:999px;color:var(--accent);font-weight:800;margin-bottom:14px}
+    h1{font-size:clamp(28px,4vw,48px);line-height:1.13;margin:0 0 14px;letter-spacing:-.04em}
+    .lead{font-size:17px;color:var(--muted);max-width:760px;margin:0}
+    .hero-points{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}
+    .mini{background:var(--surface-2);border:1px solid var(--line);border-radius:18px;padding:14px}
+    .mini b{display:block;font-size:18px;margin-bottom:2px;color:var(--accent)}
+    .tabs{margin-top:22px;background:color-mix(in srgb, var(--surface) 88%, transparent);border:1px solid var(--line);border-radius:var(--radius-xl);box-shadow:var(--shadow-2);overflow:hidden}
+    .tablist{display:flex;gap:8px;overflow:auto;padding:12px;border-bottom:1px solid var(--line);scrollbar-width:thin}
+    .tab{border:0;background:transparent;color:var(--muted);border-radius:999px;padding:9px 14px;font-weight:800;cursor:pointer;white-space:nowrap}
+    .tab[aria-selected="true"]{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:white;box-shadow:var(--shadow-1)}
+    .panel{display:none;padding:22px}.panel.active{display:block}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.grid.two{grid-template-columns:repeat(2,1fr)}
+    .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow-1)}
+    .card h3{margin:0 0 8px;font-size:18px;letter-spacing:-.01em}.card p{margin:0;color:var(--muted)}
+    .icon{width:42px;height:42px;border-radius:16px;background:var(--accent-soft);display:grid;place-items:center;color:var(--accent);font-size:22px;margin-bottom:12px}
+    .section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.section-title h2{font-size:22px;margin:0;letter-spacing:-.02em}.section-title p{margin:0;color:var(--muted)}
+    .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:stretch}.step{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow-1);min-height:145px}.step:after{content:'›';position:absolute;right:-12px;top:43%;font-size:30px;color:var(--accent);font-weight:900}.step:last-child:after{content:''}.step .num{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;font-weight:900;margin-bottom:10px}.step b{display:block;margin-bottom:6px}.step span{color:var(--muted)}
+    .rail{display:grid;grid-template-columns:1fr 1fr;gap:16px}.rail-card{border:1px solid var(--line);border-radius:24px;background:var(--surface);overflow:hidden}.rail-head{padding:14px 16px;color:white;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent-2))}.rail-body{padding:16px}.checklist{list-style:none;padding:0;margin:0;display:grid;gap:9px}.checklist li{display:flex;gap:10px;align-items:flex-start;color:var(--muted)}.checklist li:before{content:'✓';display:grid;place-items:center;min-width:22px;height:22px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:900}
+    .notice{border-left:5px solid var(--accent);background:var(--accent-soft);border-radius:18px;padding:15px 16px;color:var(--text)}
+    .svg-wrap{height:100%;min-height:360px;background:linear-gradient(135deg,var(--surface),var(--surface-3));border:1px solid var(--line);border-radius:var(--radius-xl);padding:14px;display:grid;place-items:center}
+    svg text{font-family:var(--font);fill:var(--text)}
+    .copybar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 0}.copybar small{color:var(--muted)}
+    textarea.prompt{width:100%;min-height:380px;resize:vertical;background:#0f172a;color:#e5edf8;border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:18px;font-family:var(--mono);font-size:13px;line-height:1.65;box-shadow:var(--shadow-1)}
+    .footer-note{margin-top:20px;color:var(--muted);font-size:13px;text-align:center}.tag{display:inline-block;padding:4px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:800;margin:2px}
+    @media(max-width:900px){.hero{grid-template-columns:1fr}.hero-points,.grid,.grid.two,.flow,.rail{grid-template-columns:1fr}.step:after{content:''}.topbar-inner{align-items:flex-start;flex-direction:column}.controls{justify-content:flex-start}.panel{padding:16px}.hero-card{padding:22px}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand"><div class="brand-mark">🛡️</div><span>Monitor → Operator Profile Playbook</span></div>
+      <div class="controls">
+        <button class="pill-btn" id="modeBtn" type="button">🌙 Dark</button>
+        <div class="swatches" role="listbox" aria-label="เลือกสีธีม">
+          <button class="swatch blue" data-theme="blue" aria-label="Blue" aria-selected="true"></button>
+          <button class="swatch violet" data-theme="violet" aria-label="Violet"></button>
+          <button class="swatch green" data-theme="green" aria-label="Green"></button>
+          <button class="swatch orange" data-theme="orange" aria-label="Orange"></button>
+          <button class="swatch pink" data-theme="pink" aria-label="Pink"></button>
+          <button class="swatch cyan" data-theme="cyan" aria-label="Cyan"></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-card">
+        <div class="eyebrow">✨ Public-safe architecture guide</div>
+        <h1>ระบบเฝ้าดูอัตโนมัติที่ส่งต่อให้โปรไฟล์หลักตรวจและซ่อมอย่างปลอดภัย</h1>
+        <p class="lead">แนวทางนี้แยกบทบาทเป็นโปรไฟล์เฝ้าระวังและโปรไฟล์ปฏิบัติการ เพื่อให้การตรวจ error เป็นแบบอ่านอย่างเดียวก่อน แล้วจึงส่งต่องานให้โปรไฟล์ที่มีสิทธิ์ลงมือ พร้อมแจ้งผู้ดูแลเป็นภาษาคนทุกจังหวะ</p>
+        <div class="hero-points">
+          <div class="mini"><b>Read-only first</b><span>ผู้เฝ้าดูไม่แก้ระบบเอง</span></div>
+          <div class="mini"><b>Human notice</b><span>แจ้งเหตุ ส่งต่อ และผลซ่อม</span></div>
+          <div class="mini"><b>Bounded repair</b><span>ซ่อมเฉพาะจุดพร้อม verify</span></div>
+        </div>
+      </div>
+      <div class="svg-wrap" aria-label="ภาพประกอบ flow monitor to operator">
+        <svg viewBox="0 0 620 440" width="100%" height="100%" role="img">
+          <defs>
+            <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent-2)"/></linearGradient>
+            <filter id="blur"><feGaussianBlur stdDeviation="18"/></filter>
+          </defs>
+          <circle cx="96" cy="88" r="54" fill="var(--accent-soft)" filter="url(#blur)"/>
+          <circle cx="520" cy="338" r="70" fill="var(--accent-soft)" filter="url(#blur)"/>
+          <rect x="38" y="80" width="150" height="104" rx="26" fill="var(--surface)" stroke="var(--line)"/>
+          <text x="113" y="119" text-anchor="middle" font-size="18" font-weight="800">Monitor</text>
+          <text x="113" y="150" text-anchor="middle" font-size="13" fill="var(--muted)">อ่านสถานะเท่านั้น</text>
+          <circle cx="113" cy="188" r="24" fill="url(#g1)"/><text x="113" y="197" text-anchor="middle" font-size="24" fill="white">👁</text>
+          <path d="M196 132 C256 92 322 92 383 132" fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round" stroke-dasharray="10 10"/>
+          <polygon points="382,132 358,120 362,145" fill="var(--accent)"/>
+          <rect x="397" y="80" width="180" height="104" rx="26" fill="var(--surface)" stroke="var(--line)"/>
+          <text x="487" y="119" text-anchor="middle" font-size="18" font-weight="800">Operator</text>
+          <text x="487" y="150" text-anchor="middle" font-size="13" fill="var(--muted)">ตรวจหลักฐานและซ่อม</text>
+          <circle cx="487" cy="188" r="24" fill="url(#g1)"/><text x="487" y="197" text-anchor="middle" font-size="24" fill="white">🛠</text>
+          <rect x="154" y="260" width="312" height="108" rx="30" fill="url(#g1)" opacity=".95"/>
+          <text x="310" y="303" text-anchor="middle" font-size="20" font-weight="900" fill="white">แจ้งผู้ดูแล 3 จังหวะ</text>
+          <text x="310" y="334" text-anchor="middle" font-size="14" fill="white">พบปัญหา → ส่งต่อ → ผลหลังซ่อม</text>
+          <path d="M128 190 C160 252 190 280 245 303" fill="none" stroke="var(--accent-2)" stroke-width="4" stroke-linecap="round"/>
+          <path d="M488 190 C455 248 420 281 374 303" fill="none" stroke="var(--accent-2)" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </section>
+
+    <section class="tabs" aria-label="เนื้อหาแบบแท็บ">
+      <div class="tablist" role="tablist">
+        <button class="tab" role="tab" aria-selected="true" data-tab="overview">ภาพรวม</button>
+        <button class="tab" role="tab" data-tab="roles">บทบาท</button>
+        <button class="tab" role="tab" data-tab="checks">ตรวจอะไร</button>
+        <button class="tab" role="tab" data-tab="flow">Flow ส่งต่อ</button>
+        <button class="tab" role="tab" data-tab="notices">การแจ้งเตือน</button>
+        <button class="tab" role="tab" data-tab="safety">หลักความปลอดภัย</button>
+        <button class="tab" role="tab" data-tab="prompt">Mega Prompt</button>
+      </div>
+
+      <section class="panel active" id="overview" role="tabpanel">
+        <div class="section-title"><div><h2>แนวคิดหลัก</h2><p>ออกแบบให้แยก “คนเฝ้า” ออกจาก “คนลงมือ” เพื่อลดความเสี่ยงจาก automation ที่แก้ระบบเองโดยไม่ตรวจหลักฐาน</p></div></div>
+        <div class="grid">
+          <div class="card"><div class="icon">👁️</div><h3>โปรไฟล์เฝ้าระวัง</h3><p>ทำหน้าที่ตรวจสถานะ อ่าน log สรุปความผิดปกติ เก็บสถานะการแจ้งซ้ำ และแจ้งผู้ดูแลโดยไม่แตะระบบเป้าหมาย</p></div>
+          <div class="card"><div class="icon">🧠</div><h3>โปรไฟล์คัดกรอง</h3><p>แปล alert เชิงเทคนิคให้เป็นภาษาคน ประเมินผลกระทบและความเร่งด่วน ก่อนตัดสินใจว่าจะส่งต่อหรือไม่</p></div>
+          <div class="card"><div class="icon">🛠️</div><h3>โปรไฟล์ปฏิบัติการ</h3><p>รับงานแบบมีขอบเขต ตรวจหลักฐานจริง แก้เฉพาะจุดที่ปลอดภัย และยืนยันผลด้วยการทดสอบจริง</p></div>
+        </div>
+        <div class="notice" style="margin-top:14px">หลักการสำคัญ: alert ไม่ควรเป็นแค่คำว่า error แต่ต้องบอกว่าคนดูแลควรรู้อะไร ผลกระทบคืออะไร ส่งให้ใครทำต่อ และจบด้วยสถานะอะไร</div>
+      </section>
+
+      <section class="panel" id="roles" role="tabpanel">
+        <div class="rail">
+          <div class="rail-card"><div class="rail-head">Monitor Profile</div><div class="rail-body"><ul class="checklist"><li>อ่านสถานะบริการ งาน scheduled task และผลการรันล่าสุด</li><li>ตรวจเฉพาะข้อมูลที่จำเป็นต่อการแจ้งเตือน</li><li>ทำ dedupe เพื่อไม่ส่ง alert เดิมซ้ำเกินจำเป็น</li><li>ส่งข้อความภาษาคนให้ผู้ดูแลทราบ</li><li>ไม่แก้ config ไม่ restart และไม่ใช้ credential ของโปรไฟล์หลัก</li></ul></div></div>
+          <div class="rail-card"><div class="rail-head">Operator Profile</div><div class="rail-body"><ul class="checklist"><li>รับ prompt ส่งต่อพร้อมบริบทที่ผ่านการย่อและ redaction</li><li>ตรวจหลักฐานจากแหล่งจริงก่อนสรุปสาเหตุ</li><li>แก้เฉพาะปัญหาที่อยู่ในขอบเขตปลอดภัย</li><li>หยุดเมื่อเจอ action ที่ต้องอนุมัติหรือแตะ credential</li><li>รายงานผลเป็นภาษาคนพร้อมหลักฐานการ verify</li></ul></div></div>
+        </div>
+      </section>
+
+      <section class="panel" id="checks" role="tabpanel">
+        <div class="grid two">
+          <div class="card"><div class="icon">⏱️</div><h3>Scheduled task health</h3><p>ตรวจว่างานที่เปิดใช้งานมีสถานะล่าสุดเป็นปกติหรือไม่ มีงานค้าง งาน timeout งานไม่เคยรัน หรือรอบล่าสุดล้มเหลวหรือไม่</p></div>
+          <div class="card"><div class="icon">📦</div><h3>Execution evidence</h3><p>อ่านฐานข้อมูลผลการรันหรือไฟล์ output ล่าสุด เพื่อแยกว่าปัญหาเป็นแค่สถานะค้างหรือรันล้มเหลวจริง</p></div>
+          <div class="card"><div class="icon">📡</div><h3>Delivery health</h3><p>ตรวจว่าผลลัพธ์ส่งออกไปยังช่องทางแจ้งเตือนได้หรือไม่ และแยกปัญหาช่องทางส่งออกออกจากปัญหาของงานหลัก</p></div>
+          <div class="card"><div class="icon">🧯</div><h3>Service & resource signals</h3><p>ตรวจสัญญาณระดับเครื่องหรือ service เช่น service หยุด พื้นที่ดิสก์ใกล้เต็ม หรือ heartbeat หาย โดยจัดเป็นคนละชั้นกับ error ของงานย่อย</p></div>
+        </div>
+      </section>
+
+      <section class="panel" id="flow" role="tabpanel">
+        <div class="flow">
+          <div class="step"><div class="num">1</div><b>Watch</b><span>โปรไฟล์เฝ้าระวังอ่านสถานะล่าสุดแบบ read-only</span></div>
+          <div class="step"><div class="num">2</div><b>Classify</b><span>จัดประเภทความผิดปกติและคัด alert ที่ควรแจ้ง</span></div>
+          <div class="step"><div class="num">3</div><b>Notify</b><span>แจ้งผู้ดูแลว่าเกิดอะไรขึ้นและจะส่งต่อหรือไม่</span></div>
+          <div class="step"><div class="num">4</div><b>Escalate</b><span>เปิด session แบบจำกัดสิทธิ์ให้โปรไฟล์ปฏิบัติการตรวจและซ่อม</span></div>
+          <div class="step"><div class="num">5</div><b>Report</b><span>ส่งผลกลับเป็นภาษาคน พร้อมสถานะหลัง verify</span></div>
+        </div>
+      </section>
+
+      <section class="panel" id="notices" role="tabpanel">
+        <div class="grid">
+          <div class="card"><div class="icon">🛎️</div><h3>แจ้งเมื่อพบปัญหา</h3><p>บอกเรื่องที่ผิดปกติ ผลกระทบ ความเร่งด่วน และสิ่งที่โปรไฟล์เฝ้าระวังทำไปแล้ว โดยไม่ใส่ log ยาวในข้อความหลัก</p></div>
+          <div class="card"><div class="icon">📣</div><h3>แจ้งเมื่อส่งต่อ</h3><p>บอกชัดเจนว่าโปรไฟล์เฝ้าระวังส่งงานให้โปรไฟล์ปฏิบัติการแล้ว และโปรไฟล์ปฏิบัติการจะตรวจอะไรต่อ</p></div>
+          <div class="card"><div class="icon">✅</div><h3>แจ้งเมื่อจบงาน</h3><p>บอกว่าแก้สำเร็จหรือยังติด blocker สาเหตุคืออะไร ซ่อมอะไร ตรวจสอบผลอย่างไร และผู้ดูแลต้องทำอะไรต่อหรือไม่</p></div>
+        </div>
+      </section>
+
+      <section class="panel" id="safety" role="tabpanel">
+        <div class="grid two">
+          <div class="card"><div class="icon">🔒</div><h3>Fail-safe boundary</h3><p>โปรไฟล์เฝ้าระวังไม่ควรมีสิทธิ์แก้ระบบเป้าหมายโดยตรง การแก้ต้องผ่าน prompt ส่งต่อที่จำกัดสิทธิ์และมีเงื่อนไขหยุด</p></div>
+          <div class="card"><div class="icon">🧹</div><h3>Sanitized context</h3><p>ข้อความส่งต่อควรมีเฉพาะข้อมูลจำเป็น ไม่ใส่ token, secret, path ส่วนตัว, chat id, task id จริง หรือข้อมูลเฉพาะองค์กร</p></div>
+          <div class="card"><div class="icon">🧪</div><h3>Verification required</h3><p>ทุกการซ่อมต้องจบด้วยการตรวจจริง เช่น syntax check, import check, dry-run, scheduler run หรือ health check ตามชนิดของงาน</p></div>
+          <div class="card"><div class="icon">🛑</div><h3>Stop conditions</h3><p>ถ้าต้อง restart, ใช้เงิน, ลบข้อมูล, แตะ credential, เปลี่ยน security policy หรือเดา secret ต้องหยุดและขออนุมัติ</p></div>
+        </div>
+      </section>
+
+      <section class="panel" id="prompt" role="tabpanel">
+        <div class="section-title"><div><h2>Mega Prompt สำหรับสร้างระบบนี้ในเครื่องอื่น</h2><p>คัดลอกไปให้ Hermes Agent บนเครื่องปลายทาง ใช้ placeholder กลางและให้ตรวจ environment จริงก่อนลงมือ</p></div></div>
+        <div class="copybar"><small>Prompt นี้ไม่ผูกกับชื่อบุคคล องค์กร งาน หรือ path เฉพาะเครื่อง</small><button class="pill-btn" id="copyPrompt" type="button">📋 Copy Mega Prompt</button></div>
+        <textarea id="megaPrompt" class="prompt" spellcheck="false">คุณคือ Hermes Agent operator ที่ต้องสร้างระบบ Monitor Profile → Operator Profile สำหรับเฝ้าดู error และส่งต่องานซ่อมอย่างปลอดภัยบนเครื่องนี้
+
+เป้าหมาย
+สร้างระบบสองชั้น:
+1) Monitor Profile: โปรไฟล์เฝ้าระวังแบบ read-only สำหรับตรวจสถานะ scheduled tasks, service health, delivery health, resource health และแจ้งผู้ดูแลเป็นภาษาคน
+2) Operator Profile: โปรไฟล์หลักหรือโปรไฟล์ปฏิบัติการที่รับงานจาก Monitor Profile เพื่อวิเคราะห์หลักฐานจริง แก้เฉพาะจุดที่ปลอดภัย และ verify ผล
+
+ข้อกำหนดสำคัญ
+- อย่าเดา path, service name, profile name, token, chat id, หรือ scheduler layout ให้ตรวจจากเครื่องจริงก่อน
+- ห้ามพิมพ์ secret/token/password/credential ลง chat หรือ log
+- Monitor Profile ต้อง read-only ต่อระบบเป้าหมาย: อ่านสถานะและเขียน state ของตัวเองได้ แต่ห้ามแก้ job, restart service, เปลี่ยน config, หรือแตะ credential ของ Operator Profile
+- Operator Profile แก้ได้เฉพาะปัญหาที่ปลอดภัย เช่น script wrapper path, dependency ใน virtual environment, import error, environment mismatch, syntax error, หรือ config เฉพาะ job ที่ไม่ใช่ credential
+- ถ้าเจอ action ที่ destructive, costly, restart service, change security policy, change approval policy, token/credential/OAuth, หรือข้อมูลไม่พอ ให้หยุดและรายงาน blocker
+- ทุกการแก้ต้อง verify จริงก่อนรายงานว่าสำเร็จ
+
+ขั้นตอนที่ต้องทำ
+1) ตรวจ Hermes environment จริง
+   - ตรวจ profile list, config path, cron/scheduler location, gateway/service status, Python interpreter/virtual environment และ toolsets ที่ใช้ได้
+   - สรุปเฉพาะข้อมูลทั่วไป ห้ามเปิดเผย secret หรือ identifier ส่วนตัว
+
+2) สร้างหรือเตรียม Monitor Profile
+   - ใช้ชื่อ profile กลางที่เหมาะกับการเฝ้าระวัง
+   - ตั้งค่า model/provider ที่พร้อมใช้
+   - ตั้งค่าช่องทางแจ้งเตือนที่ผู้ดูแลอนุมัติแล้ว
+   - ตรวจว่า gateway หรือ delivery channel ของ Monitor Profile ส่งข้อความได้จริง โดยไม่พิมพ์ token
+
+3) สร้าง Watcher Script แบบ read-only
+   - อ่าน scheduled task definitions และ execution state ของ Operator Profile แบบ read-only
+   - ตรวจ enabled jobs, latest status, latest execution result, stale schedule, missing last run, delivery errors
+   - ตรวจ service health และ resource health เฉพาะที่จำเป็น
+   - ใช้ redaction สำหรับ token, bearer, private key, api key, jwt, password, local user path และ identifier ที่ไม่ควรแชร์
+   - ใช้ fingerprint/dedupe เพื่อลด alert ซ้ำ
+   - stdout ว่างเมื่อไม่มีปัญหาใหม่
+   - เมื่อมีปัญหา ให้ส่งข้อความภาษาคน: เกิดอะไรขึ้น, กระทบอะไร, ระดับความเร่งด่วน, ตรวจจากอะไร, จะส่งให้ใครทำต่อ
+
+4) สร้าง Triage Script
+   - อ่าน output ของ watcher ของ Monitor Profile เท่านั้น
+   - เก็บ seen state ใน Monitor Profile เท่านั้น
+   - แปล alert เป็นภาษาคน หลีกเลี่ยง log/stacktrace ยาว
+   - ตัดสินใจว่าจะ escalate หรือไม่ตาม policy
+   - ถ้าเป็น default/operator scheduled task error เช่น latest status failed/error/timeout หรือ latest execution failed ให้ส่งต่อ Operator Profile
+
+5) สร้าง Escalation ไป Operator Profile
+   - เรียก Hermes CLI ของ Operator Profile แบบ bounded one-shot session
+   - ใส่ source tag ที่ค้นย้อนหลังได้ เช่น monitor-escalation
+   - จำกัด toolsets ให้พอดีกับงานตรวจ/ซ่อม เช่น terminal,file,cronjob,skills ตามที่เครื่องรองรับ
+   - prompt ที่ส่งให้ Operator Profile ต้องบังคับให้:
+     a) ระบุ job/service ที่ error จาก alert
+     b) ตรวจหลักฐานจริงก่อนสรุป
+     c) อ่าน definition, execution record, output/log, referenced script/config
+     d) แก้เฉพาะ safe targeted fix
+     e) verify ด้วยคำสั่งจริง เช่น syntax check, import check, dry-run, scheduler run, health check
+     f) หยุดเมื่อเจอ restart/destructive/costly/credential/security/approval issue
+     g) รายงานผลเป็นภาษาคน
+
+6) แจ้งผู้ดูแลเป็น 3 จังหวะ
+   - จังหวะที่ 1: Monitor Profile พบปัญหาและสรุปเป็นภาษาคน
+   - จังหวะที่ 2: Monitor Profile ส่งงานให้ Operator Profile แล้ว พร้อมบอกว่า Operator จะตรวจอะไร
+   - จังหวะที่ 3: Operator Profile ทำเสร็จหรือติด blocker พร้อมบอกสาเหตุ สิ่งที่แก้ วิธี verify และผู้ดูแลต้องทำอะไรต่อไหม
+
+7) สร้าง Scheduled Jobs ใน Monitor Profile
+   - Health watcher: รันตามช่วงเวลาที่เหมาะสม, no-agent/script-only, silent when healthy
+   - Target scheduler watcher: รันตามช่วงเวลาที่เหมาะสม, no-agent/script-only, silent when no new anomaly
+   - Triage/escalation reviewer: รันหลัง watcher เล็กน้อย, no-agent/script-only, ส่งข้อความเมื่อมี alert ใหม่
+   - หลีกเลี่ยงการตั้งเวลาซ้อนกันจนชนกับงานสำคัญ
+
+8) ทดสอบก่อนเปิดจริง
+   - py_compile ทุก script
+   - dry-run watcher พร้อม always-report
+   - normal run ต้อง silent เมื่อไม่มีปัญหา
+   - test redaction ด้วยข้อความจำลองที่มี token-like string แล้วต้องถูก mask
+   - test delivery channel ด้วยข้อความสั้นที่ไม่มี secret
+   - test escalation predicate ด้วย alert จำลองว่าควรส่งต่อหรือไม่
+   - test Operator Profile CLI smoke test ด้วย prompt สั้นและ source tag
+   - ตรวจว่า Monitor Profile ไม่ได้แก้ไฟล์หรือ cron ของ Operator Profile ยกเว้นการเรียก Operator Profile ให้ทำงานตามขอบเขต
+
+9) รูปแบบข้อความภาษาคน
+สำหรับ Monitor Profile:
+🛎️ รายงานจาก Monitor Profile
+เรื่อง: &lt;ชื่อกลางของงานหรือ service&gt;
+เกิดอะไรขึ้น: &lt;อธิบายภาษาคน&gt;
+กระทบอะไร: &lt;ผลกระทบที่คาดได้&gt;
+ระดับความเร่งด่วน: &lt;ต่ำ/กลาง/สูง&gt;
+Monitor ทำอะไรแล้ว: &lt;ตรวจพบและจัดประเภท ยังไม่แก้เอง&gt;
+จะส่งให้ใครทำต่อ: &lt;Operator Profile หรือยังไม่ส่ง&gt;
+สิ่งที่ควรรู้: &lt;สั้น กระชับ ไม่มี secret&gt;
+
+สำหรับการส่งต่อ:
+📣 Monitor Profile ส่งงานให้ Operator Profile แล้ว
+เรื่อง: &lt;ชื่อกลางของงานหรือ service&gt;
+สาเหตุที่ส่งต่อ: &lt;เหตุผลสั้น ๆ&gt;
+Operator จะทำอะไร: ตรวจหลักฐานจริง แก้เฉพาะจุดถ้าปลอดภัย และ verify ผล
+
+สำหรับผลจาก Operator Profile:
+🛠️ รายงานจาก Operator Profile
+รับงานจาก: Monitor Profile
+เรื่อง: &lt;ชื่อกลางของงานหรือ service&gt;
+Operator ทำอะไรแล้ว: &lt;ตรวจอะไร/แก้อะไร&gt;
+สาเหตุที่พบ: &lt;ภาษาคน&gt;
+ซ่อมอะไร: &lt;แก้/ไม่แก้ เพราะอะไร&gt;
+ตรวจสอบผลแล้ว: &lt;verify อย่างไร&gt;
+สถานะตอนจบ: &lt;เรียบร้อย/ติด blocker/ต้องอนุมัติ&gt;
+สิ่งที่ผู้ดูแลต้องทำไหม: &lt;ไม่ต้อง/ต้องอนุมัติ/ต้อง re-auth/อื่น ๆ&gt;
+
+10) รายงานผลการติดตั้ง
+ตอบกลับด้วย:
+- สถาปัตยกรรมที่สร้างแล้ว
+- รายการไฟล์/script/job ที่สร้าง โดยใช้ path แบบปลอดภัยหรือ placeholder ถ้าเป็นรายงาน public
+- สิ่งที่ทดสอบผ่าน
+- ข้อจำกัดหรือ blocker
+- วิธีตรวจย้อนหลัง เช่น source tag ของ escalation session และ output directory ของ monitor profile
+
+เริ่มจากตรวจระบบจริงก่อน แล้วทำทีละขั้นจนมี artifact ใช้งานได้จริง ห้ามจบแค่แผน</textarea>
+      </section>
+    </section>
+    <div class="footer-note">เอกสารนี้ใช้คำกลางสำหรับแชร์สาธารณะ ไม่รวมชื่อบุคคล องค์กร งานภายใน token หรือ path เฉพาะเครื่อง</div>
+  </main>
+</div>
+<script>
+  const root = document.documentElement;
+  const modeBtn = document.getElementById('modeBtn');
+  modeBtn.addEventListener('click', () => {
+    const dark = root.dataset.mode !== 'dark';
+    root.dataset.mode = dark ? 'dark' : 'light';
+    modeBtn.textContent = dark ? '☀️ Light' : '🌙 Dark';
+  });
+  document.querySelectorAll('.swatch').forEach(btn => {
+    btn.addEventListener('click', () => {
+      root.dataset.theme = btn.dataset.theme;
+      document.querySelectorAll('.swatch').forEach(b => b.setAttribute('aria-selected','false'));
+      btn.setAttribute('aria-selected','true');
+    });
+  });
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected','false'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      tab.setAttribute('aria-selected','true');
+      document.getElementById(tab.dataset.tab).classList.add('active');
+    });
+  });
+  const copyBtn = document.getElementById('copyPrompt');
+  copyBtn.addEventListener('click', async () => {
+    const text = document.getElementById('megaPrompt').value;
+    try { await navigator.clipboard.writeText(text); copyBtn.textContent = '✅ Copied'; }
+    catch { document.getElementById('megaPrompt').select(); document.execCommand('copy'); copyBtn.textContent = '✅ Copied'; }
+    setTimeout(()=>copyBtn.textContent='📋 Copy Mega Prompt', 1800);
+  });
+</script>
+</body>
+</html>
