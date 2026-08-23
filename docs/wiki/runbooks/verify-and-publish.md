@@ -26,7 +26,7 @@ git diff --check
 - No horizontal overflow.
 - One shelf per visual row.
 - Text above books and correct shelf clearance.
-- Search/filter interactions.
+- Search interactions and category-plaque alignment/visibility.
 - All covers loaded and links open in new tabs.
 
 ## Publish gate

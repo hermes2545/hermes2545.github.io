@@ -26,3 +26,4 @@ tags: [library, changelog]
 - Published the blueprint as the twelfth reading guide, recorded its scoped custom-cover exception under `assets/covers/custom/`, and verified the live shelf, guide, and cover against local hashes.
 - Replaced all 12 reading-book shelf titles with user-approved Thai-first labels and verified that none overflow or overlap publication dates on desktop or mobile.
 - Redesigned all 44 audio cards as iPod-style players, removed the `AUDIO BOOK` kicker, moved duration into the lower device panel above PLAY, and moved reading categories to responsive metal plaques on shelf edges.
+- Removed the redundant reading-category filter row; category search still works through the main search field and responsive shelf plaques remain the visible category labels.

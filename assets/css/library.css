@@ -228,20 +228,7 @@ main { display: block; }
   background: #172721;
   font: .72rem var(--sans);
 }
-.filters { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .85rem; }
-.filter-button {
-  min-height: 32px;
-  padding: .4rem .65rem;
-  color: var(--ink-muted);
-  border: 1px solid rgba(229,201,135,.2);
-  background: transparent;
-  cursor: pointer;
-  font: 600 .73rem/1 var(--sans);
-  transition: color .18s ease, border-color .18s ease, background .18s ease;
-}
-.filter-button:hover { color: var(--ink); border-color: rgba(229,201,135,.55); }
-.filter-button[aria-pressed="true"] { color: #16291f; border-color: var(--brass-light); background: var(--brass-light); }
-.filter-button:focus-visible, .book-link:focus-visible { outline: 3px solid #f3d7ae; outline-offset: 4px; }
+.book-link:focus-visible { outline: 3px solid #f3d7ae; outline-offset: 4px; }
 .result-status {
   grid-column: 1 / -1;
   margin: -.5rem 0 0;

@@ -26,14 +26,6 @@ def esc(value: object, *, quote: bool = True) -> str:
     return html.escape(str(value), quote=quote)
 
 
-def render_filter(category: str, *, active: bool = False) -> str:
-    pressed = "true" if active else "false"
-    return (
-        f'<button class="filter-button" type="button" data-category="{esc(category)}" '
-        f'aria-pressed="{pressed}">{esc(category)}</button>'
-    )
-
-
 def render_book(book: dict) -> str:
     searchable = " ".join((book["title"], book["short_title"], book["category"], book["summary"]))
     published = datetime.fromisoformat(book["published_at"]).strftime("%d/%m/%Y")
@@ -76,14 +68,9 @@ def render_shelf(books: list[dict], number: int) -> str:
 
 def render_homepage(books: list[dict], template_path: Path = TEMPLATE_PATH) -> str:
     template = template_path.read_text(encoding="utf-8")
-    categories = sorted({book["category"] for book in books})
-    filters = "\n          ".join(
-        [render_filter("ทั้งหมด", active=True), *(render_filter(category) for category in categories)]
-    )
     shelves = "\n      ".join(render_shelf(group, number) for number, group in enumerate(chunks(books, SHELF_SIZE), 1))
     return (
         template.replace("{{BOOK_COUNT}}", str(len(books)))
-        .replace("{{FILTERS}}", filters)
         .replace("{{BOOKSHELVES}}", shelves)
     )
 

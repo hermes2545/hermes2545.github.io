@@ -31,6 +31,8 @@ class HomepageBuildTests(unittest.TestCase):
 
     def test_reading_categories_are_metal_plaques_on_shelf_edges(self):
         self.assertNotIn('class="book-category"', self.html)
+        self.assertNotIn('class="filters"', self.html)
+        self.assertNotIn('class="filter-button"', self.html)
         self.assertEqual(self.html.count('class="shelf-label-grid"'), 3)
         self.assertEqual(self.html.count('class="shelf-category-plaque"'), len(self.books))
         for book in self.books:

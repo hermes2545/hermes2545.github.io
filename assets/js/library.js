@@ -2,7 +2,6 @@
   "use strict";
 
   const search = document.querySelector("#book-search");
-  const buttons = [...document.querySelectorAll(".filter-button")];
   const cards = [...document.querySelectorAll(".book-card")];
   const room = document.querySelector(".bookshelf-room");
   let shelves = [...document.querySelectorAll(".shelf")];
@@ -11,7 +10,6 @@
   const isAudio = document.body.classList.contains("audio-page");
   const itemName = isAudio ? "หนังสือเสียง" : "หนังสือ";
   const itemUnit = isAudio ? "รายการ" : "เล่ม";
-  let activeCategory = "ทั้งหมด";
   let currentColumns = 0;
   let resizeTimer;
 
@@ -77,9 +75,8 @@
     let visible = 0;
 
     cards.forEach((card) => {
-      const matchesCategory = activeCategory === "ทั้งหมด" || card.dataset.category === activeCategory;
       const matchesQuery = !query || normalize(card.dataset.search).includes(query);
-      card.hidden = !(matchesCategory && matchesQuery);
+      card.hidden = !matchesQuery;
       if (!card.hidden) visible += 1;
     });
 
@@ -102,13 +99,6 @@
 
   search.addEventListener("input", updateCatalog);
 
-  buttons.forEach((button) => {
-    button.addEventListener("click", () => {
-      activeCategory = button.dataset.category;
-      buttons.forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
-      updateCatalog();
-    });
-  });
 
   window.addEventListener("resize", () => {
     window.clearTimeout(resizeTimer);

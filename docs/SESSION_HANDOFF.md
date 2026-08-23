@@ -41,7 +41,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 - Book covers rest 3–4px above the shelf lip, leaving enough clearance for the 12px hover lift without overlapping the shelf.
 - Navigation includes reading-glasses and headphones icons.
 - `assets/icons/library.svg` is the shared site icon and favicon.
-- Search and category filtering use `assets/js/library.js`.
+- Search uses `assets/js/library.js`; the separate reading-category filter row is intentionally removed because categories are shown on shelf plaques.
 
 ## Sources of truth
 
