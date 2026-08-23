@@ -21,8 +21,8 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 - All 12 shelf-facing short titles use Thai-first labels while retaining necessary product and technical terms.
 - Newest publication appears at the upper-left, then flows right and downward.
 - Every guide opens in a new browser tab.
-- Reading books use vertical WebP covers built from matching original public Facebook artwork by default; the Library Agent blueprint is an explicitly approved custom-cover exception.
-- Source artwork is preserved under `assets/covers/facebook-source/` and generated covers under `assets/covers/facebook/`.
+- All 12 reading books use individually designed 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork.
+- Reproducible cover designs live in `templates/reading-cover-designs.template.html` and `templates/mega-prompt-business-book-cover.template.html`; legacy Facebook assets remain archived but unused.
 
 ### Audio collection
 
@@ -49,7 +49,8 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 - Audio catalog: `data/audio-books.json`
 - Reading generator: `scripts/build_catalog.py`
 - Audio generator: `scripts/build_audio_library.py`
-- Facebook-cover generator: `scripts/build_facebook_covers.py`
+- Custom reading-cover design sources: `templates/reading-cover-designs.template.html`, `templates/mega-prompt-business-book-cover.template.html`, and `templates/reading-cover-assets/`
+- Legacy Facebook-cover generator: `scripts/build_facebook_covers.py` (retained but not used by the active catalog)
 - Shared template/styles: `templates/`, `assets/css/`, `assets/js/`
 - Tests: `tests/`
 

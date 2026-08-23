@@ -5,7 +5,7 @@ status: active
 visibility: public
 created: 2026-08-23
 updated: 2026-08-23
-sources: [data/books.json, scripts/build_catalog.py, scripts/build_facebook_covers.py]
+sources: [data/books.json, scripts/build_catalog.py, templates/reading-cover-designs.template.html]
 tags: [library, reading, html, covers]
 ---
 
@@ -14,8 +14,8 @@ tags: [library, reading, html, covers]
 1. Preserve the user-supplied HTML unchanged unless edits are explicitly requested.
 2. Inspect filename, `<title>`, headings, assets, links, and privacy risks.
 3. Choose a stable public path; do not break existing URLs.
-4. Locate the matching authorized public source post/artwork; if the user explicitly approves a custom cover, record that scoped exception.
-5. Store source artwork privately/local as policy permits and generate a 600×900 WebP cover under `assets/covers/facebook/`; store explicitly approved custom covers under `assets/covers/custom/`.
+4. Design a distinct content-matched cover using the reusable design sources under `templates/`; do not require Facebook artwork.
+5. Render and visually verify a 600×900 cover, then save the approved WebP as `assets/covers/custom/<book-id>.webp`.
 6. Add one record to `data/books.json` with unique ID, title, href, cover, category, summary, accent, and ISO `published_at`.
 7. Run the catalog tests first, regenerate `index.html`, then run the full suite.
 8. Preview desktop/mobile shelves, verify the category appears as a metal plaque aligned to the book on the shelf edge, and verify the new link opens in a new tab.

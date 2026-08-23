@@ -36,16 +36,13 @@ class CatalogTests(unittest.TestCase):
             self.assertRegex(book["accent"], r"^#[0-9A-Fa-f]{6}$")
             self.assertRegex(book["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
 
-    def test_every_reading_book_uses_an_approved_cover_source(self):
+    def test_every_reading_book_uses_an_approved_custom_cover(self):
         self.assertEqual(len(self.books), 12)
         for book in self.books:
-            expected_prefix = (
-                "assets/covers/custom/"
-                if book["id"] == "dedicated-library-agent-profile"
-                else "assets/covers/facebook/"
-            )
-            self.assertTrue(book["cover"].startswith(expected_prefix), book["cover"])
+            self.assertEqual(book["cover"], f'assets/covers/custom/{book["id"]}.webp')
             self.assertEqual(Path(book["cover"]).suffix, ".webp")
+        self.assertTrue((ROOT / "templates" / "reading-cover-designs.template.html").is_file())
+        self.assertTrue((ROOT / "templates" / "mega-prompt-business-book-cover.template.html").is_file())
 
     def test_targets_and_covers_exist_and_are_nonempty(self):
         for book in self.books:

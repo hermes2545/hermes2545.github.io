@@ -27,3 +27,4 @@ tags: [library, changelog]
 - Replaced all 12 reading-book shelf titles with user-approved Thai-first labels and verified that none overflow or overlap publication dates on desktop or mobile.
 - Redesigned all 44 audio cards as iPod-style players, removed the `AUDIO BOOK` kicker, moved duration into the lower device panel above PLAY, and moved reading categories to responsive metal plaques on shelf edges.
 - Removed the redundant reading-category filter row; category search still works through the main search field and responsive shelf plaques remain the visible category labels.
+- Replaced active Facebook artwork references with 12 individually designed custom reading covers, preserved reproducible HTML/logo sources under `templates/`, and retained legacy Facebook assets without catalog references.
