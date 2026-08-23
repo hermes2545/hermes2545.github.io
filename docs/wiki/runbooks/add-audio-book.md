@@ -16,5 +16,5 @@ tags: [library, audio, youtube]
 3. Cache the authorized thumbnail locally and verify image integrity/metadata.
 4. Add one record to `data/audio-books.json` with video ID, title, URL, cover, duration, publish timestamp, position, and uploader.
 5. Sort newest-first, regenerate `audio-library.html`, and run the full tests.
-6. Preview desktop/mobile shelves, full 4:3 thumbnail, play panel, date, duration, search, and new-tab link.
+6. Preview desktop/mobile shelves, iPod shell at the standard book footprint, full 4:3 thumbnail screen, click wheel, duration at the upper-right of the lower panel, PLAY label, date, search, and new-tab link.
 7. Run a pre-share scan and request approval before public push.

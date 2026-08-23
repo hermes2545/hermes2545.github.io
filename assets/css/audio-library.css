@@ -28,11 +28,36 @@
 .playlist-button:hover { background: #f5d5a6; }
 .playlist-button:focus-visible { outline: 3px solid #fff1d9; outline-offset: 4px; }
 .audio-bookshelf { background: linear-gradient(90deg, rgba(0,0,0,.22), transparent 8%, transparent 92%, rgba(0,0,0,.22)), rgba(28,18,12,.48); }
-.audio-card .book-cover-wrap { background: #2a1e16; }
+.audio-card .book-cover-wrap { background: #bbb7ae; }
+.audio-card .book-cover-wrap::before { display: none; }
+.audio-ipod {
+  aspect-ratio: 2 / 3;
+  padding: .5rem .44rem .62rem;
+  overflow: hidden;
+  border: 1px solid #d7d3ca;
+  border-radius: 1.15rem;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.6), transparent 16%, transparent 84%, rgba(0,0,0,.18)),
+    linear-gradient(145deg, #e4e1d9, #aaa69e 58%, #817e78);
+  box-shadow:
+    0 14px 22px rgba(0,0,0,.46),
+    inset 0 1px 1px rgba(255,255,255,.9),
+    inset 0 -2px 4px rgba(0,0,0,.22);
+}
+.audio-ipod::after {
+  position: absolute;
+  top: .18rem;
+  left: 50%;
+  width: 1.8rem;
+  height: 2px;
+  content: "";
+  border-radius: 999px;
+  background: rgba(40,38,35,.5);
+  transform: translateX(-50%);
+}
 .audio-cover-wrap {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 .audio-thumbnail-frame {
   position: relative;
@@ -42,7 +67,9 @@
   flex: 0 0 auto;
   overflow: hidden;
   background: #0c0a08;
-  border-bottom: 1px solid rgba(236,198,143,.3);
+  border: 2px solid #27241f;
+  border-radius: .48rem .48rem .22rem .22rem;
+  box-shadow: 0 1px rgba(255,255,255,.45), inset 0 0 10px rgba(0,0,0,.6);
 }
 .audio-cover {
   width: 100%;
@@ -60,27 +87,55 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: .45rem;
-  color: var(--brass-light);
-  background:
-    radial-gradient(circle at 50% 36%, rgba(236,198,143,.13), transparent 50%),
-    linear-gradient(145deg, #3a281a, #1d140e);
-  box-shadow: inset 7px 0 rgba(24,12,6,.28);
+  justify-content: flex-end;
+  gap: .12rem;
+  padding-top: .7rem;
+  color: #35312d;
+  background: transparent;
 }
-.audio-play-button {
-  width: clamp(2.7rem, 4vw, 3.35rem);
+.audio-click-wheel {
+  position: relative;
+  width: min(68%, 4.8rem);
   aspect-ratio: 1;
   display: grid;
   place-items: center;
-  padding-left: .12rem;
-  color: #2a180d;
-  background: var(--brass-light);
   border-radius: 50%;
-  box-shadow: 0 6px 18px rgba(0,0,0,.4), 0 0 0 4px rgba(236,198,143,.1);
-  font-size: 1rem;
+  background: linear-gradient(145deg, #f6f3ed, #cbc7c0 68%, #aaa69f);
+  box-shadow: 0 4px 8px rgba(0,0,0,.32), inset 0 1px 2px rgba(255,255,255,.9);
 }
-.audio-play-label { font: 700 .46rem/1 var(--sans); letter-spacing: .13em; }
+.audio-click-wheel::before {
+  position: absolute;
+  top: 8%;
+  content: "MENU";
+  color: #5a5550;
+  font: 800 .34rem/1 var(--sans);
+  letter-spacing: .07em;
+}
+.audio-click-wheel::after {
+  position: absolute;
+  right: 9%;
+  left: 9%;
+  content: "◀◀          ▶▶";
+  color: #5a5550;
+  font: 700 .34rem/1 var(--sans);
+  white-space: nowrap;
+}
+.audio-play-button {
+  position: relative;
+  z-index: 1;
+  width: 43%;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  padding-left: .08rem;
+  color: #554f49;
+  border: 1px solid rgba(80,76,70,.2);
+  border-radius: 50%;
+  background: linear-gradient(145deg, #d8d4cd, #aaa69f);
+  box-shadow: inset 0 1px 2px rgba(255,255,255,.75);
+  font-size: .62rem;
+}
+.audio-play-label { color: #46413c; font: 800 .43rem/1 var(--sans); letter-spacing: .16em; }
 .audio-meta { position: relative; }
 .audio-card .book-title {
   min-height: 2.5em;
@@ -90,13 +145,19 @@
   -webkit-line-clamp: 2;
 }
 .audio-duration {
-  display: inline-block;
-  margin-top: .3rem;
-  color: var(--brass-light);
-  font: 700 .54rem/1 var(--sans);
+  position: absolute;
+  top: .3rem;
+  right: .08rem;
+  padding: .13rem .3rem;
+  color: #f4ead8;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 999px;
+  background: #3b3732;
+  box-shadow: inset 0 1px rgba(255,255,255,.12);
+  font: 800 .47rem/1 var(--sans);
   letter-spacing: .06em;
 }
-.audio-card .publish-date { margin-left: .28rem; }
+.audio-card .publish-date { margin-left: 0; }
 @media (max-width: 650px) {
   .audio-tools { grid-template-columns: 1fr; }
   .audio-card .book-title { min-height: 2.6em; }

@@ -29,13 +29,15 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 - 44 YouTube playlist entries indexed from `data/audio-books.json`.
 - Newest publication appears at the upper-left.
 - Local thumbnail assets are stored under `assets/audio-covers/`.
-- Each audio cover shows the full 4:3 thumbnail in the upper half and a large play control below.
+- Each audio item uses a large iPod-style device at the existing book footprint: a full 4:3 thumbnail screen above a click wheel, with duration at the upper-right of the lower control panel and a PLAY label below.
+- Audio titles no longer show the redundant `AUDIO BOOK` kicker.
 - Each item and the playlist button open YouTube in a new tab.
 
 ### Shared visual behavior
 
 - Responsive shelves rebuild to one real shelf per visual row: 5/4/3/2 books at desktop/tablet/mobile breakpoints.
-- Category, title, date, and duration text sit above the physical book cover.
+- Reading titles and publication dates sit above each cover; audio titles and publication dates sit above each iPod-style player.
+- Reading categories are removed from the title block and rendered as realistic metal plaques aligned to each book on the shelf edge.
 - Book covers rest 3–4px above the shelf lip, leaving enough clearance for the 12px hover lift without overlapping the shelf.
 - Navigation includes reading-glasses and headphones icons.
 - `assets/icons/library.svg` is the shared site icon and favicon.

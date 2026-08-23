@@ -40,7 +40,6 @@ def render_book(book: dict) -> str:
     return f'''<article class="book-card" data-category="{esc(book["category"])}" data-search="{esc(searchable)}" style="--book-accent:{esc(book["accent"])}">
   <a class="book-link" href="{esc(book["href"])}" target="_blank" rel="noopener" aria-label="เปิดอ่าน {esc(book["title"])} ในแท็บใหม่">
     <div class="book-meta">
-      <span class="book-category">{esc(book["category"])}</span>
       <h3 class="book-title">{esc(book["short_title"])}</h3>
       <time class="publish-date" datetime="{esc(book["published_at"])}">publish on {published}</time>
       <p class="book-summary">{esc(book["summary"])}</p>
@@ -59,11 +58,19 @@ def chunks(items: list[dict], size: int) -> Iterable[list[dict]]:
 
 def render_shelf(books: list[dict], number: int) -> str:
     cards = "\n".join(render_book(book) for book in books)
+    labels = "\n      ".join(
+        f'<span class="shelf-category-plaque">{esc(book["category"])}</span>'
+        for book in books
+    )
     return f'''<section class="shelf" aria-label="ชั้นหนังสือที่ {number}">
   <div class="book-grid">
 {cards}
   </div>
-  <div class="shelf-plank" aria-hidden="true"></div>
+  <div class="shelf-plank">
+    <div class="shelf-label-grid">
+      {labels}
+    </div>
+  </div>
 </section>'''
 
 

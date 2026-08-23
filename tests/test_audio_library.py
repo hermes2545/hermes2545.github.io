@@ -52,11 +52,40 @@ class AudioLibraryTests(unittest.TestCase):
         self.assertEqual(self.page.count('class="audio-play-panel"'), 44)
         self.assertEqual(self.page.count('class="audio-play-button"'), 44)
 
+    def test_audio_cards_are_ipods_without_audio_book_kickers(self):
+        self.assertNotIn("AUDIO BOOK", self.page)
+        self.assertEqual(self.page.count('class="book-cover-wrap audio-cover-wrap audio-ipod"'), 44)
+        self.assertEqual(self.page.count('class="audio-click-wheel"'), 44)
+        stylesheet = (ROOT / "assets" / "css" / "audio-library.css").read_text(encoding="utf-8")
+        self.assertIn(".audio-ipod", stylesheet)
+        self.assertIn("aspect-ratio: 2 / 3;", stylesheet)
+        self.assertIn(".audio-card .book-cover-wrap::before", stylesheet)
+
+    def test_duration_is_in_the_lower_panel_above_play(self):
+        cards = self.page.split('<article class="book-card audio-card"')[1:]
+        self.assertEqual(len(cards), 44)
+        for card in cards:
+            for marker in (
+                'class="audio-play-panel"',
+                'class="audio-duration"',
+                'class="audio-click-wheel"',
+                'class="audio-play-label"',
+            ):
+                self.assertIn(marker, card)
+            panel = card.index('class="audio-play-panel"')
+            duration = card.index('class="audio-duration"')
+            wheel = card.index('class="audio-click-wheel"')
+            play = card.index('class="audio-play-label"')
+            self.assertLess(panel, duration)
+            self.assertLess(duration, wheel)
+            self.assertLess(wheel, play)
+        self.assertEqual(self.page.count('class="audio-play-label">PLAY'), 44)
+
     def test_audio_text_is_above_each_book_cover(self):
         cards = self.page.split('<article class="book-card audio-card"')[1:]
         self.assertEqual(len(cards), 44)
         for card in cards:
-            self.assertLess(card.index('class="book-meta audio-meta"'), card.index('class="book-cover-wrap audio-cover-wrap"'))
+            self.assertLess(card.index('class="book-meta audio-meta"'), card.index('class="book-cover-wrap audio-cover-wrap audio-ipod"'))
 
     def test_book_bottoms_keep_small_clearance_above_the_shelf(self):
         stylesheet = (ROOT / "assets" / "css" / "library.css").read_text(encoding="utf-8")

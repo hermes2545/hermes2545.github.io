@@ -24,6 +24,23 @@
     return 5;
   }
 
+  function buildShelfLabels(plank, shelfCards) {
+    if (isAudio) {
+      plank.setAttribute("aria-hidden", "true");
+      return;
+    }
+
+    const labelGrid = document.createElement("div");
+    labelGrid.className = "shelf-label-grid";
+    shelfCards.forEach((card) => {
+      const plaque = document.createElement("span");
+      plaque.className = "shelf-category-plaque";
+      plaque.textContent = card.dataset.category;
+      labelGrid.appendChild(plaque);
+    });
+    plank.appendChild(labelGrid);
+  }
+
   function layoutShelves() {
     const columns = columnsForViewport();
     if (columns === currentColumns) return;
@@ -37,13 +54,14 @@
       shelf.className = "shelf";
       shelf.setAttribute("aria-label", `${isAudio ? "ชั้นหนังสือเสียง" : "ชั้นหนังสือ"}ที่ ${number}`);
 
+      const shelfCards = cards.slice(start, start + columns);
       const grid = document.createElement("div");
       grid.className = "book-grid";
-      cards.slice(start, start + columns).forEach((card) => grid.appendChild(card));
+      shelfCards.forEach((card) => grid.appendChild(card));
 
       const plank = document.createElement("div");
       plank.className = "shelf-plank";
-      plank.setAttribute("aria-hidden", "true");
+      buildShelfLabels(plank, shelfCards);
       shelf.append(grid, plank);
       fragment.appendChild(shelf);
     }
@@ -67,6 +85,13 @@
 
     shelves.forEach((shelf) => {
       shelf.hidden = !shelf.querySelector(".book-card:not([hidden])");
+      if (!isAudio) {
+        const shelfCards = [...shelf.querySelectorAll(".book-card")];
+        const plaques = [...shelf.querySelectorAll(".shelf-category-plaque")];
+        shelfCards.forEach((card, index) => {
+          if (plaques[index]) plaques[index].hidden = card.hidden;
+        });
+      }
     });
 
     empty.hidden = visible !== 0;

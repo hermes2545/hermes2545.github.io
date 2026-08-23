@@ -29,6 +29,17 @@ class HomepageBuildTests(unittest.TestCase):
         for card in cards:
             self.assertLess(card.index('class="book-meta"'), card.index('class="book-cover-wrap"'))
 
+    def test_reading_categories_are_metal_plaques_on_shelf_edges(self):
+        self.assertNotIn('class="book-category"', self.html)
+        self.assertEqual(self.html.count('class="shelf-label-grid"'), 3)
+        self.assertEqual(self.html.count('class="shelf-category-plaque"'), len(self.books))
+        for book in self.books:
+            self.assertIn(f'class="shelf-category-plaque">{html.escape(book["category"])}</span>', self.html)
+        stylesheet = (ROOT / "assets" / "css" / "library.css").read_text(encoding="utf-8")
+        self.assertIn(".shelf-category-plaque", stylesheet)
+        script = (ROOT / "assets" / "js" / "library.js").read_text(encoding="utf-8")
+        self.assertIn("function buildShelfLabels", script)
+
     def test_books_are_sorted_newest_first_and_show_publish_date(self):
         timestamps = [book["published_at"] for book in self.books]
         self.assertEqual(timestamps, sorted(timestamps, reverse=True))
