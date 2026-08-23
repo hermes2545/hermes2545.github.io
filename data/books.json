@@ -1,5 +1,16 @@
 [
   {
+    "id": "dedicated-library-agent-profile",
+    "title": "Dedicated Library AI Agent Profile Blueprint",
+    "short_title": "Library AI Agent",
+    "href": "DEDICATED_LIBRARY_AGENT_PROFILE_BLUEPRINT.html",
+    "cover": "assets/covers/custom/dedicated-library-agent-profile.webp",
+    "category": "สถาปัตยกรรม AI",
+    "summary": "คู่มือออกแบบ AI Agent แบบแยก Profile สำหรับดูแลเว็บไซต์ห้องสมุดความรู้ เอกสาร ระบบเชื่อมต่อ และกระบวนการเผยแพร่",
+    "accent": "#4B8BB3",
+    "published_at": "2026-08-23T15:22:54+07:00"
+  },
+  {
     "id": "buzz-vs-hermes",
     "title": "Buzz.xyz vs Hermes Desktop Bot — Comparison Guide",
     "short_title": "Buzz vs Hermes",

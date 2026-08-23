@@ -16,10 +16,11 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 
 ### Reading collection
 
-- 11 standalone HTML guides indexed from `data/books.json`.
+- 12 standalone HTML guides indexed from `data/books.json`.
+- `DEDICATED_LIBRARY_AGENT_PROFILE_BLUEPRINT.html` is the newest guide, with a custom 600×900 WebP architecture cover.
 - Newest publication appears at the upper-left, then flows right and downward.
 - Every guide opens in a new browser tab.
-- Every book uses a vertical WebP cover built from the matching image in the owner's original public Facebook post.
+- Reading books use vertical WebP covers built from matching original public Facebook artwork by default; the Library Agent blueprint is an explicitly approved custom-cover exception.
 - Source artwork is preserved under `assets/covers/facebook-source/` and generated covers under `assets/covers/facebook/`.
 
 ### Audio collection
@@ -58,7 +59,7 @@ python scripts/build_audio_library.py --check
 git diff --check
 ```
 
-Expected verified result at close: **25 tests passed**, both generated pages current, and no diff-check errors.
+Expected verified result at close: **28 tests passed**, both generated pages current, and no diff-check errors.
 
 ## Publication workflow
 
@@ -79,6 +80,13 @@ Expected verified result at close: **25 tests passed**, both generated pages cur
 ## Next recommended step
 
 When a new HTML guide is supplied, match it to its original post image, generate the new vertical cover, add `published_at` metadata, rebuild the reading page, and verify both responsive shelf layout and production links.
+
+## Approved publication artifact
+
+- `DEDICATED_LIBRARY_AGENT_PROFILE_BLUEPRINT.md` has been rendered as a self-contained interactive HTML manual.
+- The review copy is stored in the user-designated Google Drive folder and registered locally for update-in-place sync.
+- Reader-facing HTML prose omits the polite particle `ค่ะ`; keep the Markdown source unchanged unless the user explicitly requests otherwise.
+- The user approved adding it to the public shelf in the current publication run; it is catalogued as the newest reading guide.
 
 ## Resume phrase
 

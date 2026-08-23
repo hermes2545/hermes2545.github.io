@@ -24,7 +24,7 @@ Maintain a public static library of practical guides and audio content with repr
 
 - Reading collection uses `data/books.json`.
 - Audio collection uses `data/audio-books.json`.
-- Reading covers use matched original public post artwork.
+- Reading covers use matched original public post artwork by default; explicitly approved custom exceptions live under `assets/covers/custom/`.
 - Audio covers use locally cached playlist thumbnails.
 - Newest publication sorts to the upper-left.
 

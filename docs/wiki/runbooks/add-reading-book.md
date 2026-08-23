@@ -14,8 +14,8 @@ tags: [library, reading, html, covers]
 1. Preserve the user-supplied HTML unchanged unless edits are explicitly requested.
 2. Inspect filename, `<title>`, headings, assets, links, and privacy risks.
 3. Choose a stable public path; do not break existing URLs.
-4. Locate the matching authorized public source post/artwork.
-5. Store source artwork privately/local as policy permits and generate a 600×900 WebP cover.
+4. Locate the matching authorized public source post/artwork; if the user explicitly approves a custom cover, record that scoped exception.
+5. Store source artwork privately/local as policy permits and generate a 600×900 WebP cover under `assets/covers/facebook/`; store explicitly approved custom covers under `assets/covers/custom/`.
 6. Add one record to `data/books.json` with unique ID, title, href, cover, category, summary, accent, and ISO `published_at`.
 7. Run the catalog tests first, regenerate `index.html`, then run the full suite.
 8. Preview desktop/mobile shelves and verify the new link opens in a new tab.

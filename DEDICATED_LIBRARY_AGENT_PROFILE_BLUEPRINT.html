@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+
+<html data-theme="light" lang="th">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="คู่มือออกแบบ Dedicated Library AI Agent Profile แบบ Interactive Reference Manual" name="description"/>
+<title>Dedicated Library AI Agent Profile Blueprint</title>
+<style>
+:root{--bg:#f3f6fa;--surface:#fff;--surface-2:#f7f9fc;--text:#172033;--muted:#667085;--border:#dfe5ee;--primary:#2563a8;--primary-soft:#eaf2fb;--purple:#6f55b5;--success:#217a4b;--success-soft:#eaf7f0;--warning:#9a6500;--warning-soft:#fff6dc;--danger:#b33b3b;--danger-soft:#fff0f0;--sidebar:#122236;--sidebar-text:#dbe7f5;--sidebar-muted:#91a5bc;--code:#101c2c;--code-text:#e9f0f8;--radius-sm:10px;--radius-md:16px;--radius-lg:22px;--shadow:0 8px 24px rgba(21,35,55,.07);--sidebar-w:292px;--font-scale:1}
+html[data-theme="dark"]{--bg:#111821;--surface:#18222e;--surface-2:#202c39;--text:#ecf2f8;--muted:#aab8c8;--border:#344252;--primary:#76afe4;--primary-soft:#1c344c;--purple:#b39ae8;--success:#7bd3a1;--success-soft:#173829;--warning:#f1c76d;--warning-soft:#3d321b;--danger:#f09a9a;--danger-soft:#422528;--sidebar:#0b121b;--sidebar-text:#e7eef7;--sidebar-muted:#8ca0b6;--code:#0a1018;--code-text:#e6edf5;--shadow:0 10px 30px rgba(0,0,0,.2)}
+*{box-sizing:border-box}html,body{height:100%;margin:0}body{font-family:"Noto Sans Thai","Leelawadee UI",Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:calc(16px * var(--font-scale));line-height:1.72;overflow:hidden}button,input{font:inherit}.app{height:100%;display:grid;grid-template-columns:var(--sidebar-w) minmax(0,1fr);transition:grid-template-columns .2s ease}.app.collapsed{--sidebar-w:78px}.sidebar{background:var(--sidebar);color:var(--sidebar-text);height:100vh;display:flex;flex-direction:column;overflow:hidden;z-index:30}.brand{display:flex;align-items:center;gap:12px;height:70px;padding:0 20px;border-bottom:1px solid rgba(255,255,255,.09);flex:none}.brand-mark{width:38px;height:38px;border:1px solid rgba(255,255,255,.22);border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.06);flex:none}.brand-mark svg{width:22px;fill:none;stroke:currentColor;stroke-width:1.8}.brand-text{min-width:0}.brand-text strong,.brand-text small{display:block;white-space:nowrap}.brand-text strong{font-size:14px;letter-spacing:.01em}.brand-text small{font-size:11px;color:var(--sidebar-muted)}.search-wrap{padding:14px 14px 5px}.search{position:relative}.search svg{position:absolute;width:17px;left:12px;top:50%;transform:translateY(-50%);fill:none;stroke:var(--sidebar-muted);stroke-width:2}.search input{width:100%;height:40px;border:1px solid rgba(255,255,255,.11);border-radius:10px;background:rgba(255,255,255,.06);color:#fff;padding:0 12px 0 38px;outline:none}.search input::placeholder{color:var(--sidebar-muted)}.search input:focus{border-color:#78b2e8;box-shadow:0 0 0 3px rgba(120,178,232,.15)}.nav-scroll{overflow-y:auto;padding:8px 10px 18px;scrollbar-width:thin}.nav-group{margin-top:10px}.nav-group-title{padding:8px 10px 5px;color:var(--sidebar-muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}.nav-item{width:100%;min-height:43px;border:0;border-radius:10px;background:transparent;color:var(--sidebar-text);display:flex;align-items:center;gap:12px;padding:8px 10px;text-align:left;cursor:pointer;margin:2px 0}.nav-item:hover{background:rgba(255,255,255,.07)}.nav-item.active{background:#eaf2fb;color:#17395f}.nav-icon{width:21px;height:21px;display:grid;place-items:center;flex:none}.nav-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}.nav-label{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sidebar-meta{margin-top:auto;padding:14px 20px;border-top:1px solid rgba(255,255,255,.09);font-size:11px;color:var(--sidebar-muted);white-space:nowrap}.sidebar-meta strong{color:var(--sidebar-text);display:block}.collapsed .brand-text,.collapsed .search-wrap,.collapsed .nav-group-title,.collapsed .nav-label,.collapsed .sidebar-meta{display:none}.collapsed .brand{padding:0;justify-content:center}.collapsed .nav-item{justify-content:center;padding:9px}.main{height:100vh;min-width:0;display:grid;grid-template-rows:70px minmax(0,1fr)}.topbar{background:color-mix(in srgb,var(--surface) 94%,transparent);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 22px;position:relative;z-index:20}.top-left,.top-actions{display:flex;align-items:center;gap:10px}.icon-btn{width:42px;height:42px;border:1px solid var(--border);border-radius:11px;background:var(--surface);color:var(--text);display:grid;place-items:center;cursor:pointer}.icon-btn:hover{background:var(--surface-2)}.icon-btn:focus-visible,.nav-item:focus-visible,.quick-links button:focus-visible,.search input:focus-visible{outline:3px solid color-mix(in srgb,var(--primary) 35%,transparent);outline-offset:2px}.icon-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.breadcrumb{min-width:0}.breadcrumb small,.breadcrumb strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.breadcrumb small{font-size:11px;color:var(--muted)}.breadcrumb strong{font-size:15px}.font-btn{font-weight:700}.mobile-only{display:none}.content{overflow-y:auto;scroll-behavior:smooth}.content-inner{max-width:1220px;margin:0 auto;padding:32px 38px 60px}.page{display:none;animation:pageIn .18s ease}.page.active{display:block}@keyframes pageIn{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border)}.page-header h1{font-size:clamp(25px,3vw,36px);line-height:1.25;margin:3px 0 8px;letter-spacing:-.02em}.lead{max-width:820px;color:var(--muted);margin:0;font-size:1.03em}.eyebrow{font-size:11px;font-weight:800;letter-spacing:.13em;color:var(--primary)}.section-number{font-size:56px;font-weight:800;line-height:1;color:color-mix(in srgb,var(--primary) 20%,transparent);font-variant-numeric:tabular-nums}.compact-hero{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:26px;box-shadow:var(--shadow)}.hero-status{min-width:165px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px}.hero-status span,.hero-status strong,.hero-status small{display:block}.hero-status span,.hero-status small{color:var(--muted);font-size:12px}.hero-status strong{font-size:21px;color:var(--success)}.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}.badge{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;background:var(--primary-soft);color:var(--primary);font-size:12px;font-weight:700}.badge.success{background:var(--success-soft);color:var(--success)}.badge.neutral{background:var(--surface-2);color:var(--muted);border:1px solid var(--border)}.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:18px 0}.metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:18px}.metric strong{display:block;font-size:28px;line-height:1.2;color:var(--primary)}.metric span{font-size:13px;color:var(--muted)}.content-grid{display:grid;gap:16px;margin:16px 0}.content-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:21px;box-shadow:var(--shadow)}.card h2{font-size:18px;margin:0 0 12px}.card ul{margin-bottom:0}.authority{display:grid;grid-template-columns:120px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--border);font-size:13px}.authority:first-of-type{border-top:0}.authority.safe strong{color:var(--success)}.authority.caution strong{color:var(--warning)}.authority.danger strong{color:var(--danger)}.flow{display:flex;align-items:center;gap:10px;overflow-x:auto;padding:4px 0}.flow span{border:1px solid var(--border);border-radius:10px;background:var(--surface-2);padding:10px 14px;white-space:nowrap;font-size:13px}.flow b{color:var(--primary)}.quick-links{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.quick-links button{min-height:44px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);color:var(--text);cursor:pointer;text-align:left;padding:9px 12px}.quick-links button:hover{border-color:var(--primary);color:var(--primary)}.prose{max-width:960px}.prose h2,.prose h3,.prose h4{line-height:1.35;scroll-margin-top:20px}.prose h3{font-size:21px;margin:30px 0 10px}.prose h4{font-size:17px;margin:22px 0 8px}.prose p{max-width:840px}.prose a{color:var(--primary);text-underline-offset:3px}.prose ul,.prose ol{padding-left:1.5em;max-width:880px}.prose li{margin:.3em 0}.prose hr{border:0;border-top:1px solid var(--border);margin:28px 0}.prose code:not(pre code){font-family:"Cascadia Code","SFMono-Regular",Consolas,monospace;background:var(--primary-soft);color:var(--primary);padding:.12em .38em;border-radius:5px;font-size:.88em}.callout,.prose blockquote{margin:18px 0;padding:16px 18px;border:1px solid color-mix(in srgb,var(--primary) 30%,var(--border));border-radius:var(--radius-md);background:var(--primary-soft);color:var(--text)}.callout p,.prose blockquote p{margin:0}.callout.warning{background:var(--warning-soft);border-color:color-mix(in srgb,var(--warning) 35%,var(--border));margin-top:18px}.callout.warning strong{color:var(--warning)}.table-wrap{width:100%;overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius-md);margin:18px 0}.prose table{width:100%;border-collapse:collapse;min-width:620px;background:var(--surface)}.prose th,.prose td{padding:11px 13px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}.prose th{background:var(--surface-2);font-size:13px}.prose tr:last-child td{border-bottom:0}.code-block{margin:18px 0;border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;background:var(--code)}.code-header{height:40px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;background:color-mix(in srgb,var(--code) 85%,white);color:#adc0d4;font:12px/1 "Cascadia Code",Consolas,monospace;border-bottom:1px solid rgba(255,255,255,.1)}.copy-btn{border:1px solid rgba(255,255,255,.18);border-radius:7px;background:rgba(255,255,255,.06);color:#dbe8f4;padding:5px 9px;cursor:pointer}.copy-btn:hover{background:rgba(255,255,255,.12)}pre{margin:0;padding:17px 18px;overflow-x:auto;color:var(--code-text);font:13px/1.6 "Cascadia Code","SFMono-Regular",Consolas,monospace;tab-size:2;white-space:pre}pre code{font:inherit}.page-next{max-width:960px;margin-top:28px;padding-top:18px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:12px}.page-next button{border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);padding:9px 12px;cursor:pointer}.page-next button:hover{border-color:var(--primary);color:var(--primary)}.overlay{display:none}.no-results{padding:18px;color:var(--sidebar-muted);font-size:13px}.search-highlight{outline:2px solid var(--warning);outline-offset:3px}@media(max-width:960px){body{overflow:hidden}.app{display:block}.sidebar{position:fixed;left:0;top:0;width:min(86vw,310px);transform:translateX(-105%);transition:transform .2s ease;box-shadow:10px 0 30px rgba(0,0,0,.25)}.app.mobile-open .sidebar{transform:none}.app.collapsed .brand-text,.app.collapsed .search-wrap,.app.collapsed .nav-group-title,.app.collapsed .nav-label,.app.collapsed .sidebar-meta{display:block}.app.collapsed .brand{padding:0 20px;justify-content:flex-start}.app.collapsed .nav-item{justify-content:flex-start;padding:8px 10px}.main{height:100vh}.mobile-only{display:grid}.desktop-collapse{display:none}.overlay{display:block;position:fixed;inset:0;background:rgba(5,12,20,.5);z-index:25;opacity:0;pointer-events:none;transition:opacity .2s}.app.mobile-open .overlay{opacity:1;pointer-events:auto}.content-inner{padding:24px 22px 50px}.metric-grid{grid-template-columns:repeat(2,1fr)}.content-grid.two{grid-template-columns:1fr}.quick-links{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.topbar{padding:0 12px}.top-actions{gap:6px}.icon-btn{width:40px;height:40px}.breadcrumb small{display:none}.content-inner{padding:20px 14px 42px}.page-header{gap:12px}.page-header h1{font-size:25px}.section-number{font-size:38px}.compact-hero{padding:20px;display:block}.hero-status{margin-top:18px}.metric-grid{gap:10px}.metric{padding:14px}.content-grid,.card{margin-top:12px}.card{padding:17px}.quick-links{grid-template-columns:1fr}.authority{grid-template-columns:1fr;gap:1px}.flow{padding-bottom:8px}.page-next{flex-direction:column}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}@media print{body{overflow:visible;background:#fff;color:#111;font-size:12pt}.app{display:block}.sidebar,.topbar,.overlay,.page-next,.copy-btn{display:none!important}.main,.content{display:block;height:auto;overflow:visible}.content-inner{max-width:none;padding:0}.page{display:block!important;page-break-after:auto;margin-bottom:24px;animation:none}.page-header{break-after:avoid}.compact-hero,.card,.metric,.code-block,.table-wrap,.callout{box-shadow:none;break-inside:avoid}.prose{max-width:none}.prose p{max-width:none}pre{white-space:pre-wrap;color:#111;background:#f4f4f4}.code-header{color:#333;background:#eee}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+<aside aria-label="สารบัญคู่มือ" class="sidebar">
+<div class="brand"><div class="brand-mark"><svg viewbox="0 0 24 24"><path d="M4 4h6a3 3 0 0 1 3 3v13a4 4 0 0 0-4-4H4z"></path><path d="M20 4h-6a3 3 0 0 0-3 3v13a4 4 0 0 1 4-4h5z"></path></svg></div><div class="brand-text"><strong>Library Agent Blueprint</strong><small>Interactive Reference Manual</small></div></div>
+<div class="search-wrap"><div class="search"><svg viewbox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><input aria-label="ค้นหาในคู่มือ" id="searchInput" placeholder="ค้นหาหัวข้อ..." type="search"/></div></div>
+<nav class="nav-scroll" id="sidebarNav"><div class="nav-group"><div class="nav-group-title">ภาพรวม</div><button class="nav-item" data-page="overview" data-search="ภาพรวม" type="button"><span class="nav-icon"><svg viewbox="0 0 24 24"><rect height="7" width="7" x="3" y="3"></rect><rect height="7" width="7" x="14" y="3"></rect><rect height="7" width="7" x="3" y="14"></rect><rect height="7" width="7" x="14" y="14"></rect></svg></span><span class="nav-label">ภาพรวม</span></button><button class="nav-item" data-page="purpose" data-search="1. จุดประสงค์" type="button"><span class="nav-icon"><svg viewbox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="4"></circle><path d="m15 9 5-5"></path></svg></span><span class="nav-label">1. จุดประสงค์</span></button><button class="nav-item" data-page="principles" data-search="2. แนวคิดหลัก" type="button"><span class="nav-icon"><svg viewbox="0 0 24 24"><path d="M12 3 4 7v5c0 5 3.5 8 8 9 4.5-1 8-4 8-9V7z"></path><path d="m9 12 2 2 4-4"></path></svg></span><span class="nav-label">2. แนวคิดหลัก</span></button><button class="nav-item" data-page="architecture" data-search="3. สถาปัตยกรรมระบบ" type="button"><span class="nav-icon"><svg viewbox="0 0 24 24"><rect height="5" width="8" x="8" y="3"></rect><rect height="5" width="7" x="3" y="16"></rect><rect height="5" width="7" x="14" y="16"></rect><path d="M12 8v4M6.5 16v-4h11v4"></path></svg></span><span class="nav-label">3. สถาปัตยกรรมระบบ</span></button></div><div class="nav-group"><div class="nav-group-title">โครงสร้างและการตั้งค่า</div><button class="nav-item" data-page="project-structure" data-search="4. โครงสร้าง Project ที่แนะนำ" type="button"><span class="nav-icon"><svg viewbox="0 0 24 24"><path d="M3 6h7l2 2h9v11H3z"></path></svg></span><span class="nav-label">4. โครงสร้าง Project ที่แนะนำ</span></button><button class="nav-item" data-page="documents" data-search="5. เอกสารสำคัญ" type="button"><span class="nav-icon"><svg viewbox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"></path><path d="M15 3v5h4M9 12h6M9 16h6"></path></svg></span><span class="nav-label">5. เอกสารสำคัญ</span></button><button class="nav-item" data-page="profile-setup" data-search="6. การสร้าง Profile" type="button"><span class="nav-icon"><svg viewbox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1-5 4-7 8-7s7 2 8 7"></path></svg></span><span class="nav-label">6. การสร้าง Profile</span></button><button class="nav-item" data-page="skills" data-search="7. การเลือก Skills" type="button"><span class="nav-icon"><svg viewbox="0 0 24 24"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4"></path><circle cx="12" cy="12" r="4"></circle></svg></span><span class="nav-label">7. การเลือก Skills</span></button></div><div class="nav-group"><div class="nav-group-title">ระบบเชื่อมต่อ</div><button class="nav-item" data-page="telegram" data-search="8. Telegram Bot แยก" type="button"><span class="nav-icon"><svg viewbox="0 0 24 24"><path d="m3 11 18-8-6 18-4-7zM11 14l4-4"></path></svg></span><span class="nav-label">8. Telegram Bot แยก</span></button><button class="nav-item" data-page="google-oauth" data-search="9. Google OAuth แยก" type="button"><span class="nav-icon"><svg viewbox="0 0 24 24"><rect height="11" rx="2" width="16" x="4" y="10"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"></path></svg></span><span class="nav-label">9. Google OAuth แยก</span></button><button class="nav-item" data-page="git-mirrors" data-search="10. Git Public และ Private Mirror" type="button"><span class="nav-icon"><svg viewbox="0 0 24 24"><circle cx="6" cy="5" r="2"></circle><circle cx="18" cy="19" r="2"></circle><circle cx="6" cy="19" r="2"></circle><path d="M6 7v10M8 7c7 0 3 10 8 10"></path></svg></span><span class="nav-label">10. Git Public และ Private Mirror</span></button><button class="nav-item" data-page="drive-registry" data-search="11. Google Drive Document Registry" type="button"><span class="nav-icon"><svg viewbox="0 0 24 24"><path d="m8 3-5 9 5 9h8l5-9-5-9z"></path><path d="m8 3 8 18M3 12h18"></path></svg></span><span class="nav-label">11. Google Drive Document Registry</span></button></div><div class="nav-group"><div class="nav-group-title">การปฏิบัติงาน</div><button class="nav-item" data-page="operating-workflow" data-search="12. Agent Operating Workflow" type="button"><span class="nav-icon"><svg viewbox="0 0 24 24"><path d="M4 6h10M4 12h16M4 18h10"></path><path d="m16 4 4 2-4 2M16 16l4 2-4 2"></path></svg></span><span class="nav-label">12. Agent Operating Workflow</span></button><button class="nav-item" data-page="examples" data-search="13. ตัวอย่างการใช้งาน" type="button"><span class="nav-icon"><svg viewbox="0 0 24 24"><path d="m8 9-4 3 4 3M16 9l4 3-4 3M14 5l-4 14"></path></svg></span><span class="nav-label">13. ตัวอย่างการใช้งาน</span></button><button class="nav-item" data-page="verification" data-search="14. Verification Checklist" type="button"><span class="nav-icon"><svg viewbox="0 0 24 24"><path d="M5 3h14v18H5z"></path><path d="m8 8 2 2 4-4M8 14h8M8 18h6"></path></svg></span><span class="nav-label">14. Verification Checklist</span></button><button class="nav-item" data-page="benefits" data-search="15. ประโยชน์" type="button"><span class="nav-icon"><svg viewbox="0 0 24 24"><path d="M12 3v18M5 8l7-5 7 5M5 16l7 5 7-5"></path><path d="M5 8v8M19 8v8"></path></svg></span><span class="nav-label">15. ประโยชน์</span></button></div><div class="nav-group"><div class="nav-group-title">อ้างอิง</div><button class="nav-item" data-page="limitations" data-search="16. ข้อจำกัดและสิ่งที่ต้องระวัง" type="button"><span class="nav-icon"><svg viewbox="0 0 24 24"><path d="m12 3 10 18H2z"></path><path d="M12 9v5M12 18h.01"></path></svg></span><span class="nav-label">16. ข้อจำกัดและสิ่งที่ต้องระวัง</span></button><button class="nav-item" data-page="portable-prompt" data-search="17. Portable Master Prompt" type="button"><span class="nav-icon"><svg viewbox="0 0 24 24"><rect height="16" rx="2" width="18" x="3" y="4"></rect><path d="m7 9 3 3-3 3M13 15h4"></path></svg></span><span class="nav-label">17. Portable Master Prompt</span></button><button class="nav-item" data-page="summary" data-search="18. บทสรุป" type="button"><span class="nav-icon"><svg viewbox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"></path><circle cx="7" cy="5" r="2"></circle><circle cx="15" cy="12" r="2"></circle><circle cx="10" cy="19" r="2"></circle></svg></span><span class="nav-label">18. บทสรุป</span></button></div></nav>
+<div class="sidebar-meta"><strong>Version 1.0 · Active</strong>Public-safe Blueprint · 23 ส.ค. 2026</div>
+</aside>
+<div aria-hidden="true" class="overlay" id="overlay"></div>
+<main class="main">
+<header class="topbar">
+<div class="top-left">
+<button aria-label="ย่อหรือขยาย Sidebar" class="icon-btn desktop-collapse" id="collapseBtn"><svg viewbox="0 0 24 24"><path d="M4 4h16v16H4zM9 4v16M14 9l-3 3 3 3"></path></svg></button>
+<button aria-label="เปิดเมนู" class="icon-btn mobile-only" id="menuBtn"><svg viewbox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+<div class="breadcrumb"><small id="currentCategory">ภาพรวม</small><strong id="currentTitle">ภาพรวม</strong></div>
+</div>
+<div class="top-actions">
+<button aria-label="ลดขนาดตัวอักษร" class="icon-btn font-btn" id="fontDown">A−</button>
+<button aria-label="เพิ่มขนาดตัวอักษร" class="icon-btn font-btn" id="fontUp">A+</button>
+<button aria-label="สลับโหมดมืดและสว่าง" class="icon-btn" id="themeBtn"><svg class="moon" viewbox="0 0 24 24"><path d="M20 15a8 8 0 1 1-11-11 8.5 8.5 0 0 0 11 11z"></path></svg></button>
+</div>
+</header>
+<div class="content" id="content"><div class="content-inner">
+<section class="page active" data-category="ภาพรวม" data-title="ภาพรวม" id="page-overview">
+<div class="page-header compact-hero">
+<div>
+<div class="eyebrow">DEDICATED AI AGENT BLUEPRINT</div>
+<h1>Dedicated Library AI Agent Profile</h1>
+<p class="lead">คู่มือออกแบบ AI Agent แบบแยก Profile สำหรับดูแลเว็บไซต์ห้องสมุดความรู้ คู่มือ HTML หนังสือเสียง เอกสารโครงการ และกระบวนการเผยแพร่</p>
+<div class="badges"><span class="badge success">Public-safe</span><span class="badge">Version 1.0</span><span class="badge neutral">ภาษาไทย</span></div>
+</div>
+<div aria-label="สถานะเอกสาร" class="hero-status"><span>สถานะ</span><strong>Active</strong><small>อัปเดต 23 ส.ค. 2026</small></div>
+</div>
+<div class="metric-grid">
+<article class="metric"><strong>1</strong><span>Profile ต่อ Project</span></article>
+<article class="metric"><strong>3</strong><span>ระดับอำนาจ Agent</span></article>
+<article class="metric"><strong>0</strong><span>Cron เริ่มต้น</span></article>
+<article class="metric"><strong>18</strong><span>หมวดอ้างอิง</span></article>
+</div>
+<div class="content-grid two">
+<article class="card"><h2>หลักคิดสำคัญ</h2><ul><li>Profile คือขอบเขตของ Identity, Context, Skills และ Credentials</li><li>Project documents ใช้แทน Persistent memory</li><li>หนึ่งข้อมูลมี Source of truth เพียงแห่งเดียว</li><li>เริ่มแบบ Manual-first ก่อนเปิด Automation</li></ul></article>
+<article class="card"><h2>Approval contract</h2><div class="authority safe"><strong>ทำเองได้</strong><span>อ่าน แก้ Working tree สร้าง Preview ทดสอบ และ Sync เอกสารที่อนุมัติ</span></div><div class="authority caution"><strong>รายงานก่อนทำ</strong><span>เปลี่ยน Schema, Sorting, Architecture หรือ Rename Public content</span></div><div class="authority danger"><strong>อนุมัติชัดเจน</strong><span>Push/Publish, Delete, Permission, Credentials, Cron และ Memory</span></div></article>
+</div>
+<article class="card architecture-card"><h2>สถาปัตยกรรมย่อ</h2><div class="flow"><span>User</span><b>→</b><span>Telegram Bot</span><b>→</b><span>Dedicated Profile</span><b>→</b><span>Library Agent</span><b>→</b><span>Git · Drive · Catalogs</span></div></article>
+<article class="card"><h2>Quick navigation</h2><div class="quick-links"><button data-jump="profile-setup">สร้าง Profile</button><button data-jump="telegram">ตั้งค่า Telegram</button><button data-jump="google-oauth">เชื่อม Google OAuth</button><button data-jump="operating-workflow">Operating Workflow</button><button data-jump="verification">Verification Checklist</button><button data-jump="portable-prompt">Portable Master Prompt</button></div></article>
+<div class="callout warning"><strong>หลักควบคุมการเผยแพร่</strong><p>Public push และ Publish ต้องได้รับอนุมัติชัดเจนจากผู้ใช้เสมอ ส่วนไฟล์ Public ต้องผ่าน Pre-share scan ก่อนเผยแพร่</p></div>
+</section>
+<section class="page" data-category="ภาพรวม" data-title="1. จุดประสงค์" id="page-purpose">
+<header class="page-header"><div><div class="eyebrow">SECTION 01</div><h1>จุดประสงค์</h1><p class="lead">เหตุผล เป้าหมาย และปัญหาที่ Profile แบบแยกช่วยแก้ไข</p></div><span class="section-number">01</span></header>
+<div class="prose"><p>เมื่อโครงการหนึ่งมี Website, Source files, Catalog, Covers, Documentation, Git repositories, Cloud documents และงานดูแลต่อเนื่อง การใช้ AI Agent ตัวเดียวกับงานทุกประเภทมักทำให้เกิดปัญหา</p>
+<ul>
+<li>Context ของหลายโครงการปะปนกัน</li>
+<li>Agent อาจเลือก Tool หรือ Skill ที่ไม่เกี่ยวข้อง</li>
+<li>Memory อาจเก็บข้อมูลที่ล้าสมัยหรือข้ามขอบเขต</li>
+<li>Credentials และสิทธิ์เข้าถึงกว้างเกินความจำเป็น</li>
+<li>การสั่ง Publish หรือ Delete อาจกระทบระบบอื่น</li>
+<li>Session ใหม่ต้องใช้เวลาค้นหาว่าไฟล์ใดเป็น Source of truth</li>
+</ul>
+<p>แนวทางที่เหมาะสมคือสร้าง<strong>Dedicated AI Agent Profile</strong> แยกสำหรับโครงการ Library โดยเฉพาะ</p>
+<p>เป้าหมายหลักของ Profile นี้คือ</p>
+<ol>
+<li>แยก Identity, Context, Skills, Credentials, Sessions และ Gateway ออกจาก Agent อื่น</li>
+<li>ให้ Agent เข้าใจ Project จากเอกสารที่ตรวจสอบย้อนกลับได้ แทนการพึ่ง Memory</li>
+<li>ให้ Agent ทำงาน Routine ที่ปลอดภัยได้เอง แต่ให้มนุษย์ควบคุม Public และ Destructive actions</li>
+<li>ทำให้การเพิ่มหนังสือ สร้างปก ตรวจเว็บไซต์ และ Publish เป็น Workflow ที่ทำซ้ำได้</li>
+<li>ทำให้ Project สามารถย้ายไปยังเครื่องหรือระบบ AI อื่นได้โดยมี Blueprint และ Runbooks ชัดเจน</li>
+</ol>
+<hr/></div>
+<nav aria-label="หัวข้อที่เกี่ยวข้อง" class="page-next"></nav>
+</section>
+<section class="page" data-category="ภาพรวม" data-title="2. แนวคิดหลัก" id="page-principles">
+<header class="page-header"><div><div class="eyebrow">SECTION 02</div><h1>แนวคิดหลัก</h1><p class="lead">หลักคิดสำหรับขอบเขต ความรู้ Source of truth และ Human approval</p></div><span class="section-number">02</span></header>
+<div class="prose"><h3 class="content-heading">2.1 Profile คือขอบเขต ไม่ใช่แค่ชื่อ Agent</h3>
+<p>Profile ควรเป็นขอบเขตของ</p>
+<ul>
+<li>Model และ Provider</li>
+<li>System persona หรือ<code>SOUL.md</code></li>
+<li>Skills</li>
+<li>Sessions</li>
+<li>Memory policy</li>
+<li>Cron policy</li>
+<li>Messaging credentials</li>
+<li>Google OAuth</li>
+<li>Working directory</li>
+<li>Gateway service</li>
+</ul>
+<p>ส่วน Agent คือบทบาทที่ทำงานอยู่ภายใน Profile</p>
+<pre><code class="language-text">Profile: &lt;PROFILE_NAME&gt;
+└── Agent: &lt;AGENT_NAME&gt;
+</code></pre>
+<p>ไม่ควรสร้างหลาย Profile หากมี Agent หลักเพียงตัวเดียวที่ดูแล Project เดียวกัน เพราะจะทำให้ Catalog, Credentials และ Documentation แยกเป็นหลายชุดโดยไม่จำเป็น</p>
+<h3 class="content-heading">2.2 Project documents แทน Persistent memory</h3>
+<p>สำหรับโครงการที่มี Git และเอกสาร Agent ไม่จำเป็นต้องใช้ Persistent memory เสมอไป</p>
+<p>การใช้<code>PROJECT.md</code>,<code>AGENTS.md</code>, Wiki index, Decisions, Runbooks และ Session handoff มีข้อดีกว่า</p>
+<ul>
+<li>Review ได้</li>
+<li>Version control ได้</li>
+<li>แก้ไขและย้อนกลับได้</li>
+<li>ระบุ Source ได้</li>
+<li>ไม่หายจาก Context compression</li>
+<li>ย้ายไปให้ AI ระบบอื่นอ่านต่อได้</li>
+</ul>
+<p>Memory ควรปิดหรือใช้เฉพาะ Routing facts ที่สั้นมากเท่านั้น</p>
+<h3 class="content-heading">2.3 หนึ่งข้อมูลมี Source of truth เพียงแห่งเดียว</h3>
+<p>ตัวอย่างการแบ่ง Source of truth</p>
+<div class="table-wrap" tabindex="0"><table>
+<thead>
+<tr>
+<th>ข้อมูล</th>
+<th>Source of truth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Website code</td>
+<td>Git repository</td>
+</tr>
+<tr>
+<td>Reading catalog</td>
+<td><code>data/books.json</code></td>
+</tr>
+<tr>
+<td>Audio catalog</td>
+<td><code>data/audio-books.json</code></td>
+</tr>
+<tr>
+<td>Public covers</td>
+<td>Git repository</td>
+</tr>
+<tr>
+<td>Architecture/Decisions/Runbooks</td>
+<td>Markdown Wiki</td>
+</tr>
+<tr>
+<td>User-facing project documents</td>
+<td>Google Drive mirror</td>
+</tr>
+<tr>
+<td>Deployment history</td>
+<td>Git history</td>
+</tr>
+<tr>
+<td>Session continuity</td>
+<td>Handoff document</td>
+</tr>
+<tr>
+<td>Disaster recovery</td>
+<td>Profile export/backup system</td>
+</tr>
+</tbody>
+</table></div>
+<p>ไม่ควรสร้าง YAML หรือ Spreadsheet ซ้ำกับ JSON Catalog เพราะจะเกิด Source of truth สองแห่ง</p>
+<h3 class="content-heading">2.4 Manual-first ก่อน Automation</h3>
+<p>ในระยะแรกควรให้ Agent ทำงานเมื่อได้รับคำสั่ง</p>
+<ul>
+<li>เพิ่ม Content</li>
+<li>ตรวจเว็บไซต์</li>
+<li>สร้างปก</li>
+<li>Sync เอกสาร</li>
+<li>เตรียม Publish</li>
+</ul>
+<p>ยังไม่ควรเปิด Cron หรือ Auto-publish จนกว่าจะมี Workflow ที่นิ่ง มี Test และมี Rollback ชัดเจน</p>
+<h3 class="content-heading">2.5 Human approval สำหรับ Public และ Destructive actions</h3>
+<p>Agent ควรแบ่งอำนาจเป็นสามระดับ</p>
+<h4 class="content-heading">ทำเองได้</h4>
+<ul>
+<li>อ่านและวิเคราะห์ไฟล์</li>
+<li>แก้ Working tree</li>
+<li>อัปเดต Catalog และ Wiki</li>
+<li>สร้างปกและ Generated pages</li>
+<li>รัน Tests และ Local preview</li>
+<li>ตรวจ Privacy และ Broken links</li>
+<li>Sync เอกสาร Private ไปยัง Folder ที่กำหนด</li>
+</ul>
+<h4 class="content-heading">ต้องรายงานก่อนทำ</h4>
+<ul>
+<li>เปลี่ยน Schema</li>
+<li>เปลี่ยน Sorting policy</li>
+<li>Rename Public content</li>
+<li>เปลี่ยน Architecture หรือ Folder structure</li>
+<li>Commit การเปลี่ยนแปลงขนาดใหญ่</li>
+</ul>
+<h4 class="content-heading">ต้องได้รับอนุมัติชัดเจน</h4>
+<ul>
+<li>Push Public repository</li>
+<li>Publish Website</li>
+<li>Delete หรือ Trash ไฟล์</li>
+<li>เปลี่ยน Drive permissions</li>
+<li>Force-push หรือ Rewrite history</li>
+<li>เปลี่ยน Credentials</li>
+<li>เปิด Cron, Memory หรือ Group access</li>
+</ul>
+<hr/></div>
+<nav aria-label="หัวข้อที่เกี่ยวข้อง" class="page-next"></nav>
+</section>
+<section class="page" data-category="ภาพรวม" data-title="3. สถาปัตยกรรมระบบ" id="page-architecture">
+<header class="page-header"><div><div class="eyebrow">SECTION 03</div><h1>สถาปัตยกรรมระบบ</h1><p class="lead">บทบาทของ Local Project, Git, Drive และ Telegram</p></div><span class="section-number">03</span></header>
+<div class="prose"><pre><code class="language-text">User
+  │
+  ▼
+Dedicated Telegram Bot
+  │
+  ▼
+Hermes Profile: &lt;PROFILE_NAME&gt;
+  │
+  └── Agent: &lt;AGENT_NAME&gt;
+        │
+        ├── Project repository
+        ├── Reading catalog
+        ├── Audio catalog
+        ├── Cover assets
+        ├── Project Wiki / Runbooks
+        ├── Public Git repository
+        ├── Private Git mirror
+        └── Google Drive project folder
+</code></pre>
+<h3 class="content-heading">หน้าที่ของแต่ละระบบ</h3>
+<h4 class="content-heading">Local Project</h4>
+<ul>
+<li>Working tree</li>
+<li>Catalog และ Source files</li>
+<li>Generators และ Tests</li>
+<li>Agent-readable Wiki</li>
+<li>Private local registry</li>
+</ul>
+<h4 class="content-heading">Public Git</h4>
+<ul>
+<li>Website code</li>
+<li>Public Catalog</li>
+<li>Public-safe Covers</li>
+<li>Tests</li>
+<li>Public Architecture, Decisions และ Runbooks</li>
+</ul>
+<h4 class="content-heading">Private Git mirror</h4>
+<ul>
+<li>Mirror ของ Committed Git history</li>
+<li>ใช้เป็น Redundant backup</li>
+<li>ไม่ควรใช้แทน Profile backup หรือ Credential backup</li>
+</ul>
+<h4 class="content-heading">Google Drive</h4>
+<ul>
+<li>Project overview</li>
+<li>Private Architecture notes</li>
+<li>Decisions และ Runbooks สำหรับคนอ่าน</li>
+<li>Session handoffs</li>
+<li>Incident reports</li>
+<li>Private references</li>
+</ul>
+<h4 class="content-heading">Telegram Bot</h4>
+<ul>
+<li>ช่องทางรับคำสั่งและไฟล์</li>
+<li>แยก Session จาก Agent อื่น</li>
+<li>DM-only และ Allowlist เฉพาะผู้ใช้ที่กำหนด</li>
+<li>ใช้ Bot Token แยกจาก Profile อื่น</li>
+</ul>
+<hr/></div>
+<nav aria-label="หัวข้อที่เกี่ยวข้อง" class="page-next"></nav>
+</section>
+<section class="page" data-category="โครงสร้างและการตั้งค่า" data-title="4. โครงสร้าง Project ที่แนะนำ" id="page-project-structure">
+<header class="page-header"><div><div class="eyebrow">SECTION 04</div><h1>โครงสร้าง Project ที่แนะนำ</h1><p class="lead">โครงสร้างไฟล์ที่แนะนำสำหรับงาน Library ที่ดูแลต่อเนื่อง</p></div><span class="section-number">04</span></header>
+<div class="prose"><pre><code class="language-text">&lt;PROJECT_PATH&gt;/
+├── AGENTS.md
+├── PROJECT.md
+├── README.md
+├── data/
+│   ├── books.json
+│   └── audio-books.json
+├── docs/
+│   ├── SESSION_HANDOFF.md
+│   └── wiki/
+│       ├── SCHEMA.md
+│       ├── index.md
+│       ├── log.md
+│       ├── architecture/
+│       ├── decisions/
+│       ├── runbooks/
+│       └── incidents/
+├── _meta/
+│   ├── document-registry.json
+│   └── sync-manifest.json
+├── assets/
+├── scripts/
+├── templates/
+└── tests/
+</code></pre>
+<p>Private local files สามารถเก็บไว้ใต้<code>.hermes/</code> และต้องไม่ Commit เข้า Public repository</p>
+<pre><code class="language-text">.hermes/
+├── project-links.json
+├── document-registry.json
+├── private-references/
+└── working-notes/
+</code></pre>
+<hr/></div>
+<nav aria-label="หัวข้อที่เกี่ยวข้อง" class="page-next"></nav>
+</section>
+<section class="page" data-category="โครงสร้างและการตั้งค่า" data-title="5. เอกสารสำคัญ" id="page-documents">
+<header class="page-header"><div><div class="eyebrow">SECTION 05</div><h1>เอกสารสำคัญ</h1><p class="lead">เอกสารแกนหลักที่ทำให้ Agent เริ่มงานต่อได้อย่างตรวจสอบย้อนกลับได้</p></div><span class="section-number">05</span></header>
+<div class="prose"><h3 class="content-heading"><code>AGENTS.md</code></h3>
+<p>ใช้กำหนด</p>
+<ul>
+<li>Agent identity</li>
+<li>ลำดับการอ่านเอกสาร</li>
+<li>Source of truth</li>
+<li>สิ่งที่ Agent ทำเองได้</li>
+<li>Approval gates</li>
+<li>Verification commands</li>
+<li>Privacy rules</li>
+</ul>
+<h3 class="content-heading"><code>PROJECT.md</code></h3>
+<p>ใช้สรุป</p>
+<ul>
+<li>เป้าหมาย Project</li>
+<li>ระบบภายนอกที่เชื่อมต่อ</li>
+<li>Collections และ Content policy</li>
+<li>Knowledge system</li>
+<li>Resume phrase</li>
+</ul>
+<h3 class="content-heading"><code>SCHEMA.md</code></h3>
+<p>ควรกำหนด Frontmatter เช่น</p>
+<pre><code class="language-yaml">---
+title: &lt;DOCUMENT_TITLE&gt;
+type: architecture | runbook | decision | incident | meta
+status: draft | active | superseded | archived
+visibility: public | private | confidential
+created: YYYY-MM-DD
+updated: YYYY-MM-DD
+sources:
+  - &lt;SOURCE_FILE_OR_URL&gt;
+tags:
+  - &lt;TAG&gt;
+---
+</code></pre>
+<h3 class="content-heading"><code>index.md</code></h3>
+<p>เป็น Knowledge map ที่ Agent ใช้ค้น Topic ที่เกี่ยวข้อง โดยไม่ต้องอ่านทุกไฟล์</p>
+<h3 class="content-heading"><code>log.md</code></h3>
+<p>เป็น Append-only durable change log ใช้อธิบายว่าเกิดการเปลี่ยนแปลงสำคัญอะไรและเพราะเหตุใด</p>
+<h3 class="content-heading">Runbooks</h3>
+<p>ควรมีอย่างน้อย</p>
+<ul>
+<li>Add a reading book</li>
+<li>Add an audio book</li>
+<li>Generate a cover</li>
+<li>Verify the site</li>
+<li>Publish the site</li>
+<li>Sync Drive documents</li>
+<li>Close/resume session</li>
+<li>Restore the project</li>
+</ul>
+<hr/></div>
+<nav aria-label="หัวข้อที่เกี่ยวข้อง" class="page-next"></nav>
+</section>
+<section class="page" data-category="โครงสร้างและการตั้งค่า" data-title="6. การสร้าง Profile" id="page-profile-setup">
+<header class="page-header"><div><div class="eyebrow">SECTION 06</div><h1>การสร้าง Profile</h1><p class="lead">ขั้นตอนสร้าง Profile สะอาดและกำหนดนโยบายพื้นฐาน</p></div><span class="section-number">06</span></header>
+<div class="prose"><blockquote class="callout callout-info">
+<p>คำสั่งเป็นตัวอย่าง ให้ตรวจ Version และ Help ของระบบก่อนใช้งาน</p>
+</blockquote>
+<h3 class="content-heading">6.1 สร้าง Profile แบบสะอาด</h3>
+<pre><code class="language-bash">hermes profile create &lt;PROFILE_NAME&gt; --no-skills \
+  --description "Dedicated agent for &lt;PROJECT_NAME&gt;"
+</code></pre>
+<p>ไม่ควร Clone<code>.env</code>, OAuth token, Telegram token, Memory หรือ Cron จาก Profile อื่นโดยอัตโนมัติ</p>
+<h3 class="content-heading">6.2 ตั้งค่า Model และ Working directory</h3>
+<pre><code class="language-bash">hermes -p &lt;PROFILE_NAME&gt; config set model.default &lt;MODEL_ID&gt;
+hermes -p &lt;PROFILE_NAME&gt; config set model.provider &lt;PROVIDER&gt;
+hermes -p &lt;PROFILE_NAME&gt; config set terminal.cwd &lt;PROJECT_PATH&gt;
+hermes -p &lt;PROFILE_NAME&gt; config set approvals.mode smart
+</code></pre>
+<h3 class="content-heading">6.3 ปิด Memory</h3>
+<pre><code class="language-bash">hermes -p &lt;PROFILE_NAME&gt; config set memory.memory_enabled false
+hermes -p &lt;PROFILE_NAME&gt; config set memory.user_profile_enabled false
+</code></pre>
+<h3 class="content-heading">6.4 ตรวจ Cron</h3>
+<pre><code class="language-bash">hermes -p &lt;PROFILE_NAME&gt; cron list --all
+</code></pre>
+<p>ผลที่ต้องการในระยะแรกคือไม่มี Scheduled jobs</p>
+<h3 class="content-heading">6.5 สร้าง Agent persona</h3>
+<p>เขียน Profile<code>SOUL.md</code> ให้มี</p>
+<ul>
+<li>ชื่อ Agent</li>
+<li>Project mission</li>
+<li>Systems ที่เชื่อมต่อ</li>
+<li>Source-of-truth order</li>
+<li>Authority levels</li>
+<li>Session start/close workflow</li>
+<li>Privacy และ Security rules</li>
+</ul>
+<hr/></div>
+<nav aria-label="หัวข้อที่เกี่ยวข้อง" class="page-next"></nav>
+</section>
+<section class="page" data-category="โครงสร้างและการตั้งค่า" data-title="7. การเลือก Skills" id="page-skills">
+<header class="page-header"><div><div class="eyebrow">SECTION 07</div><h1>การเลือก Skills</h1><p class="lead">เลือกเฉพาะความสามารถที่เกี่ยวข้องกับ Project</p></div><span class="section-number">07</span></header>
+<div class="prose"><p>อย่าติดตั้ง Skills ทุกประเภทให้ Dedicated Agent</p>
+<p>ควรเลือกเฉพาะความสามารถที่เกี่ยวข้อง เช่น</p>
+<ul>
+<li>GitHub repository management</li>
+<li>GitHub authentication/workflow</li>
+<li>Static web design</li>
+<li>HTML/CSS/JavaScript verification</li>
+<li>Test-driven development</li>
+<li>Image editing/generation</li>
+<li>Public source/visual reference collection</li>
+<li>YouTube metadata/content workflow</li>
+<li>Google Workspace Drive</li>
+<li>Pre-share scan</li>
+<li>Session handoff</li>
+<li>Project knowledge system</li>
+</ul>
+<p>ไม่ควรให้ Skills ของระบบบัญชี CRM, Email automation, Smart home หรือระบบอื่นที่ไม่เกี่ยวกับ Project</p>
+<hr/></div>
+<nav aria-label="หัวข้อที่เกี่ยวข้อง" class="page-next"></nav>
+</section>
+<section class="page" data-category="ระบบเชื่อมต่อ" data-title="8. Telegram Bot แยก" id="page-telegram">
+<header class="page-header"><div><div class="eyebrow">SECTION 08</div><h1>Telegram Bot แยก</h1><p class="lead">ตั้งค่า Bot แยกแบบ DM-only และป้องกัน Duplicate poller</p></div><span class="section-number">08</span></header>
+<div class="prose"><h3 class="content-heading">8.1 สร้างผ่าน BotFather</h3>
+<p>ขั้นตอนทั่วไป</p>
+<pre><code class="language-text">/newbot
+</code></pre>
+<p>จากนั้นกำหนด</p>
+<ul>
+<li>Display name:<code>&lt;BOT_DISPLAY_NAME&gt;</code></li>
+<li>Username: ต้องลงท้ายด้วย<code>bot</code> หรือ<code>Bot</code> ตามกฎ Telegram</li>
+</ul>
+<p>BotFather จะคืน Token ซึ่งเป็นข้อมูลลับ</p>
+<h3 class="content-heading">8.2 จัดเก็บ Token อย่างปลอดภัย</h3>
+<ul>
+<li>ห้ามส่ง Token ใน Group หรือ Public chat</li>
+<li>ใช้ Hidden prompt ใน Terminal</li>
+<li>Validate ด้วย Telegram<code>getMe</code> ก่อนบันทึก</li>
+<li>บันทึกใน Profile<code>.env</code> เท่านั้น</li>
+<li>ตั้ง Permission เป็น<code>0600</code></li>
+<li>ห้ามพิมพ์ Token กลับใน Output</li>
+</ul>
+<h3 class="content-heading">8.3 Access policy</h3>
+<p>ตัวอย่าง</p>
+<pre><code class="language-text">TELEGRAM_ALLOWED_USERS=&lt;TELEGRAM_USER_ID&gt;
+TELEGRAM_ALLOW_ALL_USERS=false
+TELEGRAM_HOME_CHANNEL=&lt;TELEGRAM_USER_ID&gt;
+</code></pre>
+<p>สำหรับ DM-only ควรเพิ่ม Config</p>
+<pre><code class="language-yaml">platforms:
+  telegram:
+    allowed_chats:
+      - "&lt;NON_MATCHING_GROUP_SENTINEL&gt;"
+    group_allowed_chats: []
+    guest_mode: false
+    require_mention: true
+    observe_unmentioned_group_messages: false
+</code></pre>
+<p>Telegram Bot อาจยังถูกเพิ่มเข้า Group ได้ แต่ Hermes จะไม่ประมวลผล Group messages หากต้องการปิดจาก Telegram โดยสมบูรณ์สามารถตั้ง Group membership ผ่าน BotFather เพิ่มได้</p>
+<h3 class="content-heading">8.4 Foreground test ก่อน Service</h3>
+<pre><code class="language-bash">hermes -p &lt;PROFILE_NAME&gt; gateway run
+</code></pre>
+<p>ตรวจให้เห็น</p>
+<pre><code class="language-text">Active profile: &lt;PROFILE_NAME&gt;
+Telegram connected
+Gateway running with 1 platform
+</code></pre>
+<p>จากนั้นทดสอบ DM เข้าและออกจริง</p>
+<h3 class="content-heading">8.5 Persistent service</h3>
+<p>หยุด Foreground process ก่อน แล้วจึงติดตั้ง Service</p>
+<pre><code class="language-bash">hermes -p &lt;PROFILE_NAME&gt; gateway install
+hermes -p &lt;PROFILE_NAME&gt; gateway start
+hermes -p &lt;PROFILE_NAME&gt; gateway status
+</code></pre>
+<p>ตรวจ</p>
+<ul>
+<li>Service active/running</li>
+<li>Main PID ตรงกับ Profile</li>
+<li>Systemd linger เปิด</li>
+<li>ไม่มี Duplicate poller</li>
+<li>Telegram polling healthy</li>
+<li>Shutdown timeout มากกว่า Agent drain timeout</li>
+</ul>
+<hr/></div>
+<nav aria-label="หัวข้อที่เกี่ยวข้อง" class="page-next"></nav>
+</section>
+<section class="page" data-category="ระบบเชื่อมต่อ" data-title="9. Google OAuth แยก" id="page-google-oauth">
+<header class="page-header"><div><div class="eyebrow">SECTION 09</div><h1>Google OAuth แยก</h1><p class="lead">แยก OAuth ตาม Profile และตรวจสิทธิ์ด้วย Live verification</p></div><span class="section-number">09</span></header>
+<div class="prose"><h3 class="content-heading">หลักการ</h3>
+<ul>
+<li>Copy ได้เฉพาะ OAuth client configuration</li>
+<li>ห้าม Copy<code>google_token.json</code> จาก Profile อื่น</li>
+<li>Authorize ใหม่โดยให้<code>HERMES_HOME</code> ชี้ไปที่ Profile เป้าหมาย</li>
+<li>ตรวจ Account identity หลัง Auth</li>
+<li>ตั้ง Token และ Client Secret เป็น<code>0600</code></li>
+</ul>
+<p>ตัวอย่าง</p>
+<pre><code class="language-bash">export HERMES_HOME="$HOME/.hermes/profiles/&lt;PROFILE_NAME&gt;"
+python &lt;GOOGLE_SETUP_SCRIPT&gt; --check
+python &lt;GOOGLE_SETUP_SCRIPT&gt; --auth-url
+</code></pre>
+<p>หลังอนุญาต Browser อาจ Redirect ไป<code>http://localhost:1</code> และแสดง Error ซึ่งเป็นพฤติกรรมปกติของ Manual callback</p>
+<p>ให้นำ Redirect URL ไป Exchange ด้วย</p>
+<pre><code class="language-bash">python &lt;GOOGLE_SETUP_SCRIPT&gt; --auth-code "&lt;FULL_REDIRECT_URL&gt;"
+</code></pre>
+<p>Callback URL ที่มี<code>code=</code> เป็นข้อมูลลับและควรใช้เพียงครั้งเดียว</p>
+<p>หลัง Auth ต้องตรวจ</p>
+<ul>
+<li>OAuth account ถูกบัญชี</li>
+<li>Token อยู่ใน Profile ที่ถูกต้อง</li>
+<li>Drive folder อ่าน/เขียนได้</li>
+<li>Folder capabilities อนุญาตให้ Add children</li>
+<li>Agent สามารถ Upload และ Read-back เอกสารทดสอบได้</li>
+</ul>
+<hr/></div>
+<nav aria-label="หัวข้อที่เกี่ยวข้อง" class="page-next"></nav>
+</section>
+<section class="page" data-category="ระบบเชื่อมต่อ" data-title="10. Git Public และ Private Mirror" id="page-git-mirrors">
+<header class="page-header"><div><div class="eyebrow">SECTION 10</div><h1>Git Public และ Private Mirror</h1><p class="lead">แยก Public repository และ Private mirror ตามหน้าที่</p></div><span class="section-number">10</span></header>
+<div class="prose"><h3 class="content-heading">Public repository</h3>
+<p>ใช้สำหรับ Code และ Public-safe project knowledge</p>
+<h3 class="content-heading">Private mirror</h3>
+<p>เพิ่ม Remote แยก</p>
+<pre><code class="language-bash">git remote add backup &lt;PRIVATE_REPOSITORY_URL&gt;
+</code></pre>
+<p>หลังได้รับอนุมัติ Publish</p>
+<pre><code class="language-bash">git push origin main
+git push backup main
+git push backup --tags
+</code></pre>
+<p>ตรวจว่า Local, Public และ Private HEAD ตรงกัน</p>
+<pre><code class="language-bash">git rev-parse HEAD
+git ls-remote origin refs/heads/main
+git ls-remote backup refs/heads/main
+</code></pre>
+<p>Private mirror ไม่ควรเก็บ Credentials หรือ Browser profiles</p>
+<hr/></div>
+<nav aria-label="หัวข้อที่เกี่ยวข้อง" class="page-next"></nav>
+</section>
+<section class="page" data-category="ระบบเชื่อมต่อ" data-title="11. Google Drive Document Registry" id="page-drive-registry">
+<header class="page-header"><div><div class="eyebrow">SECTION 11</div><h1>Google Drive Document Registry</h1><p class="lead">เชื่อม Local path กับ Drive file ID โดยไม่สร้างไฟล์ซ้ำ</p></div><span class="section-number">11</span></header>
+<div class="prose"><p>ใช้ Local private registry เชื่อม Relative path กับ Drive file ID</p>
+<pre><code class="language-json">{
+  "schema_version": 1,
+  "drive_parent_id": "&lt;DRIVE_FOLDER_ID&gt;",
+  "documents": {
+    "docs/example.md": {
+      "visibility": "private",
+      "drive_file_id": "&lt;DRIVE_FILE_ID&gt;",
+      "status": "active",
+      "sync_policy": "update-existing"
+    }
+  }
+}
+</code></pre>
+<p>Workflow Sync</p>
+<ol>
+<li>Search exact filename ใน exact parent</li>
+<li>Update/Copy ไฟล์เดิมแทน Upload ซ้ำ</li>
+<li>Verify ID, Name, MIME type, Parent และ<code>trashed=false</code></li>
+<li>Update registry หลัง Verification สำเร็จเท่านั้น</li>
+<li>การย้ายใช้ Copy → Verify → Trash source</li>
+</ol>
+<hr/></div>
+<nav aria-label="หัวข้อที่เกี่ยวข้อง" class="page-next"></nav>
+</section>
+<section class="page" data-category="การปฏิบัติงาน" data-title="12. Agent Operating Workflow" id="page-operating-workflow">
+<header class="page-header"><div><div class="eyebrow">SECTION 12</div><h1>Agent Operating Workflow</h1><p class="lead">ลำดับเริ่ม Session ทำงาน ตรวจสอบ และปิด Session</p></div><span class="section-number">12</span></header>
+<div class="prose"><h3 class="content-heading">ตอนเปิด Session</h3>
+<pre><code class="language-text">1. Read AGENTS.md
+2. Read PROJECT.md
+3. Read docs/wiki/index.md
+4. Read recent docs/wiki/log.md
+5. Run git status --short --branch
+6. Read only the relevant decision/runbook/catalog
+</code></pre>
+<h3 class="content-heading">ตอนทำงาน</h3>
+<pre><code class="language-text">1. Gather primary evidence
+2. Write a failing test for behavior changes
+3. Edit source/catalog/template
+4. Regenerate artifacts
+5. Run focused tests
+6. Run full tests
+7. Preview desktop/mobile
+8. Run privacy scan
+9. Prepare scoped commit
+10. Request approval before public push
+</code></pre>
+<h3 class="content-heading">ตอนปิด Session</h3>
+<pre><code class="language-text">1. Run full verification
+2. Update wiki index/log
+3. Update SESSION_HANDOFF.md
+4. Sync approved private docs to Drive
+5. Report uncommitted files and background processes
+6. Push only when explicitly approved
+7. Verify remote and production state
+</code></pre>
+<hr/></div>
+<nav aria-label="หัวข้อที่เกี่ยวข้อง" class="page-next"></nav>
+</section>
+<section class="page" data-category="การปฏิบัติงาน" data-title="13. ตัวอย่างการใช้งาน" id="page-examples">
+<header class="page-header"><div><div class="eyebrow">SECTION 13</div><h1>ตัวอย่างการใช้งาน</h1><p class="lead">คำสั่งตัวอย่างสำหรับงานเนื้อหา เว็บไซต์ และการเผยแพร่</p></div><span class="section-number">13</span></header>
+<div class="prose"><h3 class="content-heading">เพิ่มคู่มือ HTML</h3>
+<pre><code class="language-text">เพิ่ม HTML นี้เป็นหนังสือใหม่ ตรวจ Privacy สร้างปกและ Preview ให้ดูก่อน แต่ยังไม่ Push
+</code></pre>
+<h3 class="content-heading">เพิ่มหนังสือเสียง</h3>
+<pre><code class="language-text">เพิ่มรายการใหม่จาก Playlist นี้ ดาวน์โหลดปกไว้ Local เรียงจากวันที่ใหม่ไปเก่า และรัน Tests ทั้งหมด
+</code></pre>
+<h3 class="content-heading">ตรวจ Website</h3>
+<pre><code class="language-text">ตรวจ Reading และ Audio pages บน Desktop กับ Mobile เช็ก Broken links, Missing covers, Shelf layout และ Search interaction
+</code></pre>
+<h3 class="content-heading">Publish</h3>
+<pre><code class="language-text">ตรวจทั้งหมดแล้ว Commit และ Push Public repository พร้อม Private mirror จากนั้นตรวจ Production URL
+</code></pre>
+<h3 class="content-heading">ปิด Session</h3>
+<pre><code class="language-text">ปิด Session Project นี้ อัปเดต Wiki, Log, Handoff และสรุป Verification ให้ครบ
+</code></pre>
+<hr/></div>
+<nav aria-label="หัวข้อที่เกี่ยวข้อง" class="page-next"></nav>
+</section>
+<section class="page" data-category="การปฏิบัติงาน" data-title="14. Verification Checklist" id="page-verification">
+<header class="page-header"><div><div class="eyebrow">SECTION 14</div><h1>Verification Checklist</h1><p class="lead">Checklist ครอบคลุม Profile, Telegram, Google, Project และ Publication</p></div><span class="section-number">14</span></header>
+<div class="prose"><h3 class="content-heading">Profile</h3>
+<ul>
+<li>[ ] Profile path ถูกต้อง</li>
+<li>[ ] Working directory ถูกต้อง</li>
+<li>[ ] Memory ปิด</li>
+<li>[ ] Cron ว่าง</li>
+<li>[ ] Skills เป็น Project-specific</li>
+<li>[ ] Agent persona และ Approval contract ถูกต้อง</li>
+</ul>
+<h3 class="content-heading">Telegram</h3>
+<ul>
+<li>[ ] Token ผ่าน<code>getMe</code></li>
+<li>[ ] Token ไม่ถูกพิมพ์</li>
+<li>[ ]<code>.env</code> เป็น<code>0600</code></li>
+<li>[ ] User allowlist ถูกต้อง</li>
+<li>[ ] Allow-all ปิด</li>
+<li>[ ] Group processing ปิด</li>
+<li>[ ] DM round trip ผ่าน</li>
+<li>[ ] Persistent Service active</li>
+<li>[ ] ไม่มี Duplicate poller</li>
+</ul>
+<h3 class="content-heading">Google</h3>
+<ul>
+<li>[ ] OAuth เป็น Profile-specific</li>
+<li>[ ] Account identity ถูกต้อง</li>
+<li>[ ] Token เป็น<code>0600</code></li>
+<li>[ ] Target Drive folder อ่าน/เขียนได้</li>
+<li>[ ] Upload และ Read-back ผ่าน</li>
+</ul>
+<h3 class="content-heading">Project</h3>
+<ul>
+<li>[ ] Catalog validation ผ่าน</li>
+<li>[ ] Generated pages ไม่ Drift</li>
+<li>[ ] Wiki frontmatter และ Index ผ่าน</li>
+<li>[ ] Public pre-share scan ผ่าน</li>
+<li>[ ] Desktop/Mobile preview ผ่าน</li>
+<li>[ ] Git diff check ผ่าน</li>
+</ul>
+<h3 class="content-heading">Publication</h3>
+<ul>
+<li>[ ] ได้รับ Approval</li>
+<li>[ ] Public remote HEAD ตรง</li>
+<li>[ ] Private mirror HEAD ตรง</li>
+<li>[ ] Deployment build สำเร็จ</li>
+<li>[ ] Production read-back ผ่าน</li>
+</ul>
+<hr/></div>
+<nav aria-label="หัวข้อที่เกี่ยวข้อง" class="page-next"></nav>
+</section>
+<section class="page" data-category="การปฏิบัติงาน" data-title="15. ประโยชน์" id="page-benefits">
+<header class="page-header"><div><div class="eyebrow">SECTION 15</div><h1>ประโยชน์</h1><p class="lead">ผลลัพธ์ด้าน Context, Security, Repeatability และ Recovery</p></div><span class="section-number">15</span></header>
+<div class="prose"><h3 class="content-heading">Context isolation</h3>
+<p>Agent เข้าใจเฉพาะ Project ที่รับผิดชอบและไม่ปะปนกับงานอื่น</p>
+<h3 class="content-heading">Security</h3>
+<p>Credentials, Bot Token, OAuth และ Sessions แยกจาก Profile อื่น</p>
+<h3 class="content-heading">Token efficiency</h3>
+<p>Agent อ่าน Index และ Topic ที่เกี่ยวข้องแทนการโหลดประวัติทั้งหมด</p>
+<h3 class="content-heading">Repeatability</h3>
+<p>งานเพิ่ม Content, สร้างปก, Test และ Publish มี Runbook เดียวกันทุกครั้ง</p>
+<h3 class="content-heading">Human control</h3>
+<p>Agent ทำงาน Routine ได้เอง แต่มนุษย์ยังควบคุม Public และ Destructive actions</p>
+<h3 class="content-heading">Portability</h3>
+<p>Project สามารถย้ายไป Agent หรือ AI system อื่นได้ เพราะ Knowledge อยู่ในไฟล์ที่อ่านได้</p>
+<h3 class="content-heading">Auditability</h3>
+<p>Git history, Decision log, Incident notes และ Verification output ตรวจสอบย้อนหลังได้</p>
+<h3 class="content-heading">Recovery</h3>
+<p>Public Git, Private mirror, Drive documents และ Profile backup ทำหน้าที่คนละชั้นและช่วยลด Single point of failure</p>
+<hr/></div>
+<nav aria-label="หัวข้อที่เกี่ยวข้อง" class="page-next"></nav>
+</section>
+<section class="page" data-category="อ้างอิง" data-title="16. ข้อจำกัดและสิ่งที่ต้องระวัง" id="page-limitations">
+<header class="page-header"><div><div class="eyebrow">SECTION 16</div><h1>ข้อจำกัดและสิ่งที่ต้องระวัง</h1><p class="lead">ขอบเขตและความเสี่ยงที่ต้องควบคุมด้วย Policy และ Verification</p></div><span class="section-number">16</span></header>
+<div class="prose"><ul>
+<li>Public repository เป็น World-readable</li>
+<li>Private Git ไม่ใช่ที่เก็บ Credentials</li>
+<li>Google OAuth อาจมี Scope กว้างกว่าหน้าที่ Agent จึงต้องมี Agent policy จำกัดการใช้งาน</li>
+<li>Telegram Bot Username ค้นเจอได้ แม้ Hermes จะปฏิเสธผู้ใช้ที่ไม่อยู่ใน Allowlist</li>
+<li>Memory ที่ปิดทำให้ Documentation ต้องทันสมัยเสมอ</li>
+<li>Cron ที่ปิดหมายความว่า Agent ไม่ทำงานเองจนกว่าจะได้รับข้อความ</li>
+<li>Agent policy เป็น Logical boundary ไม่ใช่ OS sandbox</li>
+<li>ระบบต้องตรวจ Live state ก่อน External operations เสมอ</li>
+</ul>
+<hr/></div>
+<nav aria-label="หัวข้อที่เกี่ยวข้อง" class="page-next"></nav>
+</section>
+<section class="page" data-category="อ้างอิง" data-title="17. Portable Master Prompt" id="page-portable-prompt">
+<header class="page-header"><div><div class="eyebrow">SECTION 17</div><h1>Portable Master Prompt</h1><p class="lead">Prompt พร้อมย้ายแนวทางไปใช้กับ AI system อื่น</p></div><span class="section-number">17</span></header>
+<div class="prose"><p>คัดลอก Prompt ด้านล่างไปใช้กับ AI system อื่น แล้วแทนค่า Placeholder ก่อนเริ่ม</p>
+<pre><code class="language-text">You are an expert AI agent architect, documentation engineer, static-site maintainer, and security-conscious automation operator.
+
+Your task is to design and initialize a dedicated AI agent profile for a knowledge-library project.
+
+Project variables:
+- Profile name: &lt;PROFILE_NAME&gt;
+- Agent name: &lt;AGENT_NAME&gt;
+- Project name: &lt;PROJECT_NAME&gt;
+- Local project path: &lt;PROJECT_PATH&gt;
+- Public site URL: &lt;PUBLIC_SITE_URL&gt;
+- Public Git repository: &lt;PUBLIC_REPOSITORY_URL&gt;
+- Private Git mirror: &lt;PRIVATE_MIRROR_URL&gt;
+- Google Drive project folder: &lt;DRIVE_FOLDER_ID&gt;
+- Telegram bot username: &lt;TELEGRAM_BOT_USERNAME&gt;
+- Allowed Telegram user ID: &lt;TELEGRAM_USER_ID&gt;
+- Model/provider: &lt;MODEL_AND_PROVIDER&gt;
+
+Goals:
+1. Isolate the project from unrelated agents, credentials, sessions, memory, cron jobs, tools, and business contexts.
+2. Create one dedicated agent persona inside one clean profile.
+3. Use project documents as durable knowledge instead of persistent memory.
+4. Maintain one source of truth per data type.
+5. Allow safe, reversible project work autonomously.
+6. Require explicit user approval for public publishing, deletion, permission changes, credential changes, cron, memory, group access, and destructive Git operations.
+7. Provide a DM-only Telegram interface with a single-user allowlist.
+8. Use profile-scoped Google OAuth and verify the actual account identity.
+9. Keep public code/docs in public Git, mirror committed history privately, and keep human-facing private project docs in a dedicated Drive folder.
+10. Verify every external write by reading the exact target back.
+
+Required profile policies:
+- Persistent memory: disabled
+- User-profile memory: disabled
+- Cron: none
+- Telegram allow-all: false
+- Telegram groups: denied
+- Public push: explicit approval required
+- Credentials: profile-scoped and file permissions 0600
+- Public files: pre-share scan required
+
+Create these artifacts:
+- Agent SOUL/persona document
+- AGENTS.md operating contract
+- PROJECT.md project overview
+- docs/wiki/SCHEMA.md
+- docs/wiki/index.md
+- docs/wiki/log.md
+- architecture overview
+- decisions for autonomy, source of truth, and public/private boundaries
+- runbooks for adding reading content, adding audio content, verifying/publishing, syncing Drive docs, closing/resuming sessions, and restoring the project
+- local-only project-links registry
+- local-only Drive document registry
+- deterministic knowledge validator
+- regression tests
+
+Agent startup sequence:
+1. Read AGENTS.md
+2. Read PROJECT.md
+3. Read wiki index
+4. Read recent durable log
+5. Inspect Git status/remotes
+6. Load only relevant topic pages, catalogs, and runbooks
+
+Agent work sequence:
+1. Gather primary evidence
+2. Write failing tests for behavior changes
+3. Edit source/catalog/template
+4. Regenerate outputs
+5. Run focused and full tests
+6. Verify desktop/mobile behavior
+7. Run privacy scan
+8. Prepare scoped commit
+9. Ask approval before public push
+10. Verify public/private remotes and production after approved push
+
+Telegram setup rules:
+- Guide the user one manual step at a time through BotFather
+- Never ask the user to paste the bot token into chat
+- Provide a hidden terminal prompt to validate and store the token
+- Print only safe bot metadata
+- Test foreground gateway before persistent service
+- Verify one active poller only
+- Keep DM-only access and single-user allowlist
+
+Google OAuth rules:
+- Copy only OAuth client configuration if reuse is approved
+- Never copy an existing profile token
+- Generate a fresh profile-scoped OAuth session
+- Treat callback URLs containing code= as sensitive
+- Verify account identity, token path, file mode, folder capabilities, upload, and read-back
+
+Git rules:
+- Public repository contains only public-safe artifacts
+- Local/private registries are never staged publicly
+- Private mirror receives the same approved commit
+- Public push always requires explicit user approval
+
+Verification requirements:
+- Profile config check passes
+- Selected project skills are enabled
+- Memory remains disabled
+- Cron remains empty
+- Agent persona smoke test passes
+- Telegram DM round trip passes
+- Google Drive write/read-back passes
+- Project tests pass
+- Generated pages match source generators
+- Knowledge validator passes
+- Pre-share scan has zero sensitive hits
+- Git remotes match after approved publication
+- Persistent service is active, Telegram polling healthy, and shutdown timeout is safe
+
+Do not invent credentials, tokens, account IDs, folder IDs, or URLs. Ask the user for missing external inputs one step at a time. Do not claim completion without real execution and verification evidence.
+</code></pre>
+<hr/></div>
+<nav aria-label="หัวข้อที่เกี่ยวข้อง" class="page-next"></nav>
+</section>
+<section class="page" data-category="อ้างอิง" data-title="18. บทสรุป" id="page-summary">
+<header class="page-header"><div><div class="eyebrow">SECTION 18</div><h1>บทสรุป</h1><p class="lead">องค์ประกอบสำคัญของ Dedicated Library Agent Profile</p></div><span class="section-number">18</span></header>
+<div class="prose"><p>Dedicated Library Agent Profile เหมาะกับโครงการที่มี Content, Website, Media assets, Documentation และ Publication workflow ต่อเนื่อง</p>
+<p>หัวใจของระบบไม่ใช่การสร้าง Bot หรือ Profile เพียงอย่างเดียว แต่คือการสร้างขอบเขตที่ชัดเจนระหว่าง</p>
+<ul>
+<li>Identity</li>
+<li>Knowledge</li>
+<li>Credentials</li>
+<li>Tools</li>
+<li>Authority</li>
+<li>Verification</li>
+<li>Publication</li>
+</ul>
+<p>เมื่อองค์ประกอบเหล่านี้ถูกแยกและเขียนเป็นเอกสาร AI Agent จะสามารถรับงานต่อใน Session ใหม่ ทำงานซ้ำได้อย่างเป็นระบบ และย้ายไปใช้กับ AI platform อื่นได้โดยไม่ต้องพึ่ง Conversation history เดิม</p></div>
+<nav aria-label="หัวข้อที่เกี่ยวข้อง" class="page-next"></nav>
+</section></div></div>
+</main>
+</div>
+<script>
+(()=>{'use strict';
+const app=document.getElementById('app'),content=document.getElementById('content'),pages=[...document.querySelectorAll('.page')],navItems=[...document.querySelectorAll('.nav-item')],titleEl=document.getElementById('currentTitle'),categoryEl=document.getElementById('currentCategory'),searchInput=document.getElementById('searchInput');
+const valid=new Set(pages.map(p=>p.id.replace('page-','')));let fontScale=Number(localStorage.getItem('blueprint-font-scale')||1);
+function setTheme(theme){document.documentElement.dataset.theme=theme;localStorage.setItem('blueprint-theme',theme);document.getElementById('themeBtn').setAttribute('aria-label',theme==='dark'?'เปลี่ยนเป็นโหมดสว่าง':'เปลี่ยนเป็นโหมดมืด')}
+function changeFont(delta){fontScale=Math.max(.85,Math.min(1.25,Math.round((fontScale+delta)*100)/100));document.documentElement.style.setProperty('--font-scale',fontScale);localStorage.setItem('blueprint-font-scale',fontScale)}
+function closeMobile(){app.classList.remove('mobile-open')}
+function navigate(slug,{hash=true}={}){if(!valid.has(slug))slug='overview';pages.forEach(p=>p.classList.toggle('active',p.id===`page-${slug}`));navItems.forEach(n=>{const active=n.dataset.page===slug;n.classList.toggle('active',active);if(active)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current')});const page=document.getElementById(`page-${slug}`);titleEl.textContent=page.dataset.title;categoryEl.textContent=page.dataset.category;document.title=`${page.dataset.title} · Library Agent Blueprint`;content.scrollTop=0;closeMobile();if(hash&&location.hash!==`#${slug}`)history.pushState(null,'',`#${slug}`)}
+function buildCodeBlocks(){document.querySelectorAll('.prose pre').forEach(pre=>{if(pre.parentElement.classList.contains('code-block'))return;const code=pre.querySelector('code'),lang=[...code.classList].find(c=>c.startsWith('language-'))?.replace('language-','')||'text',wrap=document.createElement('div');wrap.className='code-block';const head=document.createElement('div');head.className='code-header';head.innerHTML=`<span>${lang}</span><button class="copy-btn" type="button">Copy</button>`;pre.replaceWith(wrap);wrap.append(head,pre);head.querySelector('button').addEventListener('click',async e=>{try{await navigator.clipboard.writeText(code.textContent);e.currentTarget.textContent='Copied';setTimeout(()=>e.currentTarget.textContent='Copy',1400)}catch{const r=document.createRange();r.selectNodeContents(code);getSelection().removeAllRanges();getSelection().addRange(r);e.currentTarget.textContent='Selected'}})})}
+function buildNextLinks(){pages.forEach((p,i)=>{if(i===0)return;const nav=p.querySelector('.page-next');if(i>1){const prev=pages[i-1];nav.insertAdjacentHTML('beforeend',`<button type="button" data-jump="${prev.id.replace('page-','')}">← ${prev.dataset.title}</button>`)}if(i<pages.length-1){const next=pages[i+1];nav.insertAdjacentHTML('beforeend',`<button type="button" data-jump="${next.id.replace('page-','')}">${next.dataset.title} →</button>`)}})}
+function runSearch(query){const q=query.trim().toLocaleLowerCase('th');let count=0;navItems.forEach(n=>{const page=document.getElementById(`page-${n.dataset.page}`),match=!q||(n.dataset.search+' '+page.textContent).toLocaleLowerCase('th').includes(q);n.hidden=!match;if(match)count++});document.querySelectorAll('.nav-group').forEach(g=>g.hidden=![...g.querySelectorAll('.nav-item')].some(n=>!n.hidden));const old=document.querySelector('.no-results');if(old)old.remove();if(!count){const msg=document.createElement('div');msg.className='no-results';msg.textContent='ไม่พบหัวข้อที่ค้นหา';document.getElementById('sidebarNav').append(msg)}}
+navItems.forEach(n=>n.addEventListener('click',()=>navigate(n.dataset.page)));document.addEventListener('click',e=>{const b=e.target.closest('[data-jump]');if(b)navigate(b.dataset.jump)});document.getElementById('collapseBtn').addEventListener('click',()=>{app.classList.toggle('collapsed');localStorage.setItem('blueprint-sidebar-collapsed',app.classList.contains('collapsed'))});document.getElementById('menuBtn').addEventListener('click',()=>app.classList.add('mobile-open'));document.getElementById('overlay').addEventListener('click',closeMobile);document.getElementById('fontDown').addEventListener('click',()=>changeFont(-.05));document.getElementById('fontUp').addEventListener('click',()=>changeFont(.05));document.getElementById('themeBtn').addEventListener('click',()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark'));searchInput.addEventListener('input',e=>runSearch(e.target.value));window.addEventListener('hashchange',()=>navigate(location.hash.slice(1),{hash:false}));document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMobile();searchInput.blur()}});
+const savedTheme=localStorage.getItem('blueprint-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');setTheme(savedTheme);changeFont(0);if(localStorage.getItem('blueprint-sidebar-collapsed')==='true')app.classList.add('collapsed');buildCodeBlocks();buildNextLinks();navigate(location.hash.slice(1)||'overview',{hash:false});
+})();
+</script>
+</body></html>

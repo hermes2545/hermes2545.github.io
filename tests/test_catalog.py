@@ -27,7 +27,7 @@ class CatalogTests(unittest.TestCase):
     def test_required_fields_and_unique_ids_and_links(self):
         required = {"id", "title", "short_title", "href", "cover", "category", "summary", "accent", "published_at"}
         self.assertTrue(self.books)
-        self.assertEqual(len(self.books), 11)
+        self.assertEqual(len(self.books), 12)
         self.assertEqual(len({book["id"] for book in self.books}), len(self.books))
         self.assertEqual(len({book["href"] for book in self.books}), len(self.books))
         for book in self.books:
@@ -36,10 +36,15 @@ class CatalogTests(unittest.TestCase):
             self.assertRegex(book["accent"], r"^#[0-9A-Fa-f]{6}$")
             self.assertRegex(book["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
 
-    def test_every_reading_book_uses_a_facebook_post_cover(self):
-        self.assertEqual(len(self.books), 11)
+    def test_every_reading_book_uses_an_approved_cover_source(self):
+        self.assertEqual(len(self.books), 12)
         for book in self.books:
-            self.assertTrue(book["cover"].startswith("assets/covers/facebook/"), book["cover"])
+            expected_prefix = (
+                "assets/covers/custom/"
+                if book["id"] == "dedicated-library-agent-profile"
+                else "assets/covers/facebook/"
+            )
+            self.assertTrue(book["cover"].startswith(expected_prefix), book["cover"])
             self.assertEqual(Path(book["cover"]).suffix, ".webp")
 
     def test_targets_and_covers_exist_and_are_nonempty(self):
@@ -50,6 +55,14 @@ class CatalogTests(unittest.TestCase):
             self.assertTrue(cover.is_file(), cover)
             self.assertGreater(cover.stat().st_size, 100, cover)
             self.assertIn(cover.suffix.lower(), {".svg", ".webp", ".png", ".jpg", ".jpeg"})
+
+    def test_dedicated_library_agent_profile_is_published(self):
+        book = next((book for book in self.books if book["id"] == "dedicated-library-agent-profile"), None)
+        self.assertIsNotNone(book)
+        assert book is not None
+        self.assertEqual(book["href"], "DEDICATED_LIBRARY_AGENT_PROFILE_BLUEPRINT.html")
+        self.assertEqual(book["cover"], "assets/covers/custom/dedicated-library-agent-profile.webp")
+        self.assertEqual(book["published_at"], "2026-08-23T15:22:54+07:00")
 
 
 if __name__ == "__main__":

@@ -32,11 +32,13 @@ class HomepageBuildTests(unittest.TestCase):
     def test_books_are_sorted_newest_first_and_show_publish_date(self):
         timestamps = [book["published_at"] for book in self.books]
         self.assertEqual(timestamps, sorted(timestamps, reverse=True))
-        expected_first = 'Grok vs Hermes'
-        self.assertEqual(self.books[0]["short_title"], expected_first)
-        self.assertIn('publish on 22/08/2026', self.html)
+        raw_books = json.loads((ROOT / "data" / "books.json").read_text(encoding="utf-8"))
+        expected_first = max(raw_books, key=lambda book: (book["published_at"], book["title"]))
+        self.assertEqual(self.books[0]["short_title"], expected_first["short_title"])
+        published = expected_first["published_at"][:10].split("-")
+        self.assertIn(f'publish on {published[2]}/{published[1]}/{published[0]}', self.html)
         first_card = self.html.index('class="book-card"')
-        first_title = self.html.index(expected_first)
+        first_title = self.html.index(html.escape(expected_first["short_title"]))
         self.assertGreater(first_title, first_card)
 
     def test_homepage_is_semantic_accessible_and_progressive(self):

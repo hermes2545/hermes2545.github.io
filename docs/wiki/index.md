@@ -32,6 +32,10 @@ tags: [library, index]
 
 - [Incident policy](incidents/README.md)
 
+## Public Blueprints
+
+- [Dedicated Library AI Agent Profile Blueprint](../DEDICATED_LIBRARY_AGENT_PROFILE_BLUEPRINT.md)
+
 ## Continuity
 
 - [Durable change log](log.md)
