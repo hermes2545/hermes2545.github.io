@@ -27,7 +27,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 
 ### Audio collection
 
-- 45 YouTube playlist entries indexed from `data/audio-books.json`; the newest is **ยิ่งเพิ่มสกิล AI ยิ่งโกหกเก่งขึ้น** (`wQ_XZKFgmOk`).
+- 46 YouTube entries indexed from `data/audio-books.json`; the newest is **คู่มือสำรองและกู้คืนโปรไฟล์ Hermes อย่างปลอดภัย ฉบับสมบูรณ์** (`aGSn1viukAM`).
 - Newest publication appears at the upper-left.
 - Local thumbnail assets are stored under `assets/audio-covers/`.
 - Each audio item uses a large iPod-style device at the existing book footprint: a full 4:3 thumbnail screen above a click wheel, with duration at the upper-right of the lower control panel and a PLAY label below.
