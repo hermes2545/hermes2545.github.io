@@ -27,7 +27,7 @@ class CatalogTests(unittest.TestCase):
     def test_required_fields_and_unique_ids_and_links(self):
         required = {"id", "title", "short_title", "href", "cover", "category", "summary", "accent", "published_at"}
         self.assertTrue(self.books)
-        self.assertEqual(len(self.books), 17)
+        self.assertEqual(len(self.books), 18)
         self.assertEqual(len({book["id"] for book in self.books}), len(self.books))
         self.assertEqual(len({book["href"] for book in self.books}), len(self.books))
         for book in self.books:
@@ -37,7 +37,7 @@ class CatalogTests(unittest.TestCase):
             self.assertRegex(book["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
 
     def test_every_reading_book_uses_an_approved_custom_cover(self):
-        self.assertEqual(len(self.books), 17)
+        self.assertEqual(len(self.books), 18)
         for book in self.books:
             self.assertEqual(book["cover"], f'assets/covers/custom/{book["id"]}.webp')
             self.assertEqual(Path(book["cover"]).suffix, ".webp")
@@ -80,6 +80,7 @@ class CatalogTests(unittest.TestCase):
             "hermes-trustworthy-autonomy": "Hermes ทำงานเองอย่างไว้ใจได้",
             "ai-chatbot-beyond-chatgpt": "สร้าง AI Chatbot ให้เหนือกว่า ChatGPT",
             "hermes-profile-backup-restore": "สำรองและกู้คืน Hermes Profile",
+            "hermes-concepts-for-everyone": "เข้าใจ Hermes Agent สำหรับคนทั่วไป",
         }
         actual = {book["id"]: book["short_title"] for book in self.books}
         self.assertEqual(actual, expected)
@@ -99,6 +100,17 @@ class CatalogTests(unittest.TestCase):
         guide_html = (ROOT / "Hermes_Profile_Backup_Restore_Public_Guide.html").read_text(encoding="utf-8")
         self.assertIn('<img class="brand-logo" src="data:image/jpeg;base64,', guide_html)
         self.assertTrue((ROOT / "docs" / "guides" / "HERMES_PROFILE_BACKUP_RESTORE_PUBLIC_GUIDE.md").is_file())
+
+    def test_hermes_concepts_for_everyone_guide_is_catalogued(self):
+        book = next((book for book in self.books if book["id"] == "hermes-concepts-for-everyone"), None)
+        self.assertIsNotNone(book)
+        assert book is not None
+        self.assertEqual(book["href"], "Hermes_Agent_Concepts_for_Everyone_TH.html")
+        self.assertEqual(book["cover"], "assets/covers/custom/hermes-concepts-for-everyone.webp")
+        self.assertEqual(book["category"], "AI Fundamentals")
+        self.assertEqual(book["published_at"], "2026-08-25T01:23:50+07:00")
+        self.assertTrue((ROOT / "templates" / "hermes-concepts-for-everyone-cover.template.html").is_file())
+        self.assertTrue((ROOT / "docs" / "guides" / "HERMES_AGENT_CONCEPTS_FOR_EVERYONE_TH.md").is_file())
 
     def test_ai_chatbot_beyond_chatgpt_manual_is_catalogued(self):
         book = next((book for book in self.books if book["id"] == "ai-chatbot-beyond-chatgpt"), None)

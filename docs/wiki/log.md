@@ -39,3 +39,7 @@ tags: [library, changelog]
 - Sanitized and reorganized a private-system backup prompt into the public-safe **สำรองและกู้คืน Hermes Profile** manual, created 13 interactive views plus a detailed Markdown source, designed a disaster-recovery cover, and prepared it as the seventeenth reading guide.
 - Replaced the backup guide's original operator illustration with the approved monochrome Hermes operator logo and retuned the cover to black, warm ivory, safety red, and muted gold.
 - Produced and published the YouTube podcast **คู่มือสำรองและกู้คืนโปรไฟล์ Hermes อย่างปลอดภัย ฉบับสมบูรณ์** with a sound-reactive red equalizer, verified custom thumbnail, and public Video ID `aGSn1viukAM`; added it as the 46th Audio Shelf entry.
+
+## 2026-08-25
+
+- Rewrote the public transcript **Every Hermes Agent Concept Explained for Normal People** as the public-safe Thai guide **เข้าใจ Hermes Agent สำหรับคนทั่วไป**, removed promotions and affiliate links, corrected key claims against current Hermes docs/CLI, built a 10-view interactive manual, and designed a user-approved monochrome system-orbit cover with red reserved for the `Hermes Agent` title.

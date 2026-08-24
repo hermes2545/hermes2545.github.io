@@ -1,5 +1,16 @@
 [
   {
+    "id": "hermes-concepts-for-everyone",
+    "title": "เข้าใจ Hermes Agent สำหรับคนทั่วไป — 15 แนวคิดหลักในระบบเดียว",
+    "short_title": "เข้าใจ Hermes Agent สำหรับคนทั่วไป",
+    "href": "Hermes_Agent_Concepts_for_Everyone_TH.html",
+    "cover": "assets/covers/custom/hermes-concepts-for-everyone.webp",
+    "category": "AI Fundamentals",
+    "summary": "อธิบาย Harness, Model, Context, Tools, Memory, Skills, Hooks, Profiles, Gateways, Cron, Subagents, Kanban และ Security เป็นภาษาไทยสำหรับผู้เริ่มต้น",
+    "accent": "#D5211D",
+    "published_at": "2026-08-25T01:23:50+07:00"
+  },
+  {
     "id": "hermes-profile-backup-restore",
     "title": "คู่มือสำรองและกู้คืน Hermes Profile แบบตรวจสอบได้",
     "short_title": "สำรองและกู้คืน Hermes Profile",
