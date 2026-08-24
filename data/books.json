@@ -1,5 +1,16 @@
 [
   {
+    "id": "ai-chatbot-beyond-chatgpt",
+    "title": "เบื้องหลังการสร้าง AI Chatbot ที่ไม่ได้จบแค่ต่อ ChatGPT — Interactive Reference Manual",
+    "short_title": "สร้าง AI Chatbot ให้เหนือกว่า ChatGPT",
+    "href": "AI_Chatbot_Beyond_ChatGPT_Interactive_Reference_Manual.html",
+    "cover": "assets/covers/custom/ai-chatbot-beyond-chatgpt.webp",
+    "category": "AI Product Design",
+    "summary": "ออกแบบ AI Chatbot production stack ที่มี Guardrails, Brand Voice, Skill routing, Knowledge/RAG, AQI, Progressive rollout และ Human handoff",
+    "accent": "#10A37F",
+    "published_at": "2026-08-24T13:46:16+07:00"
+  },
+  {
     "id": "hermes-trustworthy-autonomy",
     "title": "Hermes Agent — 3 Upgrades for Trustworthy Autonomy",
     "short_title": "Hermes ทำงานเองอย่างไว้ใจได้",

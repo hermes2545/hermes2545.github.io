@@ -3,7 +3,7 @@ import json
 import unittest
 from pathlib import Path
 
-from scripts.build_catalog import load_books, render_homepage
+from scripts.build_catalog import SHELF_SIZE, load_books, render_homepage
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -33,7 +33,8 @@ class HomepageBuildTests(unittest.TestCase):
         self.assertNotIn('class="book-category"', self.html)
         self.assertNotIn('class="filters"', self.html)
         self.assertNotIn('class="filter-button"', self.html)
-        self.assertEqual(self.html.count('class="shelf-label-grid"'), 3)
+        expected_shelves = (len(self.books) + SHELF_SIZE - 1) // SHELF_SIZE
+        self.assertEqual(self.html.count('class="shelf-label-grid"'), expected_shelves)
         self.assertEqual(self.html.count('class="shelf-category-plaque"'), len(self.books))
         for book in self.books:
             plaque = (

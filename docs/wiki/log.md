@@ -35,3 +35,4 @@ tags: [library, changelog]
 - Added `Hermes_Trustworthy_Autonomy_Manual.html` unchanged as the fifteenth reading guide, designed an industrial safety-standard custom cover, and catalogued it as **Hermes ทำงานเองอย่างไว้ใจได้**.
 - Added the 45th audio entry **ยิ่งเพิ่มสกิล AI ยิ่งโกหกเก่งขึ้น** from playlist Video ID `wQ_XZKFgmOk`, using user-verified duration/date and a cached proxy-fetched thumbnail.
 - Made reading shelf category plaques clickable filters with active metal styling and click-again reset behavior.
+- Added `AI_Chatbot_Beyond_ChatGPT_Interactive_Reference_Manual.html` unchanged as the sixteenth reading guide, designed a layered product-stack custom cover with an official ChatGPT icon, and catalogued it as **สร้าง AI Chatbot ให้เหนือกว่า ChatGPT**.

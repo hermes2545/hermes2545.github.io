@@ -27,7 +27,7 @@ class CatalogTests(unittest.TestCase):
     def test_required_fields_and_unique_ids_and_links(self):
         required = {"id", "title", "short_title", "href", "cover", "category", "summary", "accent", "published_at"}
         self.assertTrue(self.books)
-        self.assertEqual(len(self.books), 15)
+        self.assertEqual(len(self.books), 16)
         self.assertEqual(len({book["id"] for book in self.books}), len(self.books))
         self.assertEqual(len({book["href"] for book in self.books}), len(self.books))
         for book in self.books:
@@ -37,7 +37,7 @@ class CatalogTests(unittest.TestCase):
             self.assertRegex(book["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
 
     def test_every_reading_book_uses_an_approved_custom_cover(self):
-        self.assertEqual(len(self.books), 15)
+        self.assertEqual(len(self.books), 16)
         for book in self.books:
             self.assertEqual(book["cover"], f'assets/covers/custom/{book["id"]}.webp')
             self.assertEqual(Path(book["cover"]).suffix, ".webp")
@@ -78,9 +78,19 @@ class CatalogTests(unittest.TestCase):
             "hermes-memory-kb": "Hermes จำอย่างไรให้เก่งขึ้น",
             "hermes-profile-guardian": "ระบบเฝ้าระวังและซ่อม Hermes",
             "hermes-trustworthy-autonomy": "Hermes ทำงานเองอย่างไว้ใจได้",
+            "ai-chatbot-beyond-chatgpt": "สร้าง AI Chatbot ให้เหนือกว่า ChatGPT",
         }
         actual = {book["id"]: book["short_title"] for book in self.books}
         self.assertEqual(actual, expected)
+
+    def test_ai_chatbot_beyond_chatgpt_manual_is_catalogued(self):
+        book = next((book for book in self.books if book["id"] == "ai-chatbot-beyond-chatgpt"), None)
+        self.assertIsNotNone(book)
+        assert book is not None
+        self.assertEqual(book["href"], "AI_Chatbot_Beyond_ChatGPT_Interactive_Reference_Manual.html")
+        self.assertEqual(book["cover"], "assets/covers/custom/ai-chatbot-beyond-chatgpt.webp")
+        self.assertEqual(book["published_at"], "2026-08-24T13:46:16+07:00")
+        self.assertTrue((ROOT / "templates" / "ai-chatbot-beyond-chatgpt-cover.template.html").is_file())
 
     def test_trustworthy_autonomy_manual_is_catalogued(self):
         book = next((book for book in self.books if book["id"] == "hermes-trustworthy-autonomy"), None)
