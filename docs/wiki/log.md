@@ -43,3 +43,4 @@ tags: [library, changelog]
 ## 2026-08-25
 
 - Rewrote the public transcript **Every Hermes Agent Concept Explained for Normal People** as the public-safe Thai guide **เข้าใจ Hermes Agent สำหรับคนทั่วไป**, removed promotions and affiliate links, corrected key claims against current Hermes docs/CLI, built a 10-view interactive manual, and designed a user-approved monochrome system-orbit cover with red reserved for the `Hermes Agent` title.
+- Produced and published the YouTube podcast **ในหัวของ Hermes มีอะไร? แกะระบบ AI Agent ให้คนทั่วไปเข้าใจ** with a transparent sound-reactive Cyan/Coral equalizer, verified Full HD/custom thumbnail, and public Video ID `KtHYNnLM_Dk`; verified it at position 1 in playlist `tech (Ai)` and added it as the 47th Audio Shelf entry.
