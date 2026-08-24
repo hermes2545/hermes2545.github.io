@@ -156,7 +156,8 @@ Interface คือจุดที่คำขอเข้าระบบแล�
 - Desktop application
 - Web dashboard
 - Telegram, Discord, Slack, WhatsApp หรือ Platform gateway ที่เปิดใช้
-- API / SDK
+- ACP, TUI Gateway JSON-RPC และ OpenAI-compatible HTTP API
+- Python integration เมื่อ Application import `AIAgent` โดยตรง
 - Voice interface เมื่อ Runtime และ Provider รองรับ
 
 ### Interface ไม่ใช่ Agent คนละตัวเสมอไป
