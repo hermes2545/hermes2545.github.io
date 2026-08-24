@@ -1,5 +1,16 @@
 [
   {
+    "id": "hermes-trustworthy-autonomy",
+    "title": "Hermes Agent — 3 Upgrades for Trustworthy Autonomy",
+    "short_title": "Hermes ทำงานเองอย่างไว้ใจได้",
+    "href": "Hermes_Trustworthy_Autonomy_Manual.html",
+    "cover": "assets/covers/custom/hermes-trustworthy-autonomy.webp",
+    "category": "Hermes Guide",
+    "summary": "ยกระดับ Hermes ด้วย Verification, Approval Gates, Restricted Subagents และ Context discipline เพื่อให้ Agent ทำงานเองได้อย่างน่าเชื่อถือ",
+    "accent": "#0B8A55",
+    "published_at": "2026-08-24T12:43:56+07:00"
+  },
+  {
     "id": "dedicated-library-agent-profile",
     "title": "Dedicated Library AI Agent Profile Blueprint",
     "short_title": "สร้าง AI Agent ดูแลห้องสมุด",

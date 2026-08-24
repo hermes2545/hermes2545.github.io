@@ -29,3 +29,7 @@ tags: [library, changelog]
 - Removed the redundant reading-category filter row; category search still works through the main search field and responsive shelf plaques remain the visible category labels.
 - Replaced active Facebook artwork references with 12 individually designed custom reading covers, preserved reproducible HTML/logo sources under `templates/`, and retained legacy Facebook assets without catalog references.
 - Imported `hermes-memory` and `hermes-guardian` with Git subtree history, audited both against the existing collection, confirmed distinct content, and added two custom-covered reading entries.
+
+## 2026-08-24
+
+- Added `Hermes_Trustworthy_Autonomy_Manual.html` unchanged as the fifteenth reading guide, designed an industrial safety-standard custom cover, and catalogued it as **Hermes ทำงานเองอย่างไว้ใจได้**.

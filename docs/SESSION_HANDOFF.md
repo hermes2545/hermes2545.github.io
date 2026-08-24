@@ -16,14 +16,14 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 
 ### Reading collection
 
-- 14 standalone HTML guides indexed from `data/books.json`.
-- `DEDICATED_LIBRARY_AGENT_PROFILE_BLUEPRINT.html` remains the newest guide, with a custom 600×900 WebP architecture cover.
+- 15 standalone HTML guides indexed from `data/books.json`.
+- `Hermes_Trustworthy_Autonomy_Manual.html` is the newest guide, with an industrial safety-standard 600×900 custom WebP cover.
 - The imported `hermes-memory` and `hermes-guardian` repositories retain their original source commits under dedicated subdirectories.
-- All 14 shelf-facing short titles use Thai-first labels while retaining necessary product and technical terms.
+- All 15 shelf-facing short titles use Thai-first labels while retaining necessary product and technical terms.
 - Newest publication appears at the upper-left, then flows right and downward.
 - Every guide opens in a new browser tab.
-- All 14 reading books use individually designed 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork.
-- Reproducible cover designs live in `templates/reading-cover-designs.template.html` and `templates/mega-prompt-business-book-cover.template.html`; legacy Facebook assets remain archived but unused.
+- All 15 reading books use individually designed 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork.
+- Reproducible cover designs live under `templates/`, including `hermes-trustworthy-autonomy-cover.template.html`; legacy Facebook assets remain archived but unused.
 
 ### Audio collection
 
@@ -64,7 +64,7 @@ python scripts/build_audio_library.py --check
 git diff --check
 ```
 
-Expected verified result at close: **28 tests passed**, both generated pages current, and no diff-check errors.
+Expected verified result at close: **35 tests passed**, both generated pages current, and no diff-check errors.
 
 ## Publication workflow
 

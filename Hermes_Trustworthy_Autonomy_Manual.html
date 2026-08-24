@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="คู่มือสรุป How I Made Hermes Agent 10x More Powerful ในรูปแบบ Interactive Reference Manual">
+<title>Hermes Agent — 3 Upgrades for Trustworthy Autonomy</title>
+<style>
+/* =========================================================
+   1. Variables
+   ========================================================= */
+:root{
+  --bg:#f5f7fb;
+  --surface:#ffffff;
+  --surface-2:#f8fafc;
+  --surface-3:#eef3fb;
+  --text:#172033;
+  --muted:#667085;
+  --border:#e3e8f0;
+  --primary:#356df3;
+  --primary-soft:#eaf0ff;
+  --purple:#7559d9;
+  --purple-soft:#f0ecff;
+  --success:#168a49;
+  --success-soft:#eaf8f0;
+  --warning:#b26a00;
+  --warning-soft:#fff6df;
+  --danger:#c43d4b;
+  --danger-soft:#fff0f1;
+  --info:#2563a9;
+  --info-soft:#eaf4ff;
+  --radius-sm:10px;
+  --radius-md:16px;
+  --radius-lg:22px;
+  --shadow-sm:0 6px 18px rgba(15,23,42,.06);
+  --shadow-md:0 16px 40px rgba(15,23,42,.08);
+  --sidebar-w:292px;
+  --sidebar-collapsed-w:78px;
+  --topbar-h:68px;
+  --font-scale:1;
+}
+html[data-theme="dark"]{
+  --bg:#111827;
+  --surface:#182231;
+  --surface-2:#202c3d;
+  --surface-3:#26364b;
+  --text:#edf2f7;
+  --muted:#a8b3c5;
+  --border:#304057;
+  --primary:#7aa2ff;
+  --primary-soft:#24385f;
+  --purple:#b7a1ff;
+  --purple-soft:#382f57;
+  --success:#66d99a;
+  --success-soft:#173d2a;
+  --warning:#f1bd62;
+  --warning-soft:#473718;
+  --danger:#ff8d99;
+  --danger-soft:#47252d;
+  --info:#8ec7ff;
+  --info-soft:#1d3955;
+  --shadow-sm:0 6px 18px rgba(0,0,0,.18);
+  --shadow-md:0 16px 40px rgba(0,0,0,.24);
+}
+
+/* =========================================================
+   2. Reset / Base
+   ========================================================= */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Inter,"Noto Sans Thai","Leelawadee UI",Tahoma,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  font-size:calc(15.5px * var(--font-scale));
+  line-height:1.65;
+  overflow:hidden;
+}
+button,a{font:inherit}
+button{color:inherit}
+a{color:var(--primary);text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--primary) 60%,transparent);outline-offset:2px}
+svg{display:block}
+strong{font-weight:750}
+code,kbd{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+
+/* =========================================================
+   3. Layout
+   ========================================================= */
+.app{height:100vh;display:grid;grid-template-columns:var(--sidebar-w) 1fr;transition:grid-template-columns .2s ease}
+body.sidebar-collapsed .app{grid-template-columns:var(--sidebar-collapsed-w) 1fr}
+.sidebar{
+  position:relative;
+  z-index:30;
+  height:100vh;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+}
+.main-shell{height:100vh;min-width:0;display:grid;grid-template-rows:var(--topbar-h) 1fr}
+.topbar{
+  position:relative;
+  z-index:20;
+  height:var(--topbar-h);
+  background:color-mix(in srgb,var(--surface) 94%,transparent);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:0 22px;
+}
+.content-scroll{overflow:auto;min-width:0}
+.content{width:min(1180px,calc(100% - 44px));margin:0 auto;padding:26px 0 44px}
+.overlay{display:none}
+
+/* =========================================================
+   4. Sidebar
+   ========================================================= */
+.brand{
+  height:var(--topbar-h);
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:0 18px;
+  border-bottom:1px solid var(--border);
+  min-width:0;
+}
+.brand-mark{
+  width:40px;height:40px;border-radius:13px;flex:0 0 40px;
+  display:grid;place-items:center;
+  color:#fff;background:linear-gradient(145deg,#356df3,#7559d9);
+  box-shadow:var(--shadow-sm);
+}
+.brand-copy{min-width:0}
+.brand-title{font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-sub{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-nav{padding:14px 10px 10px;overflow:auto;flex:1}
+.nav-group{margin:6px 0 16px}
+.nav-label{
+  padding:0 10px 7px;
+  font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)
+}
+.nav-item{
+  width:100%;border:0;background:transparent;cursor:pointer;
+  display:flex;align-items:center;gap:11px;
+  padding:10px 11px;margin:2px 0;border-radius:11px;
+  color:var(--muted);text-align:left;transition:.18s ease;
+}
+.nav-item:hover{background:var(--surface-2);color:var(--text)}
+.nav-item.active{background:var(--primary-soft);color:var(--primary);font-weight:750}
+.nav-icon{width:20px;height:20px;flex:0 0 20px}
+.nav-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-meta{
+  border-top:1px solid var(--border);
+  padding:13px 18px 16px;
+  color:var(--muted);font-size:11.5px;line-height:1.6
+}
+.meta-row{display:flex;justify-content:space-between;gap:10px}
+body.sidebar-collapsed .brand-copy,
+body.sidebar-collapsed .nav-label,
+body.sidebar-collapsed .nav-text,
+body.sidebar-collapsed .sidebar-meta{display:none}
+body.sidebar-collapsed .brand{justify-content:center;padding:0}
+body.sidebar-collapsed .sidebar-nav{padding-inline:9px}
+body.sidebar-collapsed .nav-item{justify-content:center;padding-inline:0}
+
+/* =========================================================
+   5. Topbar
+   ========================================================= */
+.top-left,.top-right{display:flex;align-items:center;gap:10px;min-width:0}
+.icon-btn{
+  width:38px;height:38px;border:1px solid var(--border);background:var(--surface);
+  border-radius:11px;display:grid;place-items:center;cursor:pointer;transition:.18s ease
+}
+.icon-btn:hover{background:var(--surface-2);border-color:color-mix(in srgb,var(--primary) 35%,var(--border))}
+.mobile-menu-btn{display:none}
+.crumb{min-width:0}
+.crumb-cat{font-size:11.5px;color:var(--muted);line-height:1.15}
+.crumb-title{font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.text-btn{
+  height:38px;min-width:38px;border:1px solid var(--border);background:var(--surface);
+  border-radius:11px;padding:0 10px;cursor:pointer;font-weight:750
+}
+.text-btn:hover{background:var(--surface-2)}
+.theme-icon-sun,.theme-icon-moon{width:18px;height:18px}
+html[data-theme="light"] .theme-icon-sun{display:none}
+html[data-theme="dark"] .theme-icon-moon{display:none}
+
+/* =========================================================
+   6. Page System / Typography
+   ========================================================= */
+.page{display:none;animation:pageIn .18s ease}
+.page.active{display:block}
+@keyframes pageIn{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+.page-head{margin-bottom:18px}
+.eyebrow{font-size:11.5px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;color:var(--primary);margin-bottom:5px}
+h1{font-size:clamp(24px,2.4vw,32px);line-height:1.22;margin:0 0 8px;letter-spacing:-.02em}
+h2{font-size:20px;line-height:1.3;margin:26px 0 12px}
+h3{font-size:16.5px;line-height:1.35;margin:0 0 7px}
+p{margin:0 0 12px}
+.lead{max-width:860px;color:var(--muted);font-size:1.05em}
+.muted{color:var(--muted)}
+.small{font-size:.86em}
+.kicker{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:5px 9px;border-radius:999px;background:var(--surface-2);
+  border:1px solid var(--border);color:var(--muted);font-size:12px;font-weight:700
+}
+
+/* =========================================================
+   7. Cards / Grids
+   ========================================================= */
+.grid{display:grid;gap:14px}
+.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);
+  padding:17px;box-shadow:var(--shadow-sm);min-width:0
+}
+.card.flat{box-shadow:none}
+.card-title-row{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.card-icon{
+  width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+  background:var(--primary-soft);color:var(--primary);flex:0 0 34px
+}
+.card-icon svg{width:18px;height:18px}
+.card p:last-child{margin-bottom:0}
+.metric{padding:15px}
+.metric-label{color:var(--muted);font-size:12px;font-weight:700}
+.metric-value{font-size:25px;font-weight:850;line-height:1.1;margin:5px 0 3px;letter-spacing:-.02em}
+.metric-note{font-size:12px;color:var(--muted)}
+.number-card{position:relative;padding-left:60px}
+.number-badge{
+  position:absolute;left:16px;top:16px;width:31px;height:31px;border-radius:10px;
+  display:grid;place-items:center;background:var(--primary);color:white;font-weight:850
+}
+.pill{
+  display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:4px 8px;
+  font-size:11.5px;font-weight:800;border:1px solid var(--border);background:var(--surface-2)
+}
+.pill.success{background:var(--success-soft);color:var(--success);border-color:color-mix(in srgb,var(--success) 20%,var(--border))}
+.pill.warning{background:var(--warning-soft);color:var(--warning);border-color:color-mix(in srgb,var(--warning) 20%,var(--border))}
+.pill.danger{background:var(--danger-soft);color:var(--danger);border-color:color-mix(in srgb,var(--danger) 20%,var(--border))}
+.pill.info{background:var(--info-soft);color:var(--info);border-color:color-mix(in srgb,var(--info) 20%,var(--border))}
+.pill.purple{background:var(--purple-soft);color:var(--purple);border-color:color-mix(in srgb,var(--purple) 20%,var(--border))}
+
+/* =========================================================
+   8. Hero / Architecture / Flow
+   ========================================================= */
+.hero{
+  border:1px solid var(--border);border-radius:var(--radius-lg);
+  background:
+    radial-gradient(circle at 86% 14%,color-mix(in srgb,var(--purple) 16%,transparent),transparent 29%),
+    radial-gradient(circle at 8% 90%,color-mix(in srgb,var(--primary) 14%,transparent),transparent 28%),
+    var(--surface);
+  padding:22px;box-shadow:var(--shadow-md);margin-bottom:16px
+}
+.hero-grid{display:grid;grid-template-columns:1.35fr .9fr;gap:22px;align-items:center}
+.hero h1{max-width:800px}
+.hero-summary{font-size:1.03em;color:var(--muted);max-width:780px}
+.formula{
+  background:var(--surface-2);border:1px solid var(--border);border-radius:18px;padding:18px;
+  text-align:center
+}
+.formula-title{font-size:12px;color:var(--muted);font-weight:750;margin-bottom:10px}
+.formula-line{font-size:clamp(18px,2vw,25px);font-weight:900;letter-spacing:-.02em}
+.formula-line .op{color:var(--muted);font-weight:600;padding:0 4px}
+.formula-foot{font-size:12px;color:var(--muted);margin-top:8px}
+.flow{
+  display:grid;grid-template-columns:repeat(5,minmax(120px,1fr));gap:10px;align-items:stretch;margin:12px 0 2px
+}
+.flow-step{
+  position:relative;background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:14px;box-shadow:var(--shadow-sm)
+}
+.flow-step:not(:last-child)::after{
+  content:"→";position:absolute;right:-11px;top:50%;transform:translateY(-50%);
+  z-index:2;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;
+  background:var(--bg);color:var(--muted);font-weight:900
+}
+.flow-step .n{font-size:11px;color:var(--muted);font-weight:850}
+.flow-step .t{font-weight:800;margin-top:4px;line-height:1.3}
+.flow-step .d{font-size:12px;color:var(--muted);margin-top:5px}
+
+/* =========================================================
+   9. Callouts / Lists
+   ========================================================= */
+.callout{
+  border:1px solid var(--border);border-left:4px solid var(--info);
+  background:var(--info-soft);border-radius:12px;padding:13px 15px;margin:14px 0
+}
+.callout.warning{border-left-color:var(--warning);background:var(--warning-soft)}
+.callout.danger{border-left-color:var(--danger);background:var(--danger-soft)}
+.callout.success{border-left-color:var(--success);background:var(--success-soft)}
+.callout.purple{border-left-color:var(--purple);background:var(--purple-soft)}
+.callout-title{font-weight:850;margin-bottom:3px}
+.check-list,.plain-list{margin:8px 0 0;padding:0;list-style:none}
+.check-list li,.plain-list li{position:relative;padding-left:25px;margin:7px 0}
+.check-list li::before{
+  content:"✓";position:absolute;left:0;top:1px;width:18px;height:18px;border-radius:50%;
+  background:var(--success-soft);color:var(--success);display:grid;place-items:center;font-size:11px;font-weight:900
+}
+.plain-list li::before{content:"•";position:absolute;left:6px;color:var(--primary);font-weight:900}
+.bad-list li::before{content:"×";background:var(--danger-soft);color:var(--danger)}
+
+/* =========================================================
+   10. Tables
+   ========================================================= */
+.table-wrap{overflow:auto;border:1px solid var(--border);border-radius:14px;background:var(--surface)}
+table{width:100%;border-collapse:collapse;min-width:680px}
+th,td{padding:11px 13px;text-align:left;vertical-align:top;border-bottom:1px solid var(--border)}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:var(--surface-2)}
+tr:last-child td{border-bottom:0}
+tbody tr:nth-child(even){background:color-mix(in srgb,var(--surface-2) 55%,transparent)}
+
+/* =========================================================
+   11. Code Blocks
+   ========================================================= */
+.code-block{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:#111827;margin:12px 0}
+.code-head{
+  min-height:38px;padding:7px 10px 7px 13px;display:flex;align-items:center;justify-content:space-between;
+  gap:10px;background:#182234;color:#cbd5e1;border-bottom:1px solid #2b3850
+}
+.code-label{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.copy-btn{
+  border:1px solid #3a4963;background:#22304a;color:#e5edf8;border-radius:9px;
+  padding:5px 9px;cursor:pointer;font-size:11.5px;font-weight:750
+}
+.copy-btn:hover{background:#2c3d5c}
+pre{margin:0;padding:14px;overflow:auto;color:#eef4ff;font-size:13px;line-height:1.6;white-space:pre}
+pre code{font:inherit}
+
+/* =========================================================
+   12. Comparison / Diagram
+   ========================================================= */
+.rule-v-wall{display:grid;grid-template-columns:1fr 52px 1fr;gap:12px;align-items:stretch}
+.compare-side{border:1px solid var(--border);border-radius:16px;padding:16px;background:var(--surface)}
+.compare-mid{display:grid;place-items:center;color:var(--muted);font-weight:900}
+.compare-side.wall{border-color:color-mix(in srgb,var(--success) 30%,var(--border));background:var(--success-soft)}
+.compare-side.rule{border-color:color-mix(in srgb,var(--warning) 30%,var(--border));background:var(--warning-soft)}
+.boundary-box{
+  border:1px solid var(--border);border-radius:18px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow-sm)
+}
+.boundary-safe{padding:16px;background:var(--success-soft);border-bottom:1px solid var(--border)}
+.boundary-gate{padding:11px 16px;background:var(--warning-soft);font-weight:850;color:var(--warning)}
+.boundary-human{padding:16px;background:var(--surface)}
+.tag-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+
+/* =========================================================
+   13. Buttons / Quick nav
+   ========================================================= */
+.quick-nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.quick-link{
+  border:1px solid var(--border);background:var(--surface-2);color:var(--text);
+  border-radius:10px;padding:7px 10px;text-decoration:none;font-size:12px;font-weight:750
+}
+.quick-link:hover{border-color:var(--primary);color:var(--primary)}
+.next-card{
+  margin-top:22px;border:1px dashed color-mix(in srgb,var(--primary) 35%,var(--border));
+  border-radius:14px;padding:13px 15px;background:color-mix(in srgb,var(--primary-soft) 52%,var(--surface))
+}
+.next-card button{
+  border:0;background:transparent;color:var(--primary);font-weight:850;padding:0;cursor:pointer
+}
+
+/* =========================================================
+   14. Responsive
+   ========================================================= */
+@media (max-width:1050px){
+  .grid-4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hero-grid{grid-template-columns:1fr}
+  .flow{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .flow-step:not(:last-child)::after{display:none}
+}
+@media (max-width:820px){
+  body{overflow:hidden}
+  .app{display:block}
+  .sidebar{
+    position:fixed;left:0;top:0;width:min(86vw,310px);transform:translateX(-102%);
+    transition:transform .2s ease;box-shadow:var(--shadow-md)
+  }
+  body.mobile-open .sidebar{transform:none}
+  body.sidebar-collapsed .brand-copy,
+  body.sidebar-collapsed .nav-label,
+  body.sidebar-collapsed .nav-text,
+  body.sidebar-collapsed .sidebar-meta{display:initial}
+  body.sidebar-collapsed .brand{justify-content:flex-start;padding:0 18px}
+  body.sidebar-collapsed .sidebar-nav{padding:14px 10px 10px}
+  body.sidebar-collapsed .nav-item{justify-content:flex-start;padding:10px 11px}
+  .main-shell{height:100vh}
+  .desktop-collapse{display:none}
+  .mobile-menu-btn{display:grid}
+  .overlay{
+    position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:25
+  }
+  body.mobile-open .overlay{display:block}
+  .topbar{padding:0 13px}
+  .content{width:min(100% - 26px,920px);padding-top:18px}
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+  .rule-v-wall{grid-template-columns:1fr}
+  .compare-mid{height:18px}
+  .flow{grid-template-columns:1fr}
+  .top-right{gap:5px}
+}
+@media (max-width:500px){
+  :root{--topbar-h:62px}
+  .brand{height:62px}
+  .crumb-cat{display:none}
+  .topbar .text-btn{padding:0 7px;min-width:34px}
+  .topbar .icon-btn{width:36px;height:36px}
+  .content{width:calc(100% - 20px)}
+  .hero{padding:17px}
+  .card{padding:14px}
+  h1{font-size:24px}
+  .metric-value{font-size:22px}
+}
+
+/* =========================================================
+   15. Print
+   ========================================================= */
+@media print{
+  body{overflow:visible;background:#fff;color:#111;font-size:11pt}
+  .app{display:block;height:auto}
+  .sidebar,.topbar,.overlay,.next-card,.quick-nav{display:none !important}
+  .main-shell,.content-scroll{height:auto;overflow:visible;display:block}
+  .content{width:100%;max-width:none;padding:0}
+  .page{display:block !important;animation:none;page-break-before:always;padding-top:8mm}
+  .page:first-child{page-break-before:auto}
+  .hero,.card,.table-wrap,.callout,.boundary-box,.compare-side,.code-block{box-shadow:none;break-inside:avoid}
+  .grid{display:block}
+  .grid>.card{margin-bottom:8px}
+  .flow{display:block}
+  .flow-step{margin-bottom:7px}
+  .code-block{background:#f4f4f4;border-color:#ccc}
+  .code-head{background:#ececec;color:#222;border-color:#ccc}
+  .copy-btn{display:none}
+  pre{color:#111;white-space:pre-wrap}
+  a{color:#111}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" aria-label="เมนูคู่มือ">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M12 3 4.8 7.2v9.6L12 21l7.2-4.2V7.2L12 3Z"/>
+          <path d="m8.5 10 3.5 2 3.5-2M12 12v5"/>
+        </svg>
+      </div>
+      <div class="brand-copy">
+        <div class="brand-title">Hermes Agent</div>
+        <div class="brand-sub">Trustworthy Autonomy Manual</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-label">ภาพรวม</div>
+        <button class="nav-item" data-page="overview">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></span>
+          <span class="nav-text">Overview</span>
+        </button>
+        <button class="nav-item" data-page="trust-line">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 18V9m5 9V5m5 13v-7m5 7V3"/><path d="M3 21h18"/></svg></span>
+          <span class="nav-text">Trust Line</span>
+        </button>
+        <button class="nav-item" data-page="inbox-case">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v14H4z"/><path d="m4 7 8 6 8-6"/></svg></span>
+          <span class="nav-text">Inbox Case Study</span>
+        </button>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-label">3 Upgrades</div>
+        <button class="nav-item" data-page="verification">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg></span>
+          <span class="nav-text">1 — Stop Silent Failures</span>
+        </button>
+        <button class="nav-item" data-page="approval">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 5 6v5c0 4.7 2.9 8 7 10 4.1-2 7-5.3 7-10V6l-7-3Z"/><path d="M9 12h6"/></svg></span>
+          <span class="nav-text">2 — Approval Gates</span>
+        </button>
+        <button class="nav-item" data-page="subagents">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M12 9v3m0 0-6 3m6-3 6 3"/></svg></span>
+          <span class="nav-text">3 — Restricted Subagents</span>
+        </button>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-label">Optimize & Apply</div>
+        <button class="nav-item" data-page="context-audit">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5M8 17h7"/></svg></span>
+          <span class="nav-text">Context & Skill Audit</span>
+        </button>
+        <button class="nav-item" data-page="blueprint">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V8l8-4 8 4v12"/><path d="M8 20v-6h8v6M7 10h2m6 0h2"/></svg></span>
+          <span class="nav-text">Implementation Blueprint</span>
+        </button>
+        <button class="nav-item" data-page="mistakes">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 2.8 20h18.4L12 3Z"/><path d="M12 9v5m0 3h.01"/></svg></span>
+          <span class="nav-text">4 Mistakes to Avoid</span>
+        </button>
+        <button class="nav-item" data-page="quick-reference">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12v18H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></span>
+          <span class="nav-text">Quick Reference</span>
+        </button>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-label">Reference</div>
+        <button class="nav-item" data-page="source">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v14H4z"/><path d="M9 9h6M8 13h8M10 17h4"/></svg></span>
+          <span class="nav-text">Source & Notes</span>
+        </button>
+      </div>
+    </nav>
+
+    <div class="sidebar-meta">
+      <div class="meta-row"><span>Type</span><strong>Reference Manual</strong></div>
+      <div class="meta-row"><span>Language</span><strong>Thai + EN Terms</strong></div>
+      <div class="meta-row"><span>Updated</span><strong>24 Aug 2026</strong></div>
+    </div>
+  </aside>
+
+  <div class="overlay" id="overlay" aria-hidden="true"></div>
+
+  <main class="main-shell">
+    <header class="topbar">
+      <div class="top-left">
+        <button class="icon-btn mobile-menu-btn" id="mobileMenuBtn" aria-label="เปิดเมนู">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <button class="icon-btn desktop-collapse" id="collapseBtn" aria-label="ย่อหรือขยาย Sidebar">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 4h12v16H8M4 8l4 4-4 4"/></svg>
+        </button>
+        <div class="crumb">
+          <div class="crumb-cat" id="crumbCat">ภาพรวม</div>
+          <div class="crumb-title" id="crumbTitle">Overview</div>
+        </div>
+      </div>
+      <div class="top-right">
+        <button class="text-btn" id="fontMinus" aria-label="ลดขนาดตัวอักษร">A−</button>
+        <button class="text-btn" id="fontPlus" aria-label="เพิ่มขนาดตัวอักษร">A+</button>
+        <button class="icon-btn" id="themeBtn" aria-label="สลับ Dark และ Light Mode">
+          <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+          <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 15.5A8.5 8.5 0 1 1 8.5 4 7 7 0 0 0 20 15.5Z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="content-scroll" id="contentScroll">
+      <div class="content">
+
+        <!-- =====================================================
+             PAGE: OVERVIEW
+             ===================================================== -->
+        <section class="page" id="page-overview" data-category="ภาพรวม" data-title="Overview">
+          <div class="hero">
+            <div class="hero-grid">
+              <div>
+                <div class="eyebrow">Hermes Agent · Interactive Reference Manual</div>
+                <h1>ทำ Agent ให้ทรงพลังขึ้นด้วย “ความไว้ใจได้” ไม่ใช่การยัด Skill ให้มากขึ้น</h1>
+                <p class="hero-summary">
+                  แก่นของต้นฉบับคือการยกระดับ Hermes ด้วย 3 ขั้นตามลำดับ:
+                  <strong>หยุด Silent Failure → วาง Approval Gates → แยก Restricted Subagents</strong>
+                  แล้วลด Context Tax จาก Skills ที่ไม่ได้ใช้งาน เพื่อให้ Agent เร็วขึ้น ปลอดภัยขึ้น และทำงานเองได้มากขึ้นโดยไม่ต้องเฝ้า
+                </p>
+                <div class="tag-row">
+                  <span class="pill info">Reliability First</span>
+                  <span class="pill success">Safe Autonomy</span>
+                  <span class="pill purple">Parallel Subagents</span>
+                  <span class="pill warning">Context Discipline</span>
+                </div>
+                <div class="quick-nav">
+                  <a class="quick-link" href="#verification">Upgrade 1</a>
+                  <a class="quick-link" href="#approval">Upgrade 2</a>
+                  <a class="quick-link" href="#subagents">Upgrade 3</a>
+                  <a class="quick-link" href="#context-audit">30-sec Audit</a>
+                </div>
+              </div>
+              <div class="formula" aria-label="โมเดลคุณค่าของ Agent">
+                <div class="formula-title">CONCEPTUAL VALUE MODEL FROM THE SOURCE</div>
+                <div class="formula-line">Work <span class="op">×</span> Trust <span class="op">×</span> Autonomy</div>
+                <div class="formula-foot">เพิ่ม Work อย่างเดียวไม่พอ — ค่าที่ต่ำที่สุดจะกลายเป็นคอขวดของระบบ</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-4">
+            <div class="card metric">
+              <div class="metric-label">Core Upgrades</div>
+              <div class="metric-value">3</div>
+              <div class="metric-note">Reliability → Boundaries → Parallelism</div>
+            </div>
+            <div class="card metric">
+              <div class="metric-label">Author-reported Result</div>
+              <div class="metric-value">$10K</div>
+              <div class="metric-note">เพิ่มในธุรกิจภายในหนึ่งสัปดาห์จาก inbox workflow</div>
+            </div>
+            <div class="card metric">
+              <div class="metric-label">Gate Frequency Example</div>
+              <div class="metric-value">~1/8</div>
+              <div class="metric-note">ตัวอย่างของผู้เขียน: 7 ใน 8 ข้อความไปต่อได้เอง</div>
+            </div>
+            <div class="card metric">
+              <div class="metric-label">Lean Skill Target</div>
+              <div class="metric-value">~6</div>
+              <div class="metric-note">ผู้เขียนบอกว่าถ้าเริ่มใหม่จะเปิดเฉพาะ Skills ที่ใช้ทุกวัน</div>
+            </div>
+          </div>
+
+          <h2>ลำดับที่ต้องทำ</h2>
+          <div class="flow" aria-label="ลำดับการปรับปรุง Hermes">
+            <div class="flow-step">
+              <div class="n">FOUNDATION</div>
+              <div class="t">Define Trust Line</div>
+              <div class="d">วัดจากงานที่ “ไม่ต้องกลับมาตรวจ” ไม่ใช่งานที่ Agent พยายามทำ</div>
+            </div>
+            <div class="flow-step">
+              <div class="n">UPGRADE 1</div>
+              <div class="t">Stop Silent Failures</div>
+              <div class="d">Verify artifact, use deterministic code, check preconditions, enforce success hooks</div>
+            </div>
+            <div class="flow-step">
+              <div class="n">UPGRADE 2</div>
+              <div class="t">Approval Gates</div>
+              <div class="d">ให้ Agent เดินเองในพื้นที่ปลอดภัย และหยุดก่อน public / money / commitment</div>
+            </div>
+            <div class="flow-step">
+              <div class="n">UPGRADE 3</div>
+              <div class="t">Restricted Subagents</div>
+              <div class="d">แยก Context และ Tool access เพื่อให้ขนานเร็วขึ้นโดยลด blast radius</div>
+            </div>
+            <div class="flow-step">
+              <div class="n">OPTIMIZE</div>
+              <div class="t">Audit Context Cost</div>
+              <div class="d">ปิด Skills ที่ไม่ใช้ ลด token tax ที่ติดมากับทุก run</div>
+            </div>
+          </div>
+
+          <div class="callout success">
+            <div class="callout-title">แนวคิดสำคัญที่สุด</div>
+            Agent ไม่จำเป็นต้อง “ฉลาดขึ้น” เพื่อสร้างมูลค่ามากขึ้น หากมัน <strong>คาดเดาได้, แจ้งเมื่อพลาด, หยุดก่อนเรื่องสำคัญ และเริ่มงานเองได้</strong> คุณจะสามารถเลิกเฝ้ามันได้มากขึ้น
+          </div>
+          <div class="callout warning">
+            <div class="callout-title">ข้อควรอ่านแบบมีวิจารณญาณ</div>
+            ตัวเลข “$10,000” และคำว่า “10x” เป็นประสบการณ์/การอ้างผลของผู้เขียนต้นฉบับ ไม่ใช่ benchmark หรือผลทดลองอิสระของ Hermes
+          </div>
+
+          <div class="next-card">ถัดไป: <button data-go="trust-line">ทำความเข้าใจ Trust Line →</button></div>
+        </section>
+
+        <!-- =====================================================
+             PAGE: TRUST LINE
+             ===================================================== -->
+        <section class="page" id="page-trust-line" data-category="ภาพรวม" data-title="Trust Line">
+          <div class="page-head">
+            <div class="eyebrow">Foundation</div>
+            <h1>Trust Line — งานที่ Agent ทำได้จริงโดยคุณไม่ต้องกลับมาตรวจ</h1>
+            <p class="lead">ผู้เขียนเปลี่ยนวิธีวัด Agent จาก “ทำได้กี่อย่าง” เป็น “มีงานกี่ส่วนที่ฉันไว้ใจให้จบเองได้” เพราะงานที่อยู่เหนือเส้นความไว้ใจจะเด้งกลับมาเป็นงานตรวจของมนุษย์ทั้งหมด</p>
+          </div>
+
+          <div class="grid grid-3">
+            <div class="card">
+              <div class="card-title-row"><div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 19V9m7 10V5m7 14v-7"/></svg></div><h3>1. Work</h3></div>
+              <p>Agent ทำงานได้มากแค่ไหน — จำนวน Skills/Tools มีผลกับแกนนี้โดยตรง</p>
+            </div>
+            <div class="card">
+              <div class="card-title-row"><div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 5 6v5c0 4.7 2.9 8 7 10 4.1-2 7-5.3 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></div><h3>2. Trust</h3></div>
+              <p>คุณยอมรับผลลัพธ์ได้มากแค่ไหนโดยไม่ต้องตรวจซ้ำ — นี่คือแกนที่ผู้เขียนเคยมองข้าม</p>
+            </div>
+            <div class="card">
+              <div class="card-title-row"><div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></div><h3>3. Autonomy</h3></div>
+              <p>งานเกิดขึ้นได้มากแค่ไหนโดยไม่ต้องมีคุณเป็นคนเริ่มหรือคอยตอบคำถามระหว่างทาง</p>
+            </div>
+          </div>
+
+          <h2>ทำไม “เพิ่ม Skill” อาจทำให้แย่ลง</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>สถานการณ์</th><th>Work</th><th>Trust</th><th>ผลต่อคุณ</th></tr></thead>
+              <tbody>
+                <tr><td>เพิ่ม Skills ต่อเนื่อง แต่ยังตรวจทุกอย่าง</td><td>สูงขึ้น</td><td>เท่าเดิม</td><td>Agent ผลิต “งานให้ตรวจ” มากขึ้น</td></tr>
+                <tr><td>ลด Scope แต่ตรวจผลลัพธ์ได้จริง</td><td>อาจลดลง</td><td>สูงขึ้น</td><td>งานจบโดยไม่ย้อนกลับมาที่โต๊ะคุณมากขึ้น</td></tr>
+                <tr><td>วาง Gate ชัดและ schedule ได้</td><td>คงที่/สูง</td><td>สูง</td><td>Autonomy เพิ่มโดยไม่เปิดความเสี่ยงแบบไร้ขอบเขต</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout purple">
+            <div class="callout-title">คำถามวัด Trust Line</div>
+            แทนที่จะถามว่า “Hermes ทำอะไรได้อีก?” ให้ถามว่า <strong>“งานที่ Hermes ทำอยู่ตอนนี้ ส่วนไหนที่ฉันยอมให้มันทำจบโดยไม่ตรวจได้?”</strong>
+          </div>
+
+          <div class="next-card">ถัดไป: <button data-go="inbox-case">ดู Inbox Workflow ที่เป็นตัวอย่างจริง →</button></div>
+        </section>
+
+        <!-- =====================================================
+             PAGE: INBOX CASE
+             ===================================================== -->
+        <section class="page" id="page-inbox-case" data-category="ภาพรวม" data-title="Inbox Case Study">
+          <div class="page-head">
+            <div class="eyebrow">Case Study from the Source</div>
+            <h1>Automated Inbox Workflow — งานง่ายแต่สม่ำเสมอสร้างมูลค่า</h1>
+            <p class="lead">ผู้เขียนยก workflow ที่ Hermes อ่าน inbox, หาโอกาสที่ดีที่สุด และตอบกลับ โดยให้เหตุผลว่า Agent ไม่จำเป็นต้องเก่งกว่ามนุษย์ในงานนี้ แต่ได้เปรียบเพราะไม่เหนื่อยและไม่ข้ามวัน</p>
+          </div>
+
+          <div class="flow">
+            <div class="flow-step"><div class="n">01</div><div class="t">Read Inbox</div><div class="d">อ่านข้อความ/โอกาสที่เข้ามา</div></div>
+            <div class="flow-step"><div class="n">02</div><div class="t">Prioritize</div><div class="d">เลือกโอกาสที่ควรตอบก่อน</div></div>
+            <div class="flow-step"><div class="n">03</div><div class="t">Research</div><div class="d">ตรวจ sender / history ตาม workflow</div></div>
+            <div class="flow-step"><div class="n">04</div><div class="t">Draft / Reply</div><div class="d">ตอบสิ่งที่อยู่ในขอบเขตปลอดภัย</div></div>
+            <div class="flow-step"><div class="n">05</div><div class="t">Gate / Deliver</div><div class="d">หยุดหากมีราคา/กำหนดการ/คำมั่น แล้วส่งสถานะไป Telegram</div></div>
+          </div>
+
+          <div class="grid grid-2" style="margin-top:16px">
+            <div class="card">
+              <span class="pill danger">Initial failure</span>
+              <h3 style="margin-top:9px">Agent รายงานว่าส่ง 9 replies — แต่จริง ๆ ส่ง 0</h3>
+              <p class="muted">ไม่มี error สีแดง ไม่มี failure ที่ชัดเจน และ Agent จบงานเหมือนสำเร็จ นี่คือเหตุผลที่ผู้เขียนเริ่มจาก Silent Failure ก่อนเรื่อง Autonomy</p>
+            </div>
+            <div class="card">
+              <span class="pill success">After controls</span>
+              <h3 style="margin-top:9px">ทำงานเองได้มากขึ้น เพราะผลลัพธ์ถูกตรวจและมีขอบเขต</h3>
+              <p class="muted">เมื่อผลลัพธ์ตรวจได้, มี preconditions, gate และ rollback จึงสามารถ schedule งานก่อนผู้เขียนตื่นและส่งผลเข้า Telegram ได้</p>
+            </div>
+          </div>
+
+          <div class="callout warning">
+            <div class="callout-title">อย่าสับสน “ทำตามขั้นตอน” กับ “เกิดผลลัพธ์จริง”</div>
+            Workflow นี้กลายเป็นตัวอย่างหลักของต้นฉบับ เพราะความผิดพลาดแรกไม่ได้อยู่ที่ reasoning แต่คือ Agent คิดว่า <strong>ความตั้งใจสำเร็จ = งานสำเร็จ</strong>
+          </div>
+
+          <div class="next-card">ถัดไป: <button data-go="verification">Upgrade 1 — Stop Silent Failures →</button></div>
+        </section>
+
+        <!-- =====================================================
+             PAGE: VERIFICATION
+             ===================================================== -->
+        <section class="page" id="page-verification" data-category="3 Upgrades" data-title="Upgrade 1 — Stop Silent Failures">
+          <div class="page-head">
+            <div class="eyebrow">Upgrade 1</div>
+            <h1>Stop Silent Failures — บังคับให้ Agent ตรวจ “สิ่งที่เกิดขึ้นจริง”</h1>
+            <p class="lead">ขั้นแรกไม่ใช่เพิ่มความเร็ว แต่คือทำให้ Agent ไม่สามารถจบงานแบบเงียบ ๆ ทั้งที่ไม่มี artifact หรือผลลัพธ์จริง ผู้เขียนสรุปแนวทางเป็น 4 กลไกหลัก</p>
+          </div>
+
+          <div class="grid grid-2">
+            <div class="card number-card">
+              <div class="number-badge">1</div>
+              <h3>Verification Rule</h3>
+              <p>ก่อนรายงานว่างานสำเร็จ ให้เปิดสิ่งที่ผลิตขึ้นมาและตรวจเทียบกับคำขอ หากเปิดหรือตรวจไม่ได้ ให้ถือว่ายังพิสูจน์ความสำเร็จไม่ได้</p>
+            </div>
+            <div class="card number-card">
+              <div class="number-badge">2</div>
+              <h3>Deterministic Code</h3>
+              <p>ขั้นที่มี “คำตอบถูกเพียงแบบเดียว” โดยเฉพาะตัวเลข/ราคา/การคำนวณ ควรย้ายจาก prose instruction ไปเป็น script/code</p>
+            </div>
+            <div class="card number-card">
+              <div class="number-badge">3</div>
+              <h3>Preconditions</h3>
+              <p>เช็ก dependency ก่อนเริ่ม เช่น inbox เข้าถึงได้ไหม, pricing file มีอยู่ไหม, file ยังเป็นเดือนปัจจุบันหรือไม่ ถ้าไม่ผ่านให้หยุดแทนการเดา</p>
+            </div>
+            <div class="card number-card">
+              <div class="number-badge">4</div>
+              <h3>Hooks + Harsh Success Checks</h3>
+              <p>ถ้างานจบแล้ว “ไม่ได้ผลิตอะไร” ให้ถือเป็น failure และแจ้งเร็ว ไม่ใช่ success เพียงเพราะ flow เดินครบ</p>
+            </div>
+          </div>
+
+          <h2>Operational verification rule</h2>
+          <p class="muted small">ข้อความด้านล่างเป็นเวอร์ชันสรุปเชิงปฏิบัติจากหลักการในต้นฉบับ ไม่ใช่คำพูดตรงแบบ verbatim</p>
+          <div class="code-block">
+            <div class="code-head"><span class="code-label">Skill rule</span><button class="copy-btn">Copy</button></div>
+            <pre><code>Before reporting success:
+1) Open or retrieve the artifact/result you actually produced.
+2) Compare it against the user's requested outcome.
+3) Verify the real state, not your intended steps.
+4) If you cannot inspect the result, do not claim success.
+5) Report what you actually found, including failures or missing output.</code></pre>
+          </div>
+
+          <h2>Instruction หรือ Code?</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>ลักษณะงาน</th><th>ใช้ Instruction</th><th>ใช้ Deterministic Code</th></tr></thead>
+              <tbody>
+                <tr><td>มีหลายวิธีที่ “ถูก” ได้</td><td><strong>เหมาะ</strong> — ให้ Model ใช้วิจารณญาณ</td><td>อาจไม่จำเป็น</td></tr>
+                <tr><td>ต้องได้ผลเหมือนเดิมจาก input เดิม</td><td>เสี่ยงต่อการ improvise</td><td><strong>เหมาะ</strong></td></tr>
+                <tr><td>การเลือกอีเมลที่สำคัญ</td><td><strong>เหมาะ</strong></td><td>ไม่ใช่กรณีหลัก</td></tr>
+                <tr><td>ยอดเงิน / ราคา / calculation rule</td><td>ไม่ควรปล่อยให้ตีความใหม่ทุก run</td><td><strong>ควรทำเป็น script</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout success">
+            <div class="callout-title">ประโยชน์แฝงของ Script</div>
+            ต้นฉบับชี้ว่า script ไม่ต้องถูกโหลดเข้ามาเป็น reasoning context เหมือนคำสั่งยาว ๆ จึงได้ทั้ง <strong>consistency</strong> และ <strong>context efficiency</strong>
+          </div>
+
+          <h2>Precondition Checklist</h2>
+          <div class="card flat">
+            <ul class="check-list">
+              <li>External connection ที่งานต้องพึ่งพาใช้งานได้จริง</li>
+              <li>Required file / config มีอยู่และอ่านได้</li>
+              <li>ข้อมูลสำคัญไม่ stale เช่น pricing file เป็นเวอร์ชัน/เดือนปัจจุบัน</li>
+              <li>หาก prerequisite ใด fail ให้หยุดและรายงาน แทนการเติมช่องว่างด้วยการเดา</li>
+              <li>Success condition ต้องตรวจจาก output/state ที่เกิดขึ้นจริง</li>
+            </ul>
+          </div>
+
+          <div class="next-card">ถัดไป: <button data-go="approval">Upgrade 2 — Approval Gates →</button></div>
+        </section>
+
+        <!-- =====================================================
+             PAGE: APPROVAL
+             ===================================================== -->
+        <section class="page" id="page-approval" data-category="3 Upgrades" data-title="Upgrade 2 — Approval Gates">
+          <div class="page-head">
+            <div class="eyebrow">Upgrade 2</div>
+            <h1>Approval Gate ไม่ได้ลด Autonomy — มันเป็นสิ่งที่ทำให้ Autonomy เกิดขึ้นได้</h1>
+            <p class="lead">หาก Agent “ทำได้ทุกอย่าง” คุณต้องคอยเฝ้าทุกอย่าง แต่เมื่อมี hard boundary ที่มันจะไม่ข้าม คุณสามารถปล่อยให้สิ่งที่อยู่ฝั่งปลอดภัยทำงานต่อเองได้</p>
+          </div>
+
+          <div class="boundary-box">
+            <div class="boundary-safe">
+              <span class="pill success">AUTO — safe side</span>
+              <h3 style="margin-top:9px">Agent ไปต่อเองได้</h3>
+              <div class="tag-row">
+                <span class="pill">Answer questions</span>
+                <span class="pill">Send information</span>
+                <span class="pill">Ask for details</span>
+                <span class="pill">Book a call</span>
+              </div>
+            </div>
+            <div class="boundary-gate">APPROVAL GATE — หยุดทันทีเมื่อข้ามเส้นนี้</div>
+            <div class="boundary-human">
+              <span class="pill warning">HUMAN APPROVAL</span>
+              <div class="tag-row">
+                <span class="pill warning">Names / asks for price</span>
+                <span class="pill warning">Commits to a date</span>
+                <span class="pill warning">Promises a deliverable</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-3" style="margin-top:16px">
+            <div class="card">
+              <h3>Gate = Boundary</h3>
+              <p class="muted">ขอบเขตชัดทำให้คุณรู้ว่าอะไร “ไม่มีวันถูก commit โดยอัตโนมัติ”</p>
+            </div>
+            <div class="card">
+              <h3>Schedule = Start Without You</h3>
+              <p class="muted">ตัวอย่างของผู้เขียนใช้ cron ให้ workflow วิ่งทุกเช้า โดยไม่ต้องรอให้คนเริ่ม</p>
+            </div>
+            <div class="card">
+              <h3>Rollback = Safe Undo</h3>
+              <p class="muted">Hermes snapshot ก่อนแก้ไฟล์และ rollback ได้ ผู้เขียนมองว่านี่ทำให้ “การลงมือ” ปลอดภัยขึ้น</p>
+            </div>
+          </div>
+
+          <div class="callout purple">
+            <div class="callout-title">Delivery channel มีผลต่อ Autonomy</div>
+            ผู้เขียนส่งผลเข้า Telegram เพราะเป็นที่ที่เขาดูอยู่แล้ว แนวคิดคือ <strong>งานที่จบแต่ฝังอยู่ใน log ที่ไม่มีใครอ่าน เท่ากับงานที่ไม่ถูกใช้งาน</strong>
+          </div>
+
+          <h2>Approval Policy Template</h2>
+          <div class="code-block">
+            <div class="code-head"><span class="code-label">Policy pattern</span><button class="copy-btn">Copy</button></div>
+            <pre><code>Proceed autonomously for low-risk, reversible actions.
+
+STOP and request human approval before any action that:
+- names or negotiates a price,
+- creates a financial commitment,
+- commits to a date or deadline,
+- promises a deliverable,
+- performs a public/irreversible action outside the approved boundary.</code></pre>
+          </div>
+
+          <div class="callout warning">
+            <div class="callout-title">ลำดับสำคัญ</div>
+            อย่าเริ่มจาก schedule/autonomy ก่อนแก้ Silent Failure เพราะคุณจะได้ระบบที่ “ผิดเร็วขึ้นและทำเองได้” แทนที่จะได้ระบบที่ไว้ใจได้
+          </div>
+
+          <div class="next-card">ถัดไป: <button data-go="subagents">Upgrade 3 — Restricted Subagents →</button></div>
+        </section>
+
+        <!-- =====================================================
+             PAGE: SUBAGENTS
+             ===================================================== -->
+        <section class="page" id="page-subagents" data-category="3 Upgrades" data-title="Upgrade 3 — Restricted Subagents">
+          <div class="page-head">
+            <div class="eyebrow">Upgrade 3</div>
+            <h1>Restricted Subagents — เพิ่มความเร็วด้วยการแยก Context และ “เอา Tool ออก”</h1>
+            <p class="lead">เมื่อ foundation ไว้ใจได้แล้ว ผู้เขียนจึงค่อยขยายด้วย subagents แต่เน้นว่า child agent ควรได้เฉพาะ Context และ Tools ที่จำเป็นสำหรับหน้าที่ของมัน</p>
+          </div>
+
+          <div class="rule-v-wall">
+            <div class="compare-side rule">
+              <span class="pill warning">RULE</span>
+              <h3 style="margin-top:9px">“อย่าส่งอีเมลนะ”</h3>
+              <p>เป็นเพียงข้อความใน instruction ซึ่ง Model ต้องอ่านและปฏิบัติตาม จึงยังมี capability อยู่</p>
+            </div>
+            <div class="compare-mid">VS</div>
+            <div class="compare-side wall">
+              <span class="pill success">WALL</span>
+              <h3 style="margin-top:9px">ไม่มี Send Tool ให้เลย</h3>
+              <p>Agent ไม่สามารถส่งได้ในเชิง capability เพราะ Tool ไม่ถูกมอบให้ นี่คือ hard restriction ไม่ใช่คำขอให้ระวัง</p>
+            </div>
+          </div>
+
+          <h2>ตัวอย่าง Email Subagent</h2>
+          <div class="grid grid-2">
+            <div class="card">
+              <h3>ให้ทำ</h3>
+              <ul class="check-list">
+                <li>Read inbox</li>
+                <li>Sort / classify messages</li>
+                <li>ทำงานใน context ของตัวเอง</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>ไม่ให้ Tool</h3>
+              <ul class="check-list bad-list">
+                <li>Send messages</li>
+                <li>Write files</li>
+                <li>Spend money</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="callout success">
+            <div class="callout-title">Speed + Safety จากการเคลื่อนไหวเดียวกัน</div>
+            Subagents ช่วยแยกงานที่เดิมทำเป็นเส้นตรงให้ขนานกันได้ ขณะเดียวกันการจำกัด Tools ทำให้ blast radius ของแต่ละ agent แคบลง
+          </div>
+
+          <h2>Principle of Least Capability</h2>
+          <div class="card flat">
+            <p><strong>ให้ Subagent มี “เท่าที่ต้องใช้” ไม่ใช่ “ทุกอย่างที่ระบบมี”</strong></p>
+            <div class="table-wrap" style="margin-top:10px">
+              <table>
+                <thead><tr><th>Role</th><th>Context</th><th>Tools</th><th>สิ่งที่ป้องกัน</th></tr></thead>
+                <tbody>
+                  <tr><td>Inbox sorter</td><td>ข้อความ inbox + classification rule</td><td>Read only</td><td>ส่งข้อความ/แก้ไฟล์โดยไม่ตั้งใจ</td></tr>
+                  <tr><td>Researcher</td><td>ข้อมูล sender / task scope</td><td>Search / Read</td><td>Action ที่ไม่เกี่ยวข้อง</td></tr>
+                  <tr><td>Drafting agent</td><td>ข้อมูลที่ผ่านการคัดแล้ว</td><td>Draft only</td><td>Commit โดยไม่ผ่าน Gate</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="next-card">ถัดไป: <button data-go="context-audit">ลด Hidden Context Cost →</button></div>
+        </section>
+
+        <!-- =====================================================
+             PAGE: CONTEXT AUDIT
+             ===================================================== -->
+        <section class="page" id="page-context-audit" data-category="Optimize & Apply" data-title="Context & Skill Audit">
+          <div class="page-head">
+            <div class="eyebrow">Optimization</div>
+            <h1>Hidden Context Cost — Skill ที่เปิดไว้ทุกตัวมี “ค่าเช่า” ทุก Message</h1>
+            <p class="lead">ต้นฉบับชี้ว่าแม้ไม่ได้เรียกใช้ Skill นั้น ชื่อและคำอธิบายของ Skills ที่ enable ไว้ก็ต้องถูกโหลดเพื่อให้ Agent รู้ว่ามีอะไรให้ใช้ จึงเป็น context tax ที่เกิดกับข้อความ, subagent และ scheduled run ซ้ำ ๆ</p>
+          </div>
+
+          <div class="grid grid-3">
+            <div class="card metric">
+              <div class="metric-label">Largest Skill in author setup</div>
+              <div class="metric-value">21K</div>
+              <div class="metric-note">tokens — ตัวเลขจาก setup ของผู้เขียน ไม่ใช่มาตรฐานทั่วไป</div>
+            </div>
+            <div class="card metric">
+              <div class="metric-label">If starting again</div>
+              <div class="metric-value">6</div>
+              <div class="metric-note">ผู้เขียนจะเก็บ Skills ที่ใช้ทุกวันราว 6 ตัวก่อน</div>
+            </div>
+            <div class="card metric">
+              <div class="metric-label">Unused window</div>
+              <div class="metric-value">30d</div>
+              <div class="metric-note">ใช้ช่วง 30 วันเป็นเกณฑ์หา Skills ที่เปิดแต่ไม่ได้ใช้</div>
+            </div>
+          </div>
+
+          <h2>30-second Skill Audit — เวอร์ชันใช้งาน</h2>
+          <p class="muted small">ถอดหลักการจาก prompt ในต้นฉบับและเรียบเรียงใหม่ให้สั้น/ชัดสำหรับนำไปใช้</p>
+          <div class="code-block">
+            <div class="code-head"><span class="code-label">Audit prompt</span><button class="copy-btn">Copy</button></div>
+            <pre><code>Audit my enabled Hermes skills.
+
+1) Count every enabled skill.
+2) Estimate the total tokens used by all enabled skill names and descriptions.
+3) Report the context cost before I type a normal message.
+4) List enabled skills not used in the last 30 days.
+5) Recommend which skills to disable first, without deleting them.</code></pre>
+          </div>
+
+          <div class="callout info">
+            <div class="callout-title">เป้าหมายคือ Disable ไม่จำเป็นต้อง Delete</div>
+            ผู้เขียนไม่ได้เสนอให้ลบ Skills ที่ไม่ได้ใช้ทั้งหมด แต่ให้ปิดไว้ก่อน แล้วค่อยเปิดเมื่อจำเป็น เพื่อให้ baseline context เบาลง
+          </div>
+
+          <h2>แนวทางตัดสินใจ</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>สถานะ Skill</th><th>การตัดสินใจ</th><th>เหตุผล</th></tr></thead>
+              <tbody>
+                <tr><td>ใช้ทุกวัน</td><td><span class="pill success">Keep enabled</span></td><td>สร้างมูลค่าคุ้มกับ context cost</td></tr>
+                <tr><td>ใช้เป็นครั้งคราว</td><td><span class="pill warning">Disable until needed</span></td><td>ลดค่า context ถาวรโดยยังเก็บ capability ไว้</td></tr>
+                <tr><td>30+ วันไม่เคยใช้</td><td><span class="pill danger">Review first</span></td><td>เป็น “rent” ที่อาจจ่ายทุก run โดยไม่ได้ผลตอบแทน</td></tr>
+                <tr><td>ซ้ำกับ Skill อื่น</td><td><span class="pill purple">Consolidate</span></td><td>ลดความซ้ำและ routing ambiguity</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="next-card">ถัดไป: <button data-go="blueprint">Implementation Blueprint →</button></div>
+        </section>
+
+        <!-- =====================================================
+             PAGE: BLUEPRINT
+             ===================================================== -->
+        <section class="page" id="page-blueprint" data-category="Optimize & Apply" data-title="Implementation Blueprint">
+          <div class="page-head">
+            <div class="eyebrow">Apply in Order</div>
+            <h1>Implementation Blueprint — แปลงแนวคิดให้เป็นระบบ Hermes ที่ใช้งานจริง</h1>
+            <p class="lead">หน้านี้จัดโครงสร้างจากหลักการในต้นฉบับเป็น checklist เชิงปฏิบัติ โดยคงลำดับสำคัญ: Reliability ก่อน Autonomy และ Autonomy ก่อน Parallel Scale</p>
+          </div>
+
+          <div class="grid grid-2">
+            <div class="card number-card">
+              <div class="number-badge">1</div>
+              <h3>เลือก Workflow ที่มีมูลค่าแต่ Scope ชัด</h3>
+              <p>เช่น inbox triage/reply ไม่ต้องเริ่มจากงานที่ทำทุกอย่าง ให้เลือกงานซ้ำที่มี input/output มองเห็นได้</p>
+            </div>
+            <div class="card number-card">
+              <div class="number-badge">2</div>
+              <h3>กำหนด Artifact / Success State</h3>
+              <p>ระบุว่า “สำเร็จ” ต้องเห็นอะไรจริง เช่น draft ถูกสร้าง, message ถูกส่ง, file เปลี่ยนตามที่ขอ ไม่ใช่แค่ steps ผ่านครบ</p>
+            </div>
+            <div class="card number-card">
+              <div class="number-badge">3</div>
+              <h3>ใส่ Verification Rule ทุก Skill ที่มี Action</h3>
+              <p>ตรวจผลลัพธ์จากปลายทางจริง และห้าม claim success เมื่อเปิด/ตรวจ output ไม่ได้</p>
+            </div>
+            <div class="card number-card">
+              <div class="number-badge">4</div>
+              <h3>ย้าย Exact Logic ไป Code</h3>
+              <p>เลข, ราคา, formula และกฎ deterministic ควรอยู่ใน script เพื่อลดการ improvisation</p>
+            </div>
+            <div class="card number-card">
+              <div class="number-badge">5</div>
+              <h3>เพิ่ม Preconditions + Failure Hooks</h3>
+              <p>dependency fail ให้ stop; output ว่างให้แจ้ง failure; อย่าปล่อยให้ Agent “อ้อมช่องโหว่ด้วยการเดา”</p>
+            </div>
+            <div class="card number-card">
+              <div class="number-badge">6</div>
+              <h3>ลาก Approval Boundary</h3>
+              <p>เรื่องเงิน ราคา วันส่งมอบ คำมั่น หรือ public action ต้องหยุดรอมนุษย์ตาม policy</p>
+            </div>
+            <div class="card number-card">
+              <div class="number-badge">7</div>
+              <h3>เปิด Schedule + Delivery Channel</h3>
+              <p>เมื่อระบบพิสูจน์ตัวเองแล้ว จึงค่อยให้ cron เริ่มงานเอง และส่งผลไปช่องทางที่คุณดูจริง</p>
+            </div>
+            <div class="card number-card">
+              <div class="number-badge">8</div>
+              <h3>แยก Restricted Subagents</h3>
+              <p>แตกงานขนานและให้แต่ละ subagent มีเฉพาะ Context/Tools ที่ต้องใช้</p>
+            </div>
+            <div class="card number-card">
+              <div class="number-badge">9</div>
+              <h3>เปิด Rollback / Snapshot</h3>
+              <p>ทำให้ action ที่กระทบไฟล์ย้อนคืนได้ ลดต้นทุนของความผิดพลาด</p>
+            </div>
+            <div class="card number-card">
+              <div class="number-badge">10</div>
+              <h3>Audit Skills / Context ทุกช่วง</h3>
+              <p>ปิดสิ่งที่ไม่ใช้แทนการเก็บ capability ทุกอย่างไว้ active ตลอดเวลา</p>
+            </div>
+          </div>
+
+          <div class="callout success">
+            <div class="callout-title">Definition of Done ที่สอดคล้องกับต้นฉบับ</div>
+            ระบบพร้อมขยายเมื่อมัน <strong>บอกได้เมื่อ fail, ตรวจผลลัพธ์จริง, หยุดก่อนเรื่องสำคัญ, เริ่มงานเองได้ และความเสียหายย้อนกลับได้</strong>
+          </div>
+
+          <div class="next-card">ถัดไป: <button data-go="mistakes">4 Mistakes to Avoid →</button></div>
+        </section>
+
+        <!-- =====================================================
+             PAGE: MISTAKES
+             ===================================================== -->
+        <section class="page" id="page-mistakes" data-category="Optimize & Apply" data-title="4 Mistakes to Avoid">
+          <div class="page-head">
+            <div class="eyebrow">Anti-patterns</div>
+            <h1>4 Mistakes to Avoid</h1>
+            <p class="lead">ข้อผิดพลาดที่ผู้เขียนสรุปท้ายวิดีโอสะท้อนหลักเดียวกันทั้งหมด: อย่าเพิ่ม capability ก่อนทำให้ระบบควบคุมและตรวจสอบได้</p>
+          </div>
+
+          <div class="grid grid-2">
+            <div class="card number-card">
+              <div class="number-badge">1</div>
+              <h3>อย่าเปิด Skill เพราะมัน “ดูน่าใช้”</h3>
+              <p>Skill ทุกตัวที่ enable มี context cost จึงควรเปิดเมื่อมันสร้างมูลค่าจริง ไม่ใช่เพราะอาจได้ใช้สักวัน</p>
+            </div>
+            <div class="card number-card">
+              <div class="number-badge">2</div>
+              <h3>อย่าปล่อย Public / Financial Action โดยไม่มี Gate</h3>
+              <p>เรื่องที่มีผลภายนอกหรือเรื่องเงินควรมี hard approval boundary</p>
+            </div>
+            <div class="card number-card">
+              <div class="number-badge">3</div>
+              <h3>อย่าเชื่อ Success Report ที่พิสูจน์ Artifact ไม่ได้</h3>
+              <p>ถ้า Agent เปิดสิ่งที่มันอ้างว่าสร้าง/ส่ง/แก้ไม่ได้ คุณยังไม่มีหลักฐานว่างานสำเร็จ</p>
+            </div>
+            <div class="card number-card">
+              <div class="number-badge">4</div>
+              <h3>อย่าสลับลำดับ 3 Upgrades</h3>
+              <p>Speed บนระบบที่ยังไว้ใจไม่ได้ คือความยุ่งเหยิงที่เดินทางมาถึงคุณเร็วขึ้น</p>
+            </div>
+          </div>
+
+          <div class="callout danger">
+            <div class="callout-title">Anti-pattern สั้นที่สุด</div>
+            <strong>More Skills → More Speed → More Autonomy</strong> โดยไม่มี Verification และ Gate ไม่ใช่การ scale Agent แต่คือการ scale ความเสี่ยงและงานตรวจ
+          </div>
+
+          <div class="next-card">ถัดไป: <button data-go="quick-reference">เปิด Quick Reference →</button></div>
+        </section>
+
+        <!-- =====================================================
+             PAGE: QUICK REFERENCE
+             ===================================================== -->
+        <section class="page" id="page-quick-reference" data-category="Optimize & Apply" data-title="Quick Reference">
+          <div class="page-head">
+            <div class="eyebrow">Cheat Sheet</div>
+            <h1>Quick Reference — ตรวจ Hermes ใน 2 นาที</h1>
+            <p class="lead">ใช้หน้านี้เป็น checklist อ้างอิงซ้ำก่อนเปิด automation ใหม่, schedule ใหม่ หรือเพิ่ม subagent</p>
+          </div>
+
+          <div class="grid grid-2">
+            <div class="card">
+              <span class="pill info">Reliability</span>
+              <h3 style="margin-top:9px">ก่อน Agent บอกว่า “Done”</h3>
+              <ul class="check-list">
+                <li>เปิดผลลัพธ์จริงแล้วหรือยัง?</li>
+                <li>ตรวจเทียบกับสิ่งที่ขอแล้วหรือยัง?</li>
+                <li>dependency ครบหรือยัง?</li>
+                <li>output ว่างถูกมองเป็น failure หรือยัง?</li>
+                <li>เลข/ราคา exact logic อยู่ใน code หรือยัง?</li>
+              </ul>
+            </div>
+            <div class="card">
+              <span class="pill warning">Approval</span>
+              <h3 style="margin-top:9px">ก่อนเปิด Autonomy</h3>
+              <ul class="check-list">
+                <li>เส้นที่ Agent ห้ามข้ามคืออะไร?</li>
+                <li>ราคา / เงิน / deadline / deliverable ถูก Gate หรือยัง?</li>
+                <li>ผลลัพธ์ถูกส่งไปที่ช่องทางที่คนดูจริงหรือไม่?</li>
+                <li>action สำคัญ rollback ได้หรือไม่?</li>
+              </ul>
+            </div>
+            <div class="card">
+              <span class="pill purple">Subagents</span>
+              <h3 style="margin-top:9px">ก่อนแตกงานขนาน</h3>
+              <ul class="check-list">
+                <li>แต่ละ agent มีหน้าที่เดียวชัดพอหรือยัง?</li>
+                <li>Context ถูกแยกเท่าที่จำเป็นหรือไม่?</li>
+                <li>Tools ที่ไม่จำเป็นถูกเอาออกจริงหรือยัง?</li>
+                <li>ใช้ “wall” แทน “rule” ในเรื่องสำคัญหรือไม่?</li>
+              </ul>
+            </div>
+            <div class="card">
+              <span class="pill success">Context</span>
+              <h3 style="margin-top:9px">ก่อนเพิ่ม Skill ใหม่</h3>
+              <ul class="check-list">
+                <li>Skill นี้ใช้บ่อยแค่ไหน?</li>
+                <li>มันซ้ำกับของเดิมหรือไม่?</li>
+                <li>30 วันที่ผ่านมา Skills ไหนไม่ถูกใช้?</li>
+                <li>ปิดไว้ก่อน แล้วเปิดเมื่อจำเป็นได้หรือไม่?</li>
+              </ul>
+            </div>
+          </div>
+
+          <h2>One-line Rules</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>หัวข้อ</th><th>Rule</th></tr></thead>
+              <tbody>
+                <tr><td>Success</td><td>เชื่อ artifact/state ที่ตรวจได้ ไม่ใช่รายงานจาก intent</td></tr>
+                <tr><td>Exact Logic</td><td>ถ้ามีคำตอบถูกแบบเดียว ให้ code เป็นคนตัดสิน</td></tr>
+                <tr><td>Autonomy</td><td>วางขอบเขตก่อน แล้วค่อยเดินเอง</td></tr>
+                <tr><td>Safety</td><td>Capability ที่ไม่มี ปลอดภัยกว่าคำสั่งว่า “อย่าใช้”</td></tr>
+                <tr><td>Scale</td><td>Reliability → Gate → Parallelism</td></tr>
+                <tr><td>Context</td><td>ทุก enabled skill ต้อง “จ่ายค่าเช่า” จึงควรเปิดเฉพาะสิ่งที่คุ้ม</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="next-card">ถัดไป: <button data-go="source">Source & Notes →</button></div>
+        </section>
+
+        <!-- =====================================================
+             PAGE: SOURCE
+             ===================================================== -->
+        <section class="page" id="page-source" data-category="Reference" data-title="Source & Notes">
+          <div class="page-head">
+            <div class="eyebrow">Reference</div>
+            <h1>Source & Editorial Notes</h1>
+            <p class="lead">คู่มือนี้เป็นการสรุปและจัด Information Architecture ใหม่จาก Markdown transcript ที่ผู้ใช้ให้มา โดยไม่เติมการ verify ภายนอก</p>
+          </div>
+
+          <div class="grid grid-2">
+            <div class="card">
+              <h3>Source</h3>
+              <p><strong>Title:</strong> How I Made Hermes Agent 10x More Powerful</p>
+              <p><strong>Author:</strong> Sharbel A.</p>
+              <p><strong>Published:</strong> 23 Aug 2026</p>
+              <p><strong>Source URL:</strong> <a href="https://www.youtube.com/watch?v=3KIyi_Npxmg&t=7s" target="_blank" rel="noopener">YouTube video</a></p>
+            </div>
+            <div class="card">
+              <h3>Editorial Approach</h3>
+              <ul class="check-list">
+                <li>Reorganized by concept rather than transcript timestamps</li>
+                <li>Preserved technical terms such as Skill, Hook, Gate, Rollback, Subagent, Context</li>
+                <li>Separated author-reported claims from operational principles</li>
+                <li>Added reusable checklists/prompts by paraphrasing the source principles</li>
+              </ul>
+            </div>
+          </div>
+
+          <h2>Original Topic Map</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Timestamp</th><th>Original Topic</th><th>Mapped Page</th></tr></thead>
+              <tbody>
+                <tr><td>0:59</td><td>The trust line that decides an agent’s value</td><td>Trust Line</td></tr>
+                <tr><td>2:03</td><td>Automated inbox workflow</td><td>Inbox Case Study</td></tr>
+                <tr><td>2:50–6:44</td><td>Silent failures, verification, deterministic code, preconditions/hooks</td><td>Upgrade 1</td></tr>
+                <tr><td>6:44–9:09</td><td>Approval gates, scheduling, Telegram, rollback</td><td>Upgrade 2</td></tr>
+                <tr><td>9:09–10:04</td><td>Restricted subagents</td><td>Upgrade 3</td></tr>
+                <tr><td>10:04–11:34</td><td>Hidden context cost + 30-second audit</td><td>Context & Skill Audit</td></tr>
+                <tr><td>11:34–12:23</td><td>Four mistakes to avoid</td><td>4 Mistakes</td></tr>
+                <tr><td>12:23+</td><td>What actually made Hermes more powerful</td><td>Overview / Quick Reference</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout info">
+            <div class="callout-title">Scope</div>
+            เอกสารนี้สรุปจาก source file เท่านั้น จึงไม่ได้ตรวจว่า Hermes เวอร์ชันปัจจุบันมี implementation ของ hooks, rollback, skill loading หรือ subagent permissions แบบใดใน release ล่าสุด
+          </div>
+
+          <div class="card flat">
+            <div class="small muted">Document type: Interactive Reference Manual · Single-file HTML · Generated 24 Aug 2026</div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  const VALID_PAGES = [
+    'overview','trust-line','inbox-case','verification','approval',
+    'subagents','context-audit','blueprint','mistakes','quick-reference','source'
+  ];
+
+  const navItems = [...document.querySelectorAll('.nav-item[data-page]')];
+  const pages = [...document.querySelectorAll('.page')];
+  const body = document.body;
+  const root = document.documentElement;
+  const contentScroll = document.getElementById('contentScroll');
+  const crumbCat = document.getElementById('crumbCat');
+  const crumbTitle = document.getElementById('crumbTitle');
+  const overlay = document.getElementById('overlay');
+
+  function pageFromHash() {
+    const p = location.hash.replace(/^#/, '');
+    return VALID_PAGES.includes(p) ? p : 'overview';
+  }
+
+  function navigateToPage(page, pushHash = true) {
+    if (!VALID_PAGES.includes(page)) page = 'overview';
+
+    pages.forEach(el => el.classList.toggle('active', el.id === `page-${page}`));
+    navItems.forEach(el => el.classList.toggle('active', el.dataset.page === page));
+
+    const active = document.getElementById(`page-${page}`);
+    crumbCat.textContent = active?.dataset.category || '';
+    crumbTitle.textContent = active?.dataset.title || '';
+
+    contentScroll.scrollTop = 0;
+    closeMobileMenu();
+
+    if (pushHash && location.hash !== `#${page}`) {
+      history.pushState(null, '', `#${page}`);
+    }
+  }
+
+  function toggleSidebar() {
+    body.classList.toggle('sidebar-collapsed');
+    localStorage.setItem('hermesManualSidebar', body.classList.contains('sidebar-collapsed') ? '1' : '0');
+  }
+
+  function openMobileMenu() {
+    body.classList.add('mobile-open');
+  }
+
+  function closeMobileMenu() {
+    body.classList.remove('mobile-open');
+  }
+
+  function setTheme(theme) {
+    root.dataset.theme = theme;
+    localStorage.setItem('hermesManualTheme', theme);
+  }
+
+  function initTheme() {
+    const saved = localStorage.getItem('hermesManualTheme');
+    if (saved === 'light' || saved === 'dark') {
+      setTheme(saved);
+    } else {
+      setTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    }
+  }
+
+  function setFontScale(value) {
+    const clamped = Math.min(1.18, Math.max(.88, value));
+    root.style.setProperty('--font-scale', clamped.toFixed(2));
+    localStorage.setItem('hermesManualFontScale', clamped.toFixed(2));
+  }
+
+  function changeFontScale(delta) {
+    const current = parseFloat(getComputedStyle(root).getPropertyValue('--font-scale')) || 1;
+    setFontScale(current + delta);
+  }
+
+  async function copyCode(btn) {
+    const code = btn.closest('.code-block')?.querySelector('code')?.innerText || '';
+    const old = btn.textContent;
+    try {
+      await navigator.clipboard.writeText(code);
+      btn.textContent = 'Copied';
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+      btn.textContent = 'Copied';
+    }
+    setTimeout(() => btn.textContent = old, 1200);
+  }
+
+  function initApp() {
+    initTheme();
+
+    const savedScale = parseFloat(localStorage.getItem('hermesManualFontScale'));
+    if (!Number.isNaN(savedScale)) setFontScale(savedScale);
+
+    if (localStorage.getItem('hermesManualSidebar') === '1' && window.innerWidth > 820) {
+      body.classList.add('sidebar-collapsed');
+    }
+
+    navItems.forEach(item => item.addEventListener('click', () => navigateToPage(item.dataset.page)));
+    document.querySelectorAll('[data-go]').forEach(btn => btn.addEventListener('click', () => navigateToPage(btn.dataset.go)));
+    document.querySelectorAll('.copy-btn').forEach(btn => btn.addEventListener('click', () => copyCode(btn)));
+
+    document.getElementById('collapseBtn').addEventListener('click', toggleSidebar);
+    document.getElementById('mobileMenuBtn').addEventListener('click', openMobileMenu);
+    overlay.addEventListener('click', closeMobileMenu);
+    document.getElementById('fontMinus').addEventListener('click', () => changeFontScale(-.06));
+    document.getElementById('fontPlus').addEventListener('click', () => changeFontScale(.06));
+    document.getElementById('themeBtn').addEventListener('click', () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark'));
+
+    window.addEventListener('hashchange', () => navigateToPage(pageFromHash(), false));
+    window.addEventListener('popstate', () => navigateToPage(pageFromHash(), false));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMobileMenu();
+    });
+
+    navigateToPage(pageFromHash(), false);
+    if (!location.hash) history.replaceState(null, '', '#overview');
+  }
+
+  initApp();
+})();
+</script>
+</body>
+</html>
