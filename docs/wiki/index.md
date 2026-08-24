@@ -35,6 +35,7 @@ tags: [library, index]
 ## Public Blueprints
 
 - [Dedicated Library AI Agent Profile Blueprint](../DEDICATED_LIBRARY_AGENT_PROFILE_BLUEPRINT.md)
+- [Hermes Profile Backup and Restore Public Guide](../guides/HERMES_PROFILE_BACKUP_RESTORE_PUBLIC_GUIDE.md)
 
 ## Reports
 

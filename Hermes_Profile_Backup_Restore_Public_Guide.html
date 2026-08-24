@@ -1,0 +1,754 @@
+<!doctype html><html lang="th" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="คู่มือสำรองและกู้คืน Hermes Profile แบบตรวจสอบได้สำหรับคนและ AI"><title>สำรองและกู้คืน Hermes Profile — Interactive Manual</title><style>
+:root{--bg:#f3f5f8;--surface:#fff;--surface2:#f7f9fc;--ink:#152033;--muted:#697586;--line:#dfe5ed;--navy:#10243b;--orange:#f26b38;--blue:#326fd1;--green:#16865a;--red:#c13d4c;--shadow:0 8px 24px rgba(15,30,50,.07);--side:292px;--scale:1}html[data-theme=dark]{--bg:#0f1722;--surface:#182331;--surface2:#202d3b;--ink:#ecf2f8;--muted:#aab7c6;--line:#344353;--navy:#0a111b;--orange:#ff966d;--blue:#82b2ff;--green:#72d5a8;--red:#ff9ba4;--shadow:0 10px 30px rgba(0,0,0,.24)}*{box-sizing:border-box}html,body{height:100%;margin:0}body{font-family:"Noto Sans Thai","Leelawadee UI",Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:calc(15.5px * var(--scale));line-height:1.7;overflow:hidden}.app{height:100%;display:grid;grid-template-columns:var(--side) 1fr}.app.collapsed{--side:78px}.sidebar{height:100vh;background:var(--navy);color:#e8eef6;display:flex;flex-direction:column;overflow:hidden}.brand{height:70px;display:flex;align-items:center;gap:12px;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.1)}.brand-mark{width:39px;height:39px;flex:none;border-radius:12px;display:grid;place-items:center;background:var(--orange);font-weight:950;color:#111}.brand-copy strong,.brand-copy span{display:block;white-space:nowrap}.brand-copy strong{font-size:14px}.brand-copy span{font-size:10px;color:#9fb0c3}.search-wrap{padding:14px 12px 6px}.search-wrap input{width:100%;height:40px;border:1px solid rgba(255,255,255,.13);border-radius:10px;background:rgba(255,255,255,.07);color:#fff;padding:0 12px;outline:none}.search-wrap input::placeholder{color:#91a4ba}.nav{padding:7px 10px 20px;overflow:auto}.nav-item{width:100%;min-height:43px;border:0;border-radius:10px;background:transparent;color:#d6e0eb;display:flex;align-items:center;gap:11px;padding:8px 10px;text-align:left;cursor:pointer;margin:2px 0}.nav-item:hover{background:rgba(255,255,255,.07)}.nav-item.active{background:#eef4ff;color:#163c68;font-weight:800}.nav-icon{width:20px;height:20px;flex:none}.nav-icon svg{width:20px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}.nav-text{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.side-meta{margin-top:auto;padding:14px 18px;border-top:1px solid rgba(255,255,255,.1);font-size:10px;color:#91a4ba}.collapsed .brand-copy,.collapsed .search-wrap,.collapsed .nav-text,.collapsed .side-meta{display:none}.collapsed .brand,.collapsed .nav-item{justify-content:center;padding-left:0;padding-right:0}.main{height:100vh;display:grid;grid-template-rows:70px 1fr;min-width:0}.topbar{height:70px;background:color-mix(in srgb,var(--surface) 94%,transparent);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 20px}.top-left,.actions{display:flex;align-items:center;gap:8px;min-width:0}.icon-btn{width:41px;height:41px;border:1px solid var(--line);border-radius:11px;background:var(--surface);color:var(--ink);cursor:pointer;display:grid;place-items:center;font-weight:850}.mobile-menu{display:none}.crumb small,.crumb strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.crumb small{font-size:10px;color:var(--muted)}.crumb strong{font-size:14px}.content-scroll{overflow:auto}.content{max-width:1180px;margin:0 auto;padding:28px 34px 64px}.page{display:none;animation:in .18s ease}.page.active{display:block}@keyframes in{from{opacity:.35;transform:translateY(4px)}to{opacity:1;transform:none}}.page-head{margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line)}.page-head p{margin:0;color:var(--orange);font-size:10px;font-weight:900;letter-spacing:.13em}.page-head h1{font-size:clamp(25px,3vw,36px);line-height:1.25;margin:4px 0 7px}.page-head span{color:var(--muted)}.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:20px;padding:25px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(145deg,var(--surface),color-mix(in srgb,var(--orange) 7%,var(--surface)));box-shadow:var(--shadow);margin-bottom:15px}.hero .kicker{margin:0;color:var(--orange);font-size:11px;font-weight:900;letter-spacing:.12em}.hero h1{font-size:clamp(31px,4vw,51px);line-height:1.05;margin:8px 0 12px;letter-spacing:-.04em}.hero h1 span{color:var(--blue)}.lead{max-width:720px;color:var(--muted)}.badges{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}.badges span{border:1px solid var(--line);border-radius:999px;background:var(--surface2);padding:4px 9px;font-size:11px;font-weight:750}.hero-diagram{display:grid;grid-template-columns:1fr;gap:6px;align-content:center}.hero-diagram b{padding:11px;text-align:center;border:1px solid var(--line);background:var(--surface);border-radius:10px}.hero-diagram i{text-align:center;color:var(--orange);font-style:normal;font-size:20px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0 24px}.metrics article{padding:15px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}.metrics strong{display:block;font-size:25px;color:var(--blue)}.metrics span{font-size:11px;color:var(--muted)}.doc-section{position:relative;display:grid;grid-template-columns:50px minmax(0,1fr);gap:13px;margin:0 0 18px}.section-number{width:40px;height:40px;display:grid;place-items:center;border-radius:11px;background:var(--navy);color:#fff;font-size:11px;font-weight:900;position:sticky;top:12px}.section-body{min-width:0;padding:17px 20px;border:1px solid var(--line);border-radius:16px;background:var(--surface);box-shadow:var(--shadow)}.section-body>h2{font-size:21px;margin:0 0 13px}.prose h3{font-size:17px;margin:25px 0 8px}.prose p{max-width:900px}.prose code:not(pre code){padding:.12em .38em;border-radius:5px;background:color-mix(in srgb,var(--blue) 10%,var(--surface2));color:var(--blue)}.prose ul,.prose ol{padding-left:1.5em}.prose li{margin:.3em 0}.prose hr{border:0;border-top:1px solid var(--line);margin:24px 0}.callout{padding:14px 16px;border:1px solid color-mix(in srgb,var(--blue) 25%,var(--line));border-radius:13px;background:color-mix(in srgb,var(--blue) 8%,var(--surface));margin:14px 0}.table-wrap{width:100%;overflow:auto;border:1px solid var(--line);border-radius:13px;margin:14px 0}.table-wrap table{width:100%;border-collapse:collapse;min-width:650px}.table-wrap th,.table-wrap td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.table-wrap th{background:var(--surface2);font-size:11px;color:var(--muted)}.code-block{margin:15px 0;border:1px solid #30425a;border-radius:13px;overflow:hidden;background:#0c1420}.code-head{height:38px;padding:0 11px;display:flex;align-items:center;justify-content:space-between;background:#172438;color:#aebed0;font:11px monospace}.copy-btn{border:1px solid #3b4e68;border-radius:7px;background:#21314a;color:#e9f2fc;padding:5px 9px;cursor:pointer}pre{margin:0;padding:15px;overflow:auto;color:#edf4ff;font:12.5px/1.6 "Cascadia Code",Consolas,monospace;white-space:pre}pre code{font:inherit}.overlay{display:none}@media(max-width:980px){.hero{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}}@media(max-width:820px){.app{display:block}.sidebar{position:fixed;left:0;top:0;width:min(86vw,310px);transform:translateX(-104%);transition:.2s;z-index:30}.app.mobile-open .sidebar{transform:none}.mobile-menu{display:grid}.desktop-collapse{display:none}.overlay{display:block;position:fixed;inset:0;background:rgba(3,10,18,.55);z-index:25;opacity:0;pointer-events:none}.app.mobile-open .overlay{opacity:1;pointer-events:auto}.main{height:100vh}.content{padding:22px 14px 50px}.collapsed .brand-copy,.collapsed .search-wrap,.collapsed .nav-text,.collapsed .side-meta{display:block}.collapsed .brand,.collapsed .nav-item{justify-content:flex-start;padding-left:10px;padding-right:10px}}@media(max-width:520px){.topbar{padding:0 10px}.actions{gap:4px}.icon-btn{width:38px;height:38px}.crumb small{display:none}.hero{padding:18px}.metrics{grid-template-columns:1fr 1fr}.doc-section{grid-template-columns:1fr}.section-number{position:static}.section-body{padding:15px}.page-head h1{font-size:25px}}@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}@media print{body{overflow:visible;background:#fff;color:#111;font-size:11pt}.app{display:block}.sidebar,.topbar,.overlay,.copy-btn{display:none!important}.main,.content-scroll{height:auto;display:block;overflow:visible}.content{max-width:none;padding:0}.page{display:block!important;animation:none;page-break-before:always}.page:first-child{page-break-before:auto}.hero,.section-body,.metrics article,.code-block,.table-wrap{box-shadow:none;break-inside:avoid}.doc-section{grid-template-columns:1fr}.section-number{display:none}pre{white-space:pre-wrap;color:#111;background:#f2f2f2}}
+</style></head><body><div class="app" id="app"><aside class="sidebar"><div class="brand"><div class="brand-mark">DR</div><div class="brand-copy"><strong>Hermes Profile Backup</strong><span>Public-safe reference manual</span></div></div><div class="search-wrap"><input id="navSearch" type="search" placeholder="ค้นหาหัวข้อ…" aria-label="ค้นหาเมนู"></div><nav class="nav"><button class="nav-item" data-page="overview" data-search="ภาพรวมและสถาปัตยกรรม"><span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span class="nav-text">ภาพรวมและสถาปัตยกรรม</span></button><button class="nav-item" data-page="security" data-search="Security และ Placeholder"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 3 4 7v5c0 5 3.5 8 8 9 4.5-1 8-4 8-9V7z"/><path d="m9 12 2 2 4-4"/></svg></span><span class="nav-text">Security และ Placeholder</span></button><button class="nav-item" data-page="discovery" data-search="Discovery และ Profile inventory"><span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></span><span class="nav-text">Discovery และ Profile inventory</span></button><button class="nav-item" data-page="dr-pack" data-search="DR Pack และ Archive"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 7h16v14H4zM3 3h18v4H3zM9 11h6"/></svg></span><span class="nav-text">DR Pack และ Archive</span></button><button class="nav-item" data-page="manifest-restore" data-search="Manifest, Redaction และ Runbook"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM15 3v5h4M9 12h6M9 16h6"/></svg></span><span class="nav-text">Manifest, Redaction และ Runbook</span></button><button class="nav-item" data-page="storage-state" data-search="Remote storage, State และ Retention"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M7 18h11a4 4 0 0 0 .5-8A7 7 0 0 0 5 8a5 5 0 0 0 2 10z"/></svg></span><span class="nav-text">Remote storage, State และ Retention</span></button><button class="nav-item" data-page="validation-schedule" data-search="Validation และ Scheduled backup"><span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></span><span class="nav-text">Validation และ Scheduled backup</span></button><button class="nav-item" data-page="notifier" data-search="Notifier และ Alert contract"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M6 17h12l-2-3V9a4 4 0 0 0-8 0v5zM10 20h4"/></svg></span><span class="nav-text">Notifier และ Alert contract</span></button><button class="nav-item" data-page="restore-drill" data-search="Restore drill แบบปลอดภัย"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 3-6M4 4v6h6"/></svg></span><span class="nav-text">Restore drill แบบปลอดภัย</span></button><button class="nav-item" data-page="troubleshooting" data-search="Troubleshooting"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M14 6a5 5 0 0 0-6 6L3 17l4 4 5-5a5 5 0 0 0 6-6l-3 3-4-4z"/></svg></span><span class="nav-text">Troubleshooting</span></button><button class="nav-item" data-page="checklist" data-search="Acceptance checklist"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg></span><span class="nav-text">Acceptance checklist</span></button><button class="nav-item" data-page="hardening" data-search="Hardening roadmap"><span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><span class="nav-text">Hardening roadmap</span></button><button class="nav-item" data-page="reference" data-search="Quick reference และ AI brief"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 4h6a3 3 0 0 1 3 3v13a4 4 0 0 0-4-4H4zM20 4h-6a3 3 0 0 0-3 3v13a4 4 0 0 1 4-4h5z"/></svg></span><span class="nav-text">Quick reference และ AI brief</span></button></nav><div class="side-meta">Version 1.0<br>Public-safe · Thai<br>Updated 24 Aug 2026</div></aside><div class="overlay" id="overlay"></div><main class="main"><header class="topbar"><div class="top-left"><button class="icon-btn mobile-menu" id="menuBtn" aria-label="เปิดเมนู">☰</button><button class="icon-btn desktop-collapse" id="collapseBtn" aria-label="ย่อ Sidebar">⇤</button><div class="crumb"><small>INTERACTIVE MANUAL</small><strong id="currentTitle">ภาพรวมและสถาปัตยกรรม</strong></div></div><div class="actions"><button class="icon-btn" id="fontDown" aria-label="ลดตัวอักษร">A−</button><button class="icon-btn" id="fontUp" aria-label="เพิ่มตัวอักษร">A+</button><button class="icon-btn" id="themeBtn" aria-label="สลับธีม">◐</button></div></header><div class="content-scroll" id="scroll"><div class="content"><article class="page" id="page-overview" data-title="ภาพรวมและสถาปัตยกรรม"><header class="page-head"><p>SECTION 01</p><h1>ภาพรวมและสถาปัตยกรรม</h1><span>เข้าใจเป้าหมาย ผลลัพธ์ และการแยก Producer, State และ Notifier</span></header><div class="hero"><div><p class="kicker">PUBLIC-SAFE DISASTER RECOVERY</p><h1>สำรองและกู้คืน<br><span>Hermes Profile</span><br>แบบตรวจสอบได้</h1><p class="lead">สร้าง DR Pack ที่พิสูจน์ได้จาก Archive, Manifest, Restore runbook, SHA256, Remote read-back และ State file — ไม่ใช่เพียงไฟล์บีบอัดที่ไม่เคยทดสอบ</p><div class="badges"><span>Human + AI readable</span><span>Private storage</span><span>Restore-safe</span></div></div><div class="hero-diagram"><b>PROFILE</b><i>→</i><b>DR PACK</b><i>→</i><b>VERIFY</b><i>→</i><b>RESTORE DRILL</b></div></div><div class="metrics"><article><strong>4</strong><span>Artifacts ต่อ Profile</span></article><article><strong>2</strong><span>Remote views: daily/latest</span></article><article><strong>0</strong><span>Secrets ใน Manifest/Log</span></article><article><strong>1st</strong><span>Restore เป็น Test profile</span></article></div><div class="prose"><section class="doc-section"><div class="section-number">01</div><div class="section-body"><h2>คู่มือนี้แก้ปัญหาอะไร</h2><p>Hermes Profile อาจประกอบด้วย Config, Skills, OAuth state, Bot integration, Scheduled jobs, Session metadata และไฟล์ Environment ที่จำเป็นต่อการทำงานต่อเนื่อง หากเครื่องเสีย ถูกแทนที่ หรือ Profile เสียหาย การมีเพียง Source code หรือ Git repository อาจไม่เพียงพอสำหรับกู้ระบบกลับมา</p>
+<p>ระบบที่ดีต้องตอบคำถามต่อไปนี้ได้</p>
+<ol>
+<li>มี Profile อะไรอยู่บนเครื่อง</li>
+<li>ไฟล์ Backup ล่าสุดสร้างเมื่อใด</li>
+<li>Archive ครบและไม่เสียหายหรือไม่</li>
+<li>ข้อมูลลับถูกจัดเก็บไว้ที่ใดและใครเข้าถึงได้</li>
+<li>ไฟล์ถูกอัปโหลดไป Remote storage จริงหรือไม่</li>
+<li>Restore ได้โดยไม่เปิด Gateway หรือ Scheduled jobs โดยไม่ได้ตั้งใจหรือไม่</li>
+<li>ระบบแจ้งเตือนได้หรือไม่เมื่อ Backup ล้มเหลว</li>
+</ol>
+<p>เป้าหมายไม่ใช่เพียง “สร้างไฟล์ <code>.tar.gz</code>” แต่คือสร้างชุดหลักฐานที่พิสูจน์ได้ว่า Backup ใช้งานได้และ Restore อย่างปลอดภัยได้</p>
+<hr/></div></section><section class="doc-section"><div class="section-number">02</div><div class="section-body"><h2>ผลลัพธ์ที่ต้องได้</h2><p>ระบบประกอบด้วยงานหลัก 2 ชั้น</p>
+<h3>2.1 Profile DR Pack producer</h3>
+<p>ต่อ Hermes Profile หนึ่งรายการ ต้องสร้าง</p>
+<ul>
+<li>Archive <code>.tar.gz</code></li>
+<li>Manifest <code>.json</code></li>
+<li>Restore runbook / AI handoff <code>.md</code></li>
+<li>Checksum <code>.sha256</code></li>
+<li>ชุดไฟล์แบบลงวันที่ใน Remote storage</li>
+<li>ชุดไฟล์ชื่อคงที่สำหรับเวอร์ชันล่าสุด</li>
+<li>State file ที่บันทึกผลและ Remote file IDs</li>
+</ul>
+<h3>2.2 Backup status notifier</h3>
+<p>Notifier ต้องทำงานหลัง Producer และตรวจหลักฐานก่อนแจ้งสถานะ</p>
+<ul>
+<li>อ่าน State file ล่าสุด</li>
+<li>ยืนยันว่า Backup เป็นของวันปัจจุบันตาม Timezone ที่กำหนด</li>
+<li>ตรวจว่า Profile results ไม่ว่าง</li>
+<li>ตรวจ Local artifacts</li>
+<li>ตรวจ SHA256 ทุก Profile</li>
+<li>ตรวจ Remote upload records</li>
+<li>ตรวจสถานะ Scheduled job ถ้ามีข้อมูล</li>
+<li>ส่งข้อความสั้นไป Notification channel</li>
+<li>ถ้าส่งสำเร็จ ให้ stdout ว่างเพื่อป้องกันการส่งซ้ำ</li>
+</ul>
+<h3>2.3 เลือก Native backup primitive ให้ถูก</h3>
+<p>Hermes ปัจจุบันมี Backup สองระดับที่วัตถุประสงค์ต่างกัน</p>
+<div class="table-wrap" tabindex="0"><table>
+<thead>
+<tr>
+<th>ระดับ</th>
+<th>คำสั่ง</th>
+<th>ขอบเขต</th>
+<th>Credentials</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Full Hermes-home backup</td>
+<td><code>hermes backup</code> / <code>hermes import</code></td>
+<td>Config, Skills, Sessions, State และข้อมูลทั้ง Hermes home โดยไม่รวม Codebase</td>
+<td>รวม Critical credentials/state ตามโหมด Full/Quick จึงเป็นข้อมูลลับสูง</td>
+</tr>
+<tr>
+<td>Single-profile export</td>
+<td><code>hermes profile export &lt;PROFILE&gt;</code> / <code>hermes profile import &lt;ARCHIVE&gt;</code></td>
+<td>Snapshot ของ Profile เดียวสำหรับย้ายหรือกู้เป็น Profile ใหม่</td>
+<td><code>.env</code> และ <code>auth.json</code> ถูกตัดออกโดยออกแบบ ต้อง Re-authorize ภายหลัง</td>
+</tr>
+</tbody>
+</table></div>
+<p>DR Pack ในคู่มือนี้เป็นชั้น Orchestration ที่เพิ่ม Manifest, Runbook, SHA256, Remote verification, State และ Notifier รอบ Native artifact ที่เลือก</p>
+<ul>
+<li>ถ้าต้องการกู้ทั้งเครื่องและ Credentials ใช้ <code>hermes backup</code> เป็นฐาน</li>
+<li>ถ้าต้องการกู้ Profile เดียวแบบแยกชื่อ ใช้ <code>hermes profile export</code> เป็นฐาน</li>
+<li>อย่าอ้างว่า Profile export เพียงไฟล์เดียวคือ Full credential backup</li>
+</ul>
+<hr/></div></section><section class="doc-section"><div class="section-number">03</div><div class="section-body"><h2>สถาปัตยกรรมระบบ</h2><pre><code class="language-text">Hermes profiles
+      │
+      ▼
+Discovery + validation
+      │
+      ▼
+Per-profile export / package
+      │
+      ├── archive.tar.gz         (confidential)
+      ├── manifest.json          (redacted)
+      ├── restore-runbook.md     (human + AI)
+      └── checksum.sha256
+      │
+      ├──────────────► Local retention
+      │
+      ▼
+Private remote storage
+      ├── daily/YYYY-MM-DD/
+      └── latest/
+      │
+      ▼
+State file + upload IDs
+      │
+      ▼
+Independent notifier
+      └── success / failure summary
+</code></pre>
+<p>หลักสำคัญคือ Producer, State และ Notifier แยกหน้าที่กัน</p>
+<ul>
+<li>Producer สร้างและตรวจ Backup</li>
+<li>State เป็นหลักฐาน Machine-readable</li>
+<li>Notifier อ่านหลักฐาน ไม่เชื่อเพียง Exit code ของ Producer</li>
+</ul>
+<hr/></div></section></div></article><article class="page" id="page-security" data-title="Security และ Placeholder"><header class="page-head"><p>SECTION 02</p><h1>Security และ Placeholder</h1><span>กำหนด Threat model, Confidentiality และค่าที่ผู้ติดตั้งต้องแทน</span></header><div class="prose"><section class="doc-section"><div class="section-number">04</div><div class="section-body"><h2>Threat model และข้อมูลที่ต้องปกป้อง</h2><p>Archive จาก Custom raw packaging หรือ Full Hermes-home backup อาจมีข้อมูลต่อไปนี้</p>
+<ul>
+<li><code>.env</code></li>
+<li>OAuth access/refresh token</li>
+<li>Bot token</li>
+<li>Provider API key</li>
+<li>Gateway configuration</li>
+<li>Session/connection metadata</li>
+<li>Private routing information</li>
+<li>Scheduled job definitions</li>
+</ul>
+<p>ดังนั้นต้องถือ Archive เป็น <strong>Confidential</strong></p>
+<p>สำหรับ <code>hermes profile export</code> อย่างเป็นทางการ <code>.env</code> และ <code>auth.json</code> จะถูกตัดออก แต่ Archive ยังอาจมี Memories, Sessions, Persona และข้อมูลผู้ใช้ จึงยังต้องถือเป็นข้อมูลลับและตรวจเนื้อหาก่อนแบ่งปัน</p>
+<h3>4.1 ห้ามทำ</h3>
+<ul>
+<li>ห้าม Hard-code Token, Password, OAuth secret, Chat ID หรือ Passphrase ใน Script</li>
+<li>ห้ามพิมพ์ Secret เต็มใน Log, Manifest หรือข้อความแจ้งเตือน</li>
+<li>ห้ามอัปโหลด Archive ไป Public folder</li>
+<li>ห้าม Share แบบ Anyone-with-link โดยไม่ได้รับอนุมัติ</li>
+<li>ห้ามถือว่า Local archive เพียงอย่างเดียวคือ Backup ที่สำเร็จ</li>
+<li>ห้าม Restore แล้ว Start Gateway หรือ Enable cron ทันที</li>
+<li>ห้ามให้ Server เดิมและ Server ใหม่ Poll Telegram Bot เดียวกันพร้อมกัน</li>
+</ul>
+<h3>4.2 หากยังไม่มี Encryption</h3>
+<ul>
+<li>ใช้ Private folder ที่จำกัดสิทธิ์</li>
+<li>ระบุ <code>encrypted: false</code></li>
+<li>ระบุ <code>confidential: true</code></li>
+<li>แสดง Warning ในรายงานและ Notification</li>
+<li>วางแผนเพิ่ม <code>age</code> หรือ <code>gpg</code> ภายหลัง</li>
+</ul>
+<hr/></div></section><section class="doc-section"><div class="section-number">05</div><div class="section-body"><h2>Placeholder ที่ผู้ติดตั้งต้องกำหนด</h2><pre><code class="language-text">&lt;HERMES_HOME&gt;                 Hermes home ของเครื่องเป้าหมาย
+&lt;REMOTE_BACKUP_ROOT_ID&gt;       Private remote folder สำหรับ DR packs
+&lt;NOTIFICATION_DESTINATION&gt;    ปลายทางแจ้งเตือนที่ได้รับอนุญาต
+&lt;BACKUP_SCHEDULE&gt;             เวลา Backup รายวัน
+&lt;NOTIFIER_SCHEDULE&gt;           เวลา Notifier หลัง Backup
+&lt;TIMEZONE&gt;                    Timezone ของเครื่อง
+&lt;LOCAL_RETENTION_DAYS&gt;        จำนวนวันที่เก็บ Local staging
+</code></pre>
+<p>ตัวอย่างค่าทั่วไป</p>
+<pre><code class="language-text">&lt;TIMEZONE&gt; = Asia/Bangkok
+&lt;LOCAL_RETENTION_DAYS&gt; = 30
+&lt;BACKUP_SCHEDULE&gt; = 40 3 * * *
+&lt;NOTIFIER_SCHEDULE&gt; = 50 3 * * *
+</code></pre>
+<p>ค่าตัวอย่างไม่ใช่ค่าบังคับ ต้องตรวจสภาพแวดล้อมจริงก่อนใช้</p>
+<hr/></div></section></div></article><article class="page" id="page-discovery" data-title="Discovery และ Profile inventory"><header class="page-head"><p>SECTION 03</p><h1>Discovery และ Profile inventory</h1><span>ค้น Profiles และสภาพแวดล้อมจากหลักฐานจริงโดยไม่เปิดเผย Secrets</span></header><div class="prose"><section class="doc-section"><div class="section-number">06</div><div class="section-body"><h2>Discovery ก่อนสร้างระบบ</h2><p>ห้ามเดา Profile, Path, Scheduler หรือ Credential location</p>
+<h3>6.1 ตรวจ Hermes</h3>
+<pre><code class="language-bash">hermes --version
+hermes profile list
+hermes profile show default || true
+hermes cron status || true
+hermes cron list --all || true
+hermes config path
+</code></pre>
+<h3>6.2 ตรวจ Filesystem</h3>
+<pre><code class="language-bash">printf '%s\n' "$HOME"
+ls -la &lt;HERMES_HOME&gt;/profiles || true
+ls -la &lt;HERMES_HOME&gt;/scripts || true
+</code></pre>
+<h3>6.3 ตรวจ Google Workspace authentication</h3>
+<pre><code class="language-bash">python &lt;GOOGLE_WORKSPACE_SETUP_SCRIPT&gt; --check || true
+</code></pre>
+<h3>6.4 ตรวจเฉพาะชื่อ Environment keys</h3>
+<p>ห้ามพิมพ์ค่า</p>
+<pre><code class="language-python">from pathlib import Path
+
+path = Path("&lt;HERMES_ENV_FILE&gt;")
+for line in path.read_text(errors="ignore").splitlines() if path.exists() else []:
+    if "=" not in line or line.lstrip().startswith("#"):
+        continue
+    key = line.split("=", 1)[0].strip()
+    if any(term in key.upper() for term in ["TELEGRAM", "GOOGLE", "DRIVE", "ALERT"]):
+        print(key)
+</code></pre>
+<hr/></div></section><section class="doc-section"><div class="section-number">07</div><div class="section-body"><h2>Profile discovery ที่ทนต่อความคลาดเคลื่อน</h2><p>ค้น Profile จากอย่างน้อย 2 แหล่ง</p>
+<ol>
+<li>Output ของ <code>hermes profile list</code></li>
+<li>Directory <code>&lt;HERMES_HOME&gt;/profiles/*</code></li>
+</ol>
+<p>ขั้นตอน</p>
+<ol>
+<li>Parse รายชื่อจาก CLI</li>
+<li>Enumerate directory ที่เข้าเงื่อนไข</li>
+<li>รวม <code>default</code> หากมีจริง</li>
+<li>Dedupe</li>
+<li>Sort เพื่อให้ผลลัพธ์ Deterministic</li>
+<li>ตัด Directory ที่เป็น Cache, Temp หรือไม่ใช่ Profile</li>
+<li>Verify Profile ด้วย CLI หรือโครงสร้างไฟล์ก่อน Backup</li>
+</ol>
+<p>อย่าพึ่งแหล่งเดียว เพราะ CLI และ Filesystem อาจไม่ตรงกันหลัง Migration หรือการติดตั้งที่ไม่สมบูรณ์</p>
+<hr/></div></section></div></article><article class="page" id="page-dr-pack" data-title="DR Pack และ Archive"><header class="page-head"><p>SECTION 04</p><h1>DR Pack และ Archive</h1><span>ออกแบบ Archive และชุด Artifacts ต่อ Profile ให้ตรวจสอบย้อนหลังได้</span></header><div class="prose"><section class="doc-section"><div class="section-number">08</div><div class="section-body"><h2>โครงสร้างไฟล์ DR Pack</h2><p>ต่อ Profile หนึ่งรายการ</p>
+<pre><code class="language-text">&lt;PROFILE&gt;-profile-&lt;TIMESTAMP&gt;.tar.gz
+&lt;PROFILE&gt;-profile-&lt;TIMESTAMP&gt;.manifest.json
+&lt;PROFILE&gt;-profile-&lt;TIMESTAMP&gt;.restore-runbook.md
+&lt;PROFILE&gt;-profile-&lt;TIMESTAMP&gt;.sha256
+</code></pre>
+<p>Timestamp ควรมี Timezone</p>
+<pre><code class="language-text">YYYY-MM-DDTHHMMSS+ZZZZ
+</code></pre>
+<p>Local staging</p>
+<pre><code class="language-text">&lt;HERMES_HOME&gt;/profile-dr-backups/
+  &lt;TIMESTAMP&gt;_profile-dr-pack/
+    &lt;PROFILE&gt;/
+      archive
+      manifest
+      restore runbook
+      checksum
+</code></pre>
+<p>ไฟล์ของแต่ละ Run ต้องอยู่ใน Directory ใหม่ ไม่เขียนทับ Run ก่อนหน้า</p>
+<hr/></div></section><section class="doc-section"><div class="section-number">09</div><div class="section-body"><h2>Archive design</h2><p>Archive ต้องสร้างจาก Profile ที่ตรวจพบจริง และต้องมี Boundary ชัดเจน</p>
+<p>แนวทางที่แนะนำสำหรับ Profile เดียวคือใช้ Native export เป็น Artifact หลัก</p>
+<pre><code class="language-bash">hermes profile export &lt;PROFILE&gt; -o &lt;ARCHIVE_FILE&gt;
+</code></pre>
+<p>หากใช้ Custom raw archive ต้องระบุชัดว่าไม่ใช่ Native export, บันทึก Inclusion policy และพิสูจน์ว่า Restore tool รองรับ Format นั้น ห้ามนำไฟล์ <code>.tar.gz</code> ที่สร้างเองไปใช้กับ <code>hermes profile import</code> โดยไม่ทดสอบ Compatibility</p>
+<h3>9.1 คุณสมบัติที่ควรมี</h3>
+<ul>
+<li>ชื่อไฟล์ Deterministic</li>
+<li>ไม่มี Path traversal</li>
+<li>ไม่ตาม Symlink ออกนอก Scope โดยไม่ตั้งใจ</li>
+<li>บันทึกรายการ Included/Excluded paths</li>
+<li>ตรวจว่า Archive เปิดอ่านได้หลังสร้าง</li>
+<li>บันทึก Size และ SHA256</li>
+<li>กำหนด Permission จำกัดก่อน Upload</li>
+</ul>
+<h3>9.2 สิ่งที่ต้องระวัง</h3>
+<ul>
+<li>Absolute paths ที่ผูกกับเครื่องเดิม</li>
+<li>Cron workdir นอก Profile</li>
+<li>Script ที่เรียกไฟล์นอก Hermes home</li>
+<li>OAuth callback state ที่หมดอายุ</li>
+<li>Bot/Gateway token ที่อาจทำให้เกิด Duplicate poller</li>
+<li>Log ขนาดใหญ่หรือ Cache ที่ไม่จำเป็นต่อ Restore</li>
+</ul>
+<hr/></div></section></div></article><article class="page" id="page-manifest-restore" data-title="Manifest, Redaction และ Runbook"><header class="page-head"><p>SECTION 05</p><h1>Manifest, Redaction และ Runbook</h1><span>สร้าง Metadata ที่ Redacted, Checksum และคู่มือ Restore สำหรับคน/AI</span></header><div class="prose"><section class="doc-section"><div class="section-number">10</div><div class="section-body"><h2>Manifest ที่คนและ AI อ่านได้</h2><p>Manifest ต้อง Redacted และ Machine-readable</p>
+<pre><code class="language-json">{
+  "profile": "&lt;PROFILE&gt;",
+  "backup_timestamp": "&lt;ISO_TIMESTAMP&gt;",
+  "host": {
+    "hostname": "&lt;REDACTED_OR_PLACEHOLDER&gt;",
+    "platform": "&lt;OS&gt;",
+    "home": "&lt;HOME_PLACEHOLDER&gt;",
+    "hermes_home": "&lt;HERMES_HOME&gt;",
+    "profile_home": "&lt;PROFILE_HOME&gt;"
+  },
+  "archive": {
+    "filename": "&lt;ARCHIVE_NAME&gt;",
+    "size_bytes": 0,
+    "sha256": "&lt;SHA256&gt;",
+    "encrypted": false,
+    "confidential": true
+  },
+  "hermes": {
+    "version": "&lt;REDACTED_OUTPUT&gt;",
+    "profile_show": "&lt;REDACTED_OUTPUT&gt;",
+    "config_check": "&lt;REDACTED_OUTPUT&gt;",
+    "skills_list": "&lt;REDACTED_OUTPUT&gt;",
+    "cron_list": "&lt;REDACTED_OUTPUT&gt;"
+  },
+  "credential_presence": {
+    "google_oauth": "present_redacted|absent|must_verify",
+    "telegram": "present_redacted|absent|must_verify",
+    "task_system": "present_redacted|absent|must_verify",
+    "line": "present_redacted|absent|must_verify",
+    "google_chat": "present_redacted|absent|must_verify"
+  },
+  "restore_safety_flags": {
+    "do_not_start_gateway_until_reviewed": true,
+    "do_not_enable_cron_until_reviewed": true,
+    "do_not_run_side_effect_jobs_without_approval": true,
+    "do_not_run_duplicate_messaging_poller": true
+  },
+  "external_dependencies": {
+    "needs_google_oauth": true,
+    "needs_task_system_token": false,
+    "needs_messaging_gateway": true,
+    "needs_line": false,
+    "needs_google_chat": false
+  },
+  "path_audit": {
+    "cron_scripts": [],
+    "workdirs": [],
+    "absolute_paths_outside_profile": []
+  }
+}
+</code></pre>
+<h3>10.1 Redaction rules</h3>
+<p>ถ้าชื่อ Field มีคำต่อไปนี้ ให้ Redact ค่า</p>
+<pre><code class="language-text">token
+secret
+password
+passwd
+api_key
+client_secret
+private_key
+authorization
+bearer
+refresh_token
+access_token
+</code></pre>
+<p>รูปแบบที่อนุญาต</p>
+<pre><code class="language-text">&lt;REDACTED&gt;
+present_redacted
+absent
+must_verify
+</code></pre>
+<p>ห้าม Hash Secret แล้วเผยแพร่ใน Manifest สาธารณะ เพราะ Hash อาจกลายเป็น Identifier และไม่จำเป็นต่อการ Restore</p>
+<hr/></div></section><section class="doc-section"><div class="section-number">11</div><div class="section-body"><h2>Restore runbook ต่อ Profile</h2><p>Restore runbook ต้องใช้ได้ทั้งโดยคนและ AI Agent</p>
+<p>ต้องมี</p>
+<ol>
+<li>รายชื่อไฟล์ทั้งหมด</li>
+<li>คำสั่งตรวจ Checksum</li>
+<li>วิธี Import เป็น Test profile</li>
+<li>Verification commands</li>
+<li>Integration checks ที่ต้องทำ</li>
+<li>Safety warnings</li>
+<li>Approval points</li>
+<li>Rollback/abort conditions</li>
+</ol>
+<h3>11.1 ตรวจ Checksum</h3>
+<pre><code class="language-bash">sha256sum -c &lt;PROFILE&gt;-profile-&lt;TIMESTAMP&gt;.sha256
+</code></pre>
+<h3>11.2 Import เป็น Test profile</h3>
+<pre><code class="language-bash">hermes profile import &lt;PROFILE&gt;-profile-&lt;TIMESTAMP&gt;.tar.gz --name migrated-test
+</code></pre>
+<h3>11.3 ตรวจหลัง Import</h3>
+<pre><code class="language-bash">hermes profile list
+hermes profile show migrated-test
+hermes -p migrated-test config check
+hermes -p migrated-test doctor
+hermes -p migrated-test skills list
+hermes -p migrated-test cron list --all
+</code></pre>
+<p>คำสั่งจริงอาจต่างตาม Hermes version ต้องตรวจ <code>--help</code> ของระบบเป้าหมายก่อน Run</p>
+<h3>11.4 ห้ามเปิดใช้งานทันที</h3>
+<p>หลัง Import ต้องยังไม่</p>
+<ul>
+<li>Start Gateway</li>
+<li>Enable Scheduled jobs</li>
+<li>Run job ที่ส่งข้อความ/อีเมล</li>
+<li>Run job ที่แก้ External system</li>
+<li>ใช้ Bot token เดียวกับ Server เดิมพร้อมกัน</li>
+</ul>
+<hr/></div></section><section class="doc-section"><div class="section-number">12</div><div class="section-body"><h2>Checksum design</h2><p>Checksum file ต้องครอบคลุมอย่างน้อย</p>
+<pre><code class="language-text">archive.tar.gz
+manifest.json
+restore-runbook.md
+</code></pre>
+<p>ตัวอย่าง</p>
+<pre><code class="language-bash">cd &lt;LOCAL_PROFILE_BACKUP_DIR&gt;
+sha256sum \
+  &lt;ARCHIVE_FILE&gt; \
+  &lt;MANIFEST_FILE&gt; \
+  &lt;RUNBOOK_FILE&gt; \
+  &gt; &lt;CHECKSUM_FILE&gt;
+sha256sum -c &lt;CHECKSUM_FILE&gt;
+</code></pre>
+<p>ห้าม Upload ก่อน Checksum ผ่าน</p>
+<p>หลัง Download เพื่อ Restore ควรตรวจ Checksum ซ้ำก่อน Import</p>
+<hr/></div></section></div></article><article class="page" id="page-storage-state" data-title="Remote storage, State และ Retention"><header class="page-head"><p>SECTION 06</p><h1>Remote storage, State และ Retention</h1><span>จัด Daily/Latest, Verify Remote IDs, เขียน State แบบ Atomic และเก็บ Retention อย่างปลอดภัย</span></header><div class="prose"><section class="doc-section"><div class="section-number">13</div><div class="section-body"><h2>Remote storage layout</h2><p>ใช้ Private root ที่แยกจากเอกสารทั่วไป</p>
+<pre><code class="language-text">Hermes profile backup/
+  &lt;PROFILE&gt;/
+    daily/
+      YYYY-MM-DD/
+        archive.tar.gz
+        manifest.json
+        restore-runbook.md
+        checksum.sha256
+    latest/
+      &lt;PROFILE&gt;-profile-latest.tar.gz
+      &lt;PROFILE&gt;-profile-latest.manifest.json
+      &lt;PROFILE&gt;-profile-latest.restore-runbook.md
+      &lt;PROFILE&gt;-profile-latest.sha256
+</code></pre>
+<h3>13.1 Daily</h3>
+<ul>
+<li>Immutable ตามวันที่</li>
+<li>ใช้สำหรับ Audit และย้อนกลับหลาย Version</li>
+<li>ไม่เขียนทับไฟล์เดิม</li>
+</ul>
+<h3>13.2 Latest</h3>
+<ul>
+<li>Stable filename</li>
+<li>ใช้ค้นหา Restore set ล่าสุดได้ง่าย</li>
+<li>Update ไฟล์เดิมถ้า API รองรับ</li>
+<li>ถ้า API ไม่รองรับ ให้ Copy/Upload ใหม่ ตรวจสอบ แล้วค่อย Trash ไฟล์เก่า</li>
+</ul>
+<h3>13.3 Upload verification</h3>
+<p>ตรวจทุกไฟล์ด้วย</p>
+<ul>
+<li>Exact filename</li>
+<li>Exact parent folder</li>
+<li>Remote file ID</li>
+<li>MIME type</li>
+<li><code>trashed=false</code></li>
+<li>Size ถ้าระบบรองรับ</li>
+</ul>
+<p>ห้ามยืนยันจากชื่อคล้ายกันทั่ว Drive</p>
+<hr/></div></section><section class="doc-section"><div class="section-number">14</div><div class="section-body"><h2>State file</h2><p>State file เป็น Source of truth ของ Run ล่าสุด</p>
+<pre><code class="language-json">{
+  "remote_root_folder_id": "&lt;REMOTE_BACKUP_ROOT_ID&gt;",
+  "last_success_at": "&lt;ISO_TIMESTAMP&gt;",
+  "last_profiles": ["default"],
+  "last_run_root": "&lt;LOCAL_RUN_ROOT&gt;",
+  "local_retention_days": 30,
+  "last_results": [
+    {
+      "profile": "default",
+      "local_dir": "&lt;LOCAL_PROFILE_BACKUP_DIR&gt;",
+      "archive": "&lt;ARCHIVE_PATH&gt;",
+      "manifest": "&lt;MANIFEST_PATH&gt;",
+      "runbook": "&lt;RUNBOOK_PATH&gt;",
+      "checksum": "&lt;CHECKSUM_PATH&gt;",
+      "remote_profile_folder_id": "&lt;REMOTE_FOLDER_ID&gt;",
+      "remote_daily_folder_id": "&lt;REMOTE_FOLDER_ID&gt;",
+      "remote_latest_folder_id": "&lt;REMOTE_FOLDER_ID&gt;",
+      "uploads": [
+        {
+          "name": "&lt;FILENAME&gt;",
+          "local_path": "&lt;LOCAL_PATH&gt;",
+          "remote_id": "&lt;REMOTE_FILE_ID&gt;",
+          "parent_id": "&lt;REMOTE_PARENT_ID&gt;",
+          "web_view_link": "&lt;REMOTE_LINK&gt;"
+        }
+      ]
+    }
+  ],
+  "removed_local": []
+}
+</code></pre>
+<p>State file ต้องเขียนแบบ Atomic เช่นเขียน Temporary file แล้ว Rename เพื่อป้องกัน JSON เสียหาก Process ถูกหยุดกลางทาง</p>
+<hr/></div></section><section class="doc-section"><div class="section-number">15</div><div class="section-body"><h2>Local retention</h2><p>เก็บ Staging ตามจำนวนวันที่กำหนด</p>
+<p>กฎการลบ</p>
+<ul>
+<li>ลบเฉพาะ Directory ใต้ <code>&lt;HERMES_HOME&gt;/profile-dr-backups/</code></li>
+<li>ตรวจ Prefix/Resolved path ก่อนลบ</li>
+<li>ห้าม Follow symlink ออกนอก Root</li>
+<li>ห้ามลบ Run ล่าสุด</li>
+<li>บันทึกรายการที่ลบใน <code>removed_local</code></li>
+<li>Dry-run retention ก่อนเปิดใช้งานจริง</li>
+</ul>
+<hr/></div></section></div></article><article class="page" id="page-validation-schedule" data-title="Validation และ Scheduled backup"><header class="page-head"><p>SECTION 07</p><h1>Validation และ Scheduled backup</h1><span>ทดสอบ Syntax, Dry-run, Manual run และ Scheduler ตามลำดับบังคับ</span></header><div class="prose"><section class="doc-section"><div class="section-number">16</div><div class="section-body"><h2>Backup script validation</h2><p>ลำดับบังคับ</p>
+<pre><code class="language-bash">python3 -m py_compile &lt;HERMES_HOME&gt;/scripts/backup_profile_dr_pack.py
+python3 &lt;HERMES_HOME&gt;/scripts/backup_profile_dr_pack.py --dry-run
+python3 &lt;HERMES_HOME&gt;/scripts/backup_profile_dr_pack.py
+</code></pre>
+<p>หลัง Manual run ตรวจ State</p>
+<pre><code class="language-python">import json
+from pathlib import Path
+
+state = json.loads(Path("&lt;STATE_FILE&gt;").read_text())
+print(state["last_success_at"])
+print(state["last_profiles"])
+for result in state["last_results"]:
+    print(result["profile"], len(result.get("uploads", [])), result["archive"])
+</code></pre>
+<p>ตรวจ Checksum ทุก Profile</p>
+<pre><code class="language-bash">cd &lt;LOCAL_PROFILE_BACKUP_DIR&gt;
+sha256sum -c &lt;CHECKSUM_FILE&gt;
+</code></pre>
+<p>Manual run ต้องผ่านก่อนสร้าง Scheduled job</p>
+<hr/></div></section><section class="doc-section"><div class="section-number">17</div><div class="section-body"><h2>Scheduled backup job</h2><p>ตัวอย่าง Configuration</p>
+<pre><code class="language-text">Name: Hermes Profile DR Pack
+Schedule: &lt;BACKUP_SCHEDULE&gt;
+Mode: script-only / no-agent
+Script: backup_profile_dr_pack.py
+Delivery: local
+</code></pre>
+<p>เหตุผลที่ Delivery เป็น Local</p>
+<ul>
+<li>Producer อาจพิมพ์ JSON/Log ยาว</li>
+<li>ไม่ต้องการส่งรายละเอียด Confidential</li>
+<li>Notifier แยกเป็นผู้ส่ง Summary สั้น</li>
+</ul>
+<p>หลังสร้าง Job</p>
+<pre><code class="language-bash">hermes cron list --all
+hermes cron run &lt;BACKUP_JOB_ID&gt;
+hermes cron list --all
+</code></pre>
+<p>ต้องตรวจ <code>last_status: ok</code> และหลักฐานใน State ไม่ใช่ตรวจ Status อย่างเดียว</p>
+<hr/></div></section></div></article><article class="page" id="page-notifier" data-title="Notifier และ Alert contract"><header class="page-head"><p>SECTION 08</p><h1>Notifier และ Alert contract</h1><span>ตรวจหลักฐาน Backup ก่อนส่งสรุป และป้องกัน Notification ซ้ำ</span></header><div class="prose"><section class="doc-section"><div class="section-number">18</div><div class="section-body"><h2>Independent notifier</h2><p>Notifier ต้องตรวจอย่างน้อย</p>
+<ol>
+<li>State file อ่านได้</li>
+<li><code>last_success_at</code> เป็นวันปัจจุบันใน <code>&lt;TIMEZONE&gt;</code></li>
+<li>มี <code>last_results</code> อย่างน้อย 1 Profile</li>
+<li>Artifacts ล่าสุดยังอยู่</li>
+<li>SHA256 ผ่าน</li>
+<li>Upload records ครบตาม Layout</li>
+<li>Remote IDs/Parents ถูกบันทึก</li>
+<li>Producer job Enabled และ Last status ปกติถ้าตรวจได้</li>
+</ol>
+<h3>18.1 Success message</h3>
+<pre><code class="language-text">✅ Hermes Profile Backup
+สถานะ: สำเร็จ
+เวลาแจ้ง: &lt;TIMESTAMP&gt;
+Backup ล่าสุด: &lt;TIMESTAMP&gt;
+Profiles: &lt;COUNT&gt;
+Remote uploads: &lt;COUNT&gt;
+Checksum: ผ่าน
+หมายเหตุ: Archive เป็นข้อมูลลับและยังไม่เข้ารหัส
+</code></pre>
+<h3>18.2 Failure message</h3>
+<pre><code class="language-text">🚨 Hermes Profile Backup
+สถานะ: ไม่สำเร็จ
+เวลาแจ้ง: &lt;TIMESTAMP&gt;
+Backup ล่าสุด: &lt;TIMESTAMP_OR_UNKNOWN&gt;
+Profiles: &lt;COUNT&gt;
+สาเหตุ: &lt;SHORT_REASON&gt;
+ตรวจ Log: &lt;LOG_PATH_PLACEHOLDER&gt;
+</code></pre>
+<h3>18.3 Output contract</h3>
+<p>เมื่อส่ง Notification สำเร็จ</p>
+<pre><code class="language-text">exit code = 0
+stdout = empty
+stderr = empty
+log contains sent=true and message identifier
+</code></pre>
+<p>ถ้าส่งไม่สำเร็จ ต้องคืน Non-zero หรือเขียน Error ที่ Scheduler เก็บหลักฐานได้ โดยไม่เปิดเผย Secret</p>
+<hr/></div></section><section class="doc-section"><div class="section-number">19</div><div class="section-body"><h2>Notifier validation</h2><pre><code class="language-bash">python3 -m py_compile &lt;HERMES_HOME&gt;/scripts/profile_backup_notifier.py
+python3 &lt;HERMES_HOME&gt;/scripts/profile_backup_notifier.py --dry-run
+</code></pre>
+<p>หลัง Dry-run ถูกต้อง ให้ส่งทดสอบจริงหนึ่งครั้งโดยได้รับอนุมัติ</p>
+<pre><code class="language-bash">python3 &lt;HERMES_HOME&gt;/scripts/profile_backup_notifier.py \
+  &gt; /tmp/profile_backup_notifier_stdout.txt \
+  2&gt; /tmp/profile_backup_notifier_stderr.txt
+
+printf 'stdout_bytes='; wc -c &lt; /tmp/profile_backup_notifier_stdout.txt
+printf 'stderr_bytes='; wc -c &lt; /tmp/profile_backup_notifier_stderr.txt
+</code></pre>
+<p>อย่า Log Token หรือ Full API URL</p>
+<hr/></div></section><section class="doc-section"><div class="section-number">20</div><div class="section-body"><h2>Scheduled notifier job</h2><pre><code class="language-text">Name: Hermes Profile Backup notifier
+Schedule: &lt;NOTIFIER_SCHEDULE&gt;
+Mode: script-only / no-agent
+Script: profile_backup_notifier.py
+Delivery: local
+</code></pre>
+<p>ตั้งเวลาให้หลัง Producer เพียงพอ เช่น 10 นาที แต่ต้องอิงระยะเวลาจริงของ Backup</p>
+<p>หลังสร้าง</p>
+<pre><code class="language-bash">hermes cron list --all
+</code></pre>
+<p>ตรวจว่า Job active และ Next run ถูกต้อง</p>
+<hr/></div></section></div></article><article class="page" id="page-restore-drill" data-title="Restore drill แบบปลอดภัย"><header class="page-head"><p>SECTION 09</p><h1>Restore drill แบบปลอดภัย</h1><span>กู้คืนผ่าน Test profile พร้อม Stop conditions ก่อนเปิด Gateway/Cron</span></header><div class="prose"><section class="doc-section"><div class="section-number">21</div><div class="section-body"><h2>Restore drill ที่ปลอดภัย</h2><p>ควรทำ Restore drill เป็นระยะ โดยใช้ Test profile เท่านั้น</p>
+<h3>21.1 ขั้นตอน</h3>
+<ol>
+<li>ดาวน์โหลด DR pack จาก Private storage</li>
+<li>ตรวจ Exact filenames และ Parent</li>
+<li>ตรวจ SHA256</li>
+<li>อ่าน Manifest และ Safety flags</li>
+<li>Import เป็นชื่อใหม่</li>
+<li>ตรวจ Config/Skills/Cron</li>
+<li>ตรวจ Absolute paths</li>
+<li>ตรวจ OAuth/Integrations แบบ Read-only ก่อน</li>
+<li>ห้าม Start Gateway</li>
+<li>ห้าม Enable jobs</li>
+<li>บันทึกผล Drill</li>
+<li>ลบ Test profile เมื่อได้รับอนุมัติและไม่ต้องใช้งานแล้ว</li>
+</ol>
+<h3>21.2 Stop conditions</h3>
+<p>หยุดทันทีเมื่อ</p>
+<ul>
+<li>Checksum ไม่ผ่าน</li>
+<li>Archive แตกไม่ได้</li>
+<li>Manifest ไม่ตรงกับ Archive</li>
+<li>พบ Secret ใน Log/Runbook</li>
+<li>พบ Absolute paths ที่ยังชี้เครื่องเดิมและมี Side effect</li>
+<li>พบ Bot/Gateway ที่อาจทำงานซ้ำ</li>
+<li>Version incompatibility ยังไม่ถูกประเมิน</li>
+</ul>
+<hr/></div></section></div></article><article class="page" id="page-troubleshooting" data-title="Troubleshooting"><header class="page-head"><p>SECTION 10</p><h1>Troubleshooting</h1><span>วิเคราะห์ Failure ตาม Problem → Check → Fix → Verify</span></header><div class="prose"><section class="doc-section"><div class="section-number">22</div><div class="section-body"><h2>Troubleshooting</h2><h3>Backup สร้าง Archive ได้แต่ Upload ไม่ครบ</h3>
+<p><strong>ตรวจ</strong></p>
+<ul>
+<li>OAuth status</li>
+<li>Remote folder permissions</li>
+<li>Exact parent IDs</li>
+<li>File size/API limits</li>
+<li>Upload records ใน State</li>
+</ul>
+<p><strong>แก้</strong></p>
+<ul>
+<li>Retry เฉพาะไฟล์ที่ขาดโดยใช้ Idempotency</li>
+<li>ห้ามประกาศ Success จน Verify Remote ครบ</li>
+</ul>
+<h3>Checksum ไม่ผ่าน</h3>
+<p><strong>ตรวจ</strong></p>
+<ul>
+<li>ไฟล์ถูกแก้หลังสร้าง Checksum หรือไม่</li>
+<li>Download ถูกตัดกลางทางหรือไม่</li>
+<li>Working directory ตรงหรือไม่</li>
+</ul>
+<p><strong>แก้</strong></p>
+<ul>
+<li>Reject ชุดนั้น</li>
+<li>สร้าง Run ใหม่</li>
+<li>อย่าแก้ Checksum ให้ตรงกับไฟล์ที่สงสัย</li>
+</ul>
+<h3>Notifier บอกว่า Backup เก่า</h3>
+<p><strong>ตรวจ</strong></p>
+<ul>
+<li>Timezone</li>
+<li><code>last_success_at</code></li>
+<li>Producer schedule</li>
+<li>State file เขียนสำเร็จหรือไม่</li>
+</ul>
+<h3>Restore แล้ว Path ผิด</h3>
+<p><strong>ตรวจ</strong></p>
+<ul>
+<li><code>path_audit.absolute_paths_outside_profile</code></li>
+<li>Cron workdir</li>
+<li>Script paths</li>
+<li>User home ของเครื่องใหม่</li>
+</ul>
+<p><strong>แก้</strong></p>
+<ul>
+<li>แก้ใน Test profile</li>
+<li>Verify ก่อน Promote</li>
+</ul>
+<h3>Telegram หรือ Messaging bot ชนกัน</h3>
+<p><strong>อาการ</strong></p>
+<ul>
+<li>Polling conflict</li>
+<li>Duplicate messages</li>
+<li>Unauthorized/Conflict error</li>
+</ul>
+<p><strong>แก้</strong></p>
+<ul>
+<li>หยุด Gateway ฝั่งหนึ่ง</li>
+<li>ยืนยัน Owner ของ Bot token</li>
+<li>ทดสอบ Foreground ก่อนติดตั้ง Service</li>
+</ul>
+<hr/></div></section></div></article><article class="page" id="page-checklist" data-title="Acceptance checklist"><header class="page-head"><p>SECTION 11</p><h1>Acceptance checklist</h1><span>Gate สุดท้ายก่อนถือว่าระบบ Backup/Restore พร้อมใช้งาน</span></header><div class="prose"><section class="doc-section"><div class="section-number">23</div><div class="section-body"><h2>Acceptance checklist</h2><h3>Producer</h3>
+<ul>
+<li>[ ] Profile discovery จาก CLI และ Filesystem</li>
+<li>[ ] Dedupe/Sort Profiles</li>
+<li>[ ] Archive ครบทุก Profile</li>
+<li>[ ] Manifest Redacted</li>
+<li>[ ] Restore runbook ครบ</li>
+<li>[ ] SHA256 ผ่าน</li>
+<li>[ ] Remote daily/latest ครบ</li>
+<li>[ ] State มี IDs และ Last success</li>
+<li>[ ] Retention จำกัด Root</li>
+</ul>
+<h3>Notifier</h3>
+<ul>
+<li>[ ] ตรวจ Backup age</li>
+<li>[ ] ตรวจ Local artifacts</li>
+<li>[ ] ตรวจ Checksum</li>
+<li>[ ] ตรวจ Upload count/IDs</li>
+<li>[ ] Dry-run ผ่าน</li>
+<li>[ ] Test notification ผ่าน</li>
+<li>[ ] Success stdout ว่าง</li>
+<li>[ ] Log ไม่มี Secret</li>
+</ul>
+<h3>Restore</h3>
+<ul>
+<li>[ ] Download จาก Private storage</li>
+<li>[ ] SHA256 ผ่าน</li>
+<li>[ ] Import เป็น Test profile</li>
+<li>[ ] Gateway ยังไม่ Start</li>
+<li>[ ] Cron ยังไม่ Enable</li>
+<li>[ ] Integrations ตรวจแบบ Read-only</li>
+<li>[ ] Absolute paths ได้รับการ Review</li>
+<li>[ ] Rollback/Abort plan ชัดเจน</li>
+</ul>
+<hr/></div></section></div></article><article class="page" id="page-hardening" data-title="Hardening roadmap"><header class="page-head"><p>SECTION 12</p><h1>Hardening roadmap</h1><span>ยกระดับ Encryption, Off-site copy, RTO/RPO และ Restore drill</span></header><div class="prose"><section class="doc-section"><div class="section-number">24</div><div class="section-body"><h2>Hardening roadmap</h2><ol>
+<li>Encrypt Archive ด้วย <code>age</code> หรือ <code>gpg</code></li>
+<li>เก็บ Key ใน Secret manager</li>
+<li>เพิ่ม Remote retention policy</li>
+<li>ทำ Restore drill รายเดือน</li>
+<li>Alert ถ้า Archive ยังไม่เข้ารหัส</li>
+<li>เพิ่ม Dashboard สำหรับ Backup age, Last success, Profile count และ Upload count</li>
+<li>เพิ่ม Off-site storage อีก Provider สำหรับเหตุการณ์ที่ Provider หลักใช้ไม่ได้</li>
+<li>เพิ่ม Immutable/WORM policy หากเหมาะกับ Risk model</li>
+<li>เพิ่ม Recovery Time Objective (RTO) และ Recovery Point Objective (RPO)</li>
+<li>ทดสอบการกู้คืนเมื่อ Hermes version ต่างกัน</li>
+</ol>
+<hr/></div></section></div></article><article class="page" id="page-reference" data-title="Quick reference และ AI brief"><header class="page-head"><p>SECTION 13</p><h1>Quick reference และ AI brief</h1><span>คำสั่งสำคัญ, AI implementation brief และ Definition of Done</span></header><div class="prose"><section class="doc-section"><div class="section-number">25</div><div class="section-body"><h2>Quick command reference</h2><pre><code class="language-bash"># Full Hermes-home backup / restore
+hermes backup -o &lt;FULL_BACKUP_ZIP&gt;
+hermes import &lt;FULL_BACKUP_ZIP&gt;
+
+# Single-profile export / import (credentials excluded)
+hermes profile export &lt;PROFILE&gt; -o &lt;PROFILE_ARCHIVE&gt;
+hermes profile import &lt;PROFILE_ARCHIVE&gt; --name migrated-test
+
+# Manual backup
+python3 &lt;HERMES_HOME&gt;/scripts/backup_profile_dr_pack.py
+
+# Verify checksum
+cd &lt;LOCAL_PROFILE_BACKUP_DIR&gt;
+sha256sum -c &lt;CHECKSUM_FILE&gt;
+
+# Import as test profile
+hermes profile import &lt;ARCHIVE_FILE&gt; --name migrated-test
+
+# Verify test profile
+hermes profile show migrated-test
+hermes -p migrated-test config check
+hermes -p migrated-test doctor
+hermes -p migrated-test skills list
+hermes -p migrated-test cron list --all
+
+# Dry-run notifier
+python3 &lt;HERMES_HOME&gt;/scripts/profile_backup_notifier.py --dry-run
+
+# Inspect scheduler
+hermes cron list --all
+</code></pre>
+<hr/></div></section><section class="doc-section"><div class="section-number">26</div><div class="section-body"><h2>AI implementation brief</h2><p>ให้ AI ที่นำคู่มือนี้ไปใช้ทำตามลำดับ</p>
+<ol>
+<li>อ่านคู่มือทั้งหมด</li>
+<li>Discover ค่าจริงโดยไม่เปิดเผย Secret</li>
+<li>แสดง Plan และ Placeholder mapping ให้มนุษย์ตรวจ</li>
+<li>สร้าง Tests ก่อน Script จริง</li>
+<li>สร้าง Producer แบบ Dry-run ได้</li>
+<li>รัน Syntax/Test/Dry-run</li>
+<li>ขออนุมัติก่อน Manual side effects</li>
+<li>รัน Manual backup</li>
+<li>Verify Local + SHA256 + Remote</li>
+<li>สร้าง Notifier และ Dry-run</li>
+<li>ขออนุมัติก่อนส่งข้อความจริง</li>
+<li>ทดสอบ Notification</li>
+<li>สร้าง Scheduled jobs หลัง Manual verification</li>
+<li>Run ผ่าน Scheduler หนึ่งครั้ง</li>
+<li>รายงานหลักฐานจริงและข้อจำกัด</li>
+</ol>
+<p>AI ห้าม Claim success ถ้ายังไม่ได้ Read-back Artifact, Checksum, Remote state และ Scheduler state</p>
+<hr/></div></section><section class="doc-section"><div class="section-number">27</div><div class="section-body"><h2>Definition of Done</h2><p>ระบบถือว่าเสร็จเมื่อ</p>
+<ul>
+<li>Backup ครบทุก Profile ที่ตรวจพบ</li>
+<li>Artifacts ครบ 4 ชนิดต่อ Profile</li>
+<li>Checksum ผ่าน</li>
+<li>Remote daily/latest ผ่าน Exact-name/Parent verification</li>
+<li>State file ครบและอ่านได้</li>
+<li>Producer schedule Run ผ่าน</li>
+<li>Notifier ตรวจหลักฐานจริง</li>
+<li>Notification test สำเร็จ</li>
+<li>Success stdout ว่าง</li>
+<li>Restore runbook ใช้ Import Test profile ได้</li>
+<li>Safety flags ป้องกัน Gateway/Cron/Side effects</li>
+<li>ข้อจำกัด Encryption ถูกระบุ</li>
+</ul>
+<p>หากข้อใดไม่ผ่าน ต้องรายงานว่า “ยังไม่เสร็จ” พร้อมหลักฐานและขั้นตอนแก้ไข</p>
+<hr/></div></section><section class="doc-section"><div class="section-number">28</div><div class="section-body"><h2>แหล่งอ้างอิงคำสั่ง Hermes</h2><ul>
+<li>Profile commands: https://hermes-agent.nousresearch.com/docs/reference/profile-commands</li>
+<li>CLI backup/import: https://hermes-agent.nousresearch.com/docs/reference/cli-commands</li>
+<li>Profiles: https://hermes-agent.nousresearch.com/docs/user-guide/profiles</li>
+<li>Scheduled tasks: https://hermes-agent.nousresearch.com/docs/user-guide/features/cron</li>
+</ul>
+<p>คู่มือนี้ตรวจคำสั่งกับ Hermes Agent CLI <code>v0.20.4 (2026.8.18)</code> เมื่อจัดทำ ผู้ใช้ต้องตรวจ <code>--help</code> และ Documentation เวอร์ชันปัจจุบันก่อนนำไปใช้จริง</p></div></section></div></article></div></div></main></div><script>
+(()=>{'use strict';const app=document.getElementById('app'),pages=[...document.querySelectorAll('.page')],items=[...document.querySelectorAll('.nav-item')],scroll=document.getElementById('scroll'),title=document.getElementById('currentTitle'),search=document.getElementById('navSearch');const valid=new Set(items.map(i=>i.dataset.page));let scale=Number(localStorage.getItem('backup-guide-scale')||1);function close(){app.classList.remove('mobile-open')}function go(id,push=true){if(!valid.has(id))id='overview';pages.forEach(p=>p.classList.toggle('active',p.id==='page-'+id));items.forEach(i=>{const a=i.dataset.page===id;i.classList.toggle('active',a);i.setAttribute('aria-current',a?'page':'false')});const page=document.getElementById('page-'+id);title.textContent=page.dataset.title;scroll.scrollTop=0;close();if(push&&location.hash!=='#'+id)history.pushState(null,'','#'+id)}function setScale(v){scale=Math.max(.86,Math.min(1.22,Math.round(v*100)/100));document.documentElement.style.setProperty('--scale',scale);localStorage.setItem('backup-guide-scale',scale)}function setTheme(v){document.documentElement.dataset.theme=v;localStorage.setItem('backup-guide-theme',v)}items.forEach(i=>i.addEventListener('click',()=>go(i.dataset.page)));document.getElementById('collapseBtn').onclick=()=>{app.classList.toggle('collapsed');localStorage.setItem('backup-guide-collapsed',app.classList.contains('collapsed')?'1':'0')};document.getElementById('menuBtn').onclick=()=>app.classList.add('mobile-open');document.getElementById('overlay').onclick=close;document.getElementById('themeBtn').onclick=()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');document.getElementById('fontDown').onclick=()=>setScale(scale-.06);document.getElementById('fontUp').onclick=()=>setScale(scale+.06);search.addEventListener('input',()=>{const q=search.value.toLocaleLowerCase('th').trim();items.forEach(i=>i.hidden=!!q&&!i.dataset.search.toLocaleLowerCase('th').includes(q))});window.addEventListener('hashchange',()=>go(location.hash.slice(1),false));document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});document.querySelectorAll('pre').forEach(pre=>{const wrap=document.createElement('div');wrap.className='code-block';const head=document.createElement('div');head.className='code-head';head.innerHTML='<span>COMMAND / CONFIG</span><button class="copy-btn" type="button">Copy</button>';pre.replaceWith(wrap);wrap.append(head,pre);head.querySelector('button').onclick=async e=>{try{await navigator.clipboard.writeText(pre.innerText);e.target.textContent='Copied'}catch{e.target.textContent='Select';const r=document.createRange();r.selectNodeContents(pre);getSelection().removeAllRanges();getSelection().addRange(r)}setTimeout(()=>e.target.textContent='Copy',1200)}});setTheme(localStorage.getItem('backup-guide-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'));setScale(scale);if(localStorage.getItem('backup-guide-collapsed')==='1')app.classList.add('collapsed');go(location.hash.slice(1)||'overview',false)})();
+</script></body></html>

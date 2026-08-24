@@ -1,5 +1,16 @@
 [
   {
+    "id": "hermes-profile-backup-restore",
+    "title": "คู่มือสำรองและกู้คืน Hermes Profile แบบตรวจสอบได้",
+    "short_title": "สำรองและกู้คืน Hermes Profile",
+    "href": "Hermes_Profile_Backup_Restore_Public_Guide.html",
+    "cover": "assets/covers/custom/hermes-profile-backup-restore.webp",
+    "category": "AI Operations",
+    "summary": "สร้าง Profile DR Pack ที่มี Archive, Redacted manifest, Restore runbook, SHA256, Private remote storage, State file, Notifier และ Restore drill แบบปลอดภัย",
+    "accent": "#F36D50",
+    "published_at": "2026-08-24T21:18:48+07:00"
+  },
+  {
     "id": "ai-chatbot-beyond-chatgpt",
     "title": "เบื้องหลังการสร้าง AI Chatbot ที่ไม่ได้จบแค่ต่อ ChatGPT — Interactive Reference Manual",
     "short_title": "สร้าง AI Chatbot ให้เหนือกว่า ChatGPT",
