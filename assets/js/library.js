@@ -10,6 +10,7 @@
   const isAudio = document.body.classList.contains("audio-page");
   const itemName = isAudio ? "หนังสือเสียง" : "หนังสือ";
   const itemUnit = isAudio ? "รายการ" : "เล่ม";
+  let activeCategory = "";
   let currentColumns = 0;
   let resizeTimer;
 
@@ -31,8 +32,11 @@
     const labelGrid = document.createElement("div");
     labelGrid.className = "shelf-label-grid";
     shelfCards.forEach((card) => {
-      const plaque = document.createElement("span");
+      const plaque = document.createElement("button");
       plaque.className = "shelf-category-plaque";
+      plaque.type = "button";
+      plaque.setAttribute("data-category-filter", card.dataset.category);
+      plaque.setAttribute("aria-pressed", "false");
       plaque.textContent = card.dataset.category;
       labelGrid.appendChild(plaque);
     });
@@ -75,8 +79,9 @@
     let visible = 0;
 
     cards.forEach((card) => {
+      const matchesCategory = !activeCategory || card.dataset.category === activeCategory;
       const matchesQuery = !query || normalize(card.dataset.search).includes(query);
-      card.hidden = !matchesQuery;
+      card.hidden = !(matchesCategory && matchesQuery);
       if (!card.hidden) visible += 1;
     });
 
@@ -86,7 +91,13 @@
         const shelfCards = [...shelf.querySelectorAll(".book-card")];
         const plaques = [...shelf.querySelectorAll(".shelf-category-plaque")];
         shelfCards.forEach((card, index) => {
-          if (plaques[index]) plaques[index].hidden = card.hidden;
+          if (plaques[index]) {
+            plaques[index].hidden = card.hidden;
+            plaques[index].setAttribute(
+              "aria-pressed",
+              String(Boolean(activeCategory) && plaques[index].dataset.categoryFilter === activeCategory),
+            );
+          }
         });
       }
     });
@@ -98,6 +109,14 @@
   }
 
   search.addEventListener("input", updateCatalog);
+
+  room.addEventListener("click", (event) => {
+    const plaque = event.target.closest(".shelf-category-plaque[data-category-filter]");
+    if (!plaque || isAudio) return;
+    const selected = plaque.dataset.categoryFilter;
+    activeCategory = activeCategory === selected ? "" : selected;
+    updateCatalog();
+  });
 
 
   window.addEventListener("resize", () => {

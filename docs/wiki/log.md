@@ -33,3 +33,5 @@ tags: [library, changelog]
 ## 2026-08-24
 
 - Added `Hermes_Trustworthy_Autonomy_Manual.html` unchanged as the fifteenth reading guide, designed an industrial safety-standard custom cover, and catalogued it as **Hermes ทำงานเองอย่างไว้ใจได้**.
+- Added the 45th audio entry **ยิ่งเพิ่มสกิล AI ยิ่งโกหกเก่งขึ้น** from playlist Video ID `wQ_XZKFgmOk`, using user-verified duration/date and a cached proxy-fetched thumbnail.
+- Made reading shelf category plaques clickable filters with active metal styling and click-again reset behavior.

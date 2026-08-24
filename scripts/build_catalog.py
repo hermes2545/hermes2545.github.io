@@ -51,7 +51,9 @@ def chunks(items: list[dict], size: int) -> Iterable[list[dict]]:
 def render_shelf(books: list[dict], number: int) -> str:
     cards = "\n".join(render_book(book) for book in books)
     labels = "\n      ".join(
-        f'<span class="shelf-category-plaque">{esc(book["category"])}</span>'
+        f'<button class="shelf-category-plaque" type="button" '
+        f'data-category-filter="{esc(book["category"])}" aria-pressed="false">'
+        f'{esc(book["category"])}</button>'
         for book in books
     )
     return f'''<section class="shelf" aria-label="ชั้นหนังสือที่ {number}">

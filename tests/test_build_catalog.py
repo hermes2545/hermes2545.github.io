@@ -36,11 +36,19 @@ class HomepageBuildTests(unittest.TestCase):
         self.assertEqual(self.html.count('class="shelf-label-grid"'), 3)
         self.assertEqual(self.html.count('class="shelf-category-plaque"'), len(self.books))
         for book in self.books:
-            self.assertIn(f'class="shelf-category-plaque">{html.escape(book["category"])}</span>', self.html)
+            plaque = (
+                f'class="shelf-category-plaque" type="button" '
+                f'data-category-filter="{html.escape(book["category"])}" aria-pressed="false">'
+                f'{html.escape(book["category"])}</button>'
+            )
+            self.assertIn(plaque, self.html)
         stylesheet = (ROOT / "assets" / "css" / "library.css").read_text(encoding="utf-8")
         self.assertIn(".shelf-category-plaque", stylesheet)
+        self.assertIn('.shelf-category-plaque[aria-pressed="true"]', stylesheet)
         script = (ROOT / "assets" / "js" / "library.js").read_text(encoding="utf-8")
         self.assertIn("function buildShelfLabels", script)
+        self.assertIn("data-category-filter", script)
+        self.assertIn('room.addEventListener("click"', script)
 
     def test_books_are_sorted_newest_first_and_show_publish_date(self):
         timestamps = [book["published_at"] for book in self.books]

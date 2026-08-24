@@ -292,6 +292,7 @@ main { display: block; }
   align-items: center;
 }
 .shelf-category-plaque {
+  appearance: none;
   position: relative;
   width: min(90%, 7.4rem);
   min-width: 0;
@@ -314,7 +315,19 @@ main { display: block; }
   text-overflow: ellipsis;
   text-transform: uppercase;
   white-space: nowrap;
+  cursor: pointer;
+  transition: transform .16s ease, filter .16s ease, color .16s ease, background .16s ease;
 }
+.shelf-category-plaque:hover { filter: brightness(1.12); transform: translateY(-1px); }
+.shelf-category-plaque[aria-pressed="true"] {
+  color: #fff8df;
+  border-color: #fff0b8;
+  background:
+    linear-gradient(100deg, rgba(255,255,255,.18), transparent 26%, rgba(255,207,73,.2) 58%, transparent 78%),
+    linear-gradient(#4b3422, #1d160f 62%, #0e0a07);
+  box-shadow: 0 0 0 2px rgba(229,201,135,.2), 0 3px 7px rgba(0,0,0,.5), inset 0 1px rgba(255,245,207,.25);
+}
+.shelf-category-plaque:focus-visible { outline: 3px solid #f3d7ae; outline-offset: 3px; }
 .shelf-category-plaque::before,
 .shelf-category-plaque::after {
   position: absolute;
