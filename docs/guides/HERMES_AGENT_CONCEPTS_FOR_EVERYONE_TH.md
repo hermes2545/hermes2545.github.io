@@ -964,7 +964,7 @@ AI ห้ามสรุปว่า Profile เป็น Security boundary แ�
 
 ### Source video
 
-- Every Hermes Agent Concept Explained for Normal People  
+- Every Hermes Agent Concept Explained for Normal People
   https://www.youtube.com/watch?v=lGtBPrSrnjY
 
 ### Official Hermes Agent documentation
