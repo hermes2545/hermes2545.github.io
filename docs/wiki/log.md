@@ -37,3 +37,4 @@ tags: [library, changelog]
 - Made reading shelf category plaques clickable filters with active metal styling and click-again reset behavior.
 - Added `AI_Chatbot_Beyond_ChatGPT_Interactive_Reference_Manual.html` unchanged as the sixteenth reading guide, designed a layered product-stack custom cover with an official ChatGPT icon, and catalogued it as **สร้าง AI Chatbot ให้เหนือกว่า ChatGPT**.
 - Sanitized and reorganized a private-system backup prompt into the public-safe **สำรองและกู้คืน Hermes Profile** manual, created 13 interactive views plus a detailed Markdown source, designed a disaster-recovery cover, and prepared it as the seventeenth reading guide.
+- Replaced the backup guide's original operator illustration with the approved monochrome Hermes operator logo and retuned the cover to black, warm ivory, safety red, and muted gold.

@@ -17,7 +17,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 ### Reading collection
 
 - 17 standalone HTML guides indexed from `data/books.json`.
-- `Hermes_Profile_Backup_Restore_Public_Guide.html` is the newest guide, with a disaster-recovery field-guide 600×900 custom WebP cover and original female operator illustration.
+- `Hermes_Profile_Backup_Restore_Public_Guide.html` is the newest guide, with a monochrome editorial disaster-recovery 600×900 custom WebP cover using the approved Hermes operator logo.
 - The imported `hermes-memory` and `hermes-guardian` repositories retain their original source commits under dedicated subdirectories.
 - All 17 shelf-facing short titles use Thai-first labels while retaining necessary product and technical terms.
 - Newest publication appears at the upper-left, then flows right and downward.

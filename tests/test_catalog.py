@@ -92,6 +92,12 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(book["cover"], "assets/covers/custom/hermes-profile-backup-restore.webp")
         self.assertEqual(book["published_at"], "2026-08-24T21:18:48+07:00")
         self.assertTrue((ROOT / "templates" / "hermes-profile-backup-restore-cover.template.html").is_file())
+        logo = ROOT / "templates" / "reading-cover-assets" / "hermes-girl-logo.jpg"
+        self.assertTrue(logo.is_file())
+        template = (ROOT / "templates" / "hermes-profile-backup-restore-cover.template.html").read_text(encoding="utf-8")
+        self.assertIn("reading-cover-assets/hermes-girl-logo.jpg", template)
+        guide_html = (ROOT / "Hermes_Profile_Backup_Restore_Public_Guide.html").read_text(encoding="utf-8")
+        self.assertIn('<img class="brand-logo" src="data:image/jpeg;base64,', guide_html)
         self.assertTrue((ROOT / "docs" / "guides" / "HERMES_PROFILE_BACKUP_RESTORE_PUBLIC_GUIDE.md").is_file())
 
     def test_ai_chatbot_beyond_chatgpt_manual_is_catalogued(self):
