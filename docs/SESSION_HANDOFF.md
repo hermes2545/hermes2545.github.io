@@ -33,6 +33,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 - Each audio item uses a large iPod-style device at the existing book footprint: a full 4:3 thumbnail screen above a click wheel, with duration at the upper-right of the lower control panel and a PLAY label below.
 - Audio titles no longer show the redundant `AUDIO BOOK` kicker.
 - Each item and the playlist button open YouTube in a new tab.
+- The Audio room uses a light premium technology-retail theme inspired by Apple Fifth Avenue's architectural materials: a luminous glass-cube mark, circular skylights, pale stone/off-white terrazzo surfaces, stainless-steel details, translucent dark navigation, and maple display tables. Apple Blue is reserved for interactive controls.
 
 ### App collection
 
@@ -80,7 +81,7 @@ python scripts/build_app_library.py --check
 git diff --check
 ```
 
-Expected verified result at close: **54 tests passed**, all three generated pages current, and no diff-check errors.
+Expected verified result at close: **55 tests passed**, all three generated pages current, and no diff-check errors.
 
 ## Publication workflow
 

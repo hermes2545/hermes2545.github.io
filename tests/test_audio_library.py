@@ -79,6 +79,26 @@ class AudioLibraryTests(unittest.TestCase):
         self.assertIn("aspect-ratio: 2 / 3;", stylesheet)
         self.assertIn(".audio-card .book-cover-wrap::before", stylesheet)
 
+    def test_audio_room_uses_a_fifth_avenue_inspired_retail_material_system(self):
+        stylesheet = (ROOT / "assets" / "css" / "audio-library.css").read_text(encoding="utf-8")
+        template = (ROOT / "templates" / "audio-library.template.html").read_text(encoding="utf-8")
+        for marker in (
+            "--apple-stone: #f5f5f7;",
+            "--apple-ink: #1d1d1f;",
+            "--apple-blue: #0071e3;",
+            "--maple: #d6aa73;",
+            ".audio-page .site-nav",
+            "backdrop-filter: saturate(180%) blur(20px)",
+            ".audio-library-mark::before",
+            ".audio-bookshelf::before",
+            ".audio-bookshelf .shelf-plank",
+            "linear-gradient(180deg, #e4bf8d, var(--maple))",
+            "font-family: system-ui, -apple-system",
+        ):
+            self.assertIn(marker, stylesheet)
+        self.assertIn("FIFTH AVENUE LISTENING ROOM", template)
+        self.assertIn("A bright gallery for sound and ideas", template)
+
     def test_duration_is_in_the_lower_panel_above_play(self):
         cards = self.page.split('<article class="book-card audio-card"')[1:]
         self.assertEqual(len(cards), 48)
