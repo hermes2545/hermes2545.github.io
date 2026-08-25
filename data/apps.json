@@ -9,6 +9,8 @@
     "published_at": "2026-04-10T00:00:45+07:00",
     "source_repository": "https://github.com/p2544/battle-tank",
     "source_commit": "1ee3598a5ba84348915cf1cf6b140f52cc2e7bf2",
+    "source_sha256": "a331e2df6ec36ec28ddc03f7c28d299aab09198599a1524fef6bf2ea9cc15b53",
+    "import_mode": "preserved",
     "label": {
       "kicker": "CLASSIC ARCADE",
       "mark": "TB",
@@ -28,6 +30,8 @@
     "published_at": "2026-06-06T16:01:50+00:00",
     "source_repository": "https://github.com/p2544/bakery-center",
     "source_commit": "53320b6f4a51d1cad62f302857f9aebd8afd5cdb",
+    "source_sha256": "1e7a593f7ecc030f4bac5647036c947a5547f5d329b09e0d4253156f8db24f36",
+    "import_mode": "hardened-derivative",
     "label": {
       "kicker": "BAKER'S COMPANION",
       "mark": "BC",
@@ -47,6 +51,8 @@
     "published_at": "2025-04-13T14:26:09+08:00",
     "source_repository": "https://github.com/p2544/loderunner",
     "source_commit": "cceca5d5a15a21f724836654a46bf2501968e142",
+    "source_sha256": "057606d27ce1490592a44b707f34469854b22e9d23b1e23bd4d75dfe07f6c974",
+    "import_mode": "wrapper-preserved-runtime",
     "label": {
       "kicker": "APPLE II • C64",
       "mark": "LR",

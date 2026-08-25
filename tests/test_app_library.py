@@ -19,7 +19,8 @@ class AppLibraryTests(unittest.TestCase):
     def test_catalog_has_three_unique_apps_with_required_metadata(self):
         required = {
             "id", "title", "short_title", "href", "category", "summary",
-            "published_at", "source_repository", "source_commit", "label",
+            "published_at", "source_repository", "source_commit", "source_sha256",
+            "import_mode", "label",
         }
         self.assertEqual(len(self.apps), 3)
         self.assertEqual(
@@ -31,6 +32,7 @@ class AppLibraryTests(unittest.TestCase):
             self.assertTrue(required <= app.keys(), app)
             self.assertRegex(app["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
             self.assertRegex(app["source_commit"], r"^[0-9a-f]{40}$")
+            self.assertRegex(app["source_sha256"], r"^[0-9a-f]{64}$")
             self.assertTrue(app["source_repository"].startswith("https://github.com/p2544/"))
             self.assertEqual(set(app["label"]), {"kicker", "mark", "version", "primary", "accent", "ink"})
             for color in ("primary", "accent", "ink"):
@@ -61,20 +63,40 @@ class AppLibraryTests(unittest.TestCase):
             self.assertEqual(actual[app_id]["source_commit"], source_commit)
             self.assertTrue((ROOT / unquote(urlparse(href).path)).is_file())
 
-    def test_single_file_apps_preserve_source_bytes(self):
-        expected_hashes = {
-            "app/battle-tank.html": "a331e2df6ec36ec28ddc03f7c28d299aab09198599a1524fef6bf2ea9cc15b53",
-            "app/bakery-center.html": "1e7a593f7ecc030f4bac5647036c947a5547f5d329b09e0d4253156f8db24f36",
-        }
-        for relative_path, expected in expected_hashes.items():
-            digest = hashlib.sha256((ROOT / relative_path).read_bytes()).hexdigest()
-            self.assertEqual(digest, expected, relative_path)
+    def test_battle_tank_preserves_source_bytes(self):
+        app = next(app for app in self.apps if app["id"] == "battle-tank")
+        digest = hashlib.sha256((ROOT / app["href"]).read_bytes()).hexdigest()
+        self.assertEqual(app["import_mode"], "preserved")
+        self.assertEqual(digest, app["source_sha256"])
+
+    def test_bakery_center_is_a_hardened_derivative_of_the_pinned_source(self):
+        app = next(app for app in self.apps if app["id"] == "bakery-center")
+        source = (ROOT / app["href"]).read_text(encoding="utf-8")
+        digest = hashlib.sha256((ROOT / app["href"]).read_bytes()).hexdigest()
+        self.assertEqual(app["import_mode"], "hardened-derivative")
+        self.assertNotEqual(digest, app["source_sha256"])
+        self.assertIn("LIBRARY SECURITY HARDENING", source)
+        self.assertNotIn("fonts.googleapis.com", source)
+        self.assertNotIn("fonts.gstatic.com", source)
+        for marker in (
+            "function safeId(",
+            "function safePhoto(",
+            "function normalizeRecipe(",
+            "function normalizeLog(",
+            "function normalizeBackup(",
+            "const clean=normalizeBackup(j);",
+            "${esc(r.icon||ICONS[r.cat]||'🧁')}",
+        ):
+            self.assertIn(marker, source)
+        self.assertNotIn("for(const r of j.recipes||[])await dbPut('recipes',r);", source)
 
     def test_loderunner_keeps_upstream_runtime_unchanged_behind_stable_wrapper(self):
         wrapper = (ROOT / "app" / "loderunner.html").read_text(encoding="utf-8")
         runtime = ROOT / "app" / "loderunner" / "lodeRunner.html"
         self.assertIn('src="loderunner/lodeRunner.html"', wrapper)
         self.assertIn('title="Lode Runner — Total Recall"', wrapper)
+        self.assertIn('referrerpolicy="no-referrer"', wrapper)
+        self.assertIn('sandbox="allow-scripts allow-same-origin allow-downloads allow-modals allow-pointer-lock"', wrapper)
         self.assertEqual(
             hashlib.sha256(runtime.read_bytes()).hexdigest(),
             "057606d27ce1490592a44b707f34469854b22e9d23b1e23bd4d75dfe07f6c974",
@@ -110,6 +132,9 @@ class AppLibraryTests(unittest.TestCase):
         self.assertIn(".diskette", stylesheet)
         self.assertIn("aspect-ratio: 90 / 94", stylesheet)
         self.assertIn(".diskette-label", stylesheet)
+        self.assertIn("--app-paper: #ece8dd;", stylesheet)
+        self.assertIn("--app-wall: #d8d5ca;", stylesheet)
+        self.assertIn("background-color: var(--app-paper);", stylesheet)
         self.assertIn("function layoutShelves()", script)
         self.assertIn("function columnsForViewport()", script)
         self.assertIn('itemName = "App"', script)

@@ -38,8 +38,9 @@ Metadata และ Commit ที่ใช้จริงอยู่ใน `data
 
 - Source เป็น Single-file HTML; ใช้ IndexedDB สำหรับสูตร บันทึก และการตั้งค่าใน Browser
 - ไม่พบ Login, Server-side API, Credential หรือการส่งข้อมูลผู้ใช้ไป Backend
-- Google Fonts เป็น External presentation dependency; App ยังมี Font fallback
-- นำเข้าเป็น `app/bakery-center.html` โดยรักษา SHA256 ของ Source HTML
+- ตัด Google Fonts network dependency และใช้ Local system-font fallbacks เพื่อไม่ส่งข้อมูลเครือข่ายไป Third party
+- Upstream SHA256 ถูกบันทึกใน `data/apps.json`; ไฟล์ `app/bakery-center.html` เป็น Library-hardened derivative จึงตั้ง `import_mode: hardened-derivative` และไม่อ้างว่า Byte-identical
+- เพิ่ม Schema/size validation สำหรับ Backup และ AI import, Safe ID, Icon text escaping, JPEG-only photo data URLs, Stored-data migration และ Browser regression ที่ยิง Malicious payload จริง
 
 ### Lode Runner
 
@@ -60,6 +61,9 @@ Metadata และ Commit ที่ใช้จริงอยู่ใน `data
 ## License note
 
 GitHub License API ไม่พบ License file ที่ประกาศชัดเจนใน Source repositories ทั้งสาม ณ Commit ที่นำเข้า และ Lode Runner ระบุผู้สร้าง/แหล่ง Source ดั้งเดิมใน Runtime comments อยู่แล้ว การนำเข้าครั้งนี้ทำตามคำสั่งตรงของเจ้าของโครงการและรักษา Attribution เดิม แต่ควรถือสถานะ License ว่า **not declared in source** จนกว่าจะมี License file อย่างเป็นทางการ
+
+- Battle Tank มี Embedded MP3 metadata ระบุ “Gamemaster Audio”; ต้องยืนยันสิทธิ์เสียงหรือเปลี่ยน/ตัดเสียงก่อน Public push หากไม่มีหลักฐานสิทธิ์
+- Lode Runner upstream, game source, sprites, audio และ level data ไม่มี Redistribution license ที่ตรวจพบ แม้ CreateJS vendor files จะมี MIT headers; Public push ต้องอาศัยการยืนยันฐานสิทธิ์จากผู้ใช้
 
 ## Decision
 

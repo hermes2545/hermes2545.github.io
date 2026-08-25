@@ -1,4 +1,3 @@
 # Preserve imported upstream source bytes while keeping whitespace checks on project-authored files.
 /app/battle-tank.html -whitespace
-/app/bakery-center.html -whitespace
 /app/loderunner/** -whitespace

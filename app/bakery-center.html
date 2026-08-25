@@ -7,9 +7,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#F7EFE3">
 <title>Bakery Center</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🥖</text></svg>">
 <style>
 :root{
@@ -26,19 +23,19 @@
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
 body{
-  font-family:'Sarabun',sans-serif; background:var(--bg); color:var(--ink);
+  font-family:Tahoma,'Noto Sans Thai',sans-serif; background:var(--bg); color:var(--ink);
   font-size:16.5px; line-height:1.55; padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom));
   background-image:radial-gradient(rgba(150,110,60,.06) 1px, transparent 1.4px);
   background-size:22px 22px; min-height:100vh;
 }
-h1,h2,h3,.display{font-family:'Fraunces',serif; line-height:1.2; margin:0 0 .4em}
+h1,h2,h3,.display{font-family:Georgia,'Noto Serif Thai',serif; line-height:1.2; margin:0 0 .4em}
 button{font-family:inherit}
 header.app{
   position:sticky; top:0; z-index:30; display:flex; align-items:center; gap:8px;
   padding:calc(10px + env(safe-area-inset-top)) 16px 10px; background:color-mix(in srgb, var(--bg) 88%, transparent);
   backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid var(--line);
 }
-header.app .brand{font-family:'Fraunces',serif; font-weight:700; font-size:21px; letter-spacing:.2px; flex:1; display:flex; align-items:center; gap:8px}
+header.app .brand{font-family:Georgia,'Noto Serif Thai',serif; font-weight:700; font-size:21px; letter-spacing:.2px; flex:1; display:flex; align-items:center; gap:8px}
 header.app .brand .crumb{display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--accent)}
 .iconbtn{
   border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:999px;
@@ -92,9 +89,9 @@ table.ing td{padding:9px 4px; border-bottom:1px dashed var(--line)}
 table.ing td:nth-child(2){text-align:right; font-weight:700; white-space:nowrap}
 table.ing td:nth-child(3){text-align:right; color:var(--muted); font-size:13px; width:64px; white-space:nowrap}
 .stepline{display:flex; gap:12px; padding:10px 0; border-bottom:1px dashed var(--line); align-items:baseline}
-.stepline .n{font-family:'Fraunces',serif; font-weight:700; color:var(--accent); min-width:26px}
+.stepline .n{font-family:Georgia,'Noto Serif Thai',serif; font-weight:700; color:var(--accent); min-width:26px}
 .stepline .tmr{margin-left:auto; color:var(--muted); font-size:13px; white-space:nowrap; font-weight:700}
-.timer-display{font-family:'Fraunces',serif; font-weight:700; font-size:72px; text-align:center; letter-spacing:1px; margin:8px 0; font-variant-numeric:tabular-nums}
+.timer-display{font-family:Georgia,'Noto Serif Thai',serif; font-weight:700; font-size:72px; text-align:center; letter-spacing:1px; margin:8px 0; font-variant-numeric:tabular-nums}
 .timer-display.done{color:var(--accent); animation:pulse 1s infinite}
 @keyframes pulse{50%{opacity:.45}}
 .progressbar{height:8px; background:var(--surface2); border-radius:99px; overflow:hidden; margin:10px 0}
@@ -127,7 +124,7 @@ pre.code{background:var(--surface2); border:1px solid var(--line); border-radius
 .toolgrid .card .em{font-size:34px; margin-bottom:6px}
 .toolgrid .card h3{font-size:15.5px; margin:0}
 .result-box{background:var(--surface2); border-radius:var(--r-s); padding:14px; text-align:center; margin-top:14px}
-.result-box .v{font-family:'Fraunces',serif; font-size:34px; font-weight:700; color:var(--primary)}
+.result-box .v{font-family:Georgia,'Noto Serif Thai',serif; font-size:34px; font-weight:700; color:var(--primary)}
 .feeditem{display:flex; gap:12px; padding:12px 0; border-bottom:1px dashed var(--line)}
 .feeditem .dot{width:12px; height:12px; border-radius:50%; background:var(--gold); margin-top:6px; flex-shrink:0}
 .toast{position:fixed; bottom:calc(var(--nav-h) + 18px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%); background:var(--ink); color:var(--bg); padding:11px 20px; border-radius:999px; font-weight:600; z-index:90; animation:fade .2s; max-width:88vw; text-align:center}
@@ -243,6 +240,66 @@ const dbClear=s=>new Promise(r=>{const q=tx(s,'readwrite').clear();q.onsuccess=(
 const kvGet=async k=>(await dbGet('kv',k))?.v;
 const kvSet=(k,v)=>dbPut('kv',{id:k,v});
 const uid=()=> Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+
+/* ============ LIBRARY SECURITY HARDENING ============ */
+const cleanText=(v,max=2000)=>String(v??'').replace(/\0/g,'').slice(0,max);
+const safeNumber=(v,min=0,max=1000000)=>{const n=Number(v);return Number.isFinite(n)?Math.min(max,Math.max(min,n)):min;};
+function safeId(v){const s=cleanText(v,80);return /^[A-Za-z0-9_-]{1,80}$/.test(s)?s:uid();}
+function safeRefId(v){const s=cleanText(v,80);return /^[A-Za-z0-9_-]{1,80}$/.test(s)?s:'';}
+function safeLocalized(v,max=2000){
+  if(v&&typeof v==='object'&&!Array.isArray(v))return {en:cleanText(v.en,max),th:cleanText(v.th,max)};
+  return cleanText(v,max);
+}
+function safeIcon(v){return cleanText(v,8).replace(/[<>&"']/g,'').trim()||'🧁';}
+function safePhoto(v){
+  const s=String(v??'');
+  return s.length<=2000000&&/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(s)?s:'';
+}
+function normalizeRecipe(value){
+  const r=value&&typeof value==='object'?value:{};
+  return {id:safeId(r.id),seed:!!r.seed,icon:safeIcon(r.icon),
+    cat:['sourdough','italian','cookies','brownies','other'].includes(r.cat)?r.cat:'other',
+    type:r.type==='pastry'?'pastry':'bread',name:safeLocalized(r.name,160),
+    source:cleanText(r.source,500),notes:safeLocalized(r.notes,2000),yield:safeNumber(r.yield,0,100000),
+    ingredients:(Array.isArray(r.ingredients)?r.ingredients:[]).slice(0,100).map(i=>({
+      name:safeLocalized(i?.name,160),g:safeNumber(i?.g),flour:!!i?.flour,price:safeNumber(i?.price)})),
+    steps:(Array.isArray(r.steps)?r.steps:[]).slice(0,200).map(s=>({
+      t:safeLocalized(s?.t,160),d:safeLocalized(s?.d,3000),m:safeNumber(s?.m,0,100000)}))};
+}
+function normalizeLog(value){
+  const l=value&&typeof value==='object'?value:{};
+  return {id:safeId(l.id),at:safeNumber(l.at,0,Number.MAX_SAFE_INTEGER),recipeId:safeRefId(l.recipeId),
+    recipeName:cleanText(l.recipeName,160),scale:safeNumber(l.scale,0.01,100),rating:safeNumber(l.rating,0,5),
+    notes:cleanText(l.notes,3000),photos:(Array.isArray(l.photos)?l.photos:[]).slice(0,3).map(safePhoto).filter(Boolean)};
+}
+function normalizeFeeding(value){
+  const f=value&&typeof value==='object'?value:{};
+  return {id:safeId(f.id),at:safeNumber(f.at,0,Number.MAX_SAFE_INTEGER),ratio:cleanText(f.ratio,80),
+    peak:cleanText(f.peak,80),rise:cleanText(f.rise,80),note:cleanText(f.note,1000)};
+}
+function normalizePrices(value){
+  const out={};if(!value||typeof value!=='object'||Array.isArray(value))return out;
+  Object.entries(value).slice(0,300).forEach(([name,price])=>{const key=cleanText(name,120).trim();if(key)out[key]=safeNumber(price);});
+  return out;
+}
+function normalizeBackup(value){
+  if(!value||typeof value!=='object'||value.app!=='bakery-center')return null;
+  return {recipes:(Array.isArray(value.recipes)?value.recipes:[]).slice(0,1000).map(normalizeRecipe),
+    logs:(Array.isArray(value.logs)?value.logs:[]).slice(0,2000).map(normalizeLog),
+    feedings:(Array.isArray(value.feedings)?value.feedings:[]).slice(0,5000).map(normalizeFeeding),
+    prices:normalizePrices(value.prices)};
+}
+async function hardenStoredData(){
+  if(await kvGet('library-hardening-v1'))return;
+  const recipes=(await dbAll('recipes')).map(normalizeRecipe);
+  const logs=(await dbAll('logs')).map(normalizeLog);
+  const feedings=(await dbAll('feedings')).map(normalizeFeeding);
+  await dbClear('recipes');for(const r of recipes)await dbPut('recipes',r);
+  await dbClear('logs');for(const l of logs)await dbPut('logs',l);
+  await dbClear('feedings');for(const f of feedings)await dbPut('feedings',f);
+  await kvSet('prices',normalizePrices(await kvGet('prices')));
+  await kvSet('library-hardening-v1',true);
+}
 
 /* ============ Seed recipes ============ */
 const SEEDS = [
@@ -465,7 +522,7 @@ async function vRecipes(){
     ${CATS.map(c=>`<span class="chip ${recipeFilter===c?'on':''}" onclick="recipeFilter='${c}';vRecipes()">${catName(c)}</span>`).join('')}
   </div>
   ${list.map(r=>`<div class="card recipe-card" onclick="vRecipeDetail('${r.id}')">
-     <div class="ico">${r.icon||ICONS[r.cat]||'🧁'}</div>
+     <div class="ico">${esc(r.icon||ICONS[r.cat]||'🧁')}</div>
      <div class="grow"><h3>${esc(tn(r.name))}</h3>
        <div class="meta">${catName(r.cat)} · ${r.steps.length} ${t('steps').toLowerCase()}${r.type==='bread'&&hydrationOf(r)?` · ${hydrationOf(r)}% hydration`:''}</div>
      </div><div style="color:var(--muted)">›</div></div>`).join('')
@@ -487,7 +544,7 @@ async function vRecipeDetail(id,scale){
     return pk>0?'฿'+fmtB(i.g*curScale*pk/1000):(isWaterName(i.name)?'฿0':'–');};
   $('#view').innerHTML=`
   <button class="iconbtn" onclick="go('recipes')" style="margin-bottom:12px">‹ ${t('nav_recipes')}</button>
-  <div class="row"><div style="font-size:42px">${r.icon||ICONS[r.cat]||'🧁'}</div>
+  <div class="row"><div style="font-size:42px">${esc(r.icon||ICONS[r.cat]||'🧁')}</div>
     <div class="grow"><h1 style="margin:0;font-size:26px">${esc(tn(r.name))}</h1>
     <div class="note">${esc(r.source||'')}</div></div></div>
   ${r.notes?`<div class="card flat" style="margin-top:12px;background:var(--surface2);border-style:dashed">💡 ${esc(tn(r.notes))}</div>`:''}
@@ -603,7 +660,7 @@ async function edSave(){
   if(!ed.name.trim())return toast(LANG==='en'?'Name required':'กรุณาใส่ชื่อสูตร');
   ed.ingredients=ed.ingredients.filter(i=>String(i.name).trim());
   ed.steps=ed.steps.filter(s=>String(s.t).trim());
-  await dbPut('recipes',ed); closeModal(); toast(t('data_saved')); vRecipeDetail(ed.id);
+  ed=normalizeRecipe(ed);await dbPut('recipes',ed); closeModal(); toast(t('data_saved')); vRecipeDetail(ed.id);
 }
 
 /* ============ AI Import ============ */
@@ -647,11 +704,11 @@ async function aiDoImport(){
   let txt=$('#aiJson').value.trim().replace(/^```json?/i,'').replace(/```$/,'').trim();
   try{
     const j=JSON.parse(txt);
-    const r={id:uid(),seed:false,icon:j.icon||'🧁',cat:CATS.includes(j.cat)?j.cat:'other',
+    const r=normalizeRecipe({id:uid(),seed:false,icon:j.icon||'🧁',cat:CATS.includes(j.cat)?j.cat:'other',
       type:j.type==='pastry'?'pastry':'bread',name:String(j.name||'Imported recipe'),
       source:String(j.source||''),notes:String(j.notes||''),
       ingredients:(j.ingredients||[]).map(i=>({name:String(i.name||''),g:+i.g||0,flour:!!i.flour})),
-      steps:(j.steps||[]).map(s=>({t:String(s.t||''),d:String(s.d||''),m:+s.m||0}))};
+      steps:(j.steps||[]).map(s=>({t:String(s.t||''),d:String(s.d||''),m:+s.m||0}))});
     if(!r.ingredients.length||!r.steps.length)throw 0;
     await dbPut('recipes',r); closeModal(); toast(t('data_saved')); vRecipeDetail(r.id);
   }catch(e){toast(t('invalid_json'));}
@@ -913,7 +970,7 @@ async function vStarter(){
   ${last?`<div class="card" style="display:flex;align-items:center;gap:14px">
     <div style="font-size:38px">🫙</div>
     <div><div class="note">${t('last_fed')}</div>
-    <div style="font-family:'Fraunces',serif;font-size:26px;font-weight:700">${ago} ${t('hours_ago')}</div>
+    <div style="font-family:Georgia,'Noto Serif Thai',serif;font-size:26px;font-weight:700">${ago} ${t('hours_ago')}</div>
     <div class="note">${esc(last.ratio||'')} ${last.rise?'· '+esc(last.rise):''}</div></div></div>`:''}
   <button class="btn big" onclick="feedEditor()">🥄 ${t('fed_now')}</button>
   <div class="card" style="margin-top:14px">
@@ -941,7 +998,7 @@ function feedEditor(){
   </div>`);
 }
 async function saveFeed(){
-  await dbPut('feedings',{id:uid(),at:Date.now(),ratio:$('#fdRatio').value,peak:$('#fdPeak').value,rise:$('#fdRise').value,note:$('#fdNote').value});
+  await dbPut('feedings',normalizeFeeding({id:uid(),at:Date.now(),ratio:$('#fdRatio').value,peak:$('#fdPeak').value,rise:$('#fdRise').value,note:$('#fdNote').value}));
   closeModal(); toast(t('data_saved')); vStarter();
 }
 async function delFeed(id){if(!confirm(t('confirm_del')))return; await dbDel('feedings',id); vStarter();}
@@ -959,24 +1016,25 @@ async function vLog(){
       <div style="color:var(--gold);font-size:16px;white-space:nowrap">${'★'.repeat(l.rating||0)}<span style="opacity:.25">${'★'.repeat(5-(l.rating||0))}</span></div>
       <button class="del-x" onclick="delLog('${l.id}')">✕</button></div>
     ${l.notes?`<div style="margin-top:8px;font-size:15px">${esc(l.notes)}</div>`:''}
-    ${l.photos?.length?`<div class="photo-grid">${l.photos.map(p=>`<img src="${p}" onclick="viewPhoto('${l.id}',${l.photos.indexOf(p)})">`).join('')}</div>`:''}
+    ${l.photos?.length?`<div class="photo-grid">${l.photos.map((p,i)=>`<img src="${esc(safePhoto(p))}" onclick="viewPhoto('${safeRefId(l.id)}',${i})">`).join('')}</div>`:''}
   </div>`).join('') || `<div class="empty"><div class="big">📓</div>${t('no_logs')}</div>`}
   </div>`;
 }
 async function viewPhoto(logId,idx){
   const l=await dbGet('logs',logId);
-  modal(`<img src="${l.photos[idx]}" style="width:100%;border-radius:14px">
+  const photo=safePhoto(l?.photos?.[idx]);if(!photo)return;
+  modal(`<img src="${esc(photo)}" style="width:100%;border-radius:14px">
   <button class="btn ghost big" style="margin-top:12px" onclick="closeModal()">${t('close')}</button>`);
 }
 async function logEditor(id,prefill){
   recipes=await dbAll('recipes');
   const l=id?await dbGet('logs',id):{id:uid(),at:Date.now(),recipeId:prefill?.recipeId||'',recipeName:prefill?.recipeName||'',scale:prefill?.scale||1,rating:0,notes:'',photos:[]};
-  logPhotos=[...(l.photos||[])]; let rating=l.rating||0;
+  logPhotos=[...(l.photos||[])].map(safePhoto).filter(Boolean); let rating=l.rating||0;
   window._logRate=v=>{rating=v;document.querySelectorAll('.stars span').forEach((s,i)=>s.classList.toggle('on',i<v));};
   window._logSave=async()=>{
     l.recipeId=$('#lgRec').value; l.recipeName=$('#lgRec').selectedOptions[0]?.dataset.name||$('#lgRec').selectedOptions[0]?.text||'';
     l.rating=rating; l.notes=$('#lgNotes').value; l.photos=logPhotos;
-    await dbPut('logs',l); closeModal();
+    await dbPut('logs',normalizeLog(l)); closeModal();
     toast(prefill?t('bake_saved'):t('data_saved')); TAB='log'; render();
   };
   modal(`<h2>${t('add_log')} ${prefill?'🎉':''}</h2>
@@ -996,7 +1054,7 @@ async function logEditor(id,prefill){
   renderLogPhotos();
 }
 function renderLogPhotos(){
-  $('#lgPhotos').innerHTML=logPhotos.map((p,i)=>`<div style="position:relative"><img src="${p}">
+  $('#lgPhotos').innerHTML=logPhotos.map((p,i)=>`<div style="position:relative"><img src="${esc(safePhoto(p))}">
     <button class="del-x" style="position:absolute;top:-6px;right:-6px;background:var(--surface);border-radius:50%;border:1px solid var(--line)" onclick="logPhotos.splice(${i},1);renderLogPhotos()">✕</button></div>`).join('')
   +(logPhotos.length<3?`<button class="addph" onclick="$('#lgFile').click()">＋</button>`:'');
 }
@@ -1047,12 +1105,12 @@ async function importData(input){
   if(!confirm(t('import_warn')))return void(input.value='');
   try{
     const j=JSON.parse(await file.text());
-    if(j.app!=='bakery-center')throw 0;
+    const clean=normalizeBackup(j);if(!clean)throw 0;
     await dbClear('recipes'); await dbClear('logs'); await dbClear('feedings');
-    for(const r of j.recipes||[])await dbPut('recipes',r);
-    for(const l of j.logs||[])await dbPut('logs',l);
-    for(const f of j.feedings||[])await dbPut('feedings',f);
-    if(j.prices){PRICES=j.prices; await kvSet('prices',j.prices);}
+    for(const r of clean.recipes)await dbPut('recipes',r);
+    for(const l of clean.logs)await dbPut('logs',l);
+    for(const f of clean.feedings)await dbPut('feedings',f);
+    PRICES=clean.prices;await kvSet('prices',clean.prices);
     closeModal(); toast(t('data_saved')); render();
   }catch(e){toast(t('invalid_json'));}
   input.value='';
@@ -1096,7 +1154,7 @@ async function pbPull(){  // ดึงชื่อส่วนผสมที่
 async function pbSave(){
   pbSync();
   const obj={}; pbRows.forEach(([n,p])=>{if(String(n).trim())obj[String(n).trim()]=+p||0;});
-  PRICES=obj; await kvSet('prices',obj); closeModal(); toast(t('data_saved'));
+  PRICES=normalizePrices(obj); await kvSet('prices',PRICES); closeModal(); toast(t('data_saved'));
   if(curRecipe)vRecipeDetail(curRecipe,curScale); else render();
 }
 
@@ -1147,7 +1205,7 @@ function openHelp(tab){
   const guide=GUIDE.map(g=>`<div class="card flat" style="background:var(--surface2);margin-bottom:10px;padding:12px">
     <b>${g.icon} ${esc(tn(g.t))}</b><div class="note" style="margin-top:4px">${esc(tn(g.d))}</div></div>`).join('');
   const log=CHANGELOG.map(e=>`<div class="card flat" style="margin-bottom:10px;padding:10px 12px">
-    <div class="row"><b style="font-family:'Fraunces',serif;color:var(--primary)">v${e.v}</b>
+    <div class="row"><b style="font-family:Georgia,'Noto Serif Thai',serif;color:var(--primary)">v${e.v}</b>
       <span class="note grow" style="text-align:right">${e.d}</span></div>
     <ul style="margin:6px 0 0;padding-left:18px">${e.c.map(c=>`<li class="note">${esc(tn(c))}</li>`).join('')}</ul></div>`).join('');
   modal(`<h2>${t('help_title')}</h2>
@@ -1162,6 +1220,7 @@ function openHelp(tab){
 /* ============ Boot ============ */
 (async function(){
   await openDB();
+  await hardenStoredData();
   PRICES=await kvGet('prices')||{};
   const seeded=await kvGet('seeded-v1');
   if(!seeded){ for(const s of SEEDS) if(!(await dbGet('recipes',s.id))) await dbPut('recipes',s); await kvSet('seeded-v1',true); }

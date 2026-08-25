@@ -38,11 +38,11 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 
 - 3 browser apps indexed from `data/apps.json`: **Bakery Center**, **Battle Tank**, and **Lode Runner**.
 - The generated shelf is `app-library.html`; stable launchers are `app/bakery-center.html`, `app/battle-tank.html`, and `app/loderunner.html`.
-- Bakery Center and Battle Tank preserve their imported source HTML byte-for-byte from the recorded source commits.
+- Battle Tank preserves its imported source HTML byte-for-byte. Bakery Center records the pinned upstream hash but is published as a Library-hardened derivative with schema validation, safe IDs/icons/photos, stored-data migration, and Stored-XSS regression coverage.
 - Lode Runner keeps its multi-file runtime under `app/loderunner/`; `app/loderunner.html` is a minimal same-origin fullscreen wrapper.
 - Development tools, executable files, source disk images, repository metadata, and unrelated README files are excluded from the imported Lode Runner runtime.
 - Every App appears as a CSS-rendered 3.5-inch diskette with a content-specific sticker label rather than a book cover.
-- The App room uses a Pantip Plaza 1990s software-floor visual language: perforated metal display wall, fluorescent/LED signage, Windows 95-style search panel, and metal shelf edges.
+- The App room uses a light Pantip Plaza 1990s software-floor visual language: pale retail wall, perforated metal display board, LED signage, Windows 95-style search panel, and metal shelf edges.
 
 ### Shared visual behavior
 
@@ -79,7 +79,7 @@ python scripts/build_app_library.py --check
 git diff --check
 ```
 
-Expected verified result at close: **52 tests passed**, all three generated pages current, and no diff-check errors.
+Expected verified result at close: **53 tests passed**, all three generated pages current, and no diff-check errors.
 
 ## Publication workflow
 
