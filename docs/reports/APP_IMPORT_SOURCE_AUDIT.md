@@ -22,9 +22,6 @@ tags: [library, app, import, provenance, privacy]
 - Bakery Center
 - Lode Runner
 - Pac-Man
-- Galaga
-- RL Battle City
-- New Rally-X
 
 Metadata และ Commit ที่ใช้จริงอยู่ใน `data/apps.json` ซึ่งเป็น Source of truth; รายงานนี้อธิบายผลตรวจและเหตุผลการนำเข้าโดยไม่สร้าง Inventory ซ้ำ
 
@@ -57,26 +54,9 @@ Metadata และ Commit ที่ใช้จริงอยู่ใน `data
 
 ### Pac-Man
 
-- รักษา `index.htm` และ `pacman.js` ตาม Source commit; เก็บ GPL-3.0 `COPYING`, README, Font license และ Runtime icon/font ที่จำเป็น
+- รักษา `index.htm` และ `pacman.js` ตาม Source commit; เก็บ GPL-3.0 `COPYING`, PII-free `UPSTREAM.md`, Font license และ Runtime icon/font ที่จำเป็น
 - ไม่ใช้ Backend หรือ External runtime service; Canvas รองรับ Keyboard และ Touch ตาม Source
 
-### Galaga
-
-- Source เป็น Unity 2021 project ไม่มี WebGL build และเครื่อง Build ไม่มี Unity Editor จึงสร้าง `import_mode: browser-port`
-- Browser port ใช้ Sprite และ Ship/Level JSON จาก Source commit ที่ Pin และระบุชัดว่าไม่ใช่ Original Unity build
-- Source ไม่มี License file ที่ตรวจพบ จึงยังคง License note ก่อน Public push
-
-### RL Battle City
-
-- Source เป็น Python/Pygame/Gymnasium/PPO และไม่มี Browser build; License เป็น MIT
-- Browser port เล่นเองได้และมี Local heuristic AI autopilot; ไม่ดาวน์โหลดหรืออ้างว่าใช้ External PPO weights
-- นำเข้าเฉพาะ Level, เสียง, License และ Source provenance; ไม่เอา Training logs/TensorBoard artifacts
-
-### New Rally-X
-
-- Source เป็น MonoGame/C# ไม่มี Browser build จึงสร้าง `import_mode: browser-port`
-- ใช้ Source map/sprites/fuel assets สำหรับ Canvas port แบบ Offline
-- Source ไม่มี License file และ README ระบุ Educational use/Namco copyright จึงยังคง License/IP note
 
 ## Privacy and metadata scan
 
@@ -91,11 +71,11 @@ GitHub License API ไม่พบ License file ที่ประกาศช�
 
 - Battle Tank มี Embedded MP3 metadata ระบุ “Gamemaster Audio”; ต้องยืนยันสิทธิ์เสียงหรือเปลี่ยน/ตัดเสียงก่อน Public push หากไม่มีหลักฐานสิทธิ์
 - Lode Runner upstream, game source, sprites, audio และ level data ไม่มี Redistribution license ที่ตรวจพบ แม้ CreateJS vendor files จะมี MIT headers; Public push ต้องอาศัยการยืนยันฐานสิทธิ์จากผู้ใช้
-- Galaga และ New Rally-X ไม่มี License ที่ตรวจพบ และอิงเกม Namco ดั้งเดิม; Browser ports ระบุ Source/Derivative boundary ชัดเจน
-- Pac-Man มี GPL-3.0 และนำ License/Corresponding browser source ไปพร้อม Runtime; RL Battle City มี MIT License
+- Pac-Man มี GPL-3.0 และนำ License/Corresponding browser source ไปพร้อม Runtime
 
 ## Decision
 
 - Local preparation: approved by current user instruction
 - Public push: not yet approved
 - Imported scope: runtime-only, source-provenance recorded, no destructive change to source repositories
+- Withdrawn scope: Galaga, RL Battle City, and New Rally-X are no longer present in the active catalog or public runtime tree

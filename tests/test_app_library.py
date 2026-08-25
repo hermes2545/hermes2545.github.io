@@ -22,12 +22,12 @@ class AppLibraryTests(unittest.TestCase):
             "published_at", "source_repository", "source_commit", "source_sha256",
             "import_mode", "sticker", "label",
         }
-        self.assertEqual(len(self.apps), 7)
+        self.assertEqual(len(self.apps), 4)
         self.assertEqual(
             {app["id"] for app in self.apps},
-            {"battle-tank", "bakery-center", "loderunner", "galaga", "pacman", "rl-battle-city", "new-rally-x"},
+            {"battle-tank", "bakery-center", "loderunner", "pacman"},
         )
-        self.assertEqual(len({app["href"] for app in self.apps}), 7)
+        self.assertEqual(len({app["href"] for app in self.apps}), 4)
         for app in self.apps:
             self.assertTrue(required <= app.keys(), app)
             self.assertRegex(app["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
@@ -62,25 +62,10 @@ class AppLibraryTests(unittest.TestCase):
                 "https://github.com/p2544/loderunner",
                 "cceca5d5a15a21f724836654a46bf2501968e142",
             ),
-            "galaga": (
-                "app/galaga.html",
-                "https://github.com/cholushkin/Galaga",
-                "f127e92130d3f3f50c9fc8ea5f169aebe8d4e0ce",
-            ),
             "pacman": (
                 "app/pacman.html",
                 "https://github.com/shaunlebron/pacman",
                 "51048a29df603391be1d12cd4118699fb0a38790",
-            ),
-            "rl-battle-city": (
-                "app/rl-battle-city.html",
-                "https://github.com/danisotelo/RL_battle_city",
-                "6bd87671b066a9d187a3f488cc25b87f013f8e2d",
-            ),
-            "new-rally-x": (
-                "app/new-rally-x.html",
-                "https://github.com/codehoose/new-rally-x",
-                "5e2fa82f31b9534830f8c9cc611f9e575515555c",
             ),
         }
         actual = {app["id"]: app for app in self.apps}
@@ -155,67 +140,21 @@ class AppLibraryTests(unittest.TestCase):
         for required in ("COPYING", "UPSTREAM.md", "font/ARCADE_R.TTF", "font/LICENSE.txt", "icon/favicon.png"):
             self.assertTrue((runtime / required).is_file(), required)
 
-    def test_galaga_is_a_playable_browser_port_from_pinned_unity_source(self):
-        app = next(app for app in self.apps if app["id"] == "galaga")
-        wrapper = (ROOT / app["href"]).read_text(encoding="utf-8")
-        runtime = ROOT / "app" / "galaga"
-        self.assertEqual(app["import_mode"], "browser-port")
-        self.assertEqual(app["source_sha256"], "5c9cbd801e108f9ac029019df65c904698b9a0b5161a5a98529fbf7b9a457e6f")
-        self.assertIn('src="galaga/index.html"', wrapper)
-        index = (runtime / "index.html").read_text(encoding="utf-8")
-        game = (runtime / "game.js").read_text(encoding="utf-8")
-        self.assertIn('data-source-commit="f127e92130d3f3f50c9fc8ea5f169aebe8d4e0ce"', index)
-        self.assertIn('id="gameCanvas"', index)
-        for marker in ("function startGame(", "function spawnWave(", "function update(", "function draw("):
-            self.assertIn(marker, game)
-        for required in (
-            "assets/Ship.png", "assets/Red.png", "assets/Green.png", "assets/Blue.png",
-            "configs/ConfigShip.json", "configs/ConfigLevel00.json", "UPSTREAM.md",
-        ):
-            self.assertTrue((runtime / required).is_file(), required)
-
-    def test_rl_battle_city_is_a_playable_ai_browser_port_from_pinned_python_source(self):
-        app = next(app for app in self.apps if app["id"] == "rl-battle-city")
-        wrapper = (ROOT / app["href"]).read_text(encoding="utf-8")
-        runtime = ROOT / "app" / "rl-battle-city"
-        self.assertEqual(app["import_mode"], "browser-port")
-        self.assertEqual(app["source_sha256"], "3340fb0583a35bc9b839a92a304433006a7c7085f52798cf0d8c75faafbe9a71")
-        self.assertIn('src="rl-battle-city/index.html"', wrapper)
-        index = (runtime / "index.html").read_text(encoding="utf-8")
-        game = (runtime / "game.js").read_text(encoding="utf-8")
-        self.assertIn('data-source-commit="6bd87671b066a9d187a3f488cc25b87f013f8e2d"', index)
-        self.assertIn('id="gameCanvas"', index)
-        self.assertIn('id="agentToggle"', index)
-        for marker in ("function startGame(", "function toggleAgent(", "function update(", "function draw("):
-            self.assertIn(marker, game)
-        for required in ("LICENSE", "UPSTREAM.md", "levels/1.txt", "sounds/fire.ogg", "sounds/explosion.ogg"):
-            self.assertTrue((runtime / required).is_file(), required)
-
-    def test_new_rally_x_is_a_playable_browser_port_from_pinned_monogame_source(self):
-        app = next(app for app in self.apps if app["id"] == "new-rally-x")
-        wrapper = (ROOT / app["href"]).read_text(encoding="utf-8")
-        runtime = ROOT / "app" / "new-rally-x"
-        self.assertEqual(app["import_mode"], "browser-port")
-        self.assertEqual(app["source_sha256"], "6ba5678752142cb10dc85e6f630515e83d0df8e69ffd76b75c7ede512cfdd699")
-        self.assertIn('src="new-rally-x/index.html"', wrapper)
-        index = (runtime / "index.html").read_text(encoding="utf-8")
-        game = (runtime / "game.js").read_text(encoding="utf-8")
-        self.assertIn('data-source-commit="5e2fa82f31b9534830f8c9cc611f9e575515555c"', index)
-        self.assertIn('id="gameCanvas"', index)
-        for marker in ("function startGame(", "function update(", "function draw(", "function dropSmoke("):
-            self.assertIn(marker, game)
-        for required in ("assets/sprites.png", "assets/map1.png", "assets/blocks.png", "UPSTREAM.md"):
-            self.assertTrue((runtime / required).is_file(), required)
+    def test_withdrawn_game_ports_and_stickers_are_absent(self):
+        for app_id in ("galaga", "rl-battle-city", "new-rally-x"):
+            self.assertFalse((ROOT / "app" / f"{app_id}.html").exists(), app_id)
+            self.assertFalse((ROOT / "app" / app_id).exists(), app_id)
+            self.assertFalse((ROOT / "assets" / "app-stickers" / f"{app_id}.webp").exists(), app_id)
 
     def test_page_renders_each_app_as_a_three_and_half_inch_diskette(self):
-        self.assertEqual(self.page.count('class="app-card"'), 7)
-        self.assertEqual(self.page.count('class="diskette"'), 7)
-        self.assertEqual(self.page.count('class="diskette-shutter"'), 7)
-        self.assertEqual(self.page.count('class="diskette-label'), 7)
-        self.assertEqual(self.page.count('class="diskette-hub"'), 7)
-        self.assertEqual(self.page.count('class="diskette-sticker"'), 6)
-        self.assertEqual(self.page.count('target="_blank"'), 7)
-        self.assertEqual(self.page.count('rel="noopener"'), 7)
+        self.assertEqual(self.page.count('class="app-card"'), 4)
+        self.assertEqual(self.page.count('class="diskette"'), 4)
+        self.assertEqual(self.page.count('class="diskette-shutter"'), 4)
+        self.assertEqual(self.page.count('class="diskette-label'), 4)
+        self.assertEqual(self.page.count('class="diskette-hub"'), 4)
+        self.assertEqual(self.page.count('class="diskette-sticker"'), 3)
+        self.assertEqual(self.page.count('target="_blank"'), 4)
+        self.assertEqual(self.page.count('rel="noopener"'), 4)
         for app in self.apps:
             self.assertEqual(self.page.count(f'href="{app["href"]}"'), 1)
             self.assertIn(html.escape(app["short_title"]), self.page)
