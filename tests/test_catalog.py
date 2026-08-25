@@ -27,7 +27,7 @@ class CatalogTests(unittest.TestCase):
     def test_required_fields_and_unique_ids_and_links(self):
         required = {"id", "title", "short_title", "href", "cover", "category", "summary", "accent", "published_at"}
         self.assertTrue(self.books)
-        self.assertEqual(len(self.books), 18)
+        self.assertEqual(len(self.books), 19)
         self.assertEqual(len({book["id"] for book in self.books}), len(self.books))
         self.assertEqual(len({book["href"] for book in self.books}), len(self.books))
         for book in self.books:
@@ -37,7 +37,7 @@ class CatalogTests(unittest.TestCase):
             self.assertRegex(book["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
 
     def test_every_reading_book_uses_an_approved_custom_cover(self):
-        self.assertEqual(len(self.books), 18)
+        self.assertEqual(len(self.books), 19)
         for book in self.books:
             self.assertEqual(book["cover"], f'assets/covers/custom/{book["id"]}.webp')
             self.assertEqual(Path(book["cover"]).suffix, ".webp")
@@ -81,6 +81,7 @@ class CatalogTests(unittest.TestCase):
             "ai-chatbot-beyond-chatgpt": "สร้าง AI Chatbot ให้เหนือกว่า ChatGPT",
             "hermes-profile-backup-restore": "สำรองและกู้คืน Hermes Profile",
             "hermes-concepts-for-everyone": "เข้าใจ Hermes Agent สำหรับคนทั่วไป",
+            "agent-reach-comparison": "Agent Reach หรือดึง Transcript ตรง",
         }
         actual = {book["id"]: book["short_title"] for book in self.books}
         self.assertEqual(actual, expected)
@@ -111,6 +112,16 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(book["published_at"], "2026-08-25T01:23:50+07:00")
         self.assertTrue((ROOT / "templates" / "hermes-concepts-for-everyone-cover.template.html").is_file())
         self.assertTrue((ROOT / "docs" / "guides" / "HERMES_AGENT_CONCEPTS_FOR_EVERYONE_TH.md").is_file())
+
+    def test_agent_reach_comparison_is_catalogued(self):
+        book = next((book for book in self.books if book["id"] == "agent-reach-comparison"), None)
+        self.assertIsNotNone(book)
+        assert book is not None
+        self.assertEqual(book["href"], "AgentReach_comparison-vs-onepage.html")
+        self.assertEqual(book["cover"], "assets/covers/custom/agent-reach-comparison.webp")
+        self.assertEqual(book["category"], "AI Research Tools")
+        self.assertEqual(book["published_at"], "2026-08-25T12:37:40+07:00")
+        self.assertTrue((ROOT / "templates" / "agent-reach-comparison-cover.template.html").is_file())
 
     def test_ai_chatbot_beyond_chatgpt_manual_is_catalogued(self):
         book = next((book for book in self.books if book["id"] == "ai-chatbot-beyond-chatgpt"), None)

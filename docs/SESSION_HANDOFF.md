@@ -16,14 +16,14 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 
 ### Reading collection
 
-- 18 standalone HTML guides indexed from `data/books.json`.
-- `Hermes_Agent_Concepts_for_Everyone_TH.html` is the newest guide, with a monochrome system-orbit 600×900 custom WebP cover using red only for the `Hermes Agent` title.
+- 19 standalone HTML guides indexed from `data/books.json`.
+- `AgentReach_comparison-vs-onepage.html` is the newest guide, comparing direct transcript extraction with Agent Reach/yt-dlp using a split-system 600×900 custom WebP cover.
 - The imported `hermes-memory` and `hermes-guardian` repositories retain their original source commits under dedicated subdirectories.
-- All 18 shelf-facing short titles use Thai-first labels while retaining necessary product and technical terms.
+- All 19 shelf-facing short titles use Thai-first labels while retaining necessary product and technical terms.
 - Newest publication appears at the upper-left, then flows right and downward.
 - Every guide opens in a new browser tab.
-- All 18 reading books use individually designed 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork.
-- Reproducible cover designs live under `templates/`, including `hermes-concepts-for-everyone-cover.template.html`; legacy Facebook assets remain archived but unused.
+- All 19 reading books use individually designed 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork.
+- Reproducible cover designs live under `templates/`, including `agent-reach-comparison-cover.template.html` and `hermes-concepts-for-everyone-cover.template.html`; legacy Facebook assets remain archived but unused.
 
 ### Audio collection
 
@@ -65,7 +65,7 @@ python scripts/build_audio_library.py --check
 git diff --check
 ```
 
-Expected verified result at close: **40 tests passed**, both generated pages current, and no diff-check errors.
+Expected verified result at close: **41 tests passed**, both generated pages current, and no diff-check errors.
 
 ## Publication workflow
 

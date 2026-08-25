@@ -1,5 +1,16 @@
 [
   {
+    "id": "agent-reach-comparison",
+    "title": "Agent Reach vs Direct Transcript — เปรียบเทียบจากการทดสอบจริง",
+    "short_title": "Agent Reach หรือดึง Transcript ตรง",
+    "href": "AgentReach_comparison-vs-onepage.html",
+    "cover": "assets/covers/custom/agent-reach-comparison.webp",
+    "category": "AI Research Tools",
+    "summary": "เปรียบเทียบการดึง transcript ตรงกับ Agent Reach/yt-dlp จากการทดสอบจริง ทั้งความเร็ว คุณภาพข้อความ Chapters Metadata และข้อมูลประกอบคลิป",
+    "accent": "#2F6DF6",
+    "published_at": "2026-08-25T12:37:40+07:00"
+  },
+  {
     "id": "hermes-concepts-for-everyone",
     "title": "เข้าใจ Hermes Agent สำหรับคนทั่วไป — 15 แนวคิดหลักในระบบเดียว",
     "short_title": "เข้าใจ Hermes Agent สำหรับคนทั่วไป",
