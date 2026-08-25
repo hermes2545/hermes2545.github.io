@@ -34,21 +34,36 @@
 .app-page h1 { font-family: Impact, "Arial Narrow", Tahoma, sans-serif; text-transform: uppercase; letter-spacing: -.025em; }
 .app-page h2 { font-family: Impact, "Arial Narrow", Tahoma, sans-serif; letter-spacing: .01em; }
 .app-marquee {
+  position: relative;
   width: min(1160px, calc(100% - 2rem));
   min-height: 45px;
-  display: grid;
-  place-items: center;
+  overflow: hidden;
   margin: 0 auto 1.5rem;
-  color: #ff5148;
   border: 5px ridge #9c9d98;
   background:
     radial-gradient(circle, rgba(255,70,60,.22) 1px, transparent 1.5px) 0 0/7px 7px,
     #090b0c;
   box-shadow: 0 9px 20px rgba(0,0,0,.55);
-  font: 900 clamp(.6rem, 1.3vw, .84rem)/1.4 "Courier New", monospace;
-  letter-spacing: .16em;
-  text-align: center;
-  text-shadow: 0 0 10px #f33;
+}
+.app-marquee-track { position: absolute; inset: 0; overflow: hidden; }
+.app-marquee-message {
+  --led-color: #ff3b30;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: max-content;
+  color: var(--led-color);
+  font: 900 clamp(.66rem, 1.35vw, .9rem)/1.3 Tahoma, "Noto Sans Thai", monospace;
+  letter-spacing: .08em;
+  white-space: nowrap;
+  text-shadow: 0 0 3px var(--led-color), 0 0 9px var(--led-color), 0 0 17px color-mix(in srgb, var(--led-color) 55%, transparent);
+  filter: saturate(1.2);
+  will-change: left, transform, color;
+  animation: app-led-scroll-right 28s linear infinite;
+}
+@keyframes app-led-scroll-right {
+  from { left: 0; transform: translate(-100%, -50%); }
+  to { left: 100%; transform: translate(0, -50%); }
 }
 .app-tools { grid-template-columns: minmax(250px, .9fr) minmax(360px, 1.1fr); }
 .app-search-panel {

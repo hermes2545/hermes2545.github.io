@@ -8,6 +8,9 @@
   const status = document.querySelector("#result-status");
   const empty = document.querySelector("#empty-state");
   const itemName = "App";
+  const marquee = document.querySelector(".app-marquee-message");
+  const ledColors = ["#ff3b30", "#20b548", "#ffd20a", "#2b6cff"];
+  let ledColorIndex = 0;
   let activeCategory = "";
   let currentColumns = 0;
   let resizeTimer;
@@ -90,6 +93,13 @@
   }
 
   search.addEventListener("input", updateCatalog);
+  if (marquee) {
+    marquee.style.setProperty("--led-color", ledColors[ledColorIndex]);
+    marquee.addEventListener("animationiteration", () => {
+      ledColorIndex = (ledColorIndex + 1) % ledColors.length;
+      marquee.style.setProperty("--led-color", ledColors[ledColorIndex]);
+    });
+  }
   room.addEventListener("click", (event) => {
     const plaque = event.target.closest(".app-category-plaque[data-category-filter]");
     if (!plaque) return;

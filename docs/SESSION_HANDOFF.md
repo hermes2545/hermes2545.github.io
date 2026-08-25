@@ -43,6 +43,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 - Development tools, executable files, source disk images, repository metadata, and unrelated README files are excluded from the imported Lode Runner runtime.
 - Every App appears as a CSS-rendered 3.5-inch diskette with a content-specific sticker label rather than a book cover.
 - The App room uses a light Pantip Plaza 1990s software-floor visual language: pale retail wall, perforated metal display board, LED signage, Windows 95-style search panel, and metal shelf edges.
+- The App header is branded **พันธุ์ทิพย์พลาซ่า**. Its long Thai LED shop message scrolls continuously from left to right at a restrained 28-second pace and changes red → green → yellow → blue on each completed loop.
 
 ### Shared visual behavior
 
@@ -79,7 +80,7 @@ python scripts/build_app_library.py --check
 git diff --check
 ```
 
-Expected verified result at close: **53 tests passed**, all three generated pages current, and no diff-check errors.
+Expected verified result at close: **54 tests passed**, all three generated pages current, and no diff-check errors.
 
 ## Publication workflow
 
