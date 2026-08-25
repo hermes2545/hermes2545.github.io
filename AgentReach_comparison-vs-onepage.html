@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>เปรียบเทียบ Agent Reach vs ไม่ใช้ Agent Reach</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#f7f8fc; --card:#ffffff; --text:#1e2430; --muted:#677086; --line:#e6eaf2;
+      --blue:#2f6df6; --blue2:#eaf1ff; --green:#0f9d6a; --green2:#e8fff5; --red:#d14b4b; --red2:#fff0f0;
+      --shadow:0 10px 28px rgba(26,36,56,.08);
+      --radius:20px;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:'Sarabun',system-ui,sans-serif; background:linear-gradient(180deg,#f8fbff 0%,#f7f8fc 100%); color:var(--text); }
+    .wrap { max-width:1100px; margin:0 auto; padding:24px 16px 40px; }
+    .hero { background:linear-gradient(135deg,#ffffff 0%,#edf4ff 55%,#f7fbff 100%); border:1px solid var(--line); border-radius:28px; padding:22px; box-shadow:var(--shadow); }
+    .eyebrow { display:inline-flex; gap:8px; align-items:center; background:#eef3ff; color:#315ed8; border-radius:999px; padding:6px 12px; font-size:14px; font-weight:700; }
+    h1 { margin:12px 0 10px; font-size:32px; line-height:1.15; }
+    .lead { margin:0; color:var(--muted); font-size:18px; line-height:1.6; max-width:900px; }
+    .meta { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:18px; }
+    .meta .box { background:rgba(255,255,255,.85); border:1px solid var(--line); border-radius:16px; padding:12px 14px; }
+    .label { color:var(--muted); font-size:13px; margin-bottom:4px; }
+    .value { font-size:16px; font-weight:700; }
+    .tabbar { display:flex; gap:10px; flex-wrap:wrap; margin:18px 0; }
+    .tabbtn { border:1px solid var(--line); background:#fff; color:var(--text); padding:12px 16px; border-radius:999px; font-size:15px; font-weight:700; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,.04); }
+    .tabbtn.active { background:var(--blue); color:#fff; border-color:var(--blue); }
+    .panel { display:none; }
+    .panel.active { display:block; }
+    .grid2 { display:grid; grid-template-columns:1.2fr .8fr; gap:16px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:24px; padding:18px; box-shadow:var(--shadow); }
+    .card h2, .card h3 { margin:0 0 10px; }
+    .vs { display:grid; grid-template-columns:1fr auto 1fr; gap:14px; align-items:stretch; margin-top:14px; }
+    .side { border-radius:22px; padding:18px; border:1px solid var(--line); }
+    .side.left { background:linear-gradient(180deg,#f6fbff,#ffffff); }
+    .side.right { background:linear-gradient(180deg,#fffaf3,#ffffff); }
+    .vsmark { display:flex; align-items:center; justify-content:center; font-weight:800; color:var(--blue); font-size:26px; }
+    .pill { display:inline-block; padding:6px 10px; border-radius:999px; font-size:13px; font-weight:800; margin-bottom:10px; }
+    .ok { background:var(--green2); color:var(--green); }
+    .warn { background:#fff6da; color:#a36b00; }
+    ul { margin:10px 0 0 18px; padding:0; }
+    li { margin:6px 0; line-height:1.55; }
+    .decision { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:16px; }
+    .decision .item { border:1px solid var(--line); border-radius:18px; padding:16px; background:#fff; }
+    .decision .item strong { display:block; font-size:18px; margin-bottom:6px; }
+    .cards4 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+    .cards4 .mini { border:1px solid var(--line); border-radius:18px; padding:16px; background:#fff; }
+    .cards4 .mini h4 { margin:0 0 8px; font-size:18px; }
+    .muted { color:var(--muted); }
+    .chapters { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .chapter { text-decoration:none; color:inherit; background:#fff; border:1px solid var(--line); border-radius:16px; padding:12px 14px; display:flex; flex-direction:column; gap:4px; }
+    .chapter span { color:var(--blue); font-weight:800; font-size:13px; }
+    .chapter strong { font-size:15px; }
+    table { width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border:1px solid var(--line); border-radius:18px; }
+    th,td { padding:12px 14px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top; }
+    th { background:#f4f7fd; font-size:14px; }
+    tr:last-child td { border-bottom:none; }
+    .good { color:var(--green); font-weight:700; }
+    .bad { color:var(--red); font-weight:700; }
+    .diff-item { border:1px solid var(--line); border-radius:18px; padding:14px; background:#fff; margin-top:12px; }
+    .diff-head { font-weight:800; margin-bottom:10px; }
+    .diff-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .mini-label { font-size:13px; color:var(--muted); margin-bottom:6px; font-weight:700; }
+    .quote { background:#f8faff; border:1px solid var(--line); border-radius:14px; padding:12px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; line-height:1.55; color:#30405c; word-break:break-word; }
+    .foot { margin-top:18px; color:var(--muted); font-size:13px; text-align:center; }
+    .top-summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:16px; }
+    .stat { border:1px solid var(--line); border-radius:18px; padding:16px; background:#fff; }
+    .stat b { display:block; font-size:24px; margin-top:4px; }
+    @media (max-width: 860px) {
+      .meta,.grid2,.decision,.cards4,.chapters,.top-summary,.diff-grid,.vs { grid-template-columns:1fr; }
+      .vsmark { padding:4px 0; }
+      h1 { font-size:26px; }
+      .lead { font-size:16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="eyebrow">YouTube Transcript VS Comparison</div>
+      <h1>ใช้ Agent Reach กับไม่ใช้ Agent Reach ต่างกันยังไง</h1>
+      <p class="lead">หน้าเดียวจบ หน้านี้สรุปแบบภาษาคนก่อนว่าอันไหนเหมาะกับงานแบบไหน แล้วอีกแท็บค่อยลงรายละเอียดเชิงเทคนิคให้ดูชัด ๆ</p>
+      <div class="meta">
+        <div class="box"><div class="label">คลิป</div><div class="value">The AI System Behind My 7-Figure Business (Full Agency OS Breakdown)</div></div>
+        <div class="box"><div class="label">ช่อง</div><div class="value">Simon Høiberg</div></div>
+        <div class="box"><div class="label">ความคล้ายของ transcript</div><div class="value">0.999</div></div>
+        <div class="box"><div class="label">ลิงก์ต้นทาง</div><div class="value"><a href="https://youtu.be/tmVcfnNWXfQ" target="_blank" rel="noopener">เปิดคลิป YouTube</a></div></div>
+      </div>
+    </section>
+
+    <div class="tabbar">
+      <button class="tabbtn active" data-tab="people">อ่านแบบภาษาคน</button>
+      <button class="tabbtn" data-tab="tech">เปรียบเทียบเชิงเทคนิค</button>
+    </div>
+
+    <section id="people" class="panel active">
+      <div class="top-summary">
+        <div class="stat"><div class="label">ทางที่พร้อมใช้เลย</div><b>ไม่ใช้ Agent Reach</b><div class="muted">เปิดแล้วได้ transcript ทันที</div></div>
+        <div class="stat"><div class="label">ทางที่ข้อมูลประกอบเยอะกว่า</div><b>Agent Reach/yt-dlp</b><div class="muted">มี chapter + metadata + description</div></div>
+        <div class="stat"><div class="label">สถานะ Agent Reach ถอดเสียงตรง ๆ</div><b>ยังไม่พร้อม</b><div class="muted">ต้องตั้งค่าระบบถอดเสียงเพิ่มเติมก่อน</div></div>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <h2>สรุปให้เข้าใจเร็ว ๆ</h2>
+        <div class="vs">
+          <div class="side left">
+            <span class="pill ok">ไม่ใช้ Agent Reach</span>
+            <h3>เหมาะเวลาต้องการ “ข้อความพูด” ไปใช้ต่อเลย</h3>
+            <ul>
+              <li>ได้ transcript เร็ว</li>
+              <li>ไฟล์สะอาด เอาไปสรุป แปล หรือป้อนให้ agent ต่อได้ง่าย</li>
+              <li>ไม่ต้องตั้งค่าระบบถอดเสียงเพิ่ม</li>
+            </ul>
+          </div>
+          <div class="vsmark">VS</div>
+          <div class="side right">
+            <span class="pill warn">Agent Reach / yt-dlp</span>
+            <h3>เหมาะเวลาต้องการ “ข้อมูลรอบคลิป” ให้ครบกว่า</h3>
+            <ul>
+              <li>ได้ chapter ของคลิปเลย</li>
+              <li>ได้ description จากเจ้าของคลิป</li>
+              <li>ได้ตัวเลขประกอบ เช่น like, comment, follower</li>
+              <li>ได้ caption ดิบแบบ .vtt สำหรับงานละเอียด</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="decision">
+        <div class="item"><strong>ถ้าอยากเอา transcript ไปใช้เลย</strong><div>ไม่ใช้ Agent Reach ชนะ</div><div class="muted" style="margin-top:6px;">เปิดแล้วได้ข้อความเลย ไม่ต้องตั้งค่าเพิ่มมาก</div></div><div class="item"><strong>ถ้าอยากได้ข้อมูลรอบคลิปเยอะ ๆ</strong><div>Agent Reach/yt-dlp ชนะ</div><div class="muted" style="margin-top:6px;">ได้ chapter, description, like/comment และไฟล์ caption ดิบ</div></div><div class="item"><strong>ถ้าจะใช้ Agent Reach ถอดเสียงตรง ๆ</strong><div>ตอนนี้ยังไม่ได้</div><div class="muted" style="margin-top:6px;">ต้องตั้งค่าระบบถอดเสียงเพิ่มเติมก่อน</div></div><div class="item"><strong>ถ้าเทียบเฉพาะใจความ transcript</strong><div>แทบเหมือนกัน</div><div class="muted" style="margin-top:6px;">ค่าความคล้าย 0.999 แปลว่าเนื้อหาหลักแทบตรงกันหมด</div></div>
+      </div>
+
+      <div class="grid2" style="margin-top:16px;">
+        <div class="card">
+          <h2>สรุปแบบบ้าน ๆ</h2>
+          <ul>
+            <li>ถ้าถามว่า <b>“อันไหนเอา transcript ไปใช้ต่อได้ง่ายกว่า”</b> คำตอบคือ <b>ไม่ใช้ Agent Reach</b></li>
+            <li>ถ้าถามว่า <b>“อันไหนให้ภาพรวมคลิปครบกว่า”</b> คำตอบคือ <b>Agent Reach/yt-dlp</b></li>
+            <li>ถ้าถามว่า <b>“Agent Reach ใช้ถอดเสียงตรง ๆ ได้ไหมตอนนี้”</b> คำตอบคือ <b>ยังไม่ได้</b> เพราะยังต้องตั้งค่าระบบถอดเสียงเพิ่มเติม</li>
+            <li>แต่ถึงอย่างนั้น transcript ที่ได้จากทั้งสองฝั่ง <b>ใจความแทบเหมือนกัน</b></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h2>สิ่งที่เจอจริงจากการทดสอบ</h2>
+          <ul><li>ทั้งสองแบบเก็บแท็ก [music] เหมือนกัน</li><li>สาย Agent Reach/yt-dlp ให้ chapter มา 8 ช่วง แต่ direct transcript ไม่มี chapter แยกมาในไฟล์ transcript</li><li>สาย Agent Reach/yt-dlp ให้ description ของคลิปมาด้วย ทำให้รู้โครงหัวข้อจากเจ้าของคลิป</li><li>สาย direct ให้จำนวน segment = 540 ช่วยวัดความละเอียดของ transcript ได้</li></ul>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <h2>แผนที่คลิปแบบกดดูต่อได้</h2>
+        <p class="muted">หัวข้อนี้มาจากฝั่ง Agent Reach/yt-dlp ซึ่งเป็นข้อดีที่เห็นชัดกว่าฝั่ง direct transcript</p>
+        <div class="chapters"><a class="chapter" href="https://www.youtube.com/watch?v=tmVcfnNWXfQ&t=0s" target="_blank" rel="noopener"><span>00:00</span><strong>Introduction</strong></a><a class="chapter" href="https://www.youtube.com/watch?v=tmVcfnNWXfQ&t=75s" target="_blank" rel="noopener"><span>01:15</span><strong>Eval Classifiers</strong></a><a class="chapter" href="https://www.youtube.com/watch?v=tmVcfnNWXfQ&t=345s" target="_blank" rel="noopener"><span>05:45</span><strong>Schema Contracts</strong></a><a class="chapter" href="https://www.youtube.com/watch?v=tmVcfnNWXfQ&t=550s" target="_blank" rel="noopener"><span>09:10</span><strong>Purpose-Built Tools</strong></a><a class="chapter" href="https://www.youtube.com/watch?v=tmVcfnNWXfQ&t=720s" target="_blank" rel="noopener"><span>12:00</span><strong>Agent-Friendly Software</strong></a><a class="chapter" href="https://www.youtube.com/watch?v=tmVcfnNWXfQ&t=788s" target="_blank" rel="noopener"><span>13:08</span><strong>Deterministic Workflows</strong></a><a class="chapter" href="https://www.youtube.com/watch?v=tmVcfnNWXfQ&t=976s" target="_blank" rel="noopener"><span>16:16</span><strong>Failure Replay</strong></a><a class="chapter" href="https://www.youtube.com/watch?v=tmVcfnNWXfQ&t=1150s" target="_blank" rel="noopener"><span>19:10</span><strong>Putting the AI Harness Together</strong></a></div>
+      </div>
+    </section>
+
+    <section id="tech" class="panel">
+      <div class="card">
+        <h2>ตารางเปรียบเทียบเชิงเทคนิค</h2>
+        <table>
+          <thead>
+            <tr><th>หัวข้อ</th><th>ไม่ใช้ Agent Reach</th><th>ใช้ Agent Reach / yt-dlp</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b>วิธี</b></td><td>youtube-transcript-api</td><td>Agent Reach transcribe + yt-dlp backend</td></tr><tr><td><b>สถานะใช้งานจริง</b></td><td>ผ่าน</td><td>transcribe ตรง ๆ ไม่ผ่าน, แต่ yt-dlp backend ผ่าน</td></tr><tr><td><b>duration</b></td><td>20:09</td><td>20:08</td></tr><tr><td><b>segment_count</b></td><td>540</td><td>ไม่มี field ตรง ๆ</td></tr><tr><td><b>chars</b></td><td>20038</td><td>20062</td></tr><tr><td><b>words</b></td><td>3478</td><td>3486</td></tr><tr><td><b>chapters</b></td><td>ไม่มี</td><td>8</td></tr><tr><td><b>description</b></td><td>ไม่มี</td><td>มี</td></tr><tr><td><b>like_count</b></td><td>ไม่มี</td><td>326</td></tr><tr><td><b>comment_count</b></td><td>ไม่มี</td><td>38</td></tr><tr><td><b>channel_follower_count</b></td><td>ไม่มี</td><td>264000</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="cards4" style="margin-top:16px;">
+        <div class="mini">
+          <h4>ผลทดสอบคำสั่ง Agent Reach ตรง ๆ</h4>
+          <div class="bad">ไม่ผ่าน</div>
+          <p class="muted">สาเหตุจริง: ยังไม่ได้ตั้งค่าผู้ให้บริการถอดเสียงสำหรับคำสั่งนี้</p>
+        </div>
+        <div class="mini">
+          <h4>ผลทดสอบ yt-dlp backend</h4>
+          <div class="good">ผ่าน</div>
+          <p class="muted">ดึง auto-caption, metadata, chapters และ description ได้จริง</p>
+        </div>
+        <div class="mini">
+          <h4>คุณภาพ transcript</h4>
+          <div class="good">ใกล้กันมาก</div>
+          <p class="muted">Sequence match ratio = <b>0.999</b></p>
+        </div>
+        <div class="mini">
+          <h4>ข้อแตกต่างสำคัญ</h4>
+          <div class="muted">ต่างกันหนักที่ “รูปแบบข้อมูลประกอบ” มากกว่า “ใจความคำพูด”</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <h2>ตัวอย่างความต่างของข้อความ</h2>
+        <p class="muted">ความต่างที่เจอส่วนใหญ่เป็นเรื่องรูปแบบ encoding/escaping เช่น <code>&amp;gt;&amp;gt;</code> แทน <code>&gt;&gt;</code> มากกว่าจะเป็นสาระของเนื้อหา</p>
+        <div class="diff-item">
+        <div class="diff-head">จุดต่างตัวอย่าง 1</div>
+        <div class="diff-grid">
+          <div>
+            <div class="mini-label">ไม่ใช้ Agent Reach</div>
+            <div class="quote"> still doesn&#x27;t own the company standard. Your company does. &gt;&gt; [music] &gt;&gt; If you already have an agentic system like Open </div>
+          </div>
+          <div>
+            <div class="mini-label">Agent Reach/yt-dlp</div>
+            <div class="quote"> still doesn&#x27;t own the company standard. Your company does. &amp;gt;&amp;gt; [music] &amp;gt;&amp;gt; If you already have an agentic system like</div>
+          </div>
+        </div>
+      </div><div class="diff-item">
+        <div class="diff-head">จุดต่างตัวอย่าง 2</div>
+        <div class="diff-grid">
+          <div>
+            <div class="mini-label">ไม่ใช้ Agent Reach</div>
+            <div class="quote">n&#x27;t own the company standard. Your company does. &gt;&gt; [music] &gt;&gt; If you already have an agentic system like Open Claw or Her</div>
+          </div>
+          <div>
+            <div class="mini-label">Agent Reach/yt-dlp</div>
+            <div class="quote">n the company standard. Your company does. &amp;gt;&amp;gt; [music] &amp;gt;&amp;gt; If you already have an agentic system like Open Claw or Her</div>
+          </div>
+        </div>
+      </div><div class="diff-item">
+        <div class="diff-head">จุดต่างตัวอย่าง 3</div>
+        <div class="diff-grid">
+          <div>
+            <div class="mini-label">ไม่ใช้ Agent Reach</div>
+            <div class="quote"> give it to your agent, and have them help you set this up. &gt;&gt; [music] &gt;&gt; Ask it where these layers would benefit your com</div>
+          </div>
+          <div>
+            <div class="mini-label">Agent Reach/yt-dlp</div>
+            <div class="quote"> give it to your agent, and have them help you set this up. &amp;gt;&amp;gt; [music] &amp;gt;&amp;gt; Ask it where these layers would benefit yo</div>
+          </div>
+        </div>
+      </div><div class="diff-item">
+        <div class="diff-head">จุดต่างตัวอย่าง 4</div>
+        <div class="diff-grid">
+          <div>
+            <div class="mini-label">ไม่ใช้ Agent Reach</div>
+            <div class="quote"> your agent, and have them help you set this up. &gt;&gt; [music] &gt;&gt; Ask it where these layers would benefit your company operat</div>
+          </div>
+          <div>
+            <div class="mini-label">Agent Reach/yt-dlp</div>
+            <div class="quote">agent, and have them help you set this up. &amp;gt;&amp;gt; [music] &amp;gt;&amp;gt; Ask it where these layers would benefit your company operat</div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <div class="foot">สร้างจากผลทดสอบจริง • ไฟล์นี้เป็นหน้าเดียว เปิดอ่านได้ง่ายทั้งมือถือและเดสก์ท็อป</div>
+  </div>
+
+  <script>
+    const buttons = document.querySelectorAll('.tabbtn');
+    const panels = document.querySelectorAll('.panel');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.tab;
+        buttons.forEach(b => b.classList.toggle('active', b === btn));
+        panels.forEach(p => p.classList.toggle('active', p.id === id));
+      });
+    });
+  </script>
+</body>
+</html>
