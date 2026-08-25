@@ -38,12 +38,13 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 
 ### App collection
 
-- 3 browser apps indexed from `data/apps.json`: **Bakery Center**, **Battle Tank**, and **Lode Runner**.
-- The generated shelf is `app-library.html`; stable launchers are `app/bakery-center.html`, `app/battle-tank.html`, and `app/loderunner.html`.
+- 7 browser apps indexed from `data/apps.json`: **Pac-Man**, **Bakery Center**, **Battle Tank**, **Lode Runner**, **RL Battle City**, **New Rally-X**, and **Galaga**.
+- The generated shelf is `app-library.html`; stable launchers are `app/pacman.html`, `app/bakery-center.html`, `app/battle-tank.html`, `app/loderunner.html`, `app/rl-battle-city.html`, `app/new-rally-x.html`, and `app/galaga.html`.
 - Battle Tank preserves its imported source HTML byte-for-byte. Bakery Center records the pinned upstream hash but is published as a Library-hardened derivative with schema validation, safe IDs/icons/photos, stored-data migration, and Stored-XSS regression coverage.
 - Lode Runner keeps its multi-file runtime under `app/loderunner/`; `app/loderunner.html` is a minimal same-origin fullscreen wrapper.
 - Development tools, executable files, source disk images, repository metadata, and unrelated README files are excluded from the imported Lode Runner runtime.
 - Every App appears as a CSS-rendered 3.5-inch diskette with a content-specific sticker label rather than a book cover.
+- Every Diskette except Bakery Center carries a local 360×220 WebP sticker made from source-derived runtime imagery and original-game visual research; Bakery retains its paper utility label.
 - The App room uses a light Pantip Plaza 1990s software-floor visual language: pale retail wall, perforated metal display board, LED signage, Windows 95-style search panel, and metal shelf edges.
 - The App header is branded **พันธุ์ทิพย์พลาซ่า** and uses the user-supplied Pantip Plaza logo at the upper-left instead of the former `3½` badge. Its long Thai LED shop message scrolls continuously from right to left at a restrained 28-second pace and changes red → green → yellow → blue on each completed loop.
 
@@ -56,7 +57,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 - Book covers rest 3–4px above the shelf lip, leaving enough clearance for the 12px hover lift without overlapping the shelf.
 - Navigation includes reading-glasses and headphones icons.
 - Navigation includes Reading, Audio, and App destinations; the App destination uses a software-window icon.
-- `assets/icons/library.svg` is the shared site icon and favicon.
+- `assets/icons/shelfkeeper-librarian.webp` is the shared Reading/Audio header icon and favicon for all three collection pages; the App storefront header keeps the Pantip logo.
 - Search uses `assets/js/library.js`; the separate reading-category filter row is intentionally removed because categories are shown on shelf plaques.
 
 ## Sources of truth
@@ -82,7 +83,7 @@ python scripts/build_app_library.py --check
 git diff --check
 ```
 
-Expected verified result at close: **55 tests passed**, all three generated pages current, and no diff-check errors.
+Expected verified result at close: **59 tests passed**, all three generated pages current, and no diff-check errors.
 
 ## Publication workflow
 

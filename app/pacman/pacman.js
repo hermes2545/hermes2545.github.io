@@ -1,0 +1,13192 @@
+
+// Copyright 2012 Shaun Williams
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License Version 3 as 
+//  published by the Free Software Foundation.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+
+// ==========================================================================
+// PAC-MAN
+// an accurate remake of the original arcade game
+
+// Based on original works by Namco, GCC, and Midway.
+// Research by Jamey Pittman and Bart Grantham
+// Developed by Shaun Williams
+
+// ==========================================================================
+
+(function(){
+
+//@line 1 "src/inherit.js"
+//  Apparently, the mutable, non-standard __proto__ property creates a lot of complexity for JS optimizers,
+//   so it may be phased out in future JS versions.  It's not even supported in Internet Explorer.
+//
+//  Object.create does everything that I would use a mutable __proto__ for, but this isn't implemented everywhere yet.
+// 
+//  So instead of the following:
+//
+//      var obj = {
+//          __proto__: parentObj,
+//          hello: function() { return "world"; },
+//      };
+//
+//  You can use this:
+//
+//      var obj = newChildObject(parentObj, {
+//          hello: function() { return "world"; },
+//      };
+
+const newChildObject = function(parentObj, newObj) {
+
+    // equivalent to: var resultObj = { __proto__: parentObj };
+    const x = function(){};
+    x.prototype = parentObj;
+    const resultObj = new x();
+
+    // store new members in resultObj
+    if (newObj) {
+        const hasProp = {}.hasOwnProperty;
+        for (const name in newObj) {
+            if (hasProp.call(newObj, name)) {
+                resultObj[name] = newObj[name];
+            }
+        }
+    }
+
+    return resultObj;
+};
+//@line 1 "src/random.js"
+
+const getRandomColor = function() {
+    return '#'+('00000'+(Math.random()*(1<<24)|0).toString(16)).slice(-6);
+};
+
+const getRandomInt = function(min,max) {
+    return Math.floor(Math.random() * (max-min+1)) + min;
+};
+
+//@line 1 "src/game.js"
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Game
+
+// game modes
+const GAME_PACMAN = 0;
+const GAME_MSPACMAN = 1;
+const GAME_COOKIE = 2;
+const GAME_OTTO = 3;
+
+let practiceMode = false;
+let turboMode = false;
+const setPracticeMode = function(m) { practiceMode = m; };
+const setTurboMode = function(m) { turboMode = m; };
+
+// current game mode
+let gameMode = GAME_PACMAN;
+const setGameMode = function(m) { gameMode = m; };
+const getGameName = (function(){
+
+    const names = ["PAC-MAN", "MS PAC-MAN", "COOKIE-MAN","CRAZY OTTO"];
+    
+    return function(mode) {
+        if (mode == undefined) {
+            mode = gameMode;
+        }
+        return names[mode];
+    };
+})();
+
+const getGameDescription = (function(){
+
+    const desc = [
+        [
+            "ORIGINAL ARCADE:",
+            "NAMCO (C) 1980",
+            "",
+            "REVERSE-ENGINEERING:",
+            "JAMEY PITTMAN",
+            "",
+            "REMAKE:",
+            "SHAUN WILLIAMS",
+        ],
+        [
+            "ORIGINAL ARCADE ADDON:",
+            "MIDWAY/GCC (C) 1981",
+            "",
+            "REVERSE-ENGINEERING:",
+            "BART GRANTHAM",
+            "",
+            "REMAKE:",
+            "SHAUN WILLIAMS",
+        ],
+        [
+            "A NEW PAC-MAN GAME",
+            "WITH RANDOM MAZES:",
+            "SHAUN WILLIAMS (C) 2012",
+            "",
+            "COOKIE MONSTER DESIGN:",
+            "JIM HENSON",
+            "",
+            "PAC-MAN CROSSOVER CONCEPT:",
+            "TANG YONGFA",
+        ],
+        [
+            "THE UNRELEASED",
+            "MS. PAC-MAN PROTOTYPE:",
+            "GCC (C) 1981",
+            "",
+            "SPRITES REFERENCED FROM",
+            "STEVE GOLSON'S",
+            "CAX 2012 PRESENTATION",
+            "",
+            "REMAKE:",
+            "SHAUN WILLIAMS",
+        ],
+    ];
+    
+    return function(mode) {
+        if (mode == undefined) {
+            mode = gameMode;
+        }
+        return desc[mode];
+    };
+})();
+
+const getGhostNames = function(mode) {
+    if (mode == undefined) {
+        mode = gameMode;
+    }
+    if (mode == GAME_OTTO) {
+        return ["plato","darwin","freud","newton"];
+    }
+    else if (mode == GAME_MSPACMAN) {
+        return ["blinky","pinky","inky","sue"];
+    }
+    else if (mode == GAME_PACMAN) {
+        return ["blinky","pinky","inky","clyde"];
+    }
+    else if (mode == GAME_COOKIE) {
+        return ["elmo","piggy","rosita","zoe"];
+    }
+};
+
+const getGhostDrawFunc = function(mode) {
+    if (mode == undefined) {
+        mode = gameMode;
+    }
+    if (mode == GAME_OTTO) {
+        return atlas.drawMonsterSprite;
+    }
+    else if (mode == GAME_COOKIE) {
+        return atlas.drawMuppetSprite;
+    }
+    else {
+        return atlas.drawGhostSprite;
+    }
+};
+
+const getPlayerDrawFunc = function(mode) {
+    if (mode == undefined) {
+        mode = gameMode;
+    }
+    if (mode == GAME_OTTO) {
+        return atlas.drawOttoSprite;
+    }
+    else if (mode == GAME_PACMAN) {
+        return atlas.drawPacmanSprite;
+    }
+    else if (mode == GAME_MSPACMAN) {
+        return atlas.drawMsPacmanSprite;
+    }
+    else if (mode == GAME_COOKIE) {
+        //return atlas.drawCookiemanSprite;
+        return drawCookiemanSprite;
+    }
+};
+
+
+// for clearing, backing up, and restoring cheat states (before and after cutscenes presently)
+let clearCheats, backupCheats, restoreCheats;
+(function(){
+    clearCheats = function() {
+        pacman.invincible = false;
+        pacman.ai = false;
+        for (const a of actors) {
+            a.isDrawPath = false;
+            a.isDrawTarget = false;
+        }
+        executive.setUpdatesPerSecond(60);
+    };
+
+    let invincible, ai;
+    const isDrawPath = {};
+    const isDrawTarget = {};
+    backupCheats = function() {
+        invincible = pacman.invincible;
+        ai = pacman.ai;
+        for (let i=0; i<5; i++) {
+            isDrawPath[i] = actors[i].isDrawPath;
+            isDrawTarget[i] = actors[i].isDrawTarget;
+        }
+    };
+    restoreCheats = function() {
+        pacman.invincible = invincible;
+        pacman.ai = ai;
+        for (let i=0; i<5; i++) {
+            actors[i].isDrawPath = isDrawPath[i];
+            actors[i].isDrawTarget = isDrawTarget[i];
+        }
+    };
+})();
+
+// current level, lives, and score
+let level = 1;
+let extraLives = 0;
+const setLevel = function(l) { level = l; };
+const setExtraLives = function(e) { extraLives = e; };
+
+// VCR functions
+
+const savedLevel = {};
+const savedExtraLives = {};
+const savedHighScore = {};
+const savedScore = {};
+const savedState = {};
+
+const saveGame = function(t) {
+    savedLevel[t] = level;
+    savedExtraLives[t] = extraLives;
+    savedHighScore[t] = getHighScore();
+    savedScore[t] = getScore();
+    savedState[t] = state;
+};
+const loadGame = function(t) {
+    level = savedLevel[t];
+    if (extraLives != savedExtraLives[t]) {
+        extraLives = savedExtraLives[t];
+        renderer.drawMap();
+    }
+    setHighScore(savedHighScore[t]);
+    setScore(savedScore[t]);
+    setState(savedState[t]);
+};
+
+/// SCORING
+// (manages scores and high scores for each game type)
+
+const scores = [
+    0,0, // pacman
+    0,0, // mspac
+    0,0, // cookie
+    0,0, // otto
+    0 ];
+const highScores = [
+    10000,10000, // pacman
+    10000,10000, // mspac
+    10000,10000, // cookie
+    10000,10000, // otto
+    ];
+
+const getScoreIndex = function() {
+    if (practiceMode) {
+        return 8;
+    }
+    return gameMode*2 + (turboMode ? 1 : 0);
+};
+
+// handle a score increment
+const addScore = function(p) {
+
+    // get current scores
+    let score = getScore();
+
+    // handle extra life at 10000 points
+    if (score < 10000 && score+p >= 10000) {
+        extraLives++;
+        renderer.drawMap();
+    }
+
+    score += p;
+    setScore(score);
+
+    if (!practiceMode) {
+        if (score > getHighScore()) {
+            setHighScore(score);
+        }
+    }
+};
+
+const getScore = function() {
+    return scores[getScoreIndex()];
+};
+const setScore = function(score) {
+    scores[getScoreIndex()] = score;
+};
+
+const getHighScore = function() {
+    return highScores[getScoreIndex()];
+};
+const setHighScore = function(highScore) {
+    highScores[getScoreIndex()] = highScore;
+    saveHighScores();
+};
+// High Score Persistence
+
+const loadHighScores = function() {
+    if (localStorage && localStorage.highScores) {
+        const hs = JSON.parse(localStorage.highScores);
+        const hslen = hs.length;
+        for (let i=0; i<hslen; i++) {
+            highScores[i] = Math.max(highScores[i],hs[i]);
+        }
+    }
+};
+const saveHighScores = function() {
+    if (localStorage) {
+        localStorage.highScores = JSON.stringify(highScores);
+    }
+};
+//@line 1 "src/direction.js"
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Directions
+// (variables and utility functions for representing actor heading direction)
+
+// direction enums (in counter-clockwise order)
+// NOTE: changing the order of these enums may effect the enums.
+//       I've tried abstracting away the uses by creating functions to rotate them.
+// NOTE: This order determines tie-breakers in the shortest distance turn logic.
+//       (i.e. higher priority turns have lower enum values)
+const DIR_UP = 0;
+const DIR_LEFT = 1;
+const DIR_DOWN = 2;
+const DIR_RIGHT = 3;
+
+const getClockwiseAngleFromTop = function(dirEnum) {
+    return -dirEnum*Math.PI/2;
+};
+
+const rotateLeft = function(dirEnum) {
+    return (dirEnum+1)%4;
+};
+
+const rotateRight = function(dirEnum) {
+    return (dirEnum+3)%4;
+};
+
+const rotateAboutFace = function(dirEnum) {
+    return (dirEnum+2)%4;
+};
+
+// get direction enum from a direction vector
+const getEnumFromDir = function(dir) {
+    if (dir.x==-1) return DIR_LEFT;
+    if (dir.x==1) return DIR_RIGHT;
+    if (dir.y==-1) return DIR_UP;
+    if (dir.y==1) return DIR_DOWN;
+};
+
+// set direction vector from a direction enum
+const setDirFromEnum = function(dir,dirEnum) {
+    if (dirEnum == DIR_UP)         { dir.x = 0; dir.y =-1; }
+    else if (dirEnum == DIR_RIGHT)  { dir.x =1; dir.y = 0; }
+    else if (dirEnum == DIR_DOWN)  { dir.x = 0; dir.y = 1; }
+    else if (dirEnum == DIR_LEFT) { dir.x = -1; dir.y = 0; }
+};
+
+// return the direction of the open, surrounding tile closest to our target
+const getTurnClosestToTarget = function(tile,targetTile,openTiles) {
+
+    let dx,dy,dist;                      // variables used for euclidean distance
+    let minDist = Infinity;              // variable used for finding minimum distance path
+    const dir = {};
+    let dirEnum = 0;
+    for (let i=0; i<4; i++) {
+        if (openTiles[i]) {
+            setDirFromEnum(dir,i);
+            dx = dir.x + tile.x - targetTile.x;
+            dy = dir.y + tile.y - targetTile.y;
+            dist = dx*dx+dy*dy;
+            if (dist < minDist) {
+                minDist = dist;
+                dirEnum = i;
+            }
+        }
+    }
+    return dirEnum;
+};
+
+// retrieve four surrounding tiles and indicate whether they are open
+const getOpenTiles = function(tile,dirEnum) {
+
+    // get open passages
+    const openTiles = {};
+    openTiles[DIR_UP] =    map.isFloorTile(tile.x, tile.y-1);
+    openTiles[DIR_RIGHT] = map.isFloorTile(tile.x+1, tile.y);
+    openTiles[DIR_DOWN] =  map.isFloorTile(tile.x, tile.y+1);
+    openTiles[DIR_LEFT] =  map.isFloorTile(tile.x-1, tile.y);
+
+    let numOpenTiles = 0;
+    if (dirEnum != undefined) {
+
+        // count number of open tiles
+        for (let i=0; i<4; i++)
+            if (openTiles[i])
+                numOpenTiles++;
+
+        // By design, no mazes should have dead ends,
+        // but allow player to turn around if and only if it's necessary.
+        // Only close the passage behind the player if there are other openings.
+        const oppDirEnum = rotateAboutFace(dirEnum); // current opposite direction enum
+        if (numOpenTiles > 1)
+            openTiles[oppDirEnum] = false;
+    }
+
+    return openTiles;
+};
+
+// returns if the given tile coordinate plus the given direction vector has a walkable floor tile
+const isNextTileFloor = function(tile,dir) {
+    return map.isFloorTile(tile.x+dir.x,tile.y+dir.y);
+};
+
+//@line 1 "src/Map.js"
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Map
+// (an ascii map of tiles representing a level maze)
+
+// size of a square tile in pixels
+const tileSize = 8;
+
+// the center pixel of a tile
+const midTile = {x:3, y:4};
+
+// constructor
+const Map = function(numCols, numRows, tiles) {
+
+    // sizes
+    this.numCols = numCols;
+    this.numRows = numRows;
+    this.numTiles = numCols*numRows;
+    this.widthPixels = numCols*tileSize;
+    this.heightPixels = numRows*tileSize;
+
+    // ascii map
+    this.tiles = tiles;
+
+    // ghost home location
+    this.doorTile = {x:13, y:14};
+    this.doorPixel = {
+        x:(this.doorTile.x+1)*tileSize-1, 
+        y:this.doorTile.y*tileSize + midTile.y
+    };
+    this.homeTopPixel = 17*tileSize;
+    this.homeBottomPixel = 18*tileSize;
+
+    this.timeEaten = {};
+
+    this.resetCurrent();
+    this.parseDots();
+    this.parseTunnels();
+    this.parseWalls();
+};
+
+Map.prototype.save = function(t) {
+};
+
+Map.prototype.eraseFuture = function(t) {
+    // current state at t.
+    // erase all states after t.
+    for (let i=0; i<this.numTiles; i++) {
+        if (t <= this.timeEaten[i]) {
+            delete this.timeEaten[i];
+        }
+    }
+};
+
+Map.prototype.load = function(t,abs_t) {
+    const refresh = function(i) {
+        const x = i%this.numCols;
+        const y = Math.floor(i/this.numCols);
+        renderer.refreshPellet(x,y);
+    };
+    for (let i=0; i<this.numTiles; i++) {
+        const firstTile = this.startTiles[i];
+        if (firstTile == '.' || firstTile == 'o') {
+            if (abs_t <= this.timeEaten[i]) { // dot should be present
+                if (this.currentTiles[i] != firstTile) {
+                    this.dotsEaten--;
+                    this.currentTiles[i] = firstTile;
+                    refresh.call(this,i);
+                }
+            }
+            else if (abs_t > this.timeEaten[i]) { // dot should be missing
+                if (this.currentTiles[i] != ' ') {
+                    this.dotsEaten++;
+                    this.currentTiles[i] = ' ';
+                    refresh.call(this,i);
+                }
+            }
+        }
+    }
+};
+
+Map.prototype.resetTimeEaten = function()
+{
+    this.startTiles = this.currentTiles.slice(0);
+    this.timeEaten = {};
+};
+
+// reset current tiles
+Map.prototype.resetCurrent = function() {
+    this.currentTiles = this.tiles.split(""); // create a mutable list copy of an immutable string
+    this.dotsEaten = 0;
+};
+
+// This is a procedural way to generate original-looking maps from a simple ascii tile
+// map without a spritesheet.
+Map.prototype.parseWalls = function() {
+
+    const that = this;
+
+    // creates a list of drawable canvas paths to render the map walls
+    this.paths = [];
+
+    // a map of wall tiles that already belong to a built path
+    const visited = {};
+
+    // we extend the x range to suggest the continuation of the tunnels
+    const toIndex = function(x,y) {
+        if (x>=-2 && x<that.numCols+2 && y>=0 && y<that.numRows)
+            return (x+2)+y*(that.numCols+4);
+    };
+
+    // a map of which wall tiles that are not completely surrounded by other wall tiles
+    const edges = {};
+    for (let i=0,y=0;y<this.numRows;y++) {
+        for (let x=-2;x<this.numCols+2;x++,i++) {
+            if (this.getTile(x,y) == '|' &&
+                (this.getTile(x-1,y) != '|' ||
+                    this.getTile(x+1,y) != '|' ||
+                    this.getTile(x,y-1) != '|' ||
+                    this.getTile(x,y+1) != '|' ||
+                    this.getTile(x-1,y-1) != '|' ||
+                    this.getTile(x-1,y+1) != '|' ||
+                    this.getTile(x+1,y-1) != '|' ||
+                    this.getTile(x+1,y+1) != '|')) {
+                edges[i] = true;
+            }
+        }
+    }
+
+    // walks along edge wall tiles starting at the given index to build a canvas path
+    const makePath = function(tx,ty) {
+
+        // get initial direction
+        const dir = {};
+        let dirEnum;
+        if (toIndex(tx+1,ty) in edges)
+            dirEnum = DIR_RIGHT;
+        else if (toIndex(tx, ty+1) in edges)
+            dirEnum = DIR_DOWN;
+        else
+            throw "tile shouldn't be 1x1 at "+tx+","+ty;
+        setDirFromEnum(dir,dirEnum);
+
+        // increment to next tile
+        tx += dir.x;
+        ty += dir.y;
+
+        // backup initial location and direction
+        const init_tx = tx;
+        const init_ty = ty;
+        const init_dirEnum = dirEnum;
+
+        const path = [];
+        let pad; // (persists for each call to getStartPoint)
+        let point;
+        let lastPoint;
+
+        let turn,turnAround;
+
+        /*
+
+           We employ the 'right-hand rule' by keeping our right hand in contact
+           with the wall to outline an individual wall piece.
+
+           Since we parse the tiles in row major order, we will always start
+           walking along the wall at the leftmost tile of its topmost row.  We
+           then proceed walking to the right.  
+
+           When facing the direction of the walk at each tile, the outline will
+           hug the left side of the tile unless there is a walkable tile to the
+           left.  In that case, there will be a padding distance applied.
+           
+        */
+        const getStartPoint = function(tx,ty,dirEnum) {
+            const dir = {};
+            setDirFromEnum(dir, dirEnum);
+            if (!(toIndex(tx+dir.y,ty-dir.x) in edges))
+                pad = that.isFloorTile(tx+dir.y,ty-dir.x) ? 5 : 0;
+            const px = -tileSize/2+pad;
+            const py = tileSize/2;
+            const a = getClockwiseAngleFromTop(dirEnum);
+            const c = Math.cos(a);
+            const s = Math.sin(a);
+            return {
+                // the first expression is the rotated point centered at origin
+                // the second expression is to translate it to the tile
+                x:(px*c - py*s) + (tx+0.5)*tileSize,
+                y:(px*s + py*c) + (ty+0.5)*tileSize,
+            };
+        };
+        while (true) {
+            
+            visited[toIndex(tx,ty)] = true;
+
+            // determine start point
+            point = getStartPoint(tx,ty,dirEnum);
+
+            if (turn) {
+                // if we're turning into this tile, create a control point for the curve
+                //
+                // >---+  <- control point
+                //     |
+                //     V
+                lastPoint = path[path.length-1];
+                if (dir.x == 0) {
+                    point.cx = point.x;
+                    point.cy = lastPoint.y;
+                }
+                else {
+                    point.cx = lastPoint.x;
+                    point.cy = point.y;
+                }
+            }
+
+            // update direction
+            turn = false;
+            turnAround = false;
+            if (toIndex(tx+dir.y, ty-dir.x) in edges) { // turn left
+                dirEnum = rotateLeft(dirEnum);
+                turn = true;
+            }
+            else if (toIndex(tx+dir.x, ty+dir.y) in edges) { // continue straight
+            }
+            else if (toIndex(tx-dir.y, ty+dir.x) in edges) { // turn right
+                dirEnum = rotateRight(dirEnum);
+                turn = true;
+            }
+            else { // turn around
+                dirEnum = rotateAboutFace(dirEnum);
+                turnAround = true;
+            }
+            setDirFromEnum(dir,dirEnum);
+
+            // commit path point
+            path.push(point);
+
+            // special case for turning around (have to connect more dots manually)
+            if (turnAround) {
+                path.push(getStartPoint(tx-dir.x, ty-dir.y, rotateAboutFace(dirEnum)));
+                path.push(getStartPoint(tx, ty, dirEnum));
+            }
+
+            // advance to the next wall
+            tx += dir.x;
+            ty += dir.y;
+
+            // exit at full cycle
+            if (tx==init_tx && ty==init_ty && dirEnum == init_dirEnum) {
+                that.paths.push(path);
+                break;
+            }
+        }
+    };
+
+    // iterate through all edges, making a new path after hitting an unvisited wall edge
+    for (let i=0,y=0;y<this.numRows;y++)
+        for (let x=-2;x<this.numCols+2;x++,i++)
+            if (i in edges && !(i in visited)) {
+                visited[i] = true;
+                makePath(x,y);
+            }
+};
+
+// count pellets and store energizer locations
+Map.prototype.parseDots = function() {
+
+    this.numDots = 0;
+    this.numEnergizers = 0;
+    this.energizers = [];
+
+    for (let i=0,y=0; y<this.numRows; y++)
+        for (let x=0; x<this.numCols; x++) {
+            const tile = this.tiles[i];
+            if (tile == '.') {
+                this.numDots++;
+            }
+            else if (tile == 'o') {
+                this.numDots++;
+                this.numEnergizers++;
+                this.energizers.push({'x':x,'y':y});
+            }
+            i++;
+        }
+};
+
+// get remaining dots left
+Map.prototype.dotsLeft = function() {
+    return this.numDots - this.dotsEaten;
+};
+
+// determine if all dots have been eaten
+Map.prototype.allDotsEaten = function() {
+    return this.dotsLeft() == 0;
+};
+
+// create a record of tunnel locations
+Map.prototype.parseTunnels = (function(){
+    
+    // starting from x,y and increment x by dx...
+    // determine where the tunnel entrance begins
+    const getTunnelEntrance = function(x,y,dx) {
+        while (!this.isFloorTile(x,y-1) && !this.isFloorTile(x,y+1) && this.isFloorTile(x,y))
+            x += dx;
+        return x;
+    };
+
+    // the number of margin tiles outside of the map on one side of a tunnel
+    // There are (2*marginTiles) tiles outside of the map per tunnel.
+    const marginTiles = 2;
+
+    return function() {
+        this.tunnelRows = {};
+        for (let y=0;y<this.numRows;y++)
+            // a map row is a tunnel if opposite ends are both walkable tiles
+            if (this.isFloorTile(0,y) && this.isFloorTile(this.numCols-1,y))
+                this.tunnelRows[y] = {
+                    'leftEntrance': getTunnelEntrance.call(this,0,y,1),
+                    'rightEntrance':getTunnelEntrance.call(this,this.numCols-1,y,-1),
+                    'leftExit': -marginTiles*tileSize,
+                    'rightExit': (this.numCols+marginTiles)*tileSize-1,
+                };
+    };
+})();
+
+// teleport actor to other side of tunnel if necessary
+Map.prototype.teleport = function(actor){
+    const t = this.tunnelRows[actor.tile.y];
+    if (t) {
+        if (actor.pixel.x < t.leftExit)       actor.pixel.x = t.rightExit;
+        else if (actor.pixel.x > t.rightExit) actor.pixel.x = t.leftExit;
+    }
+};
+
+Map.prototype.posToIndex = function(x,y) {
+    if (x>=0 && x<this.numCols && y>=0 && y<this.numRows) 
+        return x+y*this.numCols;
+};
+
+// define which tiles are inside the tunnel
+Map.prototype.isTunnelTile = function(x,y) {
+    const tunnel = this.tunnelRows[y];
+    return tunnel && (x < tunnel.leftEntrance || x > tunnel.rightEntrance);
+};
+
+// retrieves tile character at given coordinate
+// extended to include offscreen tunnel space
+Map.prototype.getTile = function(x,y) {
+    if (x>=0 && x<this.numCols && y>=0 && y<this.numRows) 
+        return this.currentTiles[this.posToIndex(x,y)];
+    if ((x<0 || x>=this.numCols) && (this.isTunnelTile(x,y-1) || this.isTunnelTile(x,y+1)))
+        return '|';
+    if (this.isTunnelTile(x,y))
+        return ' ';
+};
+
+// determines if the given character is a walkable floor tile
+Map.prototype.isFloorTileChar = function(tile) {
+    return tile==' ' || tile=='.' || tile=='o';
+};
+
+// determines if the given tile coordinate has a walkable floor tile
+Map.prototype.isFloorTile = function(x,y) {
+    return this.isFloorTileChar(this.getTile(x,y));
+};
+
+// mark the dot at the given coordinate eaten
+Map.prototype.onDotEat = function(x,y) {
+    this.dotsEaten++;
+    const i = this.posToIndex(x,y);
+    this.currentTiles[i] = ' ';
+    this.timeEaten[i] = vcr.getTime();
+    renderer.erasePellet(x,y);
+};
+//@line 1 "src/colors.js"
+// source: http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
+
+/**
+ * Converts an RGB color value to HSL. Conversion formula
+ * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+ * Assumes r, g, and b are contained in the set [0, 255] and
+ * returns h, s, and l in the set [0, 1].
+ *
+ * @param   Number  r       The red color value
+ * @param   Number  g       The green color value
+ * @param   Number  b       The blue color value
+ * @return  Array           The HSL representation
+ */
+function rgbToHsl(r, g, b){
+    r /= 255, g /= 255, b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s;
+    const l = (max + min) / 2;
+
+    if(max == min){
+        h = s = 0; // achromatic
+    }else{
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch(max){
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+    }
+
+    return [h, s, l];
+}
+
+/**
+ * Converts an HSL color value to RGB. Conversion formula
+ * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+ * Assumes h, s, and l are contained in the set [0, 1] and
+ * returns r, g, and b in the set [0, 255].
+ *
+ * @param   Number  h       The hue
+ * @param   Number  s       The saturation
+ * @param   Number  l       The lightness
+ * @return  Array           The RGB representation
+ */
+function hslToRgb(h, s, l){
+    let r, g, b;
+
+    if(s == 0){
+        r = g = b = l; // achromatic
+    }else{
+        function hue2rgb(p, q, t){
+            if(t < 0) t += 1;
+            if(t > 1) t -= 1;
+            if(t < 1/6) return p + (q - p) * 6 * t;
+            if(t < 1/2) return q;
+            if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+        }
+
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+        r = hue2rgb(p, q, h + 1/3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1/3);
+    }
+
+    r *= 255;
+    g *= 255;
+    b *= 255;
+
+    return [r,g,b];
+}
+
+/**
+ * Converts an RGB color value to HSV. Conversion formula
+ * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
+ * Assumes r, g, and b are contained in the set [0, 255] and
+ * returns h, s, and v in the set [0, 1].
+ *
+ * @param   Number  r       The red color value
+ * @param   Number  g       The green color value
+ * @param   Number  b       The blue color value
+ * @return  Array           The HSV representation
+ */
+function rgbToHsv(r, g, b){
+    r = r/255, g = g/255, b = b/255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h;
+    const v = max;
+
+    const d = max - min;
+    const s = max == 0 ? 0 : d / max;
+
+    if(max == min){
+        h = 0; // achromatic
+    }else{
+        switch(max){
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+    }
+
+    return [h, s, v];
+}
+
+/**
+ * Converts an HSV color value to RGB. Conversion formula
+ * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
+ * Assumes h, s, and v are contained in the set [0, 1] and
+ * returns r, g, and b in the set [0, 255].
+ *
+ * @param   Number  h       The hue
+ * @param   Number  s       The saturation
+ * @param   Number  v       The value
+ * @return  Array           The RGB representation
+ */
+function hsvToRgb(h, s, v){
+    let r, g, b;
+
+    const i = Math.floor(h * 6);
+    const f = h * 6 - i;
+    const p = v * (1 - s);
+    const q = v * (1 - f * s);
+    const t = v * (1 - (1 - f) * s);
+
+    switch(i % 6){
+        case 0: r = v, g = t, b = p; break;
+        case 1: r = q, g = v, b = p; break;
+        case 2: r = p, g = v, b = t; break;
+        case 3: r = p, g = q, b = v; break;
+        case 4: r = t, g = p, b = v; break;
+        case 5: r = v, g = p, b = q; break;
+    }
+
+    r *= 255;
+    g *= 255;
+    b *= 255;
+
+    return [r,g,b];
+}
+
+function rgbString(rgb) {
+    const r = Math.floor(rgb[0]);
+    const g = Math.floor(rgb[1]);
+    const b = Math.floor(rgb[2]);
+    return 'rgb('+r+','+g+','+b+')';
+}
+//@line 1 "src/mapgen.js"
+
+
+const mapgen = (function(){
+
+    const shuffle = function(list) {
+        const len = list.length;
+        for (let i=0; i<len; i++) {
+            const j = getRandomInt(0,len-1);
+            const temp = list[i];
+            list[i] = list[j];
+            list[j] = temp;
+        }
+    };
+
+    const randomElement = function(list) {
+        const len = list.length;
+        if (len > 0) {
+            return list[getRandomInt(0,len-1)];
+        }
+    };
+
+    const UP = 0;
+    const RIGHT = 1;
+    const DOWN = 2;
+    const LEFT = 3;
+
+    const cells = [];
+    const tallRows = [];
+    const narrowCols = [];
+
+    const rows = 9;
+    const cols = 5;
+
+    const reset = function() {
+
+        // initialize cells
+        for (let i=0; i<rows*cols; i++) {
+            cells[i] = {
+                x: i%cols,
+                y: Math.floor(i/cols),
+                filled: false,
+                connect: [false, false, false, false],
+                next: [],
+                no: undefined,
+                group: undefined,
+            };
+        }
+
+        // allow each cell to refer to surround cells by direction
+        for (let i=0; i<rows*cols; i++) {
+            const c = cells[i];
+            if (c.x > 0)
+                c.next[LEFT] = cells[i-1];
+            if (c.x < cols - 1)
+                c.next[RIGHT] = cells[i+1];
+            if (c.y > 0)
+                c.next[UP] = cells[i-cols];
+            if (c.y < rows - 1)
+                c.next[DOWN] = cells[i+cols];
+        }
+
+        // define the ghost home square
+
+        let i = 3*cols;
+        let c = cells[i];
+        c.filled=true;
+        c.connect[LEFT] = c.connect[RIGHT] = c.connect[DOWN] = true;
+
+        i++;
+        c = cells[i];
+        c.filled=true;
+        c.connect[LEFT] = c.connect[DOWN] = true;
+
+        i+=cols-1;
+        c = cells[i];
+        c.filled=true;
+        c.connect[LEFT] = c.connect[UP] = c.connect[RIGHT] = true;
+
+        i++;
+        c = cells[i];
+        c.filled=true;
+        c.connect[UP] = c.connect[LEFT] = true;
+    };
+
+    const genRandom = function() {
+
+        // Gathers all the non-filled cells of the left-most column not completely filled.
+        const getLeftMostEmptyCells = function() {
+            const leftCells = [];
+            for (let x=0; x<cols; x++) {
+                for (let y=0; y<rows; y++) {
+                    const c = cells[x+y*cols];
+                    if (!c.filled) {
+                        leftCells.push(c);
+                    }
+                }
+
+                if (leftCells.length > 0) {
+                    break;
+                }
+            }
+            return leftCells;
+        };
+
+        // determines if the given cell can grow in the given direction.
+        // cell: the source cell object
+        // i: the growth direction
+        // prevDir: last growth direction
+        // size: number of cells currently in this group
+        const isOpenCell = function(cell,i,prevDir,size) {
+
+            // prevent wall from going through starting position
+            if (cell.y == 6 && cell.x == 0 && i == DOWN ||
+                cell.y == 7 && cell.x == 0 && i == UP) {
+                return false;
+            }
+
+            // prevent long straight pieces of length 3
+            if (size == 2 && (i==prevDir || rotateAboutFace(i)==prevDir)) {
+                return false;
+            }
+
+            // examine an adjacent empty cell
+            if (cell.next[i] && !cell.next[i].filled) {
+                
+                // only open if the cell to the left of it is filled
+                if (cell.next[i].next[LEFT] && !cell.next[i].next[LEFT].filled) {
+                }
+                else {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
+        // get the cells that can be the given cell can be grown toward
+        const getOpenCells = function(cell,prevDir,size) {
+            const openCells = [];
+            let numOpenCells = 0;
+            for (let i=0; i<4; i++) {
+                if (isOpenCell(cell,i,prevDir,size)) {
+                    openCells.push(i);
+                    numOpenCells++;
+                }
+            }
+            return { openCells: openCells, numOpenCells: numOpenCells };
+        };
+
+        // grow a cell in the given direction
+        const connectCell = function(cell,dir) {
+            cell.connect[dir] = true;
+            cell.next[dir].connect[rotateAboutFace(dir)] = true;
+            if (cell.x == 0 && dir == RIGHT) {
+                cell.connect[LEFT] = true;
+            }
+        };
+
+        const gen = function() {
+        
+            let cell;      // cell at the center of growth (open cells are chosen around this cell)
+            let newCell;   // most recent cell filled
+            let firstCell; // the starting cell of the current group
+
+            let openCells;    // list of open cells around the center cell
+            let numOpenCells; // size of openCells
+
+            let dir; // the most recent direction of growth relative to the center cell
+            let i;   // loop control variable used for iterating directions
+
+            let numFilled = 0;  // current count of total cells filled
+            let size;           // current number of cells in the current group
+            const probStopGrowingAtSize = [ // probability of stopping growth at sizes...
+                    0,     // size 0
+                    0,     // size 1
+                    0.10,  // size 2
+                    0.5,   // size 3
+                    0.75,  // size 4
+                    1];    // size 5
+
+            // A single cell group of size 1 is allowed at each row at y=0 and y=rows-1,
+            // so keep count of those created.
+            const singleCount = {};
+            singleCount[0] = singleCount[rows-1] = 0;
+            const probTopAndBotSingleCellJoin = 0.35;
+
+            // A count and limit of the number long pieces (i.e. an "L" of size 4 or "T" of size 5)
+            let longPieces = 0;
+            const maxLongPieces = 1;
+            const probExtendAtSize2 = 1;
+            const probExtendAtSize3or4 = 0.5;
+
+
+            for (let numGroups=0; ; numGroups++) { // current count of cell groups created
+                const fillCell = function(cell) {
+                    cell.filled = true;
+                    cell.no = numFilled++;
+                    cell.group = numGroups;
+                };
+
+                // find all the leftmost empty cells
+                openCells = getLeftMostEmptyCells();
+
+                // stop add pieces if there are no more empty cells.
+                numOpenCells = openCells.length;
+                if (numOpenCells == 0) {
+                    break;
+                }
+
+                // choose the center cell to be a random open cell, and fill it.
+                firstCell = cell = openCells[getRandomInt(0,numOpenCells-1)];
+                fillCell(cell);
+
+                // randomly allow one single-cell piece on the top or bottom of the map.
+                if (cell.x < cols-1 && (cell.y in singleCount) && Math.random() <= probTopAndBotSingleCellJoin) {
+                    if (singleCount[cell.y] == 0) {
+                        cell.connect[cell.y == 0 ? UP : DOWN] = true;
+                        singleCount[cell.y]++;
+                        continue;
+                    }
+                }
+
+                // number of cells in this contiguous group
+                size = 1;
+
+                if (cell.x == cols-1) {
+                    // if the first cell is at the right edge, then don't grow it.
+                    cell.connect[RIGHT] = true;
+                    cell.isRaiseHeightCandidate = true;
+                }
+                else {
+                    // only allow the piece to grow to 5 cells at most.
+                    while (size < 5) {
+
+                        let stop = false;
+
+                        if (size == 2) {
+                            // With a horizontal 2-cell group, try to turn it into a 4-cell "L" group.
+                            // This is done here because this case cannot be reached when a piece has already grown to size 3.
+                            let c = firstCell;
+                            if (c.x > 0 && c.connect[RIGHT] && c.next[RIGHT] && c.next[RIGHT].next[RIGHT]) {
+                                if (longPieces < maxLongPieces && Math.random() <= probExtendAtSize2) {
+
+                                    c = c.next[RIGHT].next[RIGHT];
+                                    const dirs = {};
+                                    if (isOpenCell(c,UP)) {
+                                        dirs[UP] = true;
+                                    }
+                                    if (isOpenCell(c,DOWN)) {
+                                        dirs[DOWN] = true;
+                                    }
+
+                                    if (dirs[UP] && dirs[DOWN]) {
+                                        i = [UP,DOWN][getRandomInt(0,1)];
+                                    }
+                                    else if (dirs[UP]) {
+                                        i = UP;
+                                    }
+                                    else if (dirs[DOWN]) {
+                                        i = DOWN;
+                                    }
+                                    else {
+                                        i = undefined;
+                                    }
+
+                                    if (i != undefined) {
+                                        connectCell(c,LEFT);
+                                        fillCell(c);
+                                        connectCell(c,i);
+                                        fillCell(c.next[i]);
+                                        longPieces++;
+                                        size+=2;
+                                        stop = true;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (!stop) {
+                            // find available open adjacent cells.
+                            let result = getOpenCells(cell,dir,size);
+                            openCells = result['openCells'];
+                            numOpenCells = result['numOpenCells'];
+
+                            // if no open cells found from center point, then use the last cell as the new center
+                            // but only do this if we are of length 2 to prevent numerous short pieces.
+                            // then recalculate the open adjacent cells.
+                            if (numOpenCells == 0 && size == 2) {
+                                cell = newCell;
+                                result = getOpenCells(cell,dir,size);
+                                openCells = result['openCells'];
+                                numOpenCells = result['numOpenCells'];
+                            }
+
+                            // no more adjacent cells, so stop growing this piece.
+                            if (numOpenCells == 0) {
+                                stop = true;
+                            }
+                            else {
+                                // choose a random valid direction to grow.
+                                dir = openCells[getRandomInt(0,numOpenCells-1)];
+                                newCell = cell.next[dir];
+
+                                // connect the cell to the new cell.
+                                connectCell(cell,dir);
+
+                                // fill the cell
+                                fillCell(newCell);
+
+                                // increase the size count of this piece.
+                                size++;
+
+                                // don't let center pieces grow past 3 cells
+                                if (firstCell.x == 0 && size == 3) {
+                                    stop = true;
+                                }
+
+                                // Use a probability to determine when to stop growing the piece.
+                                if (Math.random() <= probStopGrowingAtSize[size]) {
+                                    stop = true;
+                                }
+                            }
+                        }
+
+                        // Close the piece.
+                        if (stop) {
+
+                            if (size == 1) {
+                                // This is provably impossible because this loop is never entered with size==1.
+                            }
+                            else if (size == 2) {
+
+                                // With a vertical 2-cell group, attach to the right wall if adjacent.
+                                let c = firstCell;
+                                if (c.x == cols-1) {
+
+                                    // select the top cell
+                                    if (c.connect[UP]) {
+                                        c = c.next[UP];
+                                    }
+                                    c.connect[RIGHT] = c.next[DOWN].connect[RIGHT] = true;
+                                }
+                                
+                            }
+                            else if (size == 3 || size == 4) {
+
+                                // Try to extend group to have a long leg
+                                if (longPieces < maxLongPieces && firstCell.x > 0 && Math.random() <= probExtendAtSize3or4) {
+                                    const dirs = [];
+                                    let dirsLength = 0;
+                                    for (let i=0; i<4; i++) {
+                                        if (cell.connect[i] && isOpenCell(cell.next[i],i)) {
+                                            dirs.push(i);
+                                            dirsLength++;
+                                        }
+                                    }
+                                    if (dirsLength > 0) {
+                                        const i = dirs[getRandomInt(0,dirsLength-1)];
+                                        const c = cell.next[i];
+                                        connectCell(c,i);
+                                        fillCell(c.next[i]);
+                                        longPieces++;
+                                    }
+                                }
+                            }
+
+                            break;
+                        }
+                    }
+                }
+            }
+            setResizeCandidates();
+        };
+
+
+        const setResizeCandidates = function() {
+            for (let i=0; i<rows*cols; i++) {
+                const c = cells[i];
+                // const x = i % cols;
+                // const y = Math.floor(i/cols);
+
+                // determine if it has flexible height
+
+                //
+                // |_|
+                //
+                // or
+                //  _
+                // | |
+                //
+                const q = c.connect;
+                if ((c.x == 0 || !q[LEFT]) &&
+                    (c.x == cols-1 || !q[RIGHT]) &&
+                    q[UP] != q[DOWN]) {
+                    c.isRaiseHeightCandidate = true;
+                }
+
+                //  _ _
+                // |_ _|
+                //
+                const c2 = c.next[RIGHT];
+                if (c2 != undefined) {
+                    const q2 = c2.connect;
+                    if (((c.x == 0 || !q[LEFT]) && !q[UP] && !q[DOWN]) &&
+                        ((c2.x == cols-1 || !q2[RIGHT]) && !q2[UP] && !q2[DOWN])
+                        ) {
+                        c.isRaiseHeightCandidate = c2.isRaiseHeightCandidate = true;
+                    }
+                }
+
+                // determine if it has flexible width
+
+                // if cell is on the right edge with an opening to the right
+                if (c.x == cols-1 && q[RIGHT]) {
+                    c.isShrinkWidthCandidate = true;
+                }
+
+                //  _
+                // |_
+                // 
+                // or
+                //  _
+                //  _|
+                //
+                if ((c.y == 0 || !q[UP]) &&
+                    (c.y == rows-1 || !q[DOWN]) &&
+                    q[LEFT] != q[RIGHT]) {
+                    c.isShrinkWidthCandidate = true;
+                }
+
+            }
+        };
+
+        // Identify if a cell is the center of a cross.
+        const cellIsCrossCenter = function(c) {
+            return c.connect[UP] && c.connect[RIGHT] && c.connect[DOWN] && c.connect[LEFT];
+        };
+
+        const chooseNarrowCols = function() {
+
+            const canShrinkWidth = function(x,y) {
+
+                // Can cause no more tight turns.
+                if (y==rows-1) {
+                    return true;
+                }
+
+                // get the right-hand-side bound
+                let c2;
+                for (let x0=x; x0<cols; x0++) {
+                    const c = cells[x0+y*cols];
+                    c2 = c.next[DOWN];
+                    if ((!c.connect[RIGHT] || cellIsCrossCenter(c)) &&
+                        (!c2.connect[RIGHT] || cellIsCrossCenter(c2))) {
+                        break;
+                    }
+                }
+
+                // build candidate list
+                const candidates = [];
+                let numCandidates = 0;
+                for (; c2; c2=c2.next[LEFT]) {
+                    if (c2.isShrinkWidthCandidate) {
+                        candidates.push(c2);
+                        numCandidates++;
+                    }
+
+                    // cannot proceed further without causing irreconcilable tight turns
+                    if ((!c2.connect[LEFT] || cellIsCrossCenter(c2)) &&
+                        (!c2.next[UP].connect[LEFT] || cellIsCrossCenter(c2.next[UP]))) {
+                        break;
+                    }
+                }
+                shuffle(candidates);
+
+                for (let i=0; i<numCandidates; i++) {
+                    c2 = candidates[i];
+                    if (canShrinkWidth(c2.x,c2.y)) {
+                        c2.shrinkWidth = true;
+                        narrowCols[c2.y] = c2.x;
+                        return true;
+                    }
+                }
+
+                return false;
+            };
+
+            for (let x=cols-1; x>=0; x--) {
+                const c = cells[x];
+                if (c.isShrinkWidthCandidate && canShrinkWidth(x,0)) {
+                    c.shrinkWidth = true;
+                    narrowCols[c.y] = c.x;
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
+        const chooseTallRows = function() {
+
+            const canRaiseHeight = function(x,y) {
+
+                // Can cause no more tight turns.
+                if (x==cols-1) {
+                    return true;
+                }
+
+                // find the first cell below that will create too tight a turn on the right
+                let c2;
+                for (let y0=y; y0>=0; y0--) {
+                    const c = cells[x+y0*cols];
+                    c2 = c.next[RIGHT];
+                    if ((!c.connect[UP] || cellIsCrossCenter(c)) && 
+                        (!c2.connect[UP] || cellIsCrossCenter(c2))) {
+                        break;
+                    }
+                }
+
+                // Proceed from the right cell upwards, looking for a cell that can be raised.
+                const candidates = [];
+                let numCandidates = 0;
+                for (; c2; c2=c2.next[DOWN]) {
+                    if (c2.isRaiseHeightCandidate) {
+                        candidates.push(c2);
+                        numCandidates++;
+                    }
+
+                    // cannot proceed further without causing irreconcilable tight turns
+                    if ((!c2.connect[DOWN] || cellIsCrossCenter(c2)) &&
+                        (!c2.next[LEFT].connect[DOWN] || cellIsCrossCenter(c2.next[LEFT]))) {
+                        break;
+                    }
+                }
+                shuffle(candidates);
+
+                for (let i=0; i<numCandidates; i++) {
+                    c2 = candidates[i];
+                    if (canRaiseHeight(c2.x,c2.y)) {
+                        c2.raiseHeight = true;
+                        tallRows[c2.x] = c2.y;
+                        return true;
+                    }
+                }
+
+                return false;
+            };
+
+            // From the top left, examine cells below until hitting top of ghost house.
+            // A raisable cell must be found before the ghost house.
+            for (let y=0; y<3; y++) {
+                const c = cells[y*cols];
+                if (c.isRaiseHeightCandidate && canRaiseHeight(0,y)) {
+                    c.raiseHeight = true;
+                    tallRows[c.x] = c.y;
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
+        // This is a function to detect impurities in the map that have no heuristic implemented to avoid it yet in gen().
+        const isDesirable = function() {
+
+            // ensure a solid top right corner
+            let c = cells[4];
+            if (c.connect[UP] || c.connect[RIGHT]) {
+                return false;
+            }
+
+            // ensure a solid bottom right corner
+            c = cells[rows*cols-1];
+            if (c.connect[DOWN] || c.connect[RIGHT]) {
+                return false;
+            }
+
+            // ensure there are no two stacked/side-by-side 2-cell pieces.
+            const isHori = function(x,y) {
+                const q1 = cells[x+y*cols].connect;
+                const q2 = cells[x+1+y*cols].connect;
+                return !q1[UP] && !q1[DOWN] && (x==0 || !q1[LEFT]) && q1[RIGHT] && 
+                       !q2[UP] && !q2[DOWN] && q2[LEFT] && !q2[RIGHT];
+            };
+            const isVert = function(x,y) {
+                const q1 = cells[x+y*cols].connect;
+                const q2 = cells[x+(y+1)*cols].connect;
+                if (x==cols-1) {
+                    // special case (we can consider two single cells as vertical at the right edge)
+                    return !q1[LEFT] && !q1[UP] && !q1[DOWN] &&
+                           !q2[LEFT] && !q2[UP] && !q2[DOWN];
+                }
+                return !q1[LEFT] && !q1[RIGHT] && !q1[UP] && q1[DOWN] && 
+                       !q2[LEFT] && !q2[RIGHT] && q2[UP] && !q2[DOWN];
+            };
+            for (let y=0; y<rows-1; y++) {
+                for (let x=0; x<cols-1; x++) {
+                    if (isHori(x,y) && isHori(x,y+1) ||
+                        isVert(x,y) && isVert(x+1,y)) {
+
+                        // don't allow them in the middle because they'll be two large when reflected.
+                        if (x==0) {
+                            return false;
+                        }
+
+                        // Join the four cells to create a square.
+                        cells[x+y*cols].connect[DOWN] = true;
+                        cells[x+y*cols].connect[RIGHT] = true;
+                        const g = cells[x+y*cols].group;
+
+                        cells[x+1+y*cols].connect[DOWN] = true;
+                        cells[x+1+y*cols].connect[LEFT] = true;
+                        cells[x+1+y*cols].group = g;
+
+                        cells[x+(y+1)*cols].connect[UP] = true;
+                        cells[x+(y+1)*cols].connect[RIGHT] = true;
+                        cells[x+(y+1)*cols].group = g;
+
+                        cells[x+1+(y+1)*cols].connect[UP] = true;
+                        cells[x+1+(y+1)*cols].connect[LEFT] = true;
+                        cells[x+1+(y+1)*cols].group = g;
+                    }
+                }
+            }
+
+            if (!chooseTallRows()) {
+                return false;
+            }
+
+            if (!chooseNarrowCols()) {
+                return false;
+            }
+
+            return true;
+        };
+
+        // set the final position and size of each cell when upscaling the simple model to actual size
+        const setUpScaleCoords = function() {
+            for (let i=0; i<rows*cols; i++) {
+                const c = cells[i];
+                c.final_x = c.x*3;
+                if (narrowCols[c.y] < c.x) {
+                    c.final_x--;
+                }
+                c.final_y = c.y*3;
+                if (tallRows[c.x] < c.y) {
+                    c.final_y++;
+                }
+                c.final_w = c.shrinkWidth ? 2 : 3;
+                c.final_h = c.raiseHeight ? 4 : 3;
+            }
+        };
+
+        // const reassignGroup = function(oldg,newg) {
+        //     for (let i=0; i<rows*cols; i++) {
+        //         const c = cells[i];
+        //         if (c.group == oldg) {
+        //             c.group = newg;
+        //         }
+        //     }
+        // };
+
+        const createTunnels = function() {
+
+            // declare candidates
+            const singleDeadEndCells = [];
+            const topSingleDeadEndCells = [];
+            const botSingleDeadEndCells = [];
+
+            const voidTunnelCells = [];
+            const topVoidTunnelCells = [];
+            const botVoidTunnelCells = [];
+
+            const edgeTunnelCells = [];
+            const topEdgeTunnelCells = [];
+            const botEdgeTunnelCells = [];
+
+            const doubleDeadEndCells = [];
+
+            let numTunnelsCreated = 0;
+
+            // prepare candidates
+            for (let y=0; y<rows; y++) {
+                const c = cells[cols-1+y*cols];
+                if (c.connect[UP]) {
+                    continue;
+                }
+                if (c.y > 1 && c.y < rows-2) {
+                    c.isEdgeTunnelCandidate = true;
+                    edgeTunnelCells.push(c);
+                    if (c.y <= 2) {
+                        topEdgeTunnelCells.push(c);
+                    }
+                    else if (c.y >= 5) {
+                        botEdgeTunnelCells.push(c);
+                    }
+                }
+                const upDead = (!c.next[UP] || c.next[UP].connect[RIGHT]);
+                const downDead = (!c.next[DOWN] || c.next[DOWN].connect[RIGHT]);
+                if (c.connect[RIGHT]) {
+                    if (upDead) {
+                        c.isVoidTunnelCandidate = true;
+                        voidTunnelCells.push(c);
+                        if (c.y <= 2) {
+                            topVoidTunnelCells.push(c);
+                        }
+                        else if (c.y >= 6) {
+                            botVoidTunnelCells.push(c);
+                        }
+                    }
+                }
+                else {
+                    if (c.connect[DOWN]) {
+                        continue;
+                    }
+                    if (upDead != downDead) {
+                        if (!c.raiseHeight && y < rows-1 && !c.next[LEFT].connect[LEFT]) {
+                            singleDeadEndCells.push(c);
+                            c.isSingleDeadEndCandidate = true;
+                            c.singleDeadEndDir = upDead ? UP : DOWN;
+                            const offset = upDead ? 1 : 0;
+                            if (c.y <= 1+offset) {
+                                topSingleDeadEndCells.push(c);
+                            }
+                            else if (c.y >= 5+offset) {
+                                botSingleDeadEndCells.push(c);
+                            }
+                        }
+                    }
+                    else if (upDead && downDead) {
+                        if (y > 0 && y < rows-1) {
+                            if (c.next[LEFT].connect[UP] && c.next[LEFT].connect[DOWN]) {
+                                c.isDoubleDeadEndCandidate = true;
+                                if (c.y >= 2 && c.y <= 5) {
+                                    doubleDeadEndCells.push(c);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // choose tunnels from candidates
+            const numTunnelsDesired = Math.random() <= 0.45 ? 2 : 1;
+            const selectSingleDeadEnd = function(c) {
+                c.connect[RIGHT] = true;
+                if (c.singleDeadEndDir == UP) {
+                    c.topTunnel = true;
+                }
+                else {
+                    c.next[DOWN].topTunnel = true;
+                }
+            };
+
+            if (numTunnelsDesired == 1) {
+                let c;
+                if (c = randomElement(voidTunnelCells)) {
+                    c.topTunnel = true;
+                }
+                else if (c = randomElement(singleDeadEndCells)) {
+                    selectSingleDeadEnd(c);
+                }
+                else if (c = randomElement(edgeTunnelCells)) {
+                    c.topTunnel = true;
+                }
+                else {
+                    return false;
+                }
+            }
+            else if (numTunnelsDesired == 2) {
+                let c;
+                if (c = randomElement(doubleDeadEndCells)) {
+                    c.connect[RIGHT] = true;
+                    c.topTunnel = true;
+                    c.next[DOWN].topTunnel = true;
+                }
+                else {
+                    numTunnelsCreated = 1;
+                    if (c = randomElement(topVoidTunnelCells)) {
+                        c.topTunnel = true;
+                    }
+                    else if (c = randomElement(topSingleDeadEndCells)) {
+                        selectSingleDeadEnd(c);
+                    }
+                    else if (c = randomElement(topEdgeTunnelCells)) {
+                        c.topTunnel = true;
+                    }
+                    else {
+                        // could not find a top tunnel opening
+                        numTunnelsCreated = 0;
+                    }
+
+                    if (c = randomElement(botVoidTunnelCells)) {
+                        c.topTunnel = true;
+                    }
+                    else if (c = randomElement(botSingleDeadEndCells)) {
+                        selectSingleDeadEnd(c);
+                    }
+                    else if (c = randomElement(botEdgeTunnelCells)) {
+                        c.topTunnel = true;
+                    }
+                    else {
+                        // could not find a bottom tunnel opening
+                        if (numTunnelsCreated == 0) {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            // don't allow a horizontal path to cut straight through a map (through tunnels)
+            for (let y=0; y<rows; y++) {
+                let c = cells[cols-1+y*cols];
+                if (c.topTunnel) {
+                    let exit = true;
+                    const topy = c.final_y;
+                    while (c.next[LEFT]) {
+                        c = c.next[LEFT];
+                        if (!c.connect[UP] && c.final_y == topy) {
+                            continue;
+                        }
+                        else {
+                            exit = false;
+                            break;
+                        }
+                    }
+                    if (exit) {
+                        return false;
+                    }
+                }
+            }
+
+            // clear unused void tunnels (dead ends)
+            const len = voidTunnelCells.length;
+
+            const replaceGroup = function(oldg,newg) {
+                for (let i=0; i<rows*cols; i++) {
+                    const c = cells[i];
+                    if (c.group == oldg) {
+                        c.group = newg;
+                    }
+                }
+            };
+            for (let i=0; i<len; i++) {
+                const c = voidTunnelCells[i];
+                if (!c.topTunnel) {
+                    replaceGroup(c.group, c.next[UP].group);
+                    c.connect[UP] = true;
+                    c.next[UP].connect[DOWN] = true;
+                }
+            }
+
+            return true;
+        };
+
+        const joinWalls = function() {
+
+            // randomly join wall pieces to the boundary to increase difficulty
+
+            // join cells to the top boundary
+            for (let x=0; x<cols; x++) {
+                const c = cells[x];
+                if (!c.connect[LEFT] && !c.connect[RIGHT] && !c.connect[UP] &&
+                    (!c.connect[DOWN] || !c.next[DOWN].connect[DOWN])) {
+
+                    // ensure it will not create a dead-end
+                    if ((!c.next[LEFT] || !c.next[LEFT].connect[UP]) &&
+                        (c.next[RIGHT] && !c.next[RIGHT].connect[UP])) {
+
+                        // prevent connecting very large piece
+                        if (!(c.next[DOWN] && c.next[DOWN].connect[RIGHT] && c.next[DOWN].next[RIGHT].connect[RIGHT])) {
+                            c.isJoinCandidate = true;
+                            if (Math.random() <= 0.25) {
+                                c.connect[UP] = true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // join cells to the bottom boundary
+            for (let x=0; x<cols; x++) {
+                const c = cells[x+(rows-1)*cols];
+                if (!c.connect[LEFT] && !c.connect[RIGHT] && !c.connect[DOWN] &&
+                    (!c.connect[UP] || !c.next[UP].connect[UP])) {
+
+                    // ensure it will not creat a dead-end
+                    if ((!c.next[LEFT] || !c.next[LEFT].connect[DOWN]) &&
+                        (c.next[RIGHT] && !c.next[RIGHT].connect[DOWN])) {
+
+                        // prevent connecting very large piece
+                        if (!(c.next[UP] && c.next[UP].connect[RIGHT] && c.next[UP].next[RIGHT].connect[RIGHT])) {
+                            c.isJoinCandidate = true;
+                            if (Math.random() <= 0.25) {
+                                c.connect[DOWN] = true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // join cells to the right boundary
+            for (let y=1; y<rows-1; y++) {
+                const c = cells[cols-1+y*cols];
+                if (c.raiseHeight) {
+                    continue;
+                }
+                if (!c.connect[RIGHT] && !c.connect[UP] && !c.connect[DOWN] &&
+                    !c.next[UP].connect[RIGHT] && !c.next[DOWN].connect[RIGHT]) {
+                    if (c.connect[LEFT]) {
+                        const c2 = c.next[LEFT];
+                        if (!c2.connect[UP] && !c2.connect[DOWN] && !c2.connect[LEFT]) {
+                            c.isJoinCandidate = true;
+                            if (Math.random() <= 0.5) {
+                                c.connect[RIGHT] = true;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        // try to generate a valid map, and keep count of tries.
+        let genCount = 0;
+        while (true) {
+            reset();
+            gen();
+            genCount++;
+            if (!isDesirable()) {
+                continue;
+            }
+
+            setUpScaleCoords();
+            joinWalls();
+            if (!createTunnels()) {
+                continue;
+            }
+
+            break;
+        }
+
+    };
+
+    // Transform the simple cells to a tile array used for creating the map.
+    const getTiles = function() {
+
+        const tiles = []; // each is a character indicating a wall(|), path(.), or blank(_).
+        const tileCells = []; // maps each tile to a specific cell of our simple map
+        const subrows = rows*3+1+3;
+        const subcols = cols*3-1+2;
+
+        const midcols = subcols-2;
+        const fullcols = (subcols-2)*2;
+
+        // getter and setter for tiles (ensures vertical symmetry axis)
+        const setTile = function(x,y,v) {
+            if (x<0 || x>subcols-1 || y<0 || y>subrows-1) {
+                return;
+            }
+            x -= 2;
+            tiles[midcols+x+y*fullcols] = v;
+            tiles[midcols-1-x+y*fullcols] = v;
+        };
+        const getTile = function(x,y) {
+            if (x<0 || x>subcols-1 || y<0 || y>subrows-1) {
+                return undefined;
+            }
+            x -= 2;
+            return tiles[midcols+x+y*fullcols];
+        };
+
+        // getter and setter for tile cells
+        const setTileCell = function(x,y,cell) {
+            if (x<0 || x>subcols-1 || y<0 || y>subrows-1) {
+                return;
+            }
+            x -= 2;
+            tileCells[x+y*subcols] = cell;
+        };
+        const getTileCell = function(x,y) {
+            if (x<0 || x>subcols-1 || y<0 || y>subrows-1) {
+                return undefined;
+            }
+            x -= 2;
+            return tileCells[x+y*subcols];
+        };
+
+        // initialize tiles
+        for (let i=0; i<subrows*fullcols; i++) {
+            tiles.push('_');
+        }
+        for (let i=0; i<subrows*subcols; i++) {
+            tileCells.push(undefined);
+        }
+
+        // set tile cells
+        for (let i=0; i<rows*cols; i++) {
+            const c = cells[i];
+            for (let x0=0; x0<c.final_w; x0++) {
+                for (let y0=0; y0<c.final_h; y0++) {
+                    setTileCell(c.final_x+x0,c.final_y+1+y0,c);
+                }
+            }
+        }
+
+        // set path tiles
+        for (let y=0; y<subrows; y++) {
+            for (let x=0; x<subcols; x++) {
+                const c = getTileCell(x,y); // cell
+                const cl = getTileCell(x-1,y); // left cell
+                const cu = getTileCell(x,y-1); // up cell
+
+                if (c) {
+                    // inside map
+                    if (cl && c.group != cl.group || // at vertical boundary
+                        cu && c.group != cu.group || // at horizontal boundary
+                        !cu && !c.connect[UP]) { // at top boundary
+                        setTile(x,y,'.');
+                    }
+                }
+                else {
+                    // outside map
+                    if (cl && (!cl.connect[RIGHT] || getTile(x-1,y) == '.') || // at right boundary
+                        cu && (!cu.connect[DOWN] || getTile(x,y-1) == '.')) { // at bottom boundary
+                        setTile(x,y,'.');
+                    }
+                }
+
+                // at corner connecting two paths
+                if (getTile(x-1,y) == '.' && getTile(x,y-1) == '.' && getTile(x-1,y-1) == '_') {
+                    setTile(x,y,'.');
+                }
+            }
+        }
+
+        // extend tunnels
+        for (let c=cells[cols-1]; c; c = c.next[DOWN]) {
+            if (c.topTunnel) {
+                const y = c.final_y+1;
+                setTile(subcols-1, y,'.');
+                setTile(subcols-2, y,'.');
+            }
+        }
+
+        // fill in walls
+        for (let y=0; y<subrows; y++) {
+            for (let x=0; x<subcols; x++) {
+                // any blank tile that shares a vertex with a path tile should be a wall tile
+                if (getTile(x,y) != '.' && (getTile(x-1,y) == '.' || getTile(x,y-1) == '.' || getTile(x+1,y) == '.' || getTile(x,y+1) == '.' ||
+                    getTile(x-1,y-1) == '.' || getTile(x+1,y-1) == '.' || getTile(x+1,y+1) == '.' || getTile(x-1,y+1) == '.')) {
+                    setTile(x,y,'|');
+                }
+            }
+        }
+
+        // create the ghost door
+        setTile(2,12,'-');
+
+        // set energizers
+        const getTopEnergizerRange = function() {
+            let miny;
+            let maxy = subrows/2;
+            const x = subcols-2;
+            for (let y=2; y<maxy; y++) {
+                if (getTile(x,y) == '.' && getTile(x,y+1) == '.') {
+                    miny = y+1;
+                    break;
+                }
+            }
+            maxy = Math.min(maxy,miny+7);
+            for (let y=miny+1; y<maxy; y++) {
+                if (getTile(x-1,y) == '.') {
+                    maxy = y-1;
+                    break;
+                }
+            }
+            return {miny:miny, maxy:maxy};
+        };
+        const getBotEnergizerRange = function() {
+            let miny = subrows/2;
+            let maxy;
+            const x = subcols-2;
+            for (let y=subrows-3; y>=miny; y--) {
+                if (getTile(x,y) == '.' && getTile(x,y+1) == '.') {
+                    maxy = y;
+                    break;
+                }
+            }
+            miny = Math.max(miny,maxy-7);
+            for (let y=maxy-1; y>miny; y--) {
+                if (getTile(x-1,y) == '.') {
+                    miny = y+1;
+                    break;
+                }
+            }
+            return {miny:miny, maxy:maxy};
+        };
+        {
+            const x = subcols-2;
+            let range;
+            if (range = getTopEnergizerRange()) {
+                const y = getRandomInt(range.miny, range.maxy);
+                setTile(x,y,'o');
+            }
+            if (range = getBotEnergizerRange()) {
+                const y = getRandomInt(range.miny, range.maxy);
+                setTile(x,y,'o');
+            }
+        }
+
+        // erase pellets in the tunnels
+        const eraseUntilIntersection = function(x,y) {
+            while (true) {
+                const adj = [];
+                if (getTile(x-1,y) == '.') {
+                    adj.push({x:x-1,y:y});
+                }
+                if (getTile(x+1,y) == '.') {
+                    adj.push({x:x+1,y:y});
+                }
+                if (getTile(x,y-1) == '.') {
+                    adj.push({x:x,y:y-1});
+                }
+                if (getTile(x,y+1) == '.') {
+                    adj.push({x:x,y:y+1});
+                }
+                if (adj.length == 1) {
+                    setTile(x,y,' ');
+                    x = adj[0].x;
+                    y = adj[0].y;
+                }
+                else {
+                    break;
+                }
+            }
+        };
+        {
+            const x = subcols-1;
+            for (let y=0; y<subrows; y++) {
+                if (getTile(x,y) == '.') {
+                    eraseUntilIntersection(x,y);
+                }
+            }
+        }
+
+        // erase pellets on starting position
+        setTile(1,subrows-8,' ');
+
+        // erase pellets around the ghost house
+        for (let i=0; i<7; i++) {
+
+            // erase pellets from bottom of the ghost house proceeding down until
+            // reaching a pellet tile that isn't surround by walls
+            // on the left and right
+            {
+                const y = subrows-14;
+                setTile(i, y, ' ');
+                for (let j=1;
+                    getTile(i,y+j) == '.' &&
+                    getTile(i-1,y+j) == '|' &&
+                    getTile(i+1,y+j) == '|';
+                    j++) {
+                    setTile(i,y+j,' ');
+                }
+            }
+
+            // erase pellets from top of the ghost house proceeding up until
+            // reaching a pellet tile that isn't surround by walls
+            // on the left and right
+            {
+                const y = subrows-20;
+                setTile(i, y, ' ');
+                for (let j=1;
+                    getTile(i,y-j) == '.' &&
+                    getTile(i-1,y-j) == '|' &&
+                    getTile(i+1,y-j) == '|';
+                    j++) {
+                    setTile(i,y-j,' ');
+                }
+            }
+        }
+        // erase pellets on the side of the ghost house
+        for (let i=0; i<7; i++) {
+
+            // erase pellets from side of the ghost house proceeding right until
+            // reaching a pellet tile that isn't surround by walls
+            // on the top and bottom.
+            const x = 6;
+            const y = subrows-14-i;
+            setTile(x, y, ' ');
+            for (let j=1;
+                getTile(x+j,y) == '.' &&
+                getTile(x+j,y-1) == '|' &&
+                getTile(x+j,y+1) == '|';
+                j++) {
+                setTile(x+j,y,' ');
+            }
+        }
+
+        // return a tile string (3 empty lines on top and 2 on bottom)
+        return (
+            "____________________________" +
+            "____________________________" +
+            "____________________________" +
+            tiles.join("") +
+            "____________________________" +
+            "____________________________");
+    };
+
+    const randomColor = function() {
+        return '#'+('00000'+(Math.random()*(1<<24)|0).toString(16)).slice(-6);
+    };
+
+    // dijkstra's algorithm to find shortest path to all tiles from (x0,y0)
+    // we also remove (destroyX,destroyY) from the map to try to constrain the path
+    // from going a certain way from the start.
+    // (We created this because the ghost's minimum distance direction is not always sufficient in procedural maps)
+    const getShortestDistGraph = function(map,x0,y0,isNodeTile) {
+
+        // build graph
+        const graph = {};
+        for (let y=0; y<36; y++) {
+            for (let x=0; x<28; x++) {
+                if (isNodeTile(x,y)) {
+                    const i = x+y*28;
+                    graph[i] = {'x':x, 'y':y, 'dist':Infinity, 'penult':undefined, 'neighbors':[], 'completed':false};
+                    if (isNodeTile(x-1,y)) {
+                        const j = i-1;
+                        graph[i].neighbors.push(graph[j]);
+                        graph[j].neighbors.push(graph[i]);
+                    }
+                    if (isNodeTile(x,y-1)) {
+                        const j = i-28;
+                        graph[i].neighbors.push(graph[j]);
+                        graph[j].neighbors.push(graph[i]);
+                    }
+                }
+            }
+        }
+
+        let node = graph[x0+y0*28];
+        node.completed = true;
+        node.dist = 0;
+        while (true) {
+
+            // update distances of current node's neighbors
+            for (let i=0; i<4; i++) {
+                const d = node.neighbors[i];
+                if (d && !d.completed) {
+                    const dist = node.dist+1;
+                    if (dist == d.dist) {
+                        if (Math.random() < 0.5) {
+                            d.penult = node;
+                        }
+                    }
+                    else if (dist < d.dist) {
+                        d.dist = dist;
+                        d.penult = node;
+                    }
+                }
+            }
+
+            // find next node to process (closest fringe node)
+            let next_node = undefined;
+            let min_dist = Infinity;
+            for (let i=0; i<28*36; i++) {
+                const d = graph[i];
+                if (d && !d.completed) {
+                    if (d.dist < min_dist) { 
+                        next_node = d;
+                        min_dist = d.dist;
+                    }
+                }
+            }
+
+            if (!next_node) {
+                break;
+            }
+
+            node = next_node;
+            node.completed = true;
+        }
+
+        return graph;
+    };
+
+    // retrieves the direction enum from a node's penultimate node to itself.
+    const getDirFromPenult = function(node) {
+        if (!node.penult) {
+            return undefined;
+        }
+        const dx = node.x - node.penult.x;
+        const dy = node.y - node.penult.y;
+        if (dy == -1) {
+            return DIR_UP;
+        }
+        else if (dy == 1) {
+            return DIR_DOWN;
+        }
+        else if (dx == -1) {
+            return DIR_LEFT;
+        }
+        else if (dx == 1) {
+            return DIR_RIGHT;
+        }
+    };
+
+    // sometimes the ghosts can get stuck in loops when trying to return home
+    // so we build a path from all tiles to the ghost door tile
+    const makeExitPaths = function(map) {
+        const isNodeTile = function(x,y) {
+            if (x<0 || x>=28 || y<0 || y>=36) {
+                return false;
+            }
+            return map.isFloorTile(x,y);
+        };
+        const graph = getShortestDistGraph(map,map.doorTile.x,map.doorTile.y,isNodeTile);
+
+        // give the map a function that tells the ghost which direction to go to return home
+        map.getExitDir = function(x,y) {
+            if (x<0 || x>=28 || y<0 || y>=36) {
+                return undefined;
+            }
+            const node = graph[x+y*28];
+            const dirEnum = getDirFromPenult(node);
+            if (dirEnum != undefined) {
+                return rotateAboutFace(dirEnum); // reverse direction (door->ghost to door<-ghost)
+            }
+        };
+    };
+
+    // add fruit paths to a map
+    const makeFruitPaths = (function(){
+        const reversed = {
+            'v':'^',
+            '^':'v',
+            '<':'>',
+            '>':'<',
+        };
+        const reversePath = function(path) {
+            let rpath = "";
+            for (let i=path.length-1; i>=0; i--) {
+                rpath += reversed[path[i]];
+            }
+            return rpath;
+        };
+
+        const dirChars = {};
+        dirChars[DIR_UP] = '^';
+        dirChars[DIR_DOWN] = 'v';
+        dirChars[DIR_LEFT] = '<';
+        dirChars[DIR_RIGHT] = '>';
+
+        const getPathFromGraph = function(graph,x0,y0,x1,y1,reverse) {
+            // from (x0,y0) to (x1,y1)
+            const start_node = graph[x0+y0*28];
+            let path = "";
+            for (let node=graph[x1+y1*28]; node!=start_node; node=node.penult) {
+                path = dirChars[getDirFromPenult(node)] + path;
+            }
+            return reverse ? reversePath(path) : path;
+        };
+
+        return function(map) {
+
+            const paths = {entrances:[], exits:[]};
+
+            const isFloorTile = function(x,y) {
+                if (x<0 || x>=28 || y<0 || y>=36) {
+                    return false;
+                }
+                return map.isFloorTile(x,y);
+            };
+
+            const enter_graph = getShortestDistGraph(map,15,20, function(x,y) { return (x==14 && y==20) ? false : isFloorTile(x,y); });
+            const exit_graph =  getShortestDistGraph(map,16,20, function(x,y) { return (x==17 && y==20) ? false : isFloorTile(x,y); });
+
+            // start at (15,20)
+            for (let y=0; y<36; y++) {
+                if (map.isFloorTile(-1,y)) {
+
+                    // left entrance
+                    paths.entrances.push({
+                        'start': {'y':y*8+4, 'x': -4},
+                        'path': '>'+getPathFromGraph(enter_graph, 15,20, 0,y, true)});
+
+                    // right entrance
+                    paths.entrances.push({
+                        'start': {'y':y*8+4, 'x': 28*8+4},
+                        'path': '<'+getPathFromGraph(enter_graph, 15,20, 27,y, true)});
+
+                    // left exit
+                    paths.exits.push({
+                        'start': {'y':y*8+4, 'x': -4},
+                        'path': getPathFromGraph(exit_graph, 16,20, 0,y, false)+'<'});
+
+                    // right exit
+                    paths.exits.push({
+                        'start': {'y':y*8+4, 'x': 28*8+4},
+                        'path': getPathFromGraph(exit_graph, 16,20, 27,y, false)+'>'});
+                }
+            }
+
+            map.fruitPaths = paths;
+        };
+    })();
+
+    return function() {
+        genRandom();
+        const map = new Map(28,36,getTiles());
+
+        makeFruitPaths(map);
+        makeExitPaths(map);
+
+        map.name = "Random Map";
+        map.wallFillColor = randomColor();
+        map.wallStrokeColor = rgbString(hslToRgb(Math.random(), Math.random(), Math.random() * 0.4 + 0.6));
+        map.pelletColor = "#ffb8ae";
+
+        return map;
+    };
+})();
+//@line 1 "src/atlas.js"
+
+
+const atlas = (function(){
+
+    let canvas,ctx;
+    const size = 22;
+    const cols = 14; // has to be ONE MORE than intended to fix some sort of CHROME BUG (last cell always blank?)
+    const rows = 22;
+
+    let creates = 0;
+
+    const drawGrid = function() {
+        // draw grid overlay
+        const canvas = document.getElementById('gridcanvas');
+        if (!canvas) {
+            return;
+        }
+        const w = size*cols*renderScale;
+        const h = size*rows*renderScale;
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0,0,w,h);
+        const step = size*renderScale;
+        ctx.beginPath();
+        for (let x=0; x<=w; x+=step) {
+            ctx.moveTo(x,0);
+            ctx.lineTo(x,h);
+        }
+        for (let y=0; y<=h; y+=step) {
+            ctx.moveTo(0,y);
+            ctx.lineTo(w,y);
+        }
+        ctx.lineWidth = "1px";
+        ctx.lineCap = "square";
+        ctx.strokeStyle="rgba(255,255,255,0.5)";
+        ctx.stroke();
+    };
+
+    const create = function() {
+        drawGrid();
+        canvas = document.getElementById('atlas');
+        ctx = canvas.getContext("2d");
+        /*
+        canvas.style.left = 0;
+        canvas.style.top = 0;
+        canvas.style.position = "absolute";
+        */
+
+        const w = size*cols*renderScale;
+        const h = size*rows*renderScale;
+        canvas.width = w;
+        canvas.height = h;
+
+        if (creates > 0) {
+            ctx.restore();
+        }
+        creates++;
+
+        ctx.save();
+        ctx.clearRect(0,0,w,h);
+        ctx.scale(renderScale,renderScale);
+
+        const drawAtCell = function(f,row,col) {
+            const x = col*size + size/2;
+            const y = row*size + size/2;
+            f(x,y);
+        };
+
+        let row = 0;
+        drawAtCell(function(x,y) { drawCherry(ctx,x,y); },      row,0);
+        drawAtCell(function(x,y) { drawStrawberry(ctx,x,y); },  row,1);
+        drawAtCell(function(x,y) { drawOrange(ctx,x,y); },      row,2);
+        drawAtCell(function(x,y) { drawApple(ctx,x,y); },       row,3);
+        drawAtCell(function(x,y) { drawMelon(ctx,x,y); },       row,4);
+        drawAtCell(function(x,y) { drawGalaxian(ctx,x,y); },    row,5);
+        drawAtCell(function(x,y) { drawBell(ctx,x,y); },        row,6);
+        drawAtCell(function(x,y) { drawKey(ctx,x,y); },         row,7);
+        drawAtCell(function(x,y) { drawPretzel(ctx,x,y); },     row,8);
+        drawAtCell(function(x,y) { drawPear(ctx,x,y); },        row,9);
+        drawAtCell(function(x,y) { drawBanana(ctx,x,y); },      row,10);
+        drawAtCell(function(x,y) { drawCookie(ctx,x,y); },      row,11);
+        drawAtCell(function(x,y) { drawCookieFlash(ctx,x,y); },      row,12);
+
+        const drawGhostCells = function(row,color) {
+            for (let col=0, i=0; i<4; i++) { // dirEnum
+                for (let f=0; f<2; f++, col++) { // frame
+                    drawAtCell(function(x,y) { drawGhostSprite(ctx, x,y, f, i, false, false, false, color); },   row,col);
+                }
+            }
+        };
+
+        row++;
+        drawGhostCells(row, "#FF0000");
+        row++;
+        drawGhostCells(row, "#FFB8FF");
+        row++;
+        drawGhostCells(row, "#00FFFF");
+        row++;
+        drawGhostCells(row, "#FFB851");
+
+        row++;
+        // draw disembodied eyes
+        (function(){
+            for (let col=0, i=0; i<4; i++, col++) { // dirEnum
+                drawAtCell(function(x,y) { drawGhostSprite(ctx, x,y, 0, i, false, false, true, "#fff"); },     row,col);
+            }
+        })();
+
+        // draw ghosts scared
+        drawAtCell(function(x,y) { drawGhostSprite(ctx, x,y, 0, DIR_UP, true, false, false, "#fff"); }, row,4);
+        drawAtCell(function(x,y) { drawGhostSprite(ctx, x,y, 1, DIR_UP, true, false, false, "#fff"); }, row,5);
+        drawAtCell(function(x,y) { drawGhostSprite(ctx, x,y, 0, DIR_UP, true, true, false, "#fff"); },  row,6);
+        drawAtCell(function(x,y) { drawGhostSprite(ctx, x,y, 1, DIR_UP, true, true, false, "#fff"); },  row,7);
+
+        const drawPacCells = function(row,col,dir) {
+            drawAtCell(function(x,y) { drawPacmanSprite(ctx, x,y, dir, Math.PI/6); }, row, col);
+            drawAtCell(function(x,y) { drawPacmanSprite(ctx, x,y, dir, Math.PI/3); }, row, col+1);
+        };
+        row++;
+
+        // draw pacman mouth closed
+        drawAtCell(function(x,y) { drawPacmanSprite(ctx, x,y, DIR_RIGHT, 0); }, row, 0);
+
+        // draw pacman directions
+        (function(){
+            for (let col=1, i=0; i<4; i++, col+=2) {
+                drawPacCells(row,col,i);
+            }
+        })();
+
+        const drawMsPacCells = function(row,col,dir) {
+            drawAtCell(function(x,y) { drawMsPacmanSprite(ctx, x,y, dir, 0); }, row, col);
+            drawAtCell(function(x,y) { drawMsPacmanSprite(ctx, x,y, dir, 1); }, row, col+1);
+            drawAtCell(function(x,y) { drawMsPacmanSprite(ctx, x,y, dir, 2); }, row, col+2);
+        };
+        row++;
+        (function(){
+            for (let col=0, i=0; i<4; i++, col+=3) {
+                drawMsPacCells(row,col,i);
+            }
+        })();
+
+        const drawCookieCells = function(row,col,dir) {
+            drawAtCell(function(x,y) { drawCookiemanSprite(ctx, x,y, dir, 0, true); }, row, col);
+            drawAtCell(function(x,y) { drawCookiemanSprite(ctx, x,y, dir, 1, true); }, row, col+1);
+            drawAtCell(function(x,y) { drawCookiemanSprite(ctx, x,y, dir, 2, true); }, row, col+2);
+        };
+        row++;
+        (function(){
+            for (let col=0, i=0; i<4; i++, col+=3) {
+                drawCookieCells(row,col,i);
+            }
+        })();
+
+        const drawMonsterCells = function(row,color) {
+            for (let col=0, i=0; i<4; i++) { // dirEnum
+                for (let f=0; f<2; f++, col++) { // frame
+                    drawAtCell(function(x,y) { drawMonsterSprite(ctx, x,y, f, i, false, false, false, color); },   row,col);
+                }
+            }
+        };
+
+        row++;
+        drawMonsterCells(row, "#FF0000");
+        row++;
+        drawMonsterCells(row, "#FFB8FF");
+        row++;
+        drawMonsterCells(row, "#00FFFF");
+        row++;
+        drawMonsterCells(row, "#FFB851");
+
+        row++;
+        (function(){
+            for (let col=0, i=0; i<4; i++, col++) { // dirEnum
+                drawAtCell(function(x,y) { drawMonsterSprite(ctx, x,y, 0, i, false, false, true, "#fff"); },     row,col);
+            }
+        })();
+        drawAtCell(function(x,y) { drawMonsterSprite(ctx, x,y, 0, DIR_UP, true, false, false, "#fff"); }, row,4);
+        drawAtCell(function(x,y) { drawMonsterSprite(ctx, x,y, 1, DIR_UP, true, false, false, "#fff"); }, row,5);
+        drawAtCell(function(x,y) { drawMonsterSprite(ctx, x,y, 0, DIR_UP, true, true, false, "#fff"); },  row,6);
+        drawAtCell(function(x,y) { drawMonsterSprite(ctx, x,y, 1, DIR_UP, true, true, false, "#fff"); },  row,7);
+
+        const drawOttoCells = function(row,col,dir) {
+            for (let i=0; i<4; i++, col++) { // frame
+                drawAtCell(function(x,y) { drawOttoSprite(ctx, x,y, dir, i); }, row, col);
+            }
+        };
+        row++;
+        drawOttoCells(row,0, DIR_UP);
+        drawOttoCells(row,4, DIR_RIGHT);
+        row++;
+        drawOttoCells(row,0, DIR_DOWN);
+        drawOttoCells(row,4, DIR_LEFT);
+
+        row++;
+        drawAtCell(function(x,y) { drawPacPoints(ctx, x,y, 200, "#33ffff"); }, row, 0);
+        drawAtCell(function(x,y) { drawPacPoints(ctx, x,y, 400, "#33ffff"); }, row, 1);
+        drawAtCell(function(x,y) { drawPacPoints(ctx, x,y, 800, "#33ffff"); }, row, 2);
+        drawAtCell(function(x,y) { drawPacPoints(ctx, x,y, 1600, "#33ffff");}, row, 3);
+        drawAtCell(function(x,y) { drawPacPoints(ctx, x,y, 100, "#ffb8ff"); }, row, 4);
+        drawAtCell(function(x,y) { drawPacPoints(ctx, x,y, 300, "#ffb8ff"); }, row, 5);
+        drawAtCell(function(x,y) { drawPacPoints(ctx, x,y, 500, "#ffb8ff"); }, row, 6);
+        drawAtCell(function(x,y) { drawPacPoints(ctx, x,y, 700, "#ffb8ff"); }, row, 7);
+        drawAtCell(function(x,y) { drawPacPoints(ctx, x,y, 1000, "#ffb8ff"); }, row, 8);
+        drawAtCell(function(x,y) { drawPacPoints(ctx, x,y, 2000, "#ffb8ff"); }, row, 9);
+        drawAtCell(function(x,y) { drawPacPoints(ctx, x,y, 3000, "#ffb8ff"); }, row, 10);
+        drawAtCell(function(x,y) { drawPacPoints(ctx, x,y, 5000, "#ffb8ff"); }, row, 11);
+        row++;
+        drawAtCell(function(x,y) { drawMsPacPoints(ctx, x,y, 100, "#fff"); }, row, 0);
+        drawAtCell(function(x,y) { drawMsPacPoints(ctx, x,y, 200, "#fff"); }, row, 1);
+        drawAtCell(function(x,y) { drawMsPacPoints(ctx, x,y, 500, "#fff"); }, row, 2);
+        drawAtCell(function(x,y) { drawMsPacPoints(ctx, x,y, 700, "#fff"); }, row, 3);
+        drawAtCell(function(x,y) { drawMsPacPoints(ctx, x,y, 1000, "#fff"); }, row, 4);
+        drawAtCell(function(x,y) { drawMsPacPoints(ctx, x,y, 2000, "#fff"); }, row, 5);
+        drawAtCell(function(x,y) { drawMsPacPoints(ctx, x,y, 5000, "#fff"); }, row, 6);
+
+        row++;
+        drawAtCell(function(x,y) {
+            drawSnail(ctx,x,y, "#0ff");
+        }, row, 0);
+        drawAtCell(function(x,y) {
+            drawSnail(ctx,x,y, "#FFF");
+        }, row, 1);
+
+        const drawMsOttoCells = function(row,col,dir) {
+            for (let i=0; i<4; i++, col++) { // frame
+                drawAtCell(function(x,y) { drawMsOttoSprite(ctx, x,y, dir, i); }, row, col);
+            }
+        };
+        row++;
+        drawMsOttoCells(row,0, DIR_UP);
+        drawMsOttoCells(row,4, DIR_RIGHT);
+        row++;
+        drawMsOttoCells(row,0, DIR_DOWN);
+        drawMsOttoCells(row,4, DIR_LEFT);
+
+    };
+
+    const copyCellTo = function(row, col, destCtx, x, y,display) {
+        const sx = col*size*renderScale;
+        const sy = row*size*renderScale;
+        const sw = renderScale*size;
+        const sh = renderScale*size;
+
+        const dx = x - size/2;
+        const dy = y - size/2;
+        const dw = size;
+        const dh = size;
+
+        if (display) {
+            console.log(sx,sy,sw,sh,dw,dy,dw,dh);
+        }
+
+        destCtx.drawImage(canvas,sx,sy,sw,sh,dx,dy,dw,dh);
+    };
+
+    const copyGhostPoints = function(destCtx,x,y,points) {
+        const row = 16;
+        const col = {
+            200: 0,
+            400: 1,
+            800: 2,
+            1600: 3,
+        }[points];
+        if (col != undefined) {
+            copyCellTo(row, col, destCtx, x, y);
+        }
+    };
+
+    const copyPacFruitPoints = function(destCtx,x,y,points) {
+        const row = 16;
+        const col = {
+            100: 4,
+            300: 5,
+            500: 6,
+            700: 7,
+            1000: 8,
+            2000: 9,
+            3000: 10,
+            5000: 11,
+        }[points];
+        if (col != undefined) {
+            copyCellTo(row, col, destCtx, x, y);
+        }
+    };
+
+    const copyMsPacFruitPoints = function(destCtx,x,y,points) {
+        const row = 17;
+        const col = {
+            100: 0,
+            200: 1,
+            500: 2,
+            700: 3,
+            1000: 4,
+            2000: 5,
+            5000: 6,
+        }[points];
+        if (col != undefined) {
+            copyCellTo(row, col, destCtx, x, y);
+        }
+    };
+
+    const copyGhostSprite = function(destCtx,x,y,frame,dirEnum,scared,flash,eyes_only,color) {
+        let row,col;
+        if (eyes_only) {
+            row = 5;
+            col = dirEnum;
+        }
+        else if (scared) {
+            row = 5;
+            col = flash ? 6 : 4;
+            col += frame;
+        }
+        else {
+            col = dirEnum*2 + frame;
+            if (color == blinky.color) {
+                row = 1;
+            }
+            else if (color == pinky.color) {
+                row = 2;
+            }
+            else if (color == inky.color) {
+                row = 3;
+            }
+            else if (color == clyde.color) {
+                row = 4;
+            }
+            else {
+                row = 5;
+            }
+        }
+
+        copyCellTo(row, col, destCtx, x, y);
+    };
+
+    const copyMuppetSprite = function(destCtx,x,y,frame,dirEnum,scared,flash,eyes_only,color) {
+        if (scared) {
+            if (flash) {
+                copyFruitSprite(destCtx,x,y,"cookieface");
+            }
+            else {
+                copyFruitSprite(destCtx,x,y,"cookie");
+            }
+        }
+        else {
+            copyGhostSprite(destCtx,x,y,frame,dirEnum,scared,flash,eyes_only,color);
+        }
+    };
+
+    const copyMonsterSprite = function(destCtx,x,y,frame,dirEnum,scared,flash,eyes_only,color) {
+        let row,col;
+        if (eyes_only) {
+            row = 13;
+            col = dirEnum;
+        }
+        else if (scared) {
+            row = 13;
+            col = flash ? 6 : 4;
+            col += frame;
+        }
+        else {
+            col = dirEnum*2 + frame;
+            if (color == blinky.color) {
+                row = 9;
+            }
+            else if (color == pinky.color) {
+                row = 10;
+            }
+            else if (color == inky.color) {
+                row = 11;
+            }
+            else if (color == clyde.color) {
+                row = 12;
+            }
+            else {
+                row = 13;
+            }
+        }
+
+        copyCellTo(row, col, destCtx, x, y);
+    };
+
+    const copyOttoSprite = function(destCtx,x,y,dirEnum,frame) {
+        let col,row;
+        if (dirEnum == DIR_UP) {
+            col = frame;
+            row = 14;
+        }
+        else if (dirEnum == DIR_RIGHT) {
+            col = frame+4;
+            row = 14;
+        }
+        else if (dirEnum == DIR_DOWN) {
+            col = frame;
+            row = 15;
+        }
+        else if (dirEnum == DIR_LEFT) {
+            col = frame+4;
+            row = 15;
+        }
+        copyCellTo(row,col,destCtx,x,y);
+    };
+
+    const copyMsOttoSprite = function(destCtx,x,y,dirEnum,frame) {
+        let col,row;
+        if (dirEnum == DIR_UP) {
+            col = frame;
+            row = 19;
+        }
+        else if (dirEnum == DIR_RIGHT) {
+            col = frame+4;
+            row = 19;
+        }
+        else if (dirEnum == DIR_DOWN) {
+            col = frame;
+            row = 20;
+        }
+        else if (dirEnum == DIR_LEFT) {
+            col = frame+4;
+            row = 20;
+        }
+        copyCellTo(row,col,destCtx,x,y);
+    };
+
+    const copySnail = function(destCtx,x,y,frame) {
+        const row = 18;
+        const col = frame;
+        copyCellTo(row,col,destCtx,x,y);
+    };
+
+    const copyPacmanSprite = function(destCtx,x,y,dirEnum,frame) {
+        const row = 6;
+        let col;
+        if (frame == 0) {
+            col = 0;
+        }
+        else {
+           col = dirEnum*2+1+(frame-1);
+        }
+        copyCellTo(row,col,destCtx,x,y);
+    };
+
+    const copyMsPacmanSprite = function(destCtx,x,y,dirEnum,frame) {
+        // TODO: determine row, col
+        //copyCellTo(row,col,destCtx,x,y);
+        const row = 7;
+        const col = dirEnum*3+frame;
+        copyCellTo(row,col,destCtx,x,y);
+    };
+
+    const copyCookiemanSprite = function(destCtx,x,y,dirEnum,frame) {
+        const row = 8;
+        const col = dirEnum*3+frame;
+        copyCellTo(row,col,destCtx,x,y);
+    };
+
+    const copyFruitSprite = function(destCtx,x,y,name) {
+        const row = 0;
+        const col = {
+            "cherry": 0,
+            "strawberry": 1,
+            "orange": 2,
+            "apple": 3,
+            "melon": 4,
+            "galaxian": 5,
+            "bell": 6,
+            "key": 7,
+            "pretzel": 8,
+            "pear": 9,
+            "banana": 10,
+            "cookie": 11,
+            "cookieface": 12,
+        }[name];
+
+        copyCellTo(row,col,destCtx,x,y);
+    };
+
+    return {
+        create,
+        getCanvas() { return canvas; },
+        drawGhostSprite: copyGhostSprite,
+        drawMonsterSprite: copyMonsterSprite,
+        drawMuppetSprite: copyMuppetSprite,
+        drawOttoSprite: copyOttoSprite,
+        drawMsOttoSprite: copyMsOttoSprite,
+        drawPacmanSprite: copyPacmanSprite,
+        drawMsPacmanSprite: copyMsPacmanSprite,
+        drawCookiemanSprite: copyCookiemanSprite,
+        drawFruitSprite: copyFruitSprite,
+        drawGhostPoints: copyGhostPoints,
+        drawPacFruitPoints: copyPacFruitPoints,
+        drawMsPacFruitPoints: copyMsPacFruitPoints,
+        drawSnail: copySnail,
+    };
+})();
+//@line 1 "src/renderers.js"
+
+
+//////////////////////////////////////////////////////////////
+// Renderers
+
+// Draws everything in the game using swappable renderers
+// to enable to different front-end displays for Pac-Man.
+
+// list of available renderers
+let renderer_list;
+
+// current renderer
+let renderer;
+
+let renderScale;
+
+const mapMargin = 4*tileSize; // margin between the map and the screen
+const mapPad = tileSize/8; // padding between the map and its clipping
+
+const mapWidth = 28*tileSize+mapPad*2;
+const mapHeight = 36*tileSize+mapPad*2;
+
+const screenWidth = mapWidth+mapMargin*2;
+const screenHeight = mapHeight+mapMargin*2;
+
+// all rendering will be shown on this canvas
+let canvas;
+
+// switch to the given renderer index
+const switchRenderer = function(i) {
+    renderer = renderer_list[i];
+    renderer.drawMap();
+};
+
+const getDevicePixelRatio = function() {
+    // Only consider the device pixel ratio for devices that are <= 320 pixels in width.
+    // This is necessary for the iPhone4's retina display; otherwise the game would be blurry.
+    // The iPad3's retina display @ 2048x1536 starts slowing the game down.
+    return 1;
+    if (window.innerWidth <= 320) {
+        return window.devicePixelRatio || 1;
+    }
+    return 1;
+};
+
+const initRenderer = function() {
+
+    // create foreground and background canvases
+    canvas = document.getElementById('canvas');
+    const bgCanvas = document.createElement('canvas');
+    const ctx = canvas.getContext("2d");
+    const bgCtx = bgCanvas.getContext("2d");
+
+    // drawing scale
+    let scale = 2;        // scale everything by this amount
+
+    // (temporary global version of scale just to get things quickly working)
+    renderScale = scale; 
+
+    let resets = 0;
+
+    // rescale the canvases
+    const resetCanvasSizes = function() {
+
+        // set the size of the canvas in actual pixels
+        canvas.width = screenWidth * scale;
+        canvas.height = screenHeight * scale;
+
+        // set the size of the canvas in browser pixels
+        const ratio = getDevicePixelRatio();
+        canvas.style.width = canvas.width / ratio;
+        canvas.style.height = canvas.height / ratio;
+
+        if (resets > 0) {
+            ctx.restore();
+        }
+        ctx.save();
+        ctx.scale(scale,scale);
+
+        bgCanvas.width = mapWidth * scale;
+        bgCanvas.height = mapHeight * scale;
+        if (resets > 0) {
+            bgCtx.restore();
+        }
+        bgCtx.save();
+        bgCtx.scale(scale,scale);
+
+        resets++;
+    };
+
+    // get the target scale that will cause the canvas to fit the window
+    const getTargetScale = function() {
+        const sx = (window.innerWidth - 10) / screenWidth;
+        const sy = (window.innerHeight - 10) / screenHeight;
+        let s = Math.min(sx,sy);
+        s *= getDevicePixelRatio();
+        return s;
+    };
+
+    // maximize the scale to fit the window
+    const fullscreen = function() {
+        // NOTE: css-scaling alternative at https://gist.github.com/1184900
+        renderScale = scale = getTargetScale();
+        resetCanvasSizes();
+        atlas.create();
+        if (renderer) {
+            renderer.drawMap();
+        }
+        center();
+    };
+
+    // center the canvas in the window
+    const center = function() {
+        const s = getTargetScale()/getDevicePixelRatio();
+        const w = screenWidth*s;
+        // const x = Math.max(0,(window.innerWidth-10)/2 - w/2);
+        // const y = 0;
+        /*
+        canvas.style.position = "absolute";
+        canvas.style.left = x;
+        canvas.style.top = y;
+        console.log(canvas.style.left);
+        */
+        document.body.style.marginLeft = (window.innerWidth - w)/2 + "px";
+    };
+
+    // initialize placement and size
+    fullscreen();
+
+    // adapt placement and size to window resizes
+    let resizeTimeout;
+    window.addEventListener('resize', function () {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(fullscreen, 100);
+    }, false);
+
+    //////////////////////
+
+    const beginMapFrame = function() {
+        bgCtx.fillStyle = "#000";
+        bgCtx.fillRect(0,0,mapWidth,mapHeight);
+        bgCtx.translate(mapPad, mapPad);
+    };
+
+    const endMapFrame = function() {
+        bgCtx.translate(-mapPad, -mapPad);
+    };
+
+    //////////////////////////////////////////////////////////////
+    // Common Renderer
+    // (attributes and functionality that are currently common to all renderers)
+
+    class CommonRenderer {
+        constructor() {
+            this.actorSize = (tileSize-1)*2;
+            this.energizerSize = tileSize+2;
+            this.pointsEarnedTextSize = tileSize;
+
+            this.energizerColor = "#FFF";
+            this.pelletColor = "#888";
+
+            this.flashLevel = false;
+        }
+
+        setOverlayColor(color) {
+            this.overlayColor = color;
+        }
+
+        beginMapClip() {
+            ctx.save();
+            ctx.beginPath();
+
+            // subtract one from size due to shift done for sprite realignment?
+            // (this fixes a bug that leaves unerased artifacts after actors use right-side tunnel
+            ctx.rect(-mapPad,-mapPad,mapWidth-1,mapHeight-1); 
+
+            ctx.clip();
+        }
+
+        endMapClip() {
+            ctx.restore();
+        }
+
+        beginFrame() {
+            this.setOverlayColor(undefined);
+            ctx.save();
+
+            // clear margin area
+            ctx.fillStyle = "#000";
+            (function(w,h,p){
+                ctx.fillRect(0,0,w,p+1);
+                ctx.fillRect(0,p,p,h-2*p);
+                ctx.fillRect(w-p-2,p,p+2,h-2*p);
+                ctx.fillRect(0,h-p-2,w,p+2);
+            })(screenWidth, screenHeight, mapMargin);
+
+            // draw fps
+            ctx.font = (tileSize-2) + "px ArcadeR";
+            ctx.textBaseline = "bottom";
+            ctx.textAlign = "right";
+            ctx.fillStyle = "#333";
+            ctx.fillText(Math.floor(executive.getFps())+" FPS", screenWidth, screenHeight);
+
+            // translate to map space
+            ctx.translate(mapMargin+mapPad, mapMargin+mapPad);
+        }
+
+        endFrame() {
+            ctx.restore();
+            if (this.overlayColor != undefined) {
+                ctx.fillStyle = this.overlayColor;
+                ctx.fillRect(0,0,screenWidth,screenHeight);
+            }
+        }
+
+        clearMapFrame() {
+            ctx.fillStyle = "#000";
+            ctx.fillRect(-1,-1,mapWidth+1,mapHeight+1);
+        }
+
+        renderFunc(f,that) {
+            if (that) {
+                f.call(that,ctx);
+            }
+            else {
+                f(ctx);
+            }
+        }
+
+        // scaling the canvas can incur floating point roundoff errors
+        // which manifest as "grout" between tiles that are otherwise adjacent in integer-space
+        // This function extends the width and height of the tile if it is adjacent to equivalent tiles
+        // that are to the bottom or right of the given tile
+        drawNoGroutTile(ctx,x,y,w) {
+            const tileChar = map.getTile(x,y);
+            this.drawCenterTileSq(ctx,x,y,tileSize,
+                    map.getTile(x+1,y) == tileChar,
+                    map.getTile(x,y+1) == tileChar,
+                    map.getTile(x+1,y+1) == tileChar);
+        }
+
+        // draw square centered at the given tile with optional "floating point grout" filling
+        drawCenterTileSq(ctx,tx,ty,w, rightGrout, downGrout, downRightGrout) {
+            this.drawCenterPixelSq(ctx, tx*tileSize+midTile.x, ty*tileSize+midTile.y,w,
+                    rightGrout, downGrout, downRightGrout);
+        }
+
+        // draw square centered at the given pixel
+        drawCenterPixelSq(ctx,px,py,w,rightGrout, downGrout, downRightGrout) {
+            ctx.fillRect(px-w/2, py-w/2,w,w);
+
+            // fill "floating point grout" gaps between tiles
+            const gap = 1;
+            if (rightGrout) ctx.fillRect(px-w/2, py-w/2,w+gap,w);
+            if (downGrout) ctx.fillRect(px-w/2, py-w/2,w,w+gap);
+            //if (rightGrout && downGrout && downRightGrout) ctx.fillRect(px-w/2, py-w/2,w+gap,w+gap);
+        }
+
+        // this flag is used to flash the level upon its successful completion
+        toggleLevelFlash() {
+            this.flashLevel = !this.flashLevel;
+        }
+
+        setLevelFlash(on) {
+            if (on != this.flashLevel) {
+                this.flashLevel = on;
+                this.drawMap();
+            }
+        }
+
+        // draw the target visualizers for each actor
+        drawTargets() {
+            ctx.strokeStyle = "rgba(255,255,255,0.5)";
+            ctx.lineWidth = "1.5";
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+            for (const a of actors)
+                if (a.isDrawTarget)
+                    a.drawTarget(ctx);
+        }
+
+        drawPaths() {
+            const backupAlpha = ctx.globalAlpha;
+            ctx.globalAlpha = 0.7;
+            for (const a of actors)
+                if (a.isDrawPath)
+                    this.drawPath(a);
+            ctx.globalAlpha = backupAlpha;
+        }
+
+        // draw a predicted path for the actor if it continues pursuing current target
+        drawPath(actor) {
+            if (!actor.targetting) return;
+
+            // current state of the predicted path
+            const tile = { x: actor.tile.x, y: actor.tile.y};
+            const target = actor.targetTile;
+            const dir = { x: actor.dir.x, y: actor.dir.y };
+            let dirEnum = actor.dirEnum;
+            let openTiles;
+
+            // exit if we're already on the target
+            if (tile.x == target.x && tile.y == target.y) {
+                return;
+            }
+
+            // if we are past the center of the tile, we cannot turn here anymore, so jump to next tile
+            if ((dirEnum == DIR_UP && actor.tilePixel.y <= midTile.y) ||
+                (dirEnum == DIR_DOWN && actor.tilePixel.y >= midTile.y) ||
+                (dirEnum == DIR_LEFT && actor.tilePixel.x <= midTile.x) ||
+                (dirEnum == DIR_RIGHT & actor.tilePixel.x >= midTile.x)) {
+                tile.x += dir.x;
+                tile.y += dir.y;
+            }
+            const pixel = { x:tile.x*tileSize+midTile.x, y:tile.y*tileSize+midTile.y };
+            
+            // dist keeps track of how far we're going along this path, stopping at maxDist
+            // distLeft determines how long the last line should be
+            let dist = Math.abs(tile.x*tileSize+midTile.x - actor.pixel.x + tile.y*tileSize+midTile.y - actor.pixel.y);
+            const maxDist = actorPathLength*tileSize;
+            let distLeft;
+            
+            // add the first line
+            ctx.strokeStyle = actor.pathColor;
+            ctx.lineWidth = "2.0";
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+            ctx.beginPath();
+            ctx.moveTo(
+                    actor.pixel.x+actor.pathCenter.x,
+                    actor.pixel.y+actor.pathCenter.y);
+            ctx.lineTo(
+                    pixel.x+actor.pathCenter.x,
+                    pixel.y+actor.pathCenter.y);
+
+            if (tile.x == target.x && tile.y == target.y) {
+                // adjust the distance left to create a smoothly interpolated path end
+                distLeft = actor.getPathDistLeft(pixel, dirEnum);
+            }
+            else while (true) {
+
+                // predict next turn from current tile
+                openTiles = getOpenTiles(tile, dirEnum);
+                if (actor != pacman && map.constrainGhostTurns)
+                    map.constrainGhostTurns(tile, openTiles, dirEnum);
+                dirEnum = getTurnClosestToTarget(tile, target, openTiles);
+                setDirFromEnum(dir,dirEnum);
+                
+                // if the next tile is our target, determine how mush distance is left and break loop
+                if (tile.x+dir.x == target.x && tile.y+dir.y == target.y) {
+                
+                    // adjust the distance left to create a smoothly interpolated path end
+                    distLeft = actor.getPathDistLeft(pixel, dirEnum);
+
+                    // cap distance left
+                    distLeft = Math.min(maxDist-dist, distLeft);
+
+                    break;
+                }
+                
+                // exit if we're going past the max distance
+                if (dist + tileSize > maxDist) {
+                    distLeft = maxDist - dist;
+                    break;
+                }
+
+                // move to next tile and add a line to its center
+                tile.x += dir.x;
+                tile.y += dir.y;
+                pixel.x += tileSize*dir.x;
+                pixel.y += tileSize*dir.y;
+                dist += tileSize;
+                ctx.lineTo(
+                        tile.x*tileSize+midTile.x+actor.pathCenter.x,
+                        tile.y*tileSize+midTile.y+actor.pathCenter.y);
+            }
+
+            // calculate final endpoint
+            const px = pixel.x+actor.pathCenter.x+distLeft*dir.x;
+            const py = pixel.y+actor.pathCenter.y+distLeft*dir.y;
+
+            // add an arrow head
+            ctx.lineTo(px,py);
+            const s = 3;
+            if (dirEnum == DIR_LEFT || dirEnum == DIR_RIGHT) {
+                ctx.lineTo(px-s*dir.x,py+s*dir.x);
+                ctx.moveTo(px,py);
+                ctx.lineTo(px-s*dir.x,py-s*dir.x);
+            }
+            else {
+                ctx.lineTo(px+s*dir.y,py-s*dir.y);
+                ctx.moveTo(px,py);
+                ctx.lineTo(px-s*dir.y,py-s*dir.y);
+            }
+
+            // draw path    
+            ctx.stroke();
+        }
+
+        // erase pellet from background
+        erasePellet(x,y) {
+            bgCtx.translate(mapPad,mapPad);
+            bgCtx.fillStyle = this.floorColor;
+            this.drawNoGroutTile(bgCtx,x,y,tileSize);
+
+            // fill in adjacent floor tiles
+            if (map.getTile(x+1,y)==' ') this.drawNoGroutTile(bgCtx,x+1,y,tileSize);
+            if (map.getTile(x-1,y)==' ') this.drawNoGroutTile(bgCtx,x-1,y,tileSize);
+            if (map.getTile(x,y+1)==' ') this.drawNoGroutTile(bgCtx,x,y+1,tileSize);
+            if (map.getTile(x,y-1)==' ') this.drawNoGroutTile(bgCtx,x,y-1,tileSize);
+
+            // TODO: fill in adjacent wall tiles?
+
+            bgCtx.translate(-mapPad,-mapPad);
+        }
+
+        // draw a center screen message (e.g. "start", "ready", "game over")
+        drawMessage(text, color, x,y) {
+            ctx.font = tileSize + "px ArcadeR";
+            ctx.textBaseline = "top";
+            ctx.textAlign = "right";
+            ctx.fillStyle = color;
+            x += text.length;
+            ctx.fillText(text, x*tileSize, y*tileSize);
+        }
+
+        drawReadyMessage() {
+            this.drawMessage("READY ","#FF0",11,20);
+            drawExclamationPoint(ctx,16*tileSize+3, 20*tileSize+3);
+        }
+
+        // draw the points earned from the most recently eaten ghost
+        drawEatenPoints() {
+            atlas.drawGhostPoints(ctx, pacman.pixel.x, pacman.pixel.y, energizer.getPoints());
+        }
+
+        // draw each actor (ghosts and pacman)
+        drawActors() {
+            // draw such that pacman appears on top
+            if (energizer.isActive()) {
+                for (const g of ghosts) {
+                    this.drawGhost(g);
+                }
+                if (!energizer.showingPoints())
+                    this.drawPlayer();
+                else
+                    this.drawEatenPoints();
+            }
+            // draw such that pacman appears on bottom
+            else {
+                this.drawPlayer();
+                for (let i=3; i>=0; i--) {
+                    const g = ghosts[i];
+                    if (g.isVisible) {
+                        this.drawGhost(g);
+                    }
+                }
+                if (inky.isVisible && !blinky.isVisible) {
+                    this.drawGhost(blinky,0.5);
+                }
+            }
+        }
+
+    }
+
+    //////////////////////////////////////////////////////////////
+    // Simple Renderer
+    // (render a minimal Pac-Man display using nothing but squares)
+
+    class SimpleRenderer extends CommonRenderer {
+
+        constructor() {
+            // inherit attributes from Common Renderer
+            super();
+
+            this.messageRow = 21.7;
+            this.pointsEarnedTextSize = 1.5*tileSize;
+
+            this.backColor = "#222";
+            this.floorColor = "#444";
+            this.flashFloorColor = "#999";
+
+            this.name = "Minimal";
+        }
+
+        // copy background canvas to the foreground canvas
+        blitMap() {
+            ctx.scale(1/scale,1/scale);
+            ctx.drawImage(bgCanvas,-1-mapPad*scale,-1-mapPad*scale); // offset map to compenstate for misalignment
+            ctx.scale(scale,scale);
+            //ctx.clearRect(-mapPad,-mapPad,mapWidth,mapHeight);
+        }
+
+
+        drawMap() {
+
+            beginMapFrame();
+
+            // draw floor tiles
+            bgCtx.fillStyle = (this.flashLevel ? this.flashFloorColor : this.floorColor);
+            for (let i=0, y=0; y<map.numRows; y++)
+                for (let x=0; x<map.numCols; x++) {
+                    const tile = map.currentTiles[i++];
+                    if (tile == ' ')
+                        this.drawNoGroutTile(bgCtx,x,y,tileSize);
+                }
+
+            // draw pellet tiles
+            bgCtx.fillStyle = this.pelletColor;
+            for (let i=0, y=0; y<map.numRows; y++)
+                for (let x=0; x<map.numCols; x++) {
+                    const tile = map.currentTiles[i++];
+                    if (tile == '.')
+                        this.drawNoGroutTile(bgCtx,x,y,tileSize);
+                }
+
+            endMapFrame();
+        }
+
+        refreshPellet(x,y) {
+            const i = map.posToIndex(x,y);
+            const tile = map.currentTiles[i];
+            if (tile == ' ') {
+                this.erasePellet(x,y);
+            }
+            else if (tile == '.') {
+                bgCtx.fillStyle = this.pelletColor;
+                this.drawNoGroutTile(bgCtx,x,y,tileSize);
+            }
+        }
+
+
+        // draw the current score and high score
+        drawScore() {
+            ctx.font = 1.5*tileSize + "px sans-serif";
+            ctx.textBaseline = "top";
+            ctx.textAlign = "left";
+            ctx.fillStyle = "#FFF";
+            ctx.fillText(getScore(), tileSize, tileSize*2);
+
+            ctx.font = "bold " + 1.5*tileSize + "px sans-serif";
+            ctx.textBaseline = "top";
+            ctx.textAlign = "center";
+            ctx.fillText("high score", tileSize*map.numCols/2, 3);
+            ctx.fillText(getHighScore(), tileSize*map.numCols/2, tileSize*2);
+        }
+
+        // draw the extra lives indicator
+        drawExtraLives() {
+            ctx.fillStyle = "rgba(255,255,0,0.6)";
+            const lives = extraLives == Infinity ? 1 : extraLives;
+            for (let i=0; i<extraLives; i++)
+                this.drawCenterPixelSq(ctx, (2*i+3)*tileSize, (map.numRows-2)*tileSize+midTile.y,this.actorSize);
+        }
+
+        // draw the current level indicator
+        drawLevelIcons() {
+            ctx.fillStyle = "rgba(255,255,255,0.5)";
+            const w = 2;
+            const h = this.actorSize;
+            for (let i=0; i<level; i++)
+                ctx.fillRect((map.numCols-2)*tileSize - i*2*w, (map.numRows-2)*tileSize+midTile.y-h/2, w, h);
+        }
+
+        // draw energizer items on foreground
+        drawEnergizers() {
+            ctx.fillStyle = this.energizerColor;
+            for (let i=0; i<map.numEnergizers; i++) {
+                const e = map.energizers[i];
+                if (map.currentTiles[e.x+e.y*map.numCols] == 'o')
+                    this.drawCenterTileSq(ctx,e.x,e.y,this.energizerSize);
+            }
+        }
+
+        // draw pacman
+        drawPlayer(scale, opacity) {
+            if (scale == undefined) scale = 1;
+            if (opacity == undefined) opacity = 1;
+            ctx.fillStyle = "rgba(255,255,0,"+opacity+")";
+            this.drawCenterPixelSq(ctx, pacman.pixel.x, pacman.pixel.y, this.actorSize*scale);
+        }
+
+        // draw dying pacman animation (with 0<=t<=1)
+        drawDyingPlayer(t) {
+            let f = t*85;
+            if (f <= 60) {
+                t = f/60;
+                this.drawPlayer(1-t);
+            }
+            else {
+                f -= 60;
+                t = f/15;
+                this.drawPlayer(t,1-t);
+            }
+        }
+
+        // draw ghost
+        drawGhost(g) {
+            if (g.mode == GHOST_EATEN)
+                return;
+            let color = g.color;
+            if (g.scared)
+                color = energizer.isFlash() ? "#FFF" : "#2121ff";
+            else if (g.mode == GHOST_GOING_HOME || g.mode == GHOST_ENTERING_HOME)
+                color = "rgba(255,255,255,0.3)";
+            ctx.fillStyle = color;
+            this.drawCenterPixelSq(ctx, g.pixel.x, g.pixel.y, this.actorSize);
+        }
+
+        drawFruit() {
+            if (fruit.isPresent()) {
+                ctx.fillStyle = "#0F0";
+                this.drawCenterPixelSq(ctx, fruit.pixel.x, fruit.pixel.y, tileSize+2);
+            }
+            else if (fruit.isScorePresent()) {
+                ctx.font = this.pointsEarnedTextSize + "px sans-serif";
+                ctx.textBaseline = "middle";
+                ctx.textAlign = "center";
+                ctx.fillStyle = "#FFF";
+                ctx.fillText(fruit.getPoints(), fruit.pixel.x, fruit.pixel.y);
+            }
+        }
+
+    }
+
+
+    //////////////////////////////////////////////////////////////
+    // Arcade Renderer
+    // (render a display close to the original arcade)
+
+    class ArcadeRenderer extends CommonRenderer {
+        constructor(ctx,bgCtx) {
+            super();
+
+            this.messageRow = 20;
+            this.pelletSize = 2;
+            this.energizerSize = tileSize;
+
+            this.backColor = "#000";
+            this.floorColor = "#000";
+            this.flashWallColor = "#FFF";
+
+            this.name = "Arcade";
+        }
+
+        // copy background canvas to the foreground canvas
+        blitMap() {
+            ctx.scale(1/scale,1/scale);
+            ctx.drawImage(bgCanvas,-1-mapPad*scale,-1-mapPad*scale); // offset map to compenstate for misalignment
+            ctx.scale(scale,scale);
+            //ctx.clearRect(-mapPad,-mapPad,mapWidth,mapHeight);
+        }
+
+        drawMap(isCutscene) {
+
+            // fill background
+            beginMapFrame();
+
+            if (map) {
+
+                // Sometimes pressing escape during a flash can cause flash to be permanently enabled on maps.
+                // so just turn it off when not in the finish state.
+                if (state != finishState) {
+                    this.flashLevel = false;
+                }
+
+                // ghost house door
+                for (let i=0, y=0; y<map.numRows; y++)
+                    for (let x=0; x<map.numCols; x++, i++) {
+                        if (map.currentTiles[i] == '-' && map.currentTiles[i+1] == '-') {
+                            bgCtx.fillStyle = "#ffb8de";
+                            bgCtx.fillRect(x*tileSize,y*tileSize+tileSize-2,tileSize*2,2);
+                        }
+                    }
+
+                if (this.flashLevel) {
+                    bgCtx.fillStyle = "#000";
+                    bgCtx.strokeStyle = "#fff";
+                }
+                else {
+                    bgCtx.fillStyle = map.wallFillColor;
+                    bgCtx.strokeStyle = map.wallStrokeColor;
+                }
+                for (let i=0; i<map.paths.length; i++) {
+                    const path = map.paths[i];
+                    bgCtx.beginPath();
+                    bgCtx.moveTo(path[0].x, path[0].y);
+                    for (let j=1; j<path.length; j++) {
+                        if (path[j].cx != undefined)
+                            bgCtx.quadraticCurveTo(path[j].cx, path[j].cy, path[j].x, path[j].y);
+                        else
+                            bgCtx.lineTo(path[j].x, path[j].y);
+                    }
+                    bgCtx.quadraticCurveTo(path[path.length-1].x, path[0].y, path[0].x, path[0].y);
+                    bgCtx.fill();
+                    bgCtx.stroke();
+                }
+
+                // draw pellet tiles
+                bgCtx.fillStyle = map.pelletColor;
+                for (let y=0; y<map.numRows; y++)
+                    for (let x=0; x<map.numCols; x++) {
+                        this.refreshPellet(x,y,true);
+                    }
+
+                if (map.onDraw) {
+                    map.onDraw(bgCtx);
+                }
+
+                if (map.shouldDrawMapOnly) {
+                    endMapFrame();
+                    return;
+                }
+            }
+            if (level > 0) {
+
+                const numRows = 36;
+                const numCols = 28;
+
+                if (!isCutscene) {
+                    // draw extra lives
+                    bgCtx.fillStyle = pacman.color;
+
+                    bgCtx.save();
+                    bgCtx.translate(3*tileSize, (numRows-1)*tileSize);
+                    bgCtx.scale(0.85, 0.85);
+                    const lives = extraLives == Infinity ? 1 : extraLives;
+                    if (gameMode == GAME_PACMAN) {
+                        for (let i=0; i<lives; i++) {
+                            drawPacmanSprite(bgCtx, 0,0, DIR_LEFT, Math.PI/6);
+                            bgCtx.translate(2*tileSize,0);
+                        }
+                    }
+                    else if (gameMode == GAME_MSPACMAN) {
+                        for (let i=0; i<lives; i++) {
+                            drawMsPacmanSprite(bgCtx, 0,0, DIR_RIGHT, 1);
+                            bgCtx.translate(2*tileSize,0);
+                        }
+                    }
+                    else if (gameMode == GAME_COOKIE) {
+                        for (let i=0; i<lives; i++) {
+                            drawCookiemanSprite(bgCtx, 0,0, DIR_RIGHT, 1, false);
+                            bgCtx.translate(2*tileSize,0);
+                        }
+                    }
+                    else if (gameMode == GAME_OTTO) {
+                        for (let i=0; i<lives; i++) {
+                            drawOttoSprite(bgCtx, 0,0,DIR_RIGHT, 0);
+                            bgCtx.translate(2*tileSize,0);
+                        }
+                    }
+                    if (extraLives == Infinity) {
+                        bgCtx.translate(-4*tileSize,0);
+
+                        // draw X
+                        /*
+                        bgCtx.translate(-s*2,0);
+                        const s = 2; // radius of each stroke
+                        bgCtx.beginPath();
+                        bgCtx.moveTo(-s,-s);
+                        bgCtx.lineTo(s,s);
+                        bgCtx.moveTo(-s,s);
+                        bgCtx.lineTo(s,-s);
+                        bgCtx.lineWidth = 1;
+                        bgCtx.strokeStyle = "#777";
+                        bgCtx.stroke();
+                        */
+
+                        // draw Infinity symbol
+                        const r = 2; // radius of each half-circle
+                        const d = 3; // distance between the two focal points
+                        bgCtx.beginPath();
+                        bgCtx.moveTo(-d-r,0);
+                        bgCtx.quadraticCurveTo(-d-r,-r,-d,-r);
+                        bgCtx.bezierCurveTo(-(d-r),-r,d-r,r,d,r);
+                        bgCtx.quadraticCurveTo(d+r,r,d+r,0);
+                        bgCtx.quadraticCurveTo(d+r,-r,d,-r);
+                        bgCtx.bezierCurveTo(d-r,-r,-(d-r),r,-d,r);
+                        bgCtx.quadraticCurveTo(-d-r,r,-d-r,0);
+                        bgCtx.lineWidth = 1;
+                        bgCtx.strokeStyle = "#FFF";
+                        bgCtx.stroke();
+                    }
+                    bgCtx.restore();
+                }
+
+                // draw level fruit
+                const fruits = fruit.fruitHistory;
+                const numFruit = 7;
+                let startLevel = Math.max(numFruit,level);
+                if (gameMode != GAME_PACMAN) {
+                    // for the Pac-Man game, display the last 7 fruit
+                    // for the Ms Pac-Man game, display stop after the 7th fruit
+                    startLevel = Math.min(numFruit,startLevel);
+                }
+                const scale = 0.85;
+                for (let i=0, j=startLevel-numFruit+1; i<numFruit && j<=level; j++, i++) {
+                    const f = fruits[j];
+                    if (f) {
+                        const drawFunc = getSpriteFuncFromFruitName(f.name);
+                        if (drawFunc) {
+                            bgCtx.save();
+                            bgCtx.translate((numCols-3)*tileSize - i*16*scale, (numRows-1)*tileSize);
+                            bgCtx.scale(scale,scale);
+                            drawFunc(bgCtx,0,0);
+                            bgCtx.restore();
+                        }
+                    }
+                }
+                if (!isCutscene) {
+                    if (level >= 100) {
+                        bgCtx.font = (tileSize-3) + "px ArcadeR";
+                    }
+                    else {
+                        bgCtx.font = (tileSize-1) + "px ArcadeR";
+                    }
+                    bgCtx.textBaseline = "middle";
+                    bgCtx.fillStyle = "#777";
+                    bgCtx.textAlign = "left";
+                    bgCtx.fillText(level,(numCols-2)*tileSize, (numRows-1)*tileSize);
+                }
+            }
+            endMapFrame();
+        }
+
+        erasePellet(x,y,isTranslated) {
+            if (!isTranslated) {
+                bgCtx.translate(mapPad,mapPad);
+            }
+            bgCtx.fillStyle = "#000";
+            const i = map.posToIndex(x,y);
+            const size = map.tiles[i] == 'o' ? this.energizerSize : this.pelletSize;
+            this.drawCenterTileSq(bgCtx,x,y,size+2);
+            if (!isTranslated) {
+                bgCtx.translate(-mapPad,-mapPad);
+            }
+        }
+
+        refreshPellet(x,y,isTranslated) {
+            if (!isTranslated) {
+                bgCtx.translate(mapPad,mapPad);
+            }
+            const i = map.posToIndex(x,y);
+            const tile = map.currentTiles[i];
+            if (tile == ' ') {
+                this.erasePellet(x,y,isTranslated);
+            }
+            else if (tile == '.') {
+                bgCtx.fillStyle = map.pelletColor;
+                bgCtx.translate(0.5, 0.5);
+                this.drawCenterTileSq(bgCtx,x,y,this.pelletSize);
+                bgCtx.translate(-0.5, -0.5);
+            }
+            else if (tile == 'o') {
+                bgCtx.fillStyle = map.pelletColor;
+                bgCtx.beginPath();
+                bgCtx.arc(x*tileSize+midTile.x+0.5,y*tileSize+midTile.y,this.energizerSize/2,0,Math.PI*2);
+                bgCtx.fill();
+            }
+            if (!isTranslated) {
+                bgCtx.translate(-mapPad,-mapPad);
+            }
+        }
+
+        // draw the current score and high score
+        drawScore() {
+            ctx.font = tileSize + "px ArcadeR";
+            ctx.textBaseline = "top";
+            ctx.fillStyle = "#FFF";
+
+            ctx.textAlign = "right";
+            ctx.fillText("1UP", 6*tileSize, 0);
+            ctx.fillText(practiceMode ? "PRACTICE" : "HIGH SCORE", 19*tileSize, 0);
+            //ctx.fillText("2UP", 25*tileSize, 0);
+
+            // TODO: player two score
+            let score = getScore();
+            if (score == 0) {
+                score = "00";
+            }
+            const y = tileSize+1;
+            ctx.fillText(score, 7*tileSize, y);
+
+            if (!practiceMode) {
+                let highScore = getHighScore();
+                if (highScore == 0) {
+                    highScore = "00";
+                }
+                ctx.fillText(highScore, 17*tileSize, y);
+            }
+        }
+
+        // draw ghost
+        drawGhost(g,alpha) {
+            let backupAlpha;
+            if (alpha) {
+                backupAlpha = ctx.globalAlpha;
+                ctx.globalAlpha = alpha;
+            }
+
+            const draw = function(mode, pixel, frames, faceDirEnum, scared, isFlash,color, dirEnum) {
+                if (mode == GHOST_EATEN)
+                    return;
+                const frame = g.getAnimFrame(frames);
+                const eyes = (mode == GHOST_GOING_HOME || mode == GHOST_ENTERING_HOME);
+                const func = getGhostDrawFunc();
+                const y = g.getBounceY(pixel.x, pixel.y, dirEnum);
+                const x = (g == blinky && scared) ? pixel.x+1 : pixel.x; // blinky's sprite is shifted right when scared
+
+                func(ctx,x,y,frame,faceDirEnum,scared,isFlash,eyes,color);
+            };
+            vcr.drawHistory(ctx, function(t) {
+                draw(
+                    g.savedMode[t],
+                    g.savedPixel[t],
+                    g.savedFrames[t],
+                    g.savedFaceDirEnum[t],
+                    g.savedScared[t],
+                    energizer.isFlash(),
+                    g.color,
+                    g.savedDirEnum[t]);
+            });
+            draw(g.mode, g.pixel, g.frames, g.faceDirEnum, g.scared, energizer.isFlash(), g.color, g.dirEnum);
+            if (alpha) {
+                ctx.globalAlpha = backupAlpha;
+            }
+        }
+
+        // draw pacman
+        drawPlayer() {
+            if (pacman.invincible) {
+                ctx.globalAlpha = 0.6;
+            }
+
+            const draw = function(pixel, dirEnum, steps) {
+                const frame = pacman.getAnimFrame(pacman.getStepFrame(steps));
+                const func = getPlayerDrawFunc();
+                func(ctx, pixel.x, pixel.y, dirEnum, frame, true);
+            };
+
+            vcr.drawHistory(ctx, function(t) {
+                draw(
+                    pacman.savedPixel[t],
+                    pacman.savedDirEnum[t],
+                    pacman.savedSteps[t]);
+            });
+            draw(pacman.pixel, pacman.dirEnum, pacman.steps);
+            if (pacman.invincible) {
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        // draw dying pacman animation (with 0<=t<=1)
+        drawDyingPlayer(t) {
+            const frame = pacman.getAnimFrame();
+
+            if (gameMode == GAME_PACMAN) {
+                // 60 frames dying
+                // 15 frames exploding
+                let f = t*75;
+                if (f <= 60) {
+                    // open mouth all the way while shifting corner of mouth forward
+                    const t = f/60;
+                    const a = frame*Math.PI/6;
+                    drawPacmanSprite(ctx, pacman.pixel.x, pacman.pixel.y, pacman.dirEnum, a + t*(Math.PI-a),4*t);
+                }
+                else {
+                    // explode
+                    f -= 60;
+                    this.drawExplodingPlayer(f/15);
+                }
+            }
+            else if (gameMode == GAME_OTTO) {
+                // TODO: spin around
+                if (t < 0.8) {
+                    let dirEnum = Math.floor((pacman.dirEnum - t*16))%4;
+                    if (dirEnum < 0) {
+                        dirEnum += 4;
+                    }
+                    drawOttoSprite(ctx, pacman.pixel.x, pacman.pixel.y, dirEnum, 0);
+                }
+                else if (t < 0.95) {
+                    let dirEnum = Math.floor((pacman.dirEnum - 0.8*16))%4;
+                    if (dirEnum < 0) {
+                        dirEnum += 4;
+                    }
+                    drawOttoSprite(ctx, pacman.pixel.x, pacman.pixel.y, dirEnum, 0);
+                }
+                else {
+                    drawDeadOttoSprite(ctx,pacman.pixel.x, pacman.pixel.y);
+                }
+            }
+            else if (gameMode == GAME_MSPACMAN) {
+                // spin 540 degrees
+                const maxAngle = Math.PI*5;
+                const step = (Math.PI/4) / maxAngle; // 45 degree steps
+                const angle = Math.floor(t/step)*step*maxAngle;
+                drawMsPacmanSprite(ctx, pacman.pixel.x, pacman.pixel.y, pacman.dirEnum, frame, angle);
+            }
+            else if (gameMode == GAME_COOKIE) {
+                // spin 540 degrees
+                const maxAngle = Math.PI*5;
+                const step = (Math.PI/4) / maxAngle; // 45 degree steps
+                const angle = Math.floor(t/step)*step*maxAngle;
+                drawCookiemanSprite(ctx, pacman.pixel.x, pacman.pixel.y, pacman.dirEnum, frame, false, angle);
+            }
+        }
+
+        // draw exploding pacman animation (with 0<=t<=1)
+        drawExplodingPlayer(t) {
+            drawPacmanSprite(ctx, pacman.pixel.x, pacman.pixel.y, pacman.dirEnum, 0, 0, t,-3,1-t);
+        }
+
+        // draw fruit
+        drawFruit() {
+
+            if (fruit.getCurrentFruit()) {
+                const {name} = fruit.getCurrentFruit();
+
+                // draw history trails of the fruit if applicable
+                if (fruit.savedPixel) {
+                    vcr.drawHistory(ctx, function(t) {
+                        const pixel = fruit.savedPixel[t];
+                        if (pixel) {
+                            atlas.drawFruitSprite(ctx, pixel.x, pixel.y, name);
+                        }
+                    });
+                }
+
+                if (fruit.isPresent()) {
+                    atlas.drawFruitSprite(ctx, fruit.pixel.x, fruit.pixel.y, name);
+                }
+                else if (fruit.isScorePresent()) {
+                    if (gameMode == GAME_PACMAN) {
+                        atlas.drawPacFruitPoints(ctx, fruit.pixel.x, fruit.pixel.y, fruit.getPoints());
+                    }
+                    else {
+                        atlas.drawMsPacFruitPoints(ctx, fruit.pixel.x, fruit.pixel.y, fruit.getPoints());
+                    }
+                }
+            }
+        }
+    }
+
+    //
+    // Create list of available renderers
+    //
+    renderer_list = [
+        new SimpleRenderer(),
+        new ArcadeRenderer(),
+    ];
+    renderer = renderer_list[1];
+};
+//@line 1 "src/hud.js"
+
+
+const hud = (function(){
+
+    let on = false;
+
+    return {
+
+        update() {
+            const valid = this.isValidState();
+            if (valid != on) {
+                on = valid;
+                if (on) {
+                    inGameMenu.onHudEnable();
+                    vcr.onHudEnable();
+                }
+                else {
+                    inGameMenu.onHudDisable();
+                    vcr.onHudDisable();
+                }
+            }
+        },
+        draw(ctx) {
+            inGameMenu.draw(ctx);
+            vcr.draw(ctx);
+        },
+        isValidState() {
+            return (
+                state == playState ||
+                state == newGameState ||
+                state == readyNewState ||
+                state == readyRestartState ||
+                state == finishState ||
+                state == deadState ||
+                state == overState);
+        },
+    };
+
+})();
+//@line 1 "src/galagaStars.js"
+
+
+const galagaStars = (function() {
+
+    const stars = {};
+    const numStars = 200;
+
+    const width = mapWidth;
+    const height = Math.floor(mapHeight*1.5);
+
+    let ypos;
+    const yspeed=-0.5;
+
+    let t;
+    const flickerPeriod = 120;
+    const flickerSteps = 4;
+    const flickerGap = flickerPeriod / flickerSteps;
+
+    const init = function() {
+        t = 0;
+        ypos = 0;
+        for (let i=0; i<numStars; i++) {
+            stars[i] = {
+                x: getRandomInt(0,width-1),
+                y: getRandomInt(0,height-1),
+                color: getRandomColor(),
+                phase: getRandomInt(0,flickerPeriod-1),
+            };
+        }
+    };
+
+    const update = function() {
+        t++;
+        t %= flickerPeriod;
+
+        ypos += yspeed;
+        ypos %= height;
+        if (ypos < 0) {
+            ypos += height;
+        }
+    };
+
+    const draw = function(ctx) {
+        ctx.fillStyle = "#FFF";
+        for (let i=0; i<numStars; i++) {
+            const star = stars[i];
+            const time = (t + star.phase) % flickerPeriod;
+            if (time >= flickerGap) {
+                let y = star.y - ypos;
+                if (y < 0) {
+                    y += height;
+                }
+                ctx.fillStyle = star.color;
+                ctx.fillRect(star.x, y, 1,1);
+            }
+        }
+    };
+
+    return {
+        init,
+        draw,
+        update,
+    };
+
+})();
+//@line 1 "src/Button.js"
+
+
+const getPointerPos = function(evt) {
+    let obj = canvas;
+    let top = 0;
+    let left = 0;
+    while (obj.tagName != 'BODY') {
+        top += obj.offsetTop;
+        left += obj.offsetLeft;
+        obj = obj.offsetParent;
+    }
+
+    // calculate relative mouse position
+    let mouseX = evt.pageX - left;
+    let mouseY = evt.pageY - top;
+
+    // make independent of scale
+    const ratio = getDevicePixelRatio();
+    mouseX /= (renderScale / ratio);
+    mouseY /= (renderScale / ratio);
+
+    // offset
+    mouseX -= mapMargin;
+    mouseY -= mapMargin;
+
+    return { x: mouseX, y: mouseY };
+};
+
+class Button {
+    constructor(x,y,w,h,onclick) {
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+        this.onclick = onclick;
+
+        // text and icon padding
+        this.pad = tileSize;
+
+
+
+        // icon attributes
+        this.frame = 0;
+
+        this.borderBlurColor = "#333";
+        this.borderFocusColor = "#EEE";
+
+        this.isSelected = false;
+
+        // touch events
+        this.startedInside = false;
+        const that = this;
+        const touchstart = function(evt) {
+            evt.preventDefault();
+            const fingerCount = evt.touches.length;
+            if (fingerCount == 1) {
+                const pos = getPointerPos(evt.touches[0]);
+                (that.startedInside=that.contains(pos.x,pos.y)) ? that.focus() : that.blur();
+            }
+            else {
+                touchcancel(evt);
+            }
+        };
+        const touchmove = function(evt) {
+            evt.preventDefault();
+            const fingerCount = evt.touches.length;
+            if (fingerCount == 1) {
+                if (that.startedInside) {
+                    const pos = getPointerPos(evt.touches[0]);
+                    that.contains(pos.x, pos.y) ? that.focus() : that.blur();
+                }
+            }
+            else {
+                touchcancel(evt);
+            }
+        };
+        const touchend = function(evt) {
+            evt.preventDefault();
+            const registerClick = (that.startedInside && that.isSelected);
+            if (registerClick) {
+                that.click();
+            }
+            touchcancel(evt);
+            if (registerClick) {
+                // focus the button to keep it highlighted after successful click
+                that.focus();
+            }
+        };
+        const touchcancel = function(evt) {
+            evt.preventDefault();
+            this.startedInside = false;
+            that.blur();
+        };
+
+
+        // mouse events
+        const click = function(evt) {
+            const pos = getPointerPos(evt);
+            if (that.contains(pos.x, pos.y)) {
+                that.click();
+            }
+        };
+        const mousemove = function(evt) {
+            const pos = getPointerPos(evt);
+            that.contains(pos.x, pos.y) ? that.focus() : that.blur();
+        };
+        const mouseleave = function(evt) {
+            that.blur();
+        };
+
+        this.isEnabled = false;
+        this.onEnable = function() {
+            canvas.addEventListener('click', click);
+            canvas.addEventListener('mousemove', mousemove);
+            canvas.addEventListener('mouseleave', mouseleave);
+            canvas.addEventListener('touchstart', touchstart);
+            canvas.addEventListener('touchmove', touchmove);
+            canvas.addEventListener('touchend', touchend);
+            canvas.addEventListener('touchcancel', touchcancel);
+            this.isEnabled = true;
+        };
+
+        this.onDisable = function() {
+            canvas.removeEventListener('click', click);
+            canvas.removeEventListener('mousemove', mousemove);
+            canvas.removeEventListener('mouseleave', mouseleave);
+            canvas.removeEventListener('touchstart', touchstart);
+            canvas.removeEventListener('touchmove', touchmove);
+            canvas.removeEventListener('touchend', touchend);
+            canvas.removeEventListener('touchcancel', touchcancel);
+            that.blur();
+            this.isEnabled = false;
+        };
+    }
+    contains(x,y) {
+        return x >= this.x && x <= this.x+this.w &&
+            y >= this.y && y <= this.y+this.h;
+    }
+
+    click() {
+        // disable current click timeout (to prevent double clicks on some devices)
+        clearTimeout(this.clickTimeout);
+
+        // set a click delay
+        const that = this;
+        if (that.onclick) {
+            this.clickTimeout = setTimeout(function() { that.onclick(); }, 200);
+        }
+    }
+
+    enable() {
+        this.frame = 0;
+        this.onEnable();
+    }
+
+    disable() {
+        this.onDisable();
+    }
+
+    focus() {
+        this.isSelected = true;
+        this.onfocus && this.onfocus();
+    }
+
+    blur() {
+        this.isSelected = false;
+        this.onblur && this.onblur();
+    }
+
+    setText(msg) {
+        this.msg = msg;
+    }
+
+    setFont(font,fontcolor) {
+        this.font = font;
+        this.fontcolor = fontcolor;
+    }
+
+    setIcon(drawIcon) {
+        this.drawIcon = drawIcon;
+    }
+
+    draw(ctx) {
+
+        // draw border
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        const {x,y,w,h} = this;
+        const r=h/4;
+        ctx.moveTo(x,y+r);
+        ctx.quadraticCurveTo(x,y,x+r,y);
+        ctx.lineTo(x+w-r,y);
+        ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+        ctx.lineTo(x+w,y+h-r);
+        ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+        ctx.lineTo(x+r,y+h);
+        ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+        ctx.closePath();
+        ctx.fillStyle = "rgba(0,0,0,0.5)";
+        ctx.fill();
+        ctx.strokeStyle = this.isSelected && this.onclick ? this.borderFocusColor : this.borderBlurColor;
+        ctx.stroke();
+
+        // draw icon
+        if (this.drawIcon) {
+            if (!this.msg) {
+                this.drawIcon(ctx,this.x+this.w/2,this.y+this.h/2,this.frame);
+            }
+            else {
+                this.drawIcon(ctx,this.x+this.pad+tileSize,this.y+this.h/2,this.frame);
+            }
+        }
+
+        // draw text
+        if (this.msg) {
+            ctx.font = this.font;
+            ctx.fillStyle = this.isSelected && this.onclick ? this.fontcolor : "#777";
+            ctx.textBaseline = "middle";
+            ctx.textAlign = "center";
+            //ctx.fillText(this.msg, 2*tileSize+2*this.pad+this.x, this.y + this.h/2 + 1);
+            ctx.fillText(this.msg, this.x + this.w/2, this.y + this.h/2 + 1);
+        }
+    }
+
+    update() {
+        if (this.drawIcon) {
+            this.frame = this.isSelected ? this.frame+1 : 0;
+        }
+    }
+}
+
+class ToggleButton extends Button {
+    constructor(x,y,w,h,isOn,setOn) {
+        super(x,y,w,h,null);
+        const that = this;
+        this.onclick = function() {
+            setOn(!isOn());
+            that.refreshMsg();
+        };
+        this.isOn = isOn;
+        this.setOn = setOn;
+    }
+    enable() {
+        super.enable();
+        this.refreshMsg();
+    }
+    setToggleLabel(label) {
+        this.label = label;
+    }
+    refreshMsg() {
+        if (this.label) {
+            this.msg = this.label + ": " + (this.isOn() ? "ON" : "OFF");
+        }
+    }
+    refreshOnState() {
+        this.setOn(this.isOn());
+    }
+}
+//@line 1 "src/Menu.js"
+
+
+class Menu {
+    constructor(title,x,y,w,h,pad,font,fontcolor) {
+        this.title = title;
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+        this.pad = pad;
+        this.buttons = [];
+        this.buttonCount = 0;
+        this.currentY = this.y+this.pad;
+
+        if (title) {
+            this.currentY += 1*(this.h + this.pad);
+        }
+
+        this.font = font;
+        this.fontcolor = fontcolor;
+        this.enabled = false;
+
+        this.backButton = undefined;
+    }
+
+    clickCurrentOption() {
+        for (let i=0; i<this.buttonCount; i++) {
+            if (this.buttons[i].isSelected) {
+                this.buttons[i].onclick();
+                break;
+            }
+        }
+    }
+
+    selectNextOption() {
+        let nextBtn;
+        for (let i=0; i<this.buttonCount; i++) {
+            if (this.buttons[i].isSelected) {
+                this.buttons[i].blur();
+                nextBtn = this.buttons[(i+1)%this.buttonCount];
+                break;
+            }
+        }
+        nextBtn = nextBtn || this.buttons[0];
+        nextBtn.focus();
+    }
+
+    selectPrevOption() {
+        let nextBtn;
+        for (let i=0; i<this.buttonCount; i++) {
+            if (this.buttons[i].isSelected) {
+                this.buttons[i].blur();
+                nextBtn = this.buttons[i==0?this.buttonCount-1:i-1];
+                break;
+            }
+        }
+        nextBtn = nextBtn || this.buttons[this.buttonCount-1];
+        nextBtn.focus();
+    }
+
+    addToggleButton(isOn,setOn) {
+        const b = new ToggleButton(this.x+this.pad,this.currentY,this.w-this.pad*2,this.h,isOn,setOn);
+        this.buttons.push(b);
+        this.buttonCount++;
+        this.currentY += this.pad + this.h;
+    }
+
+    addToggleTextButton(label,isOn,setOn) {
+        const b = new ToggleButton(this.x+this.pad,this.currentY,this.w-this.pad*2,this.h,isOn,setOn);
+        b.setFont(this.font,this.fontcolor);
+        b.setToggleLabel(label);
+        this.buttons.push(b);
+        this.buttonCount++;
+        this.currentY += this.pad + this.h;
+    }
+
+    addTextButton(msg,onclick) {
+        const b = new Button(this.x+this.pad,this.currentY,this.w-this.pad*2,this.h,onclick);
+        b.setFont(this.font,this.fontcolor);
+        b.setText(msg);
+        this.buttons.push(b);
+        this.buttonCount++;
+        this.currentY += this.pad + this.h;
+    }
+
+    addTextIconButton(msg,onclick,drawIcon) {
+        const b = new Button(this.x+this.pad,this.currentY,this.w-this.pad*2,this.h,onclick);
+        b.setFont(this.font,this.fontcolor);
+        b.setText(msg);
+        b.setIcon(drawIcon);
+        this.buttons.push(b);
+        this.buttonCount++;
+        this.currentY += this.pad + this.h;
+    }
+
+    addIconButton(drawIcon,onclick) {
+        const b = new Button(this.x+this.pad,this.currentY,this.w-this.pad*2,this.h,onclick);
+        b.setIcon(drawIcon);
+        this.buttons.push(b);
+        this.buttonCount++;
+        this.currentY += this.pad + this.h;
+    }
+
+    addSpacer(count) {
+        if (count == undefined) {
+            count = 1;
+        }
+        this.currentY += count*(this.pad + this.h);
+    }
+
+    enable() {
+        for (let i=0; i<this.buttonCount; i++) {
+            this.buttons[i].enable();
+        }
+        this.enabled = true;
+    }
+
+    disable() {
+        for (let i=0; i<this.buttonCount; i++) {
+            this.buttons[i].disable();
+        }
+        this.enabled = false;
+    }
+
+    isEnabled() {
+        return this.enabled;
+    }
+
+    draw(ctx) {
+        if (this.title) {
+            ctx.font = tileSize+"px ArcadeR";
+            ctx.textBaseline = "middle";
+            ctx.textAlign = "center";
+            ctx.fillStyle = "#FFF";
+            ctx.fillText(this.title,this.x + this.w/2, this.y+this.pad + this.h/2);
+        }
+        for (let i=0; i<this.buttonCount; i++) {
+            this.buttons[i].draw(ctx);
+        }
+    }
+
+    update() {
+        for (let i=0; i<this.buttonCount; i++) {
+            this.buttons[i].update();
+        }
+    }
+};
+//@line 1 "src/inGameMenu.js"
+
+
+////////////////////////////////////////////////////
+// In-Game Menu
+const inGameMenu = (function() {
+
+    const w=tileSize*6,h=tileSize*3;
+
+    const getMainMenu = function() {
+        return practiceMode ? practiceMenu : menu;
+    };
+    const showMainMenu = function() {
+        getMainMenu().enable();
+    };
+    const hideMainMenu = function() {
+        getMainMenu().disable();
+    };
+
+    // button to enable in-game menu
+    const btn = new Button(mapWidth/2 - w/2,mapHeight,w,h, function() {
+        showMainMenu();
+        vcr.onHudDisable();
+    });
+    btn.setText("MENU");
+    btn.setFont(tileSize+"px ArcadeR","#FFF");
+
+    // confirms a menu action
+    const confirmMenu = new Menu("QUESTION?",2*tileSize,5*tileSize,mapWidth-4*tileSize,3*tileSize,tileSize,tileSize+"px ArcadeR", "#EEE");
+    confirmMenu.addTextButton("YES", function() {
+        confirmMenu.disable();
+        confirmMenu.onConfirm();
+    });
+    confirmMenu.addTextButton("NO", function() {
+        confirmMenu.disable();
+        showMainMenu();
+    });
+    confirmMenu.addTextButton("CANCEL", function() {
+        confirmMenu.disable();
+        showMainMenu();
+    });
+    confirmMenu.backButton = confirmMenu.buttons[confirmMenu.buttonCount-1];
+
+    const showConfirm = function(title,onConfirm) {
+        hideMainMenu();
+        confirmMenu.title = title;
+        confirmMenu.onConfirm = onConfirm;
+        confirmMenu.enable();
+    };
+
+    // regular menu
+    const menu = new Menu("PAUSED",2*tileSize,5*tileSize,mapWidth-4*tileSize,3*tileSize,tileSize,tileSize+"px ArcadeR", "#EEE");
+    menu.addTextButton("RESUME", function() {
+        menu.disable();
+    });
+    menu.addTextButton("QUIT", function() {
+        showConfirm("QUIT GAME?", function() {
+            switchState(homeState, 60);
+        });
+    });
+    menu.backButton = menu.buttons[0];
+
+    // practice menu
+    const practiceMenu = new Menu("PAUSED",2*tileSize,5*tileSize,mapWidth-4*tileSize,3*tileSize,tileSize,tileSize+"px ArcadeR", "#EEE");
+    practiceMenu.addTextButton("RESUME", function() {
+        hideMainMenu();
+        vcr.onHudEnable();
+    });
+    practiceMenu.addTextButton("RESTART LEVEL", function() {
+        showConfirm("RESTART LEVEL?", function() {
+            setLevel(level-1);
+            switchState(readyNewState, 60);
+        });
+    });
+    practiceMenu.addTextButton("SKIP LEVEL", function() {
+        showConfirm("SKIP LEVEL?", function() {
+            switchState(readyNewState, 60);
+        });
+    });
+    practiceMenu.addTextButton("CHEATS", function() {
+        practiceMenu.disable();
+        cheatsMenu.enable();
+    });
+    practiceMenu.addTextButton("QUIT", function() {
+        showConfirm("QUIT GAME?", function() {
+            switchState(homeState, 60);
+            clearCheats();
+            vcr.reset();
+        });
+    });
+    practiceMenu.backButton = practiceMenu.buttons[0];
+
+    // cheats menu
+    const cheatsMenu = new Menu("CHEATS",2*tileSize,5*tileSize,mapWidth-4*tileSize,3*tileSize,tileSize,tileSize+"px ArcadeR", "#EEE");
+    cheatsMenu.addToggleTextButton("INVINCIBLE",
+        function() {
+            return pacman.invincible;
+        },
+        function(on) {
+            pacman.invincible = on;
+        });
+    cheatsMenu.addToggleTextButton("TURBO",
+        function() {
+            return turboMode;
+        },
+        function(on) {
+            setTurboMode(on);
+        });
+    cheatsMenu.addToggleTextButton("SHOW TARGETS",
+        function() {
+            return blinky.isDrawTarget;
+        },
+        function(on) {
+            for (const g of ghosts) {
+                g.isDrawTarget = on;
+            }
+        });
+    cheatsMenu.addToggleTextButton("SHOW PATHS",
+        function() {
+            return blinky.isDrawPath;
+        },
+        function(on) {
+            for (const g of ghosts) {
+                g.isDrawPath = on;
+            }
+        });
+    cheatsMenu.addSpacer(1);
+    cheatsMenu.addTextButton("BACK", function() {
+        cheatsMenu.disable();
+        practiceMenu.enable();
+    });
+    cheatsMenu.backButton = cheatsMenu.buttons[cheatsMenu.buttons.length-1];
+
+    const menus = [menu, practiceMenu, confirmMenu, cheatsMenu];
+    const getVisibleMenu = function() {
+        for (const m of menus) {
+            if (m.isEnabled()) {
+                return m;
+            }
+        }
+    };
+
+    return {
+        onHudEnable() {
+            btn.enable();
+        },
+        onHudDisable() {
+            btn.disable();
+        },
+        update() {
+            if (btn.isEnabled) {
+                btn.update();
+            }
+        },
+        draw(ctx) {
+            const m = getVisibleMenu();
+            if (m) {
+                ctx.fillStyle = "rgba(0,0,0,0.8)";
+                ctx.fillRect(-mapPad-1,-mapPad-1,mapWidth+1,mapHeight+1);
+                m.draw(ctx);
+            }
+            else {
+                btn.draw(ctx);
+            }
+        },
+        isOpen() {
+            return getVisibleMenu() != undefined;
+        },
+        getMenu() {
+            return getVisibleMenu();
+        },
+        getMenuButton() {
+            return btn;
+        },
+    };
+})();
+
+//@line 1 "src/sprites.js"
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Sprites
+// (sprites are created using canvas paths)
+
+const drawGhostSprite = (function(){
+
+    // add top of the ghost head to the current canvas path
+    const addHead = (function() {
+
+        // pixel coordinates for the top of the head
+        // on the original arcade ghost sprite
+        const coords = [
+            0,6,
+            1,3,
+            2,2,
+            3,1,
+            4,1,
+            5,0,
+            8,0,
+            9,1,
+            10,1,
+            11,2,
+            12,3,
+            13,6,
+        ];
+
+        return function(ctx) {
+            ctx.save();
+
+            // translate by half a pixel to the right
+            // to try to force centering
+            ctx.translate(0.5,0);
+
+            ctx.moveTo(0,6);
+            ctx.quadraticCurveTo(1.5,0,6.5,0);
+            ctx.quadraticCurveTo(11.5,0,13,6);
+
+            // draw lines between pixel coordinates
+            /*
+            ctx.moveTo(coords[0],coords[1]);
+            for (let i=2; i<coords.length; i+=2)
+                ctx.lineTo(coords[i],coords[i+1]);
+            */
+
+            ctx.restore();
+        };
+    })();
+
+    // add first ghost animation frame feet to the current canvas path
+    const addFeet1 = (function(){
+
+        // pixel coordinates for the first feet animation
+        // on the original arcade ghost sprite
+        const coords = [
+            13,13,
+            11,11,
+            9,13,
+            8,13,
+            8,11,
+            5,11,
+            5,13,
+            4,13,
+            2,11,
+            0,13,
+        ];
+
+        return function(ctx) {
+            ctx.save();
+
+            // translate half a pixel right and down
+            // to try to force centering and proper height
+            ctx.translate(0.5,0.5);
+
+            // continue previous path (assuming ghost head)
+            // by drawing lines to each of the pixel coordinates
+            for (let i=0; i<coords.length; i+=2)
+                ctx.lineTo(coords[i],coords[i+1]);
+
+            ctx.restore();
+        };
+
+    })();
+
+    // add second ghost animation frame feet to the current canvas path
+    const addFeet2 = (function(){
+
+        // pixel coordinates for the second feet animation
+        // on the original arcade ghost sprite
+        const coords = [
+            13,12,
+            12,13,
+            11,13,
+            9,11,
+            7,13,
+            6,13,
+            4,11,
+            2,13,
+            1,13,
+            0,12,
+        ];
+
+        return function(ctx) {
+            ctx.save();
+
+            // translate half a pixel right and down
+            // to try to force centering and proper height
+            ctx.translate(0.5,0.5);
+
+            // continue previous path (assuming ghost head)
+            // by drawing lines to each of the pixel coordinates
+            for (let i=0; i<coords.length; i+=2)
+                ctx.lineTo(coords[i],coords[i+1]);
+
+            ctx.restore();
+        };
+
+    })();
+
+    // draw regular ghost eyes
+    const addEyes = function(ctx,dirEnum){
+
+        ctx.save();
+        ctx.translate(2,3);
+
+        const coords = [
+            0,1,
+            1,0,
+            2,0,
+            3,1,
+            3,3,
+            2,4,
+            1,4,
+            0,3
+        ];
+
+        const drawEyeball = function() {
+            ctx.translate(0.5,0.5);
+            ctx.beginPath();
+            ctx.moveTo(coords[0],coords[1]);
+            for (let i=2; i<coords.length; i+=2)
+                ctx.lineTo(coords[i],coords[i+1]);
+            ctx.closePath();
+            ctx.fill();
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+            ctx.translate(-0.5,-0.5);
+            //ctx.fillRect(1,0,2,5); // left
+            //ctx.fillRect(0,1,4,3);
+        };
+
+        // translate eye balls to correct position
+        if (dirEnum == DIR_LEFT) ctx.translate(-1,0);
+        else if (dirEnum == DIR_RIGHT) ctx.translate(1,0);
+        else if (dirEnum == DIR_UP) ctx.translate(0,-1);
+        else if (dirEnum == DIR_DOWN) ctx.translate(0,1);
+
+        // draw eye balls
+        ctx.fillStyle = "#FFF";
+        ctx.strokeStyle = "#FFF";
+        ctx.lineWidth = 1.0;
+        ctx.lineJoin = 'round';
+        drawEyeball();
+        ctx.translate(6,0);
+        drawEyeball();
+
+        // translate pupils to correct position
+        if (dirEnum == DIR_LEFT) ctx.translate(0,2);
+        else if (dirEnum == DIR_RIGHT) ctx.translate(2,2);
+        else if (dirEnum == DIR_UP) ctx.translate(1,0);
+        else if (dirEnum == DIR_DOWN) ctx.translate(1,3);
+
+        // draw pupils
+        ctx.fillStyle = "#00F";
+        ctx.fillRect(0,0,2,2); // right
+        ctx.translate(-6,0);
+        ctx.fillRect(0,0,2,2); // left
+
+        ctx.restore();
+    };
+
+    // draw scared ghost face
+    const addScaredFace = function(ctx,flash){
+        ctx.strokeStyle = ctx.fillStyle = flash ? "#F00" : "#FF0";
+
+        // eyes
+        ctx.fillRect(4,5,2,2);
+        ctx.fillRect(8,5,2,2);
+
+        // mouth
+        const coords = [
+            1,10,
+            2,9,
+            3,9,
+            4,10,
+            5,10,
+            6,9,
+            7,9,
+            8,10,
+            9,10,
+            10,9,
+            11,9,
+            12,10,
+        ];
+        ctx.translate(0.5,0.5);
+        ctx.beginPath();
+        ctx.moveTo(coords[0],coords[1]);
+        for (let i=2; i<coords.length; i+=2)
+            ctx.lineTo(coords[i],coords[i+1]);
+        ctx.lineWidth = 1.0;
+        ctx.stroke();
+        ctx.translate(-0.5,-0.5);
+        /*
+        ctx.fillRect(1,10,1,1);
+        ctx.fillRect(12,10,1,1);
+        ctx.fillRect(2,9,2,1);
+        ctx.fillRect(6,9,2,1);
+        ctx.fillRect(10,9,2,1);
+        ctx.fillRect(4,10,2,1);
+        ctx.fillRect(8,10,2,1);
+        */
+    };
+
+
+    return function(ctx,x,y,frame,dirEnum,scared,flash,eyes_only,color) {
+        ctx.save();
+        ctx.translate(x-7,y-7);
+
+        if (scared)
+            color = flash ? "#FFF" : "#2121ff";
+
+        if (!eyes_only) {
+            // draw body
+            ctx.beginPath();
+            addHead(ctx);
+            if (frame == 0)
+                addFeet1(ctx);
+            else
+                addFeet2(ctx);
+            ctx.closePath();
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.lineWidth = 0.5;
+            ctx.strokeStyle = color;
+            ctx.stroke();
+            ctx.lineWidth = 1;
+            ctx.fillStyle = color;
+            ctx.fill();
+        }
+
+        // draw face
+        if (scared)
+            addScaredFace(ctx, flash);
+        else
+            addEyes(ctx,dirEnum);
+
+        ctx.restore();
+    };
+})();
+
+// draw points displayed when pac-man eats a ghost or a fruit
+const drawPacPoints = (function(){
+    let ctx;
+    let color;
+
+    const plotOutline = function(points,color) {
+        const len = points.length;
+        ctx.beginPath();
+        ctx.moveTo(points[0],points[1]);
+        for (let i=2; i<len; i+=2) {
+            ctx.lineTo(points[i],points[i+1]);
+        }
+        ctx.closePath();
+        ctx.lineWidth = 1.0;
+        ctx.lineCap = ctx.lineJoin = "round";
+        ctx.strokeStyle = color;
+        ctx.stroke();
+    };
+
+    const plotLine = function(points,color) {
+        const len = points.length;
+        ctx.beginPath();
+        ctx.moveTo(points[0],points[1]);
+        for (let i=2; i<len; i+=2) {
+            ctx.lineTo(points[i],points[i+1]);
+        }
+        ctx.lineWidth = 1.0;
+        ctx.lineCap = ctx.lineJoin = "round";
+        ctx.strokeStyle = color;
+        ctx.stroke();
+    };
+
+    const draw0 = function(x,y) {
+        ctx.save();
+        ctx.translate(x,y);
+        plotOutline([
+            1,0,
+            2,0,
+            3,1,
+            3,5,
+            2,6,
+            1,6,
+            0,5,
+            0,1,
+        ],color);
+        ctx.restore();
+    };
+
+    const draw1narrow = function(x,y) {
+        plotLine([x,y,x,y+6],color);
+    };
+
+    const draw1 = function(x,y) {
+        ctx.save();
+        ctx.translate(x,y);
+        plotLine([
+            0,1,
+            1,0,
+            1,6,
+            0,6,
+            2,6,
+        ],color);
+        ctx.restore();
+    };
+
+    const draw2 = function(x,y) {
+        ctx.save();
+        ctx.translate(x,y);
+        plotLine([
+            0,2,
+            0,1,
+            1,0,
+            3,0,
+            4,1,
+            4,2,
+            0,6,
+            4,6,
+        ],color);
+        ctx.restore();
+    };
+
+    const draw3 = function(x,y) {
+        ctx.save();
+        ctx.translate(x,y);
+        plotLine([
+            0,0,
+            4,0,
+            2,2,
+            4,4,
+            4,5,
+            3,6,
+            1,6,
+            0,5,
+        ],color);
+        ctx.restore();
+    };
+
+    const draw4 = function(x,y) {
+        ctx.save();
+        ctx.translate(x,y);
+        plotLine([
+            3,6,
+            3,0,
+            0,3,
+            0,4,
+            4,4,
+        ],color);
+        ctx.restore();
+    };
+
+    const draw5 = function(x,y) {
+        ctx.save();
+        ctx.translate(x,y);
+        plotLine([
+            4,0,
+            0,0,
+            0,2,
+            3,2,
+            4,3,
+            4,5,
+            3,6,
+            1,6,
+            0,5,
+        ],color);
+        ctx.restore();
+    };
+
+    const draw6 = function(x,y) {
+        ctx.save();
+        ctx.translate(x,y);
+        plotLine([
+            3,0,
+            1,0,
+            0,1,
+            0,5,
+            1,6,
+            2,6,
+            3,5,
+            3,3,
+            0,3,
+        ],color);
+        ctx.restore();
+    };
+
+    const draw7 = function(x,y) {
+        ctx.save();
+        ctx.translate(x,y);
+        plotLine([
+            0,1,
+            0,0,
+            4,0,
+            4,1,
+            2,4,
+            2,6,
+        ],color);
+        ctx.restore();
+    };
+
+    const draw8 = function(x,y) {
+        ctx.save();
+        ctx.translate(x,y);
+        plotOutline([
+            1,0,
+            3,0,
+            4,1,
+            4,2,
+            3,3,
+            1,3,
+            0,4,
+            0,5,
+            1,6,
+            3,6,
+            4,5,
+            4,4,
+            3,3,
+            1,3,
+            0,2,
+            0,1,
+        ],color);
+        ctx.restore();
+    };
+
+    const draw100 = function() {
+        draw1(-5,-3);
+        draw0(-1,-3);
+        draw0(4,-3);
+    };
+
+    const draw200 = function() {
+        draw2(-7,-3);
+        draw0(-1,-3);
+        draw0(4,-3);
+    };
+
+    const draw300 = function() {
+        draw3(-7,-3);
+        draw0(-1,-3);
+        draw0(4,-3);
+    };
+    
+    const draw400 = function() {
+        draw4(-7,-3);
+        draw0(-1,-3);
+        draw0(4,-3);
+    };
+
+    const draw500 = function() {
+        draw5(-7,-3);
+        draw0(-1,-3);
+        draw0(4,-3);
+    };
+
+    const draw700 = function() {
+        draw7(-7,-3);
+        draw0(-1,-3);
+        draw0(4,-3);
+    };
+
+    const draw800 = function() {
+        draw8(-7,-3);
+        draw0(-1,-3);
+        draw0(4,-3);
+    };
+
+    const draw1000 = function() {
+        draw1(-8,-3);
+        draw0(-4,-3);
+        draw0(1,-3);
+        draw0(6,-3);
+    };
+    
+    const draw1600 = function() {
+        draw1narrow(-7,-3);
+        draw6(-5,-3);
+        draw0(0,-3);
+        draw0(5,-3);
+    };
+
+    const draw2000 = function() {
+        draw2(-10,-3);
+        draw0(-4,-3);
+        draw0(1,-3);
+        draw0(6,-3);
+    };
+
+    const draw3000 = function() {
+        draw3(-10,-3);
+        draw0(-4,-3);
+        draw0(1,-3);
+        draw0(6,-3);
+    };
+
+    const draw5000 = function() {
+        draw5(-10,-3);
+        draw0(-4,-3);
+        draw0(1,-3);
+        draw0(6,-3);
+    };
+
+    return function(_ctx,x,y,points,_color) {
+        ctx = _ctx;
+        color = _color;
+
+        ctx.save();
+        ctx.translate(x+0.5,y+0.5);
+        ctx.translate(0,-1);
+
+        const f = {
+            100: draw100,
+            200: draw200,
+            300: draw300,
+            400: draw400,
+            500: draw500,
+            700: draw700,
+            800: draw800,
+            1000: draw1000,
+            1600: draw1600,
+            2000: draw2000,
+            3000: draw3000,
+            5000: draw5000,
+        }[points];
+
+        if (f) {
+            f();
+        }
+
+        ctx.restore();
+    };
+})();
+
+// draw points displayed when ms. pac-man eats a fruit
+const drawMsPacPoints = (function(){
+    let ctx;
+    const color = "#fff";
+
+    const plotOutline = function(points,color) {
+        const len = points.length;
+        ctx.beginPath();
+        ctx.moveTo(points[0],points[1]);
+        for (let i=2; i<len; i+=2) {
+            ctx.lineTo(points[i],points[i+1]);
+        }
+        ctx.closePath();
+        ctx.lineWidth = 1.0;
+        ctx.lineCap = ctx.lineJoin = "round";
+        ctx.strokeStyle = color;
+        ctx.stroke();
+    };
+
+    const plotLine = function(points,color) {
+        const len = points.length;
+        ctx.beginPath();
+        ctx.moveTo(points[0],points[1]);
+        for (let i=2; i<len; i+=2) {
+            ctx.lineTo(points[i],points[i+1]);
+        }
+        ctx.lineWidth = 1.0;
+        ctx.lineCap = ctx.lineJoin = "round";
+        ctx.strokeStyle = color;
+        ctx.stroke();
+    };
+
+
+    const draw0 = function(x,y) {
+        ctx.save();
+        ctx.translate(x,y);
+        plotOutline([
+            0,0,
+            2,0,
+            2,4,
+            0,4,
+        ],color);
+        ctx.restore();
+    };
+
+    const draw1 = function(x,y) {
+        ctx.save();
+        ctx.translate(x,y);
+        plotLine([
+            1,0,
+            1,4,
+        ],color);
+        ctx.restore();
+    };
+
+    const draw2 = function(x,y) {
+        ctx.save();
+        ctx.translate(x,y);
+        plotLine([
+            0,0,
+            2,0,
+            2,2,
+            0,2,
+            0,4,
+            2,4,
+        ],color);
+        ctx.restore();
+    };
+
+    const draw5 = function(x,y) {
+        ctx.save();
+        ctx.translate(x,y);
+        plotLine([
+            2,0,
+            0,0,
+            0,2,
+            2,2,
+            2,4,
+            0,4,
+        ],color);
+        ctx.restore();
+    };
+
+    const draw7 = function(x,y) {
+        ctx.save();
+        ctx.translate(x,y);
+        plotLine([
+            0,0,
+            2,0,
+            2,4,
+        ],color);
+        ctx.restore();
+    };
+
+    const draw100 = function() {
+        draw1(-5,-5);
+        draw0(-1,-2);
+        draw0(3,1);
+    };
+
+    const draw200 = function() {
+        draw2(-5,-5);
+        draw0(-1,-2);
+        draw0(3,1);
+    };
+
+    const draw500 = function() {
+        draw5(-5,-5);
+        draw0(-1,-2);
+        draw0(3,1);
+    };
+
+    const draw700 = function() {
+        draw7(-5,-5);
+        draw0(-1,-2);
+        draw0(3,1);
+    };
+
+    const draw1000 = function() {
+        draw1(-7,-7);
+        draw0(-3,-4);
+        draw0(1,-1);
+        draw0(5,2);
+    };
+
+    const draw2000 = function() {
+        draw2(-7,-7);
+        draw0(-3,-4);
+        draw0(1,-1);
+        draw0(5,2);
+    };
+
+    const draw5000 = function() {
+        draw5(-7,-7);
+        draw0(-3,-4);
+        draw0(1,-1);
+        draw0(5,2);
+    };
+
+    return function(_ctx,x,y,points) {
+        ctx = _ctx;
+
+        ctx.save();
+        ctx.translate(x+0.5,y+0.5);
+
+        const f = {
+            100: draw100,
+            200: draw200,
+            500: draw500,
+            700: draw700,
+            1000: draw1000,
+            2000: draw2000,
+            5000: draw5000,
+        }[points];
+
+        if (f) {
+            f();
+        }
+
+        ctx.restore();
+    };
+})();
+
+const drawMonsterSprite = (function(){
+    let ctx;
+    let color;
+
+    const plotOutline = function(points,color) {
+        const len = points.length;
+        ctx.beginPath();
+        ctx.moveTo(points[0],points[1]);
+        for (let i=2; i<len; i+=2) {
+            ctx.lineTo(points[i],points[i+1]);
+        }
+        ctx.closePath();
+        ctx.lineWidth = 1.0;
+        ctx.lineCap = ctx.lineJoin = "round";
+        ctx.strokeStyle = color;
+        ctx.stroke();
+    };
+
+    const plotLine = function(points,color) {
+        const len = points.length;
+        ctx.beginPath();
+        ctx.moveTo(points[0],points[1]);
+        for (let i=2; i<len; i+=2) {
+            ctx.lineTo(points[i],points[i+1]);
+        }
+        ctx.lineWidth = 1.0;
+        ctx.lineCap = ctx.lineJoin = "round";
+        ctx.strokeStyle = color;
+        ctx.stroke();
+    };
+
+    const plotSolid = function(points,color) {
+        const len = points.length;
+        ctx.beginPath();
+        ctx.moveTo(points[0],points[1]);
+        for (let i=2; i<len; i+=2) {
+            ctx.lineTo(points[i],points[i+1]);
+        }
+        ctx.closePath();
+        ctx.lineWidth = 1.0;
+        ctx.lineJoin = "round";
+        ctx.fillStyle = ctx.strokeStyle = color;
+        ctx.fill();
+        ctx.stroke();
+    };
+
+
+    // draw regular ghost eyes
+    const drawEye = function(dirEnum,x,y){
+
+        ctx.save();
+        ctx.translate(x,y);
+
+        plotSolid([
+            0,1,
+            1,0,
+            2,0,
+            3,1,
+            3,3,
+            2,4,
+            1,4,
+            0,3
+        ],"#FFF");
+
+        // translate pupil to correct position
+        if (dirEnum == DIR_LEFT) ctx.translate(0,2);
+        else if (dirEnum == DIR_RIGHT) ctx.translate(2,2);
+        else if (dirEnum == DIR_UP) ctx.translate(1,0);
+        else if (dirEnum == DIR_DOWN) ctx.translate(1,3);
+
+        // draw pupil
+        plotSolid([
+            0,0,
+            1,0,
+            1,1,
+            0,1,
+        ],"#00F");
+
+        ctx.restore();
+    };
+
+    const drawRightBody = function() {
+        plotSolid([
+            -7,-3,
+            -3,-7,
+            -1,-7,
+            -2,-6,
+            0,-4,
+            3,-7,
+            5,-7,
+            4,-7,
+            3,-6,
+            6,-3,
+            6,1,
+            5,3,
+            2,6,
+            -4,6,
+            -5,5,
+            -7,1,
+        ],color);
+    };
+
+    const drawRightShoe = function(x,y) {
+        ctx.save();
+        ctx.translate(x,y);
+        plotSolid([
+            0,0,
+            3,-3,
+            4,-3,
+            5,-2,
+            5,-1,
+            4,0,
+        ],"#00F");
+        ctx.restore();
+    };
+
+    const drawRight0 = function() {
+        // antenna tips
+        plotLine([-1,-7,0,-6],"#FFF");
+        plotLine([5,-7,6,-6],"#FFF");
+
+        drawRightBody();
+
+        drawRightShoe(1,6);
+        plotLine([-4,6,-1,6],"#00F");
+
+        drawEye(DIR_RIGHT,-4,-4);
+        drawEye(DIR_RIGHT,2,-4);
+    };
+
+    const drawRight1 = function() {
+        // antenna tips
+        plotLine([-1,-7,0,-7],"#FFF");
+        plotLine([5,-7,6,-7],"#FFF");
+
+        drawRightBody();
+
+        drawRightShoe(-4,6);
+        plotLine([2,6,5,6],"#00F");
+
+        drawEye(DIR_RIGHT,-4,-4);
+        drawEye(DIR_RIGHT,2,-4);
+    };
+
+    const drawLeft0 = function() {
+        ctx.scale(-1,1);
+        ctx.translate(1,0);
+        drawRight0();
+    };
+    
+    const drawLeft1 = function() {
+        ctx.scale(-1,1);
+        ctx.translate(1,0);
+        drawRight1();
+    };
+
+    const drawUpDownBody0 = function() {
+        plotLine([-6,-7,-7,-6],"#FFF");
+        plotLine([5,-7,6,-6],"#FFF");
+        plotSolid([
+            -7,-3,
+            -4,-6,
+            -5,-7,
+            -6,-7,
+            -4,-7,
+            -3,-6,
+            -2,-6,
+            -1,-5,
+            0,-5,
+            1,-6,
+            2,-6,
+            3,-7,
+            5,-7,
+            4,-7,
+            3,-6,
+            6,-3,
+            6,1,
+            5,3,
+            4,5,
+            3,6,
+            -4,6,
+            -5,5,
+            -6,3,
+            -7,1,
+        ],color);
+    };
+
+    const drawUpDownBody1 = function() {
+        plotLine([-6,-6,-7,-5],"#FFF");
+        plotLine([5,-6,6,-5],"#FFF");
+        plotSolid([
+            -7,-3,
+            -4,-6,
+            -5,-7,
+            -6,-6,
+            -5,-7,
+            -4,-7,
+            -3,-6,
+            -2,-6,
+            -1,-5,
+            0,-5,
+            1,-6,
+            2,-6,
+            3,-7,
+            4,-7,
+            5,-6,
+            4,-7,
+            3,-6,
+            6,-3,
+            6,1,
+            5,3,
+            4,5,
+            3,6,
+            -4,6,
+            -5,5,
+            -6,3,
+            -7,1,
+        ],color);
+    };
+
+    const drawUp0 = function() {
+        drawUpDownBody0();
+        drawEye(DIR_UP,-5,-5);
+        drawEye(DIR_UP,1,-5);
+        plotSolid([
+            -4,6,
+            -3,5,
+            -2,5,
+            -1,6,
+        ],"#00F");
+    };
+
+    const drawUp1 = function() {
+        drawUpDownBody1();
+        drawEye(DIR_UP,-5,-5);
+        drawEye(DIR_UP,1,-5);
+        plotSolid([
+            0,6,
+            1,5,
+            2,5,
+            3,6,
+        ],"#00F");
+    };
+
+    const drawDown0 = function() {
+        drawUpDownBody0();
+        drawEye(DIR_DOWN,-5,-4);
+        drawEye(DIR_DOWN,1,-4);
+        plotSolid([
+            0,6,
+            1,4,
+            2,3,
+            3,3,
+            4,4,
+            4,5,
+            3,6,
+        ],"#00F");
+        plotLine([-4,6,-2,6],"#00F");
+    };
+
+    const drawDown1 = function() {
+        drawUpDownBody1();
+        drawEye(DIR_DOWN,-5,-4);
+        drawEye(DIR_DOWN,1,-4);
+        plotSolid([
+            -1,6,
+            -2,4,
+            -3,3,
+            -4,3,
+            -5,4,
+            -5,5,
+            -4,6,
+        ],"#00F");
+        plotLine([1,6,3,6],"#00F");
+    };
+
+    let borderColor;
+    let faceColor;
+
+    const drawScaredBody = function() {
+        plotOutline([
+            -6,-2,
+            -2,-5,
+            -3,-6,
+            -5,-6,
+            -3,-6,
+            -1,-4,
+            1,-4,
+            3,-6,
+            5,-6,
+            3,-6,
+            2,-5,
+            6,-2,
+            6,4,
+            5,6,
+            4,7,
+            -4,7,
+            -5,6,
+            -6,4
+        ],borderColor);
+
+        plotLine([
+            -2,4,
+            -1,3,
+            1,3,
+            2,4
+        ],faceColor);
+    };
+
+
+    const drawScared0 = function() {
+        plotLine([-2,-2,-2,0],faceColor);
+        plotLine([-3,-1,-1,-1],faceColor);
+        plotLine([2,-2,2,0],faceColor);
+        plotLine([3,-1,1,-1],faceColor);
+        plotLine([-5,-6,-6,-7],"#FFF");
+        plotLine([5,-6,6,-7],"#FFF");
+        drawScaredBody();
+    };
+
+    const drawScared1 = function() {
+        plotLine([-3,-2,-1,0],faceColor);
+        plotLine([-3,0,-1,-2],faceColor);
+        plotLine([1,-2,3,0],faceColor);
+        plotLine([1,0,3,-2],faceColor);
+        plotLine([-5,-6,-6,-5],"#FFF");
+        plotLine([5,-6,6,-5],"#FFF");
+        drawScaredBody();
+    };
+
+    return function(_ctx,x,y,frame,dirEnum,scared,flash,eyes_only,_color) {
+        if (eyes_only) {
+            return; // invisible
+        }
+
+        ctx = _ctx;
+        color = _color;
+
+        ctx.save();
+        ctx.translate(x+0.5,y+0.5);
+
+        if (scared) {
+            ctx.translate(0,-1); // correct alignment error from my chosen coordinates
+            borderColor = flash ? "#FFF" : "#00F";
+            faceColor = flash ? "#F00" : "#FF0";
+            [drawScared0, drawScared1][frame]();
+        }
+        else if (dirEnum == DIR_RIGHT) {
+            [drawRight0, drawRight1][frame]();
+        }
+        else if (dirEnum == DIR_LEFT) {
+            [drawLeft0, drawLeft1][frame]();
+        }
+        else if (dirEnum == DIR_DOWN) {
+            [drawDown0, drawDown1][frame]();
+        }
+        else if (dirEnum == DIR_UP) {
+            [drawUp0, drawUp1][frame]();
+        }
+
+        ctx.restore();
+    };
+})();
+
+const drawColoredOttoSprite = function(color,eyeColor) {
+    let ctx;
+
+    const plotLine = function(points,color) {
+        const len = points.length;
+        ctx.beginPath();
+        ctx.moveTo(points[0],points[1]);
+        for (let i=2; i<len; i+=2) {
+            ctx.lineTo(points[i],points[i+1]);
+        }
+        ctx.lineWidth = 1.0;
+        ctx.lineCap = ctx.lineJoin = "round";
+        ctx.strokeStyle = color;
+        ctx.stroke();
+    };
+
+    const plotSolid = function(points,color) {
+        const len = points.length;
+        ctx.beginPath();
+        ctx.moveTo(points[0],points[1]);
+        for (let i=2; i<len; i+=2) {
+            ctx.lineTo(points[i],points[i+1]);
+        }
+        ctx.closePath();
+        ctx.lineWidth = 1.0;
+        ctx.lineJoin = "round";
+        ctx.fillStyle = ctx.strokeStyle = color;
+        ctx.fill();
+        ctx.stroke();
+    };
+
+    const drawRightEye = function() {
+        plotSolid([
+            -4,-5,
+            -3,-6,
+            -2,-6,
+            -2,-5,
+            -3,-4,
+            -4,-4,
+        ],eyeColor);
+    };
+
+    const drawRight0 = function() {
+        plotSolid([
+            -5,-4,
+            -3,-6,
+            2,-6,
+            3,-5,
+            -1,-3,
+            3,-1,
+            1,1,
+            1,3,
+            3,6,
+            5,4,
+            6,4,
+            6,5,
+            4,7,
+            2,7,
+            -1,1,
+            -4,4,
+            -3,6,
+            -3,7,
+            -4,7,
+            -6,5,
+            -6,4,
+            -3,1,
+            -5,-1,
+        ],color);
+        drawRightEye();
+    };
+    const drawRight1 = function() {
+        plotSolid([
+            -5,-4,
+            -3,-6,
+            1,-6,
+            3,-4,
+            3,-1,
+            1,1,
+            1,6,
+            4,6,
+            4,7,
+            0,7,
+            0,1,
+            -2,1,
+            -4,3,
+            -4,4,
+            -3,5,
+            -3,6,
+            -4,6,
+            -5,4,
+            -5,3,
+            -3,1,
+            -5,-1,
+        ],color);
+        drawRightEye();
+    };
+    const drawRight2 = function() {
+        plotSolid([
+            -5,-4,
+            -3,-6,
+            2,-6,
+            3,-5,
+            -1,-3,
+            3,-1,
+            1,1,
+            1,3,
+            4,3,
+            4,4,
+            0,4,
+            0,1,
+            -2,1,
+            -2,6,
+            1,6,
+            1,7,
+            -3,7,
+            -3,1,
+            -5,-1,
+        ],color);
+        drawRightEye();
+    };
+    const drawRight3 = function() {
+        plotSolid([
+            -5,-4,
+            -3,-6,
+            2,-6,
+            -2,-3,
+            2,0,
+            1,1,
+            3,5,
+            5,3,
+            6,3,
+            6,4,
+            4,6,
+            2,6,
+            -1,1,
+            -3,1,
+            -3,6,
+            0,6,
+            0,7,
+            -4,7,
+            -4,2,
+            -3,1,
+            -5,-1,
+        ],color);
+        drawRightEye();
+    };
+
+    const drawUpDownEyes = function() {
+        plotSolid([
+            -5,-5,
+            -4,-6,
+            -3,-6,
+            -3,-5,
+            -4,-4,
+            -5,-4,
+        ],eyeColor);
+        plotSolid([
+            3,-6,
+            4,-6,
+            5,-5,
+            5,-4,
+            4,-4,
+            3,-5,
+        ],eyeColor);
+    };
+
+    const drawUpDownHead = function() {
+        plotSolid([
+            -4,-4,
+            -2,-6,
+            2,-6,
+            4,-4,
+            4,-1,
+            2,1,
+            -2,1,
+            -4,-1,
+        ],color);
+    };
+
+    const drawUpDownLeg0 = function(y,xs) {
+        ctx.save();
+        ctx.translate(0,y);
+        ctx.scale(xs,1);
+
+        plotSolid([
+            1,0,
+            2,0,
+            2,6,
+            4,6,
+            4,7,
+            1,7,
+        ],color);
+
+        ctx.restore();
+    };
+
+    const drawUpDownLeg1 = function(y,xs) {
+        ctx.save();
+        ctx.translate(0,y);
+        ctx.scale(xs,1);
+
+        plotSolid([
+            1,0,
+            2,0,
+            2,4,
+            3,5,
+            4,4,
+            5,4,
+            5,5,
+            3,7,
+            2,7,
+            1,6,
+        ],color);
+
+        ctx.restore();
+    };
+    const drawUpDownLegs0 = function() {
+        drawUpDownLeg0(0,-1);
+        drawUpDownLeg1(-2,1);
+    };
+
+    const drawUpDownLegs1 = function() {
+        drawUpDownLeg0(-2,-1);
+        drawUpDownLeg1(-2,1);
+    };
+
+    const drawUpDownLegs2 = function() {
+        drawUpDownLeg1(-2,-1);
+        drawUpDownLeg0(0,1);
+    };
+
+    const drawUpDownLegs3 = function() {
+        drawUpDownLeg1(0,-1);
+        drawUpDownLeg0(0,1);
+    };
+
+    const drawDown0 = function() {
+        drawUpDownHead();
+        drawUpDownEyes();
+        drawUpDownLegs0();
+        plotLine([-2,-3,2,-3],"#000");
+    };
+    const drawDown1 = function() {
+        drawUpDownHead();
+        drawUpDownEyes();
+        drawUpDownLegs1();
+    };
+    const drawDown2 = function() {
+        drawUpDownHead();
+        drawUpDownEyes();
+        drawUpDownLegs2();
+        plotLine([-2,-3,2,-3],"#000");
+    };
+    const drawDown3 = function() {
+        drawUpDownHead();
+        drawUpDownEyes();
+        drawUpDownLegs3();
+        plotSolid([
+            -2,-3,
+            0,-5,
+            2,-3,
+            0,-1,
+        ],"#000");
+    };
+
+    const drawUp0 = function() {
+        drawUpDownEyes();
+        drawUpDownHead();
+        drawUpDownLegs0();
+    };
+    const drawUp1 = function() {
+        drawUpDownEyes();
+        drawUpDownHead();
+        drawUpDownLegs1();
+    };
+    const drawUp2 = function() {
+        drawUpDownEyes();
+        drawUpDownHead();
+        drawUpDownLegs2();
+    };
+    const drawUp3 = function() {
+        drawUpDownEyes();
+        drawUpDownHead();
+        drawUpDownLegs3();
+    };
+
+    return function(_ctx,x,y,dirEnum,frame,rotate) {
+        ctx = _ctx;
+
+        ctx.save();
+        ctx.translate(x+0.5,y+0.5);
+        if (rotate) {
+            ctx.rotate(rotate);
+        }
+
+        if (dirEnum == DIR_RIGHT) {
+            ctx.translate(0,-1); // correct my coordinate system
+            [drawRight0, drawRight1, drawRight2, drawRight3][frame]();
+        }
+        else if (dirEnum == DIR_LEFT) {
+            ctx.translate(0,-1); // correct my coordinate system
+            ctx.scale(-1,1);
+            [drawRight0, drawRight1, drawRight2, drawRight3][frame]();
+        }
+        else if (dirEnum == DIR_DOWN) {
+            ctx.translate(0,-1); // correct my coordinate system
+            [drawDown0, drawDown1, drawDown2, drawDown3][frame]();
+        }
+        else if (dirEnum == DIR_UP) {
+            ctx.translate(0,-1); // correct my coordinate system
+            [drawUp0, drawUp1, drawUp2, drawUp3][frame]();
+        }
+
+        ctx.restore();
+    };
+};
+
+const drawOttoSprite = drawColoredOttoSprite("#FF0","#00F");
+const drawMsOttoSprite = drawColoredOttoSprite("#F00","#FFF");
+
+const drawDeadOttoSprite = function(ctx,x,y) {
+    const plotOutline = function(points,color) {
+        const len = points.length;
+        ctx.beginPath();
+        ctx.moveTo(points[0],points[1]);
+        for (let i=2; i<len; i+=2) {
+            ctx.lineTo(points[i],points[i+1]);
+        }
+        ctx.closePath();
+        ctx.lineWidth = 1.0;
+        ctx.lineCap = ctx.lineJoin = "round";
+        ctx.strokeStyle = color;
+        ctx.stroke();
+    };
+    ctx.save();
+    ctx.translate(x+2,y);
+    plotOutline([
+        3,-5,
+        -1,-5,
+        -2,-6,
+        -2,-7,
+        -1,-8,
+        3,-8,
+        4,-7,
+        4,-6,
+    ],"#F00");
+    ctx.restore();
+    drawOttoSprite(ctx,x,y,DIR_LEFT,2,Math.PI/2);
+};
+
+// draw pacman body
+const drawPacmanSprite = function(ctx,x,y,dirEnum,angle,mouthShift,scale,centerShift,alpha,color,rot_angle) {
+
+    if (mouthShift == undefined) mouthShift = 0;
+    if (centerShift == undefined) centerShift = 0;
+    if (scale == undefined) scale = 1;
+    if (alpha == undefined) alpha = 1;
+
+    if (color == undefined) {
+        color = "rgba(255,255,0," + alpha + ")";
+    }
+
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.scale(scale,scale);
+    if (rot_angle) {
+        ctx.rotate(rot_angle);
+    }
+
+    // rotate to current heading direction
+    const d90 = Math.PI/2;
+    if (dirEnum == DIR_UP) ctx.rotate(3*d90);
+    else if (dirEnum == DIR_RIGHT) ctx.rotate(0);
+    else if (dirEnum == DIR_DOWN) ctx.rotate(d90);
+    else if (dirEnum == DIR_LEFT) ctx.rotate(2*d90);
+
+    // plant corner of mouth
+    ctx.beginPath();
+    ctx.moveTo(-3+mouthShift,0);
+
+    // draw head outline
+    ctx.arc(centerShift,0,6.5,angle,2*Math.PI-angle);
+    ctx.closePath();
+
+    //ctx.strokeStyle = color;
+    //ctx.stroke();
+    ctx.fillStyle = color;
+    ctx.fill();
+
+    ctx.restore();
+};
+
+// draw giant pacman body
+const drawGiantPacmanSprite = function(ctx,x,y,dirEnum,frame) {
+
+    const color = "#FF0";
+    let mouthShift = 0;
+    let angle = 0;
+    if (frame == 1) {
+        mouthShift = -4;
+        angle = Math.atan(7/14);
+    }
+    else if (frame == 2) {
+        mouthShift = -2;
+        angle = Math.atan(13/9);
+    }
+
+    ctx.save();
+    ctx.translate(x,y);
+
+    // rotate to current heading direction
+    const d90 = Math.PI/2;
+    if (dirEnum == DIR_UP) ctx.rotate(3*d90);
+    else if (dirEnum == DIR_RIGHT) ctx.rotate(0);
+    else if (dirEnum == DIR_DOWN) ctx.rotate(d90);
+    else if (dirEnum == DIR_LEFT) ctx.rotate(2*d90);
+
+    // plant corner of mouth
+    ctx.beginPath();
+    ctx.moveTo(mouthShift,0);
+
+    // draw head outline
+    ctx.arc(0,0,16,angle,2*Math.PI-angle);
+    ctx.closePath();
+
+    ctx.fillStyle = color;
+    ctx.fill();
+
+    ctx.restore();
+};
+
+const drawMsPacmanSprite = function(ctx,x,y,dirEnum,frame,rot_angle) {
+    let angle = 0;
+
+    // draw body
+    if (frame == 0) {
+        // closed
+        drawPacmanSprite(ctx,x,y,dirEnum,0,undefined,undefined,undefined,undefined,undefined,rot_angle);
+    }
+    else if (frame == 1) {
+        // open
+        angle = Math.atan(4/5);
+        drawPacmanSprite(ctx,x,y,dirEnum,angle,undefined,undefined,undefined,undefined,undefined,rot_angle);
+        angle = Math.atan(4/8); // angle for drawing eye
+    }
+    else if (frame == 2) {
+        // wide
+        angle = Math.atan(6/3);
+        drawPacmanSprite(ctx,x,y,dirEnum,angle,undefined,undefined,undefined,undefined,undefined,rot_angle);
+        angle = Math.atan(6/6); // angle for drawing eye
+    }
+
+    ctx.save();
+    ctx.translate(x,y);
+    if (rot_angle) {
+        ctx.rotate(rot_angle);
+    }
+
+    // reflect or rotate sprite according to current direction
+    const d90 = Math.PI/2;
+    if (dirEnum == DIR_UP)
+        ctx.rotate(-d90);
+    else if (dirEnum == DIR_DOWN)
+        ctx.rotate(d90);
+    else if (dirEnum == DIR_LEFT)
+        ctx.scale(-1,1);
+
+    // bow
+    {
+        const x=-7.5;
+        const y=-7.5;
+        ctx.fillStyle = "#F00";
+        ctx.beginPath(); ctx.arc(x+1,y+4,1.25,0,Math.PI*2); ctx.closePath(); ctx.fill();
+        ctx.beginPath(); ctx.arc(x+2,y+5,1.25,0,Math.PI*2); ctx.closePath(); ctx.fill();
+        ctx.beginPath(); ctx.arc(x+3,y+3,1.25,0,Math.PI*2); ctx.closePath(); ctx.fill();
+        ctx.beginPath(); ctx.arc(x+4,y+1,1.25,0,Math.PI*2); ctx.closePath(); ctx.fill();
+        ctx.beginPath(); ctx.arc(x+5,y+2,1.25,0,Math.PI*2); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = "#0031FF";
+        ctx.beginPath(); ctx.arc(x+2.5,y+3.5,0.5,0,Math.PI*2); ctx.closePath(); ctx.fill();
+        ctx.beginPath(); ctx.arc(x+3.5,y+2.5,0.5,0,Math.PI*2); ctx.closePath(); ctx.fill();
+    }
+
+    // lips
+    ctx.strokeStyle = "#F00";
+    ctx.lineWidth = 1.25;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    if (frame == 0) {
+        ctx.moveTo(5,0);
+        ctx.lineTo(6.5,0);
+        ctx.moveTo(6.5,-1.5);
+        ctx.lineTo(6.5,1.5);
+    }
+    else {
+        const r1 = 7.5;
+        const r2 = 8.5;
+        const c = Math.cos(angle);
+        const s = Math.sin(angle);
+        ctx.moveTo(-3+r1*c,r1*s);
+        ctx.lineTo(-3+r2*c,r2*s);
+        ctx.moveTo(-3+r1*c,-r1*s);
+        ctx.lineTo(-3+r2*c,-r2*s);
+    }
+    ctx.stroke();
+
+    // mole
+    ctx.beginPath();
+    ctx.arc(-3,2,0.5,0,Math.PI*2);
+    ctx.fillStyle = "#000";
+    ctx.fill();
+
+    // eye
+    ctx.strokeStyle = "#000";
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    if (frame == 0) {
+        ctx.moveTo(-2.5,-2);
+        ctx.lineTo(-0.5,-2);
+    }
+    else {
+        const r1 = 0.5;
+        const r2 = 2.5;
+        const c = Math.cos(angle);
+        const s = Math.sin(angle);
+        ctx.moveTo(-3+r1*c,-2-r1*s);
+        ctx.lineTo(-3+r2*c,-2-r2*s);
+    }
+    ctx.stroke();
+
+    ctx.restore();
+};
+
+const drawCookiemanSprite = (function(){
+
+    // TODO: draw pupils separately in atlas
+    //      composite the body frame and a random pupil frame when drawing cookie-man
+
+    let prevFrame = undefined;
+    let sx1 = 0; // shift x for first pupil
+    let sy1 = 0; // shift y for first pupil
+    let sx2 = 0; // shift x for second pupil
+    let sy2 = 0; // shift y for second pupil
+
+    const er = 2.1; // eye radius
+    const pr = 1; // pupil radius
+
+    const movePupils = function() {
+        const a1 = Math.random()*Math.PI*2;
+        const a2 = Math.random()*Math.PI*2;
+        const r1 = Math.random()*pr;
+        const r2 = Math.random()*pr;
+
+        sx1 = Math.cos(a1)*r1;
+        sy1 = Math.sin(a1)*r1;
+        sx2 = Math.cos(a2)*r2;
+        sy2 = Math.sin(a2)*r2;
+    };
+
+    return function(ctx,x,y,dirEnum,frame,shake,rot_angle) {
+        let angle = 0;
+
+        // draw body
+        const draw = function(angle) {
+            //angle = Math.PI/6*frame;
+            drawPacmanSprite(ctx,x,y,dirEnum,angle,undefined,undefined,undefined,undefined,"#47b8ff",rot_angle);
+        };
+        if (frame == 0) {
+            // closed
+            draw(0);
+        }
+        else if (frame == 1) {
+            // open
+            angle = Math.atan(4/5);
+            draw(angle);
+            angle = Math.atan(4/8); // angle for drawing eye
+        }
+        else if (frame == 2) {
+            // wide
+            angle = Math.atan(6/3);
+            draw(angle);
+            angle = Math.atan(6/6); // angle for drawing eye
+        }
+
+        ctx.save();
+        ctx.translate(x,y);
+        if (rot_angle) {
+            ctx.rotate(rot_angle);
+        }
+
+        // reflect or rotate sprite according to current direction
+        const d90 = Math.PI/2;
+        if (dirEnum == DIR_UP)
+            ctx.rotate(-d90);
+        else if (dirEnum == DIR_DOWN)
+            ctx.rotate(d90);
+        else if (dirEnum == DIR_LEFT)
+            ctx.scale(-1,1);
+
+        {
+            const x = -4; // pivot point
+            const y = -3.5;
+            const r1 = 3;   // distance from pivot of first eye
+            const r2 = 6; // distance from pivot of second eye
+            angle /= 3; // angle from pivot point
+            angle += Math.PI/8;
+            const c = Math.cos(angle);
+            const s = Math.sin(angle);
+
+            if (shake) {
+                if (frame != prevFrame) {
+                    movePupils();
+                }
+                prevFrame = frame;
+            }
+
+            // second eyeball
+            ctx.beginPath();
+            ctx.arc(x+r2*c, y-r2*s, er, 0, Math.PI*2);
+            ctx.fillStyle = "#FFF";
+            ctx.fill();
+            // second pupil
+            ctx.beginPath();
+            ctx.arc(x+r2*c+sx2, y-r2*s+sy2, pr, 0, Math.PI*2);
+            ctx.fillStyle = "#000";
+            ctx.fill();
+
+            // first eyeball
+            ctx.beginPath();
+            ctx.arc(x+r1*c, y-r1*s, er, 0, Math.PI*2);
+            ctx.fillStyle = "#FFF";
+            ctx.fill();
+            // first pupil
+            ctx.beginPath();
+            ctx.arc(x+r1*c+sx1, y-r1*s+sy1, pr, 0, Math.PI*2);
+            ctx.fillStyle = "#000";
+            ctx.fill();
+        }
+
+        ctx.restore();
+
+    };
+})();
+
+////////////////////////////////////////////////////////////////////
+// FRUIT SPRITES
+
+const drawCherry = function(ctx,x,y) {
+
+    // cherry
+    const cherry = function(x,y) {
+        ctx.save();
+        ctx.translate(x,y);
+
+        // red fruit
+        ctx.beginPath();
+        ctx.arc(2.5,2.5,3,0,Math.PI*2);
+        ctx.lineWidth = 1.0;
+        ctx.strokeStyle = "#000";
+        ctx.stroke();
+        ctx.fillStyle = "#ff0000";
+        ctx.fill();
+
+        // white shine
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(1,3);
+        ctx.lineTo(2,4);
+        ctx.strokeStyle = "#fff";
+        ctx.stroke();
+        ctx.restore();
+    };
+
+    ctx.save();
+    ctx.translate(x,y);
+
+    // draw both cherries
+    cherry(-6,-1);
+    cherry(-1,1);
+
+    // draw stems
+    ctx.beginPath();
+    ctx.moveTo(-3,0);
+    ctx.bezierCurveTo(-1,-2, 2,-4, 5,-5);
+    ctx.lineTo(5,-4);
+    ctx.bezierCurveTo(3,-4, 1,0, 1,2);
+    ctx.strokeStyle = "#ff9900";
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    ctx.restore();
+};
+
+const drawStrawberry = function(ctx,x,y) {
+    ctx.save();
+    ctx.translate(x,y);
+
+    // red body
+    ctx.beginPath();
+    ctx.moveTo(-1,-4);
+    ctx.bezierCurveTo(-3,-4,-5,-3, -5,-1);
+    ctx.bezierCurveTo(-5,3,-2,5, 0,6);
+    ctx.bezierCurveTo(3,5, 5,2, 5,0);
+    ctx.bezierCurveTo(5,-3, 3,-4, 0,-4);
+    ctx.fillStyle = "#f00";
+    ctx.fill();
+    ctx.strokeStyle = "#f00";
+    ctx.stroke();
+
+    // white spots
+    const spots = [
+        {x:-4,y:-1},
+        {x:-3,y:2 },
+        {x:-2,y:0 },
+        {x:-1,y:4 },
+        {x:0, y:2 },
+        {x:0, y:0 },
+        {x:2, y:4 },
+        {x:2, y:-1 },
+        {x:3, y:1 },
+        {x:4, y:-2 } ];
+
+    ctx.fillStyle = "#fff";
+    for (let i=0, len=spots.length; i<len; i++) {
+        const s = spots[i];
+        ctx.beginPath();
+        ctx.arc(s.x,s.y,0.75,0,2*Math.PI);
+        ctx.fill();
+    }
+
+    // green leaf
+    ctx.beginPath();
+    ctx.moveTo(0,-4);
+    ctx.lineTo(-3,-4);
+    ctx.lineTo(0,-4);
+    ctx.lineTo(-2,-3);
+    ctx.lineTo(-1,-3);
+    ctx.lineTo(0,-4);
+    ctx.lineTo(0,-2);
+    ctx.lineTo(0,-4);
+    ctx.lineTo(1,-3);
+    ctx.lineTo(2,-3);
+    ctx.lineTo(0,-4);
+    ctx.lineTo(3,-4);
+    ctx.closePath();
+    ctx.strokeStyle = "#00ff00";
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+
+    // stem
+    ctx.beginPath();
+    ctx.moveTo(0,-4);
+    ctx.lineTo(0,-5);
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = "#fff";
+    ctx.stroke();
+    ctx.restore();
+};
+
+const drawOrange = function(ctx,x,y) {
+    ctx.save();
+    ctx.translate(x,y);
+
+    // orange body
+    ctx.beginPath();
+    ctx.moveTo(-2,-2);
+    ctx.bezierCurveTo(-3,-2, -5,-1, -5,1);
+    ctx.bezierCurveTo(-5,4, -3,6, 0,6);
+    ctx.bezierCurveTo(3,6, 5,4, 5,1);
+    ctx.bezierCurveTo(5,-1, 3,-2, 2,-2);
+    ctx.closePath();
+    ctx.fillStyle="#ffcc33";
+    ctx.fill();
+    ctx.strokeStyle = "#ffcc33";
+    ctx.stroke();
+
+    // stem
+    ctx.beginPath();
+    ctx.moveTo(-1,-1);
+    ctx.quadraticCurveTo(-1,-2,-2,-2);
+    ctx.quadraticCurveTo(-1,-2,-1,-4);
+    ctx.quadraticCurveTo(-1,-2,0,-2);
+    ctx.quadraticCurveTo(-1,-2,-1,-1);
+    ctx.strokeStyle = "#ff9900";
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+
+    // green leaf
+    ctx.beginPath();
+    ctx.moveTo(-0.5,-4);
+    ctx.quadraticCurveTo(0,-5,1,-5);
+    ctx.bezierCurveTo(2,-5, 3,-4,4,-4);
+    ctx.bezierCurveTo(3,-4, 3,-3, 2,-3);
+    ctx.bezierCurveTo(1,-3,1,-4,-0.5,-4);
+    ctx.strokeStyle = "#00ff00";
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+    ctx.fillStyle = "#00ff00";
+    ctx.fill();
+
+    ctx.restore();
+};
+
+const drawApple = function(ctx,x,y) {
+    ctx.save();
+    ctx.translate(x,y);
+
+    // red fruit
+    ctx.beginPath();
+    ctx.moveTo(-2,-3);
+    ctx.bezierCurveTo(-2,-4,-3,-4,-4,-4);
+    ctx.bezierCurveTo(-5,-4,-6,-3,-6,0);
+    ctx.bezierCurveTo(-6,3,-4,6,-2.5,6);
+    ctx.quadraticCurveTo(-1,6,-1,5);
+    ctx.bezierCurveTo(-1,6,0,6,1,6);
+    ctx.bezierCurveTo(3,6, 5,3, 5,0);
+    ctx.bezierCurveTo(5,-3, 3,-4, 2,-4);
+    ctx.quadraticCurveTo(0,-4,0,-3);
+    ctx.closePath();
+    ctx.fillStyle = "#ff0000";
+    ctx.fill();
+
+    // stem
+    ctx.beginPath();
+    ctx.moveTo(-1,-3);
+    ctx.quadraticCurveTo(-1,-5, 0,-5);
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#ff9900';
+    ctx.stroke();
+
+    // shine
+    ctx.beginPath();
+    ctx.moveTo(2,3);
+    ctx.quadraticCurveTo(3,3, 3,1);
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = "#fff";
+    ctx.stroke();
+
+    ctx.restore();
+};
+
+const drawMelon = function(ctx,x,y) {
+    ctx.save();
+    ctx.translate(x,y);
+
+    // draw body
+    ctx.beginPath();
+    ctx.arc(0,2,5.5,0,Math.PI*2);
+    ctx.fillStyle = "#7bf331";
+    ctx.fill();
+
+    // draw stem
+    ctx.beginPath();
+    ctx.moveTo(0,-4);
+    ctx.lineTo(0,-5);
+    ctx.moveTo(2,-5);
+    ctx.quadraticCurveTo(-3,-5,-3,-6);
+    ctx.strokeStyle="#69b4af";
+    ctx.lineCap = "round";
+    ctx.stroke();
+
+    // dark lines
+    /*
+    ctx.beginPath();
+    ctx.moveTo(0,-2);
+    ctx.lineTo(-4,2);
+    ctx.lineTo(-1,5);
+    ctx.moveTo(-3,-1);
+    ctx.lineTo(-2,0);
+    ctx.moveTo(-2,6);
+    ctx.lineTo(1,3);
+    ctx.moveTo(1,7);
+    ctx.lineTo(3,5);
+    ctx.lineTo(0,2);
+    ctx.lineTo(3,-1);
+    ctx.moveTo(2,0);
+    ctx.lineTo(4,2);
+    ctx.strokeStyle="#69b4af";
+    ctx.lineCap = "round";
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+    */
+    // dark spots
+    const darkSpots = [
+        0,-2,
+        -1,-1,
+        -2,0,
+        -3,1,
+        -4,2,
+        -3,3,
+        -2,4,
+        -1,5,
+        -2,6,
+        -3,-1,
+        1,7,
+        2,6,
+        3,5,
+        2,4,
+        1,3,
+        0,2,
+        1,1,
+        2,0,
+        3,-1,
+        3,1,
+        4,2,
+         ];
+
+    ctx.fillStyle="#69b4af";
+    for (let i=0, len=darkSpots.length; i<len; i+=2) {
+        const x = darkSpots[i];
+        const y = darkSpots[i+1];
+        ctx.beginPath();
+        ctx.arc(x,y,0.65,0,2*Math.PI);
+        ctx.fill();
+    }
+
+    // white spots
+    const whiteSpots = [
+        {x: 0,y:-3},
+        {x:-2,y:-1},
+        {x:-4,y: 1},
+        {x:-3,y: 3},
+        {x: 1,y: 0},
+        {x:-1,y: 2},
+        {x:-1,y: 4},
+        {x: 3,y: 2},
+        {x: 1,y: 4},
+         ];
+
+    ctx.fillStyle = "#fff";
+    for (let i=0, len=whiteSpots.length; i<len; i++) {
+        const s = whiteSpots[i];
+        ctx.beginPath();
+        ctx.arc(s.x,s.y,0.65,0,2*Math.PI);
+        ctx.fill();
+    }
+
+    ctx.restore();
+};
+
+const drawGalaxian = function(ctx,x,y) {
+    ctx.save();
+    ctx.translate(x,y);
+
+    // draw yellow body
+    ctx.beginPath();
+    ctx.moveTo(-4,-2);
+    ctx.lineTo(4,-2);
+    ctx.lineTo(4,-1);
+    ctx.lineTo(2,1);
+    ctx.lineTo(1,0);
+    ctx.lineTo(0,0);
+    ctx.lineTo(0,5);
+    ctx.lineTo(0,0);
+    ctx.lineTo(-1,0);
+    ctx.lineTo(-2,1);
+    ctx.lineTo(-4,-1);
+    ctx.closePath();
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = ctx.fillStyle = '#fffa36';
+    ctx.fill();
+    ctx.stroke();
+
+    // draw red arrow head
+    ctx.beginPath();
+    ctx.moveTo(0,-5);
+    ctx.lineTo(-3,-2);
+    ctx.lineTo(-2,-2);
+    ctx.lineTo(-1,-3);
+    ctx.lineTo(0,-3);
+    ctx.lineTo(0,-1);
+    ctx.lineTo(0,-3);
+    ctx.lineTo(1,-3);
+    ctx.lineTo(2,-2);
+    ctx.lineTo(3,-2);
+    ctx.closePath();
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = ctx.fillStyle = "#f00";
+    ctx.fill();
+    ctx.stroke();
+
+    // draw blue wings
+    ctx.beginPath();
+    ctx.moveTo(-5,-4);
+    ctx.lineTo(-5,-1);
+    ctx.lineTo(-2,2);
+    ctx.moveTo(5,-4);
+    ctx.lineTo(5,-1);
+    ctx.lineTo(2,2);
+    ctx.strokeStyle = "#00f";
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+
+    ctx.restore();
+};
+
+const drawBell = function(ctx,x,y) {
+    ctx.save();
+    ctx.translate(x,y);
+
+    // bell body
+    ctx.beginPath();
+    ctx.moveTo(-1,-5);
+    ctx.bezierCurveTo(-4,-5,-6,1,-6,6);
+    ctx.lineTo(5,6);
+    ctx.bezierCurveTo(5,1,3,-5,0,-5);
+    ctx.closePath();
+    ctx.fillStyle = ctx.strokeStyle = "#fffa37";
+    ctx.stroke();
+    ctx.fill();
+
+    // marks
+    ctx.beginPath();
+    ctx.moveTo(-4,4);
+    ctx.lineTo(-4,3);
+    ctx.moveTo(-3,1);
+    ctx.quadraticCurveTo(-3,-2,-2,-2);
+    ctx.moveTo(-1,-4);
+    ctx.lineTo(0,-4);
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#000';
+    ctx.stroke();
+
+    // bell bottom
+    ctx.beginPath();
+    ctx.rect(-5.5,6,10,2);
+    ctx.fillStyle = "#68b9fc";
+    ctx.fill();
+    ctx.beginPath();
+    ctx.rect(-0.5,6,2,2);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+
+    ctx.restore();
+};
+
+const drawKey = function(ctx,x,y) {
+    ctx.save();
+    ctx.translate(x,y);
+
+    // draw key metal
+    ctx.beginPath();
+    ctx.moveTo(-1,-2);
+    ctx.lineTo(-1,5);
+    ctx.moveTo(0,6);
+    ctx.quadraticCurveTo(1,6,1,3);
+    ctx.moveTo(1,4);
+    ctx.lineTo(2,4);
+    ctx.moveTo(1,1);
+    ctx.lineTo(1,-2);
+    ctx.moveTo(1,0);
+    ctx.lineTo(2,0);
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#fff';
+    ctx.stroke();
+
+    // draw key top
+    ctx.beginPath();
+    ctx.moveTo(0,-6);
+    ctx.quadraticCurveTo(-3,-6,-3,-4);
+    ctx.lineTo(-3,-2);
+    ctx.lineTo(3,-2);
+    ctx.lineTo(3,-4);
+    ctx.quadraticCurveTo(3,-6, 0,-6);
+    ctx.strokeStyle = ctx.fillStyle = "#68b9fc";
+    ctx.fill();
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(1,-5);
+    ctx.lineTo(-1,-5);
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = "#000";
+    ctx.stroke();
+
+    ctx.restore();
+};
+
+const drawPretzel = function(ctx,x,y) {
+    ctx.save();
+    ctx.translate(x,y);
+
+    // bread
+    ctx.beginPath();
+    ctx.moveTo(-2,-5);
+    ctx.quadraticCurveTo(-4,-6,-6,-4);
+    ctx.quadraticCurveTo(-7,-2,-5,1);
+    ctx.quadraticCurveTo(-3,4,0,5);
+    ctx.quadraticCurveTo(5,5,5,-1);
+    ctx.quadraticCurveTo(6,-5,3,-5);
+    ctx.quadraticCurveTo(1,-5,0,-2);
+    ctx.quadraticCurveTo(-2,3,-5,5);
+    ctx.moveTo(1,1);
+    ctx.quadraticCurveTo(3,4,4,6);
+    ctx.lineWidth = 2.0;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = "#ffcc33";
+    ctx.stroke();
+
+    // salt
+    const spots = [
+        -5,-6,
+        1,-6,
+        4,-4,
+        -5,0,
+        -2,0,
+        6,1,
+        -4,6,
+        5,5,
+         ];
+
+    ctx.fillStyle = "#fff";
+    for (let i=0, len=spots.length; i<len; i+=2) {
+        const x = spots[i];
+        const y = spots[i+1];
+        ctx.beginPath();
+        ctx.arc(x,y,0.65,0,2*Math.PI);
+        ctx.fill();
+    }
+
+    ctx.restore();
+};
+
+const drawPear = function(ctx,x,y) {
+    ctx.save();
+    ctx.translate(x,y);
+
+    // body
+    ctx.beginPath();
+    ctx.moveTo(0,-4);
+    ctx.bezierCurveTo(-1,-4,-2,-3,-2,-1);
+    ctx.bezierCurveTo(-2,1,-4,2,-4,4);
+    ctx.bezierCurveTo(-4,6,-2,7,0,7);
+    ctx.bezierCurveTo(2,7,4,6,4,4);
+    ctx.bezierCurveTo(4,2,2,1,2,-1);
+    ctx.bezierCurveTo(2,-3,1,-4,0,-4);
+    ctx.fillStyle = ctx.strokeStyle = "#00ff00";
+    ctx.stroke();
+    ctx.fill();
+
+    // blue shine
+    ctx.beginPath();
+    ctx.moveTo(-2,3);
+    ctx.quadraticCurveTo(-2,5,-1,5);
+    ctx.strokeStyle = "#0033ff";
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    // white stem
+    ctx.beginPath();
+    ctx.moveTo(0,-4);
+    ctx.quadraticCurveTo(0,-6,2,-6);
+    ctx.strokeStyle = "#fff";
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    ctx.restore();
+};
+
+const drawBanana = function(ctx,x,y) {
+    ctx.save();
+    ctx.translate(x,y);
+
+    // body
+    ctx.beginPath();
+    ctx.moveTo(-5,5);
+    ctx.quadraticCurveTo(-4,5,-2,6);
+    ctx.bezierCurveTo(2,6,6,2,6,-4);
+    ctx.lineTo(3,-3);
+    ctx.lineTo(3,-2);
+    ctx.lineTo(-4,5);
+    ctx.closePath();
+    ctx.fillStyle = ctx.strokeStyle = "#ffff00";
+    ctx.stroke();
+    ctx.fill();
+
+    // stem
+    ctx.beginPath();
+    ctx.moveTo(4,-5);
+    ctx.lineTo(5,-6);
+    ctx.strokeStyle="#ffff00";
+    ctx.lineCap='round';
+    ctx.stroke();
+
+    // black mark
+    ctx.beginPath();
+    ctx.moveTo(3,-1);
+    ctx.lineTo(-2,4);
+    ctx.strokeStyle = "#000";
+    ctx.lineCap='round';
+    ctx.stroke();
+
+    // shine
+    ctx.beginPath();
+    ctx.moveTo(2,3);
+    ctx.lineTo(0,5);
+    ctx.strokeStyle = "#fff";
+    ctx.lineCap='round';
+    ctx.stroke();
+
+    ctx.restore();
+};
+
+const drawCookie = function(ctx,x,y) {
+    ctx.save();
+    ctx.translate(x,y);
+
+    // body
+    ctx.beginPath();
+    ctx.arc(0,0,6,0,Math.PI*2);
+    ctx.fillStyle = "#f9bd6d";
+    //ctx.fillStyle = "#dfab68";
+    ctx.fill();
+
+    // chocolate chips
+    const spots = [
+        0,-3,
+        -4,-1,
+        0,2,
+        3,0,
+        3,3,
+         ];
+
+    ctx.fillStyle = "#000";
+    for (let i=0, len=spots.length; i<len; i+=2) {
+        const x = spots[i];
+        const y = spots[i+1];
+        ctx.beginPath();
+        ctx.arc(x,y,0.75,0,2*Math.PI);
+        ctx.fill();
+    }
+
+    ctx.restore();
+};
+
+const drawCookieFlash = function(ctx,x,y) {
+    ctx.save();
+    ctx.translate(x,y);
+
+    // body
+    ctx.beginPath();
+    ctx.arc(0,0,6,0,Math.PI*2);
+    ctx.fillStyle = "#000";
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "#f9bd6d";
+    ctx.fill();
+    ctx.stroke();
+
+    // chocolate chips
+    const spots = [
+        0,-3,
+        -4,-1,
+        0,2,
+        3,0,
+        3,3,
+         ];
+
+    ctx.fillStyle = "#f9bd6d";
+    for (let i=0, len=spots.length; i<len; i+=2) {
+        const x = spots[i];
+        const y = spots[i+1];
+        ctx.beginPath();
+        ctx.arc(x,y,0.75,0,2*Math.PI);
+        ctx.fill();
+    }
+
+    ctx.restore();
+};
+
+const getSpriteFuncFromFruitName = function(name) {
+    const funcs = {
+        'cherry': drawCherry,
+        'strawberry': drawStrawberry,
+        'orange': drawOrange,
+        'apple': drawApple,
+        'melon': drawMelon,
+        'galaxian': drawGalaxian,
+        'bell': drawBell,
+        'key': drawKey,
+        'pretzel': drawPretzel,
+        'pear': drawPear,
+        'banana': drawBanana,
+        'cookie': drawCookie,
+    };
+
+    return funcs[name];
+};
+
+const drawRecordSymbol = function(ctx,x,y,color) {
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.translate(x,y);
+
+    ctx.beginPath();
+    ctx.arc(0,0,4,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.restore();
+};
+
+const drawRewindSymbol = function(ctx,x,y,color) {
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.translate(x,y);
+
+    const s = 3;
+    const drawTriangle = function(x) {
+        ctx.beginPath();
+        ctx.moveTo(x,s);
+        ctx.lineTo(x-2*s,0);
+        ctx.lineTo(x,-s);
+        ctx.closePath();
+        ctx.fill();
+    };
+    drawTriangle(0);
+    drawTriangle(2*s);
+
+    ctx.restore();
+};
+
+const drawUpSymbol = function(ctx,x,y,color) {
+    ctx.save();
+    ctx.translate(x,y);
+    const s = tileSize;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(0,-s/2);
+    ctx.lineTo(s/2,s/2);
+    ctx.lineTo(-s/2,s/2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+};
+
+const drawDownSymbol = function(ctx,x,y,color) {
+    ctx.save();
+    ctx.translate(x,y);
+    const s = tileSize;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(0,s/2);
+    ctx.lineTo(s/2,-s/2);
+    ctx.lineTo(-s/2,-s/2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+};
+
+const drawSnail = function(ctx,x,y,color) {
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.beginPath();
+    ctx.moveTo(-7,3);
+    ctx.lineTo(-5,3);
+    ctx.bezierCurveTo(-6,0,-5,-3,-2,-3);
+    ctx.bezierCurveTo(0,-3,2,-2,2,2);
+    ctx.bezierCurveTo(3,-1,3,-2,5,-2);
+    ctx.bezierCurveTo(6,-2,6,0,5,0);
+    ctx.bezierCurveTo(4,1,4,3,2,3);
+    ctx.closePath();
+
+    ctx.lineWidth = 1.0;
+    ctx.lineCap = ctx.lineJoin = "round";
+    ctx.fillStyle = ctx.strokeStyle = color;
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(4,-2);
+    ctx.lineTo(3,-5);
+    ctx.moveTo(5,-1);
+    ctx.lineTo(7,-5);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(3,-5, 1, 0, Math.PI*2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(7,-5, 1, 0, Math.PI*2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(-4,1);
+    ctx.bezierCurveTo(-5,-1,-3,-3, -1,-2);
+    ctx.bezierCurveTo(0,-1,0,0,-1,1);
+    ctx.bezierCurveTo(-2,1,-3,0,-2,-0.5);
+    ctx.lineWidth = 0.5;
+    ctx.strokeStyle = "#000";
+    ctx.stroke();
+
+    ctx.restore();
+};
+
+const drawHeartSprite = function(ctx,x,y) {
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.fillStyle = "#ffb8ff";
+
+    ctx.beginPath();
+    ctx.moveTo(0,-3);
+    ctx.bezierCurveTo(-1,-4,-2,-6,-3.5,-6);
+    ctx.quadraticCurveTo(-7,-6,-7,-0.5);
+    ctx.bezierCurveTo(-7,2,-2,5,0,7);
+    ctx.bezierCurveTo(2,5,7,2,7,-0.5);
+    ctx.quadraticCurveTo(7,-6,3.5,-6);
+    ctx.bezierCurveTo(2,-6,1,-4,0,-3);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.restore();
+};
+
+const drawExclamationPoint = function(ctx,x,y) {
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.lineWidth = 0.5;
+    ctx.strokeStyle = ctx.fillStyle = "#ff0";
+    ctx.beginPath();
+    ctx.moveTo(-1,1);
+    ctx.bezierCurveTo(-1,0,-1,-3,0,-3);
+    ctx.lineTo(2,-3);
+    ctx.bezierCurveTo(2,-2,0,0,-1,1);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(-2,3,0.5,0,Math.PI*2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.restore();
+};
+//@line 1 "src/Actor.js"
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// The actor class defines common data functions for the ghosts and pacman
+// It provides everything for updating position and direction.
+
+// "Ghost" and "Player" inherit from this "Actor"
+
+class Actor {
+    constructor() {
+        this.dir = {};          // facing direction vector
+        this.pixel = {};        // pixel position
+        this.tile = {};         // tile position
+        this.tilePixel = {};    // pixel location inside tile
+        this.distToMid = {};    // pixel distance to mid-tile
+
+        this.targetTile = {};   // tile position used for targeting
+
+        this.frames = 0;        // frame count
+        this.steps = 0;         // step count
+
+        this.isDrawTarget = false;
+        this.isDrawPath = false;
+
+        this.savedSteps = {};
+        this.savedFrames = {};
+        this.savedDirEnum = {};
+        this.savedPixel = {};
+        this.savedTargetting = {};
+        this.savedTargetTile = {};
+    }
+
+    // save state at time t
+    save(t) {
+        this.savedSteps[t] = this.steps;
+        this.savedFrames[t] = this.frames;
+        this.savedDirEnum[t] = this.dirEnum;
+        this.savedPixel[t] = { x:this.pixel.x, y:this.pixel.y };
+        this.savedTargetting[t] = this.targetting;
+        this.savedTargetTile[t] = { x: this.targetTile.x, y: this.targetTile.y };
+    }
+
+    // load state at time t
+    load(t) {
+        this.steps = this.savedSteps[t];
+        this.frames = this.savedFrames[t];
+        this.setDir(this.savedDirEnum[t]);
+        this.setPos(this.savedPixel[t].x, this.savedPixel[t].y);
+        this.targetting = this.savedTargetting[t];
+        this.targetTile.x = this.savedTargetTile[t].x;
+        this.targetTile.y = this.savedTargetTile[t].y;
+    }
+
+    // reset to initial position and direction
+    reset() {
+        this.setDir(this.startDirEnum);
+        this.setPos(this.startPixel.x, this.startPixel.y);
+        this.frames = 0;
+        this.steps = 0;
+        this.targetting = false;
+    }
+
+    // sets the position and updates its dependent variables
+    setPos(px,py) {
+        this.pixel.x = px;
+        this.pixel.y = py;
+        this.commitPos();
+    }
+
+    // returns the relative pixel inside a tile given a map pixel
+    getTilePixel(pixel,tilePixel) {
+        if (pixel == undefined) {
+            pixel = this.pixel;
+        }
+        if (tilePixel == undefined) {
+            tilePixel = {};
+        }
+        tilePixel.x = pixel.x % tileSize;
+        tilePixel.y = pixel.y % tileSize;
+        if (tilePixel.x < 0) {
+            tilePixel.x += tileSize;
+        }
+        if (tilePixel.y < 0) {
+            tilePixel.y += tileSize;
+        }
+        return tilePixel;
+    }
+
+    // updates the position's dependent variables
+    commitPos() {
+
+        // use map-specific tunnel teleport
+        if (map) {
+            map.teleport(this);
+        }
+
+        this.tile.x = Math.floor(this.pixel.x / tileSize);
+        this.tile.y = Math.floor(this.pixel.y / tileSize);
+        this.getTilePixel(this.pixel,this.tilePixel);
+        this.distToMid.x = midTile.x - this.tilePixel.x;
+        this.distToMid.y = midTile.y - this.tilePixel.y;
+    }
+
+    // sets the direction and updates its dependent variables
+    setDir(dirEnum) {
+        setDirFromEnum(this.dir, dirEnum);
+        this.dirEnum = dirEnum;
+    }
+
+    // getter function to extract a step size from speed control table
+    getStepSizeFromTable(level, pattern) {
+        return getStepSizeFromTable(level, pattern, this.frames);
+    }
+
+    // updates the actor state
+    update(j) {
+
+        // get number of steps to advance in this frame
+        const numSteps = this.getNumSteps();
+        if (j >= numSteps) 
+            return;
+
+        // request to advance one step, and increment count if step taken
+        this.steps += this.step();
+
+        // update head direction
+        this.steer();
+    }
+}
+
+
+// used as "pattern" parameter in getStepSizeFromTable()
+const STEP_PACMAN = 0;
+const STEP_GHOST = 1;
+const STEP_PACMAN_FRIGHT = 2;
+const STEP_GHOST_FRIGHT = 3;
+const STEP_GHOST_TUNNEL = 4;
+const STEP_ELROY1 = 5;
+const STEP_ELROY2 = 6;
+
+// Once the end of the list is reached, we cycle to the beginning.
+// This method allows us to represent different speeds in a low-resolution space.
+
+// speed control table (from Jamey Pittman)
+const stepSizes = (
+    // LEVEL 1
+    "1111111111111111" + // pac-man (normal)
+    "0111111111111111" + // ghosts (normal)
+    "1111211111112111" + // pac-man (fright)
+    "0110110101101101" + // ghosts (fright)
+    "0101010101010101" + // ghosts (tunnel)
+    "1111111111111111" + // elroy 1
+    "1111111121111111" + // elroy 2
+
+    // LEVELS 2-4
+    "1111211111112111" + // pac-man (normal)
+    "1111111121111111" + // ghosts (normal)
+    "1111211112111121" + // pac-man (fright)
+    "0110110110110111" + // ghosts (fright)
+    "0110101011010101" + // ghosts (tunnel)
+    "1111211111112111" + // elroy 1
+    "1111211112111121" + // elroy 2
+
+    // LEVELS 5-20
+    "1121112111211121" + // pac-man (normal)
+    "1111211112111121" + // ghosts (normal)
+    "1121112111211121" + // pac-man (fright) (N/A for levels 17, 19 & 20)
+    "0111011101110111" + // ghosts (fright)  (N/A for levels 17, 19 & 20)
+    "0110110101101101" + // ghosts (tunnel)
+    "1121112111211121" + // elroy 1
+    "1121121121121121" + // elroy 2
+
+    // LEVELS 21+
+    "1111211111112111" + // pac-man (normal)
+    "1111211112111121" + // ghosts (normal)
+    "0000000000000000" + // pac-man (fright) N/A
+    "0000000000000000" + // ghosts (fright)  N/A
+    "0110110101101101" + // ghosts (tunnel)
+    "1121112111211121" + // elroy 1
+    "1121121121121121"); // elroy 2
+
+function getStepSizeFromTable(level, pattern, frames) {
+    // Actor speed is controlled by a list of 16 values.
+    // Each value is the number of steps to take in a specific frame.
+    let entry;
+    if (level < 1) return;
+    else if (level==1)                  entry = 0;
+    else if (level >= 2 && level <= 4)  entry = 1;
+    else if (level >= 5 && level <= 20) entry = 2;
+    else if (level >= 21)               entry = 3;
+    return stepSizes[entry*7*16 + pattern*16 + frames%16];
+}
+
+//@line 1 "src/Ghost.js"
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Ghost class
+
+// NOTE: The bounce animation assumes an actor is moving in straight
+// horizontal or vertical lines between the centers of each tile.
+//
+// When moving horizontal, bounce height is a function of x.
+// When moving vertical, bounce height is a function of y.
+const bounceY = {
+    // map y tile pixel to new y tile pixel
+    [DIR_UP]:     [-4,-2,0,2,4,3,2,3],
+    [DIR_DOWN]:   [3,5,7,5,4,5,7,8],
+
+    // map x tile pixel to y tile pixel
+    [DIR_LEFT]:   [2,3,3,4,3,2,2,2],
+    [DIR_RIGHT]:  [2,2,3,4,3,3,2,2],
+};
+
+// modes representing the ghost's current state
+const GHOST_OUTSIDE = 0;
+const GHOST_EATEN = 1;
+const GHOST_GOING_HOME = 2;
+const GHOST_ENTERING_HOME = 3;
+const GHOST_PACING_HOME = 4;
+const GHOST_LEAVING_HOME = 5;
+
+// Ghost constructor
+class Ghost extends Actor {
+    constructor() {
+        super();
+        this.randomScatter = false;
+        this.faceDirEnum = this.dirEnum;
+    }
+
+    // displacements for ghost bouncing
+    getBounceY(px,py,dirEnum) {
+        if (px == undefined) {
+            px = this.pixel.x;
+        }
+        if (py == undefined) {
+            py = this.pixel.y;
+        }
+        if (dirEnum == undefined) {
+            dirEnum = this.dirEnum;
+        }
+
+        if (this.mode != GHOST_OUTSIDE || !this.scared || gameMode != GAME_COOKIE) {
+            return py;
+        }
+
+        const tilePixel = this.getTilePixel({x:px,y:py});
+        const tileY = Math.floor(py / tileSize);
+        let y = tileY*tileSize;
+
+        if (dirEnum == DIR_UP || dirEnum == DIR_DOWN) {
+            y += bounceY[dirEnum][tilePixel.y];
+        }
+        else {
+            y += bounceY[dirEnum][tilePixel.x];
+        }
+
+        return y;
+    }
+
+    getAnimFrame(frames) {
+        if (frames == undefined) {
+            frames = this.frames;
+        }
+        return Math.floor(frames/8)%2; // toggle frame every 8 ticks
+    }
+
+    // reset the state of the ghost on new level or level restart
+    reset() {
+
+        // signals
+        this.sigReverse = false;
+        this.sigLeaveHome = false;
+
+        // modes
+        this.mode = this.startMode;
+        this.scared = false;
+
+        this.savedSigReverse = {};
+        this.savedSigLeaveHome = {};
+        this.savedMode = {};
+        this.savedScared = {};
+        this.savedElroy = {};
+        this.savedFaceDirEnum = {};
+
+        // call Actor's reset function to reset position and direction
+        super.reset();
+
+        // faceDirEnum  = direction the ghost is facing
+        // dirEnum      = direction the ghost is moving
+        // (faceDirEnum represents what dirEnum will be once the ghost reaches the middle of the tile)
+        this.faceDirEnum = this.dirEnum;
+    }
+
+    save(t) {
+        this.savedSigReverse[t] = this.sigReverse;
+        this.savedSigLeaveHome[t] = this.sigLeaveHome;
+        this.savedMode[t] = this.mode;
+        this.savedScared[t] = this.scared;
+        if (this == blinky) {
+            this.savedElroy[t] = this.elroy;
+        }
+        this.savedFaceDirEnum[t] = this.faceDirEnum;
+        super.save(t);
+    }
+
+    load(t) {
+        this.sigReverse = this.savedSigReverse[t];
+        this.sigLeaveHome = this.savedSigLeaveHome[t];
+        this.mode = this.savedMode[t];
+        this.scared = this.savedScared[t];
+        if (this == blinky) {
+            this.elroy = this.savedElroy[t];
+        }
+        this.faceDirEnum = this.savedFaceDirEnum[t];
+        super.load(t);
+    }
+
+    // indicates if we slow down in the tunnel
+    isSlowInTunnel() {
+        // special case for Ms. Pac-Man (slow down only for the first three levels)
+        if (gameMode == GAME_MSPACMAN || gameMode == GAME_OTTO || gameMode == GAME_COOKIE)
+            return level <= 3;
+        else
+            return true;
+    }
+
+    // gets the number of steps to move in this frame
+    getNumSteps() {
+
+        let pattern = STEP_GHOST;
+
+        if (this.mode == GHOST_GOING_HOME || this.mode == GHOST_ENTERING_HOME)
+            return 2;
+        else if (this.mode == GHOST_LEAVING_HOME || this.mode == GHOST_PACING_HOME)
+            return this.getStepSizeFromTable(1, STEP_GHOST_TUNNEL);
+        else if (map.isTunnelTile(this.tile.x, this.tile.y) && this.isSlowInTunnel())
+            pattern = STEP_GHOST_TUNNEL;
+        else if (this.scared)
+            pattern = STEP_GHOST_FRIGHT;
+        else if (this.elroy == 1)
+            pattern = STEP_ELROY1;
+        else if (this.elroy == 2)
+            pattern = STEP_ELROY2;
+
+        return this.getStepSizeFromTable(level ? level : 1, pattern);
+    }
+
+    // signal ghost to reverse direction after leaving current tile
+    reverse() {
+        this.sigReverse = true;
+    }
+
+    // signal ghost to go home
+    // It is useful to have this because as soon as the ghost gets eaten,
+    // we have to freeze all the actors for 3 seconds, except for the
+    // ones who are already traveling to the ghost home to be revived.
+    // We use this signal to change mode to GHOST_GOING_HOME, which will be
+    // set after the update() function is called so that we are still frozen
+    // for 3 seconds before traveling home uninterrupted.
+    goHome() {
+        this.mode = GHOST_EATEN;
+    }
+
+    // Following the pattern that state changes be made via signaling (e.g. reversing, going home)
+    // the ghost is commanded to leave home similarly.
+    // (not sure if this is correct yet)
+    leaveHome() {
+        this.sigLeaveHome = true;
+    }
+
+    // function called when pacman eats an energizer
+    onEnergized() {
+
+        this.reverse();
+
+        // only scare me if not already going home
+        if (this.mode != GHOST_GOING_HOME && this.mode != GHOST_ENTERING_HOME) {
+            this.scared = true;
+            this.targetting = undefined;
+        }
+    }
+
+    // function called when this ghost gets eaten
+    onEaten() {
+        this.goHome();       // go home
+        this.scared = false; // turn off scared
+    }
+
+    // move forward one step
+    step() {
+        this.setPos(this.pixel.x+this.dir.x, this.pixel.y+this.dir.y);
+        return 1;
+    }
+
+
+    // ghost home-specific path steering
+    homeSteer() {
+        switch (this.mode) {
+            case GHOST_GOING_HOME: {
+                // at the doormat
+                if (this.tile.x == map.doorTile.x && this.tile.y == map.doorTile.y) {
+                    this.faceDirEnum = DIR_DOWN;
+                    this.targetting = false;
+                    // walk to the door, or go through if already there
+                    if (this.pixel.x == map.doorPixel.x) {
+                        this.mode = GHOST_ENTERING_HOME;
+                        this.setDir(DIR_DOWN);
+                        this.faceDirEnum = this.dirEnum;
+                    }
+                    else {
+                        this.setDir(DIR_RIGHT);
+                        this.faceDirEnum = this.dirEnum;
+                    }
+                }
+                break;
+            };
+            case GHOST_ENTERING_HOME: {
+                if (this.pixel.y == map.homeBottomPixel) {
+                    // revive if reached its seat
+                    if (this.pixel.x == this.startPixel.x) {
+                        this.setDir(DIR_UP);
+                        this.mode = this.arriveHomeMode;
+                    }
+                    // sidestep to its seat
+                    else {
+                        this.setDir(this.startPixel.x < this.pixel.x ? DIR_LEFT : DIR_RIGHT);
+                    }
+                    this.faceDirEnum = this.dirEnum;
+                }
+                break;
+            };
+            case GHOST_PACING_HOME: {
+                // head for the door
+                if (this.sigLeaveHome) {
+                    this.sigLeaveHome = false;
+                    this.mode = GHOST_LEAVING_HOME;
+                    if (this.pixel.x == map.doorPixel.x)
+                        this.setDir(DIR_UP);
+                    else
+                        this.setDir(this.pixel.x < map.doorPixel.x ? DIR_RIGHT : DIR_LEFT);
+                }
+                // pace back and forth
+                else {
+                    if (this.pixel.y == map.homeTopPixel)
+                        this.setDir(DIR_DOWN);
+                    else if (this.pixel.y == map.homeBottomPixel)
+                        this.setDir(DIR_UP);
+                }
+                this.faceDirEnum = this.dirEnum;
+                break;
+            };
+            case GHOST_LEAVING_HOME: {
+                if (this.pixel.x == map.doorPixel.x) {
+                    // reached door
+                    if (this.pixel.y == map.doorPixel.y) {
+                        this.mode = GHOST_OUTSIDE;
+                        this.setDir(DIR_LEFT); // always turn left at door?
+                    }
+                    // keep walking up to the door
+                    else {
+                        this.setDir(DIR_UP);
+                    }
+                    this.faceDirEnum = this.dirEnum;
+                }
+                break;
+            };
+        }
+    }
+
+    // special case for Ms. Pac-Man game that randomly chooses a corner for blinky and pinky when scattering
+    isScatterBrain() {
+        let scatter = false;
+        if (ghostCommander.getCommand() == GHOST_CMD_SCATTER) {
+            if (gameMode == GAME_MSPACMAN || gameMode == GAME_COOKIE) {
+                scatter = (this == blinky || this == pinky);
+            }
+            else if (gameMode == GAME_OTTO) {
+                scatter = true;
+            }
+        }
+        return scatter;
+    }
+
+    // determine direction
+    steer() {
+
+        let dirEnum;                         // final direction to update to
+        let openTiles;                       // list of four booleans indicating which surrounding tiles are open
+        let oppDirEnum = rotateAboutFace(this.dirEnum); // current opposite direction enum
+        let actor;                           // actor whose corner we will target
+
+        // special map-specific steering when going to, entering, pacing inside, or leaving home
+        this.homeSteer();
+
+        // current opposite direction enum
+        oppDirEnum = rotateAboutFace(this.dirEnum); 
+
+        // only execute rest of the steering logic if we're pursuing a target tile
+        if (this.mode != GHOST_OUTSIDE && this.mode != GHOST_GOING_HOME) {
+            this.targetting = false;
+            return;
+        }
+
+        // AT MID-TILE (update movement direction)
+        if (this.distToMid.x == 0 && this.distToMid.y == 0) {
+
+            // trigger reversal
+            if (this.sigReverse) {
+                this.faceDirEnum = oppDirEnum;
+                this.sigReverse = false;
+            }
+
+            // commit previous direction
+            this.setDir(this.faceDirEnum);
+        }
+        // JUST PASSED MID-TILE (update face direction)
+        else if (
+            this.dirEnum == DIR_RIGHT && this.tilePixel.x == midTile.x+1 ||
+            this.dirEnum == DIR_LEFT  && this.tilePixel.x == midTile.x-1 ||
+            this.dirEnum == DIR_UP    && this.tilePixel.y == midTile.y-1 ||
+            this.dirEnum == DIR_DOWN  && this.tilePixel.y == midTile.y+1) {
+
+            // get next tile
+            const nextTile = {
+                x: this.tile.x + this.dir.x,
+                y: this.tile.y + this.dir.y,
+            };
+
+            // get tiles surrounding next tile and their open indication
+            openTiles = getOpenTiles(nextTile, this.dirEnum);
+
+            if (this.scared) {
+                // choose a random turn
+                dirEnum = Math.floor(Math.random()*4);
+                while (!openTiles[dirEnum])
+                    dirEnum = (dirEnum+1)%4; // look at likelihood of random turns
+                this.targetting = false;
+            }
+            else {
+
+                /* SET TARGET */
+
+                // target ghost door
+                if (this.mode == GHOST_GOING_HOME) {
+                    this.targetTile.x = map.doorTile.x;
+                    this.targetTile.y = map.doorTile.y;
+                }
+                // target corner when scattering
+                else if (!this.elroy && ghostCommander.getCommand() == GHOST_CMD_SCATTER) {
+
+                    actor = this.isScatterBrain() ? actors[Math.floor(Math.random()*4)] : this;
+
+                    this.targetTile.x = actor.cornerTile.x;
+                    this.targetTile.y = actor.cornerTile.y;
+                    this.targetting = 'corner';
+                }
+                // use custom function for each ghost when in attack mode
+                else {
+                    this.setTarget();
+                }
+
+                /* CHOOSE TURN */
+
+                let dirDecided = false;
+                if (this.mode == GHOST_GOING_HOME && map.getExitDir) {
+                    // If the map has a 'getExitDir' function, then we are using
+                    // a custom algorithm to choose the next direction.
+                    // Currently, procedurally-generated maps use this function
+                    // to ensure that ghosts can return home without looping forever.
+                    const exitDir = map.getExitDir(nextTile.x,nextTile.y);
+                    if (exitDir != undefined && exitDir != oppDirEnum) {
+                        dirDecided = true;
+                        dirEnum = exitDir;
+                    }
+                }
+
+                if (!dirDecided) {
+                    // Do not constrain turns for ghosts going home. (thanks bitwave)
+                    if (this.mode != GHOST_GOING_HOME) {
+                        if (map.constrainGhostTurns) {
+                            // edit openTiles to reflect the current map's special contraints
+                            map.constrainGhostTurns(nextTile, openTiles, this.dirEnum);
+                        }
+                    }
+
+                    // choose direction that minimizes distance to target
+                    dirEnum = getTurnClosestToTarget(nextTile, this.targetTile, openTiles);
+                }
+            }
+
+            // Point eyeballs to the determined direction.
+            this.faceDirEnum = dirEnum;
+        }
+    }
+
+    getPathDistLeft(fromPixel, dirEnum) {
+        let distLeft = tileSize;
+        const pixel = this.getTargetPixel();
+        if (this.targetting == 'pacman') {
+            if (dirEnum == DIR_UP || dirEnum == DIR_DOWN)
+                distLeft = Math.abs(fromPixel.y - pixel.y);
+            else {
+                distLeft = Math.abs(fromPixel.x - pixel.x);
+            }
+        }
+        return distLeft;
+    }
+
+    setTarget() {
+        // This sets the target tile when in chase mode.
+        // The "target" is always Pac-Man when in this mode,
+        // except for Clyde.  He runs away back home sometimes,
+        // so the "targetting" parameter is set in getTargetTile
+        // for Clyde only.
+
+        this.targetTile = this.getTargetTile();
+
+        if (this != clyde) {
+            this.targetting = 'pacman';
+        }
+    }
+}
+
+
+//@line 1 "src/Player.js"
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Player is the controllable character (Pac-Man)
+
+// Player constructor
+class Player extends Actor {
+    constructor() {
+
+        // inherit data from Actor
+        super();
+        if (gameMode == GAME_MSPACMAN || gameMode == GAME_COOKIE) {
+            this.frames = 1; // start with mouth open
+        }
+
+        this.nextDir = {};
+
+        // determines if this player should be AI controlled
+        this.ai = false;
+        this.invincible = false;
+
+        this.savedNextDirEnum = {};
+        this.savedStopped = {};
+        this.savedEatPauseFramesLeft = {};
+    }
+
+    save(t) {
+        this.savedEatPauseFramesLeft[t] = this.eatPauseFramesLeft;
+        this.savedNextDirEnum[t] = this.nextDirEnum;
+        this.savedStopped[t] = this.stopped;
+        super.save(t);
+    }
+
+    load(t) {
+        this.eatPauseFramesLeft = this.savedEatPauseFramesLeft[t];
+        this.setNextDir(this.savedNextDirEnum[t]);
+        this.stopped = this.savedStopped[t];
+        this.inputDirEnum = undefined;
+        super.load(t);
+    }
+
+    // reset the state of the player on new level or level restart
+    reset() {
+        this.setNextDir(this.startDirEnum);
+        this.stopped = false;
+        this.inputDirEnum = undefined;
+
+        this.eatPauseFramesLeft = 0;   // current # of frames left to pause after eating
+
+        // call Actor's reset function to reset to initial position and direction
+        super.reset();
+
+    }
+
+    // sets the next direction and updates its dependent variables
+    setNextDir(nextDirEnum) {
+        setDirFromEnum(this.nextDir, nextDirEnum);
+        this.nextDirEnum = nextDirEnum;
+    }
+
+    // gets the number of steps to move in this frame
+    getNumSteps() {
+        if (turboMode)
+            return 2;
+
+        const pattern = energizer.isActive() ? STEP_PACMAN_FRIGHT : STEP_PACMAN;
+        return this.getStepSizeFromTable(level, pattern);
+    }
+
+    getStepFrame(steps) {
+        if (steps == undefined) {
+            steps = this.steps;
+        }
+        return Math.floor(steps/2)%4;
+    }
+
+    getAnimFrame(frame) {
+        if (frame == undefined) {
+            frame = this.getStepFrame();
+        }
+        if (gameMode == GAME_MSPACMAN || gameMode == GAME_COOKIE) { // ms. pacman starts with mouth open
+            frame = (frame+1)%4;
+            if (state == deadState)
+                frame = 1; // hack to force this frame when dead
+        }
+        if (gameMode != GAME_OTTO) {
+            if (frame == 3) 
+                frame = 1;
+        }
+        return frame;
+    }
+
+    setInputDir(dirEnum) {
+        this.inputDirEnum = dirEnum;
+    }
+
+    clearInputDir(dirEnum) {
+        if (dirEnum == undefined || this.inputDirEnum == dirEnum) {
+            this.inputDirEnum = undefined;
+        }
+    }
+
+    // move forward one step
+    step() {
+
+        // just increment if we're not in a map
+        if (!map) {
+            this.setPos(this.pixel.x+this.dir.x, this.pixel.y+this.dir.y);
+            return 1;
+        }
+
+        // identify the axes of motion
+        const a = (this.dir.x != 0) ? 'x' : 'y'; // axis of motion
+        const b = (this.dir.x != 0) ? 'y' : 'x'; // axis perpendicular to motion
+
+        // Don't proceed past the middle of a tile if facing a wall
+        this.stopped = this.stopped || (this.distToMid[a] == 0 && !isNextTileFloor(this.tile, this.dir));
+        if (!this.stopped) {
+            // Move in the direction of travel.
+            this.pixel[a] += this.dir[a];
+
+            // Drift toward the center of the track (a.k.a. cornering)
+            this.pixel[b] += Math.sign(this.distToMid[b]);
+        }
+
+        this.commitPos();
+        return this.stopped ? 0 : 1;
+    };
+
+    // determine direction
+    steer() {
+
+        // if AI-controlled, only turn at mid-tile
+        if (this.ai) {
+            if (this.distToMid.x != 0 || this.distToMid.y != 0)
+                return;
+
+            // make turn that is closest to target
+            const openTiles = getOpenTiles(this.tile, this.dirEnum);
+            this.setTarget();
+            this.setNextDir(getTurnClosestToTarget(this.tile, this.targetTile, openTiles));
+        }
+        else {
+            this.targetting = undefined;
+        }
+
+        if (this.inputDirEnum == undefined) {
+            if (this.stopped) {
+                this.setDir(this.nextDirEnum);
+            }
+        }
+        else {
+            // Determine if input direction is open.
+            const inputDir = {};
+            setDirFromEnum(inputDir, this.inputDirEnum);
+            const inputDirOpen = isNextTileFloor(this.tile, inputDir);
+
+            if (inputDirOpen) {
+                this.setDir(this.inputDirEnum);
+                this.setNextDir(this.inputDirEnum);
+                this.stopped = false;
+            }
+            else {
+                if (!this.stopped) {
+                    this.setNextDir(this.inputDirEnum);
+                }
+            }
+        }
+    }
+
+    // update this frame
+    update(j) {
+
+        const numSteps = this.getNumSteps();
+        if (j >= numSteps)
+            return;
+
+        // skip frames
+        if (this.eatPauseFramesLeft > 0) {
+            if (j == numSteps-1)
+                this.eatPauseFramesLeft--;
+            return;
+        }
+
+        // call super function to update position and direction
+        super.update(j);
+
+        // eat something
+        if (map) {
+            const t = map.getTile(this.tile.x, this.tile.y);
+            if (t == '.' || t == 'o') {
+
+                // apply eating drag (unless in turbo mode)
+                if (!turboMode) {
+                    this.eatPauseFramesLeft = (t=='.') ? 1 : 3;
+                }
+
+                map.onDotEat(this.tile.x, this.tile.y);
+                ghostReleaser.onDotEat();
+                fruit.onDotEat();
+                addScore((t=='.') ? 10 : 50);
+
+                if (t=='o')
+                    energizer.activate();
+            }
+        }
+    }
+}
+//@line 1 "src/actors.js"
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// create all the actors
+
+const blinky = new Ghost();
+blinky.name = "blinky";
+blinky.color = "#FF0000";
+blinky.pathColor = "rgba(255,0,0,0.8)";
+blinky.isVisible = true;
+
+const pinky = new Ghost();
+pinky.name = "pinky";
+pinky.color = "#FFB8FF";
+pinky.pathColor = "rgba(255,184,255,0.8)";
+pinky.isVisible = true;
+
+const inky = new Ghost();
+inky.name = "inky";
+inky.color = "#00FFFF";
+inky.pathColor = "rgba(0,255,255,0.8)";
+inky.isVisible = true;
+
+const clyde = new Ghost();
+clyde.name = "clyde";
+clyde.color = "#FFB851";
+clyde.pathColor = "rgba(255,184,81,0.8)";
+clyde.isVisible = true;
+
+const pacman = new Player();
+pacman.name = "pacman";
+pacman.color = "#FFFF00";
+pacman.pathColor = "rgba(255,255,0,0.8)";
+
+// order at which they appear in original arcade memory
+// (suggests drawing/update order)
+const actors = [blinky, pinky, inky, clyde, pacman];
+const ghosts = [blinky, pinky, inky, clyde];
+//@line 1 "src/targets.js"
+
+
+/////////////////////////////////////////////////////////////////
+// Targetting
+// (a definition for each actor's targetting algorithm and a draw function to visualize it)
+// (getPathDistLeft is used to obtain a smoothly interpolated path endpoint)
+
+// the tile length of the path drawn toward the target
+const actorPathLength = 16;
+
+(function() {
+
+// the size of the square rendered over a target tile (just half a tile)
+const targetSize = midTile.y;
+
+// when drawing paths, use these offsets so they don't completely overlap each other
+pacman.pathCenter = { x:0, y:0};
+blinky.pathCenter = { x:-2, y:-2 };
+pinky.pathCenter = { x:-1, y:-1 };
+inky.pathCenter = { x:1, y:1 };
+clyde.pathCenter = { x:2, y:2 };
+
+/////////////////////////////////////////////////////////////////
+// blinky directly targets pacman
+
+blinky.getTargetTile = function() {
+    return { x: pacman.tile.x, y: pacman.tile.y };
+};
+blinky.getTargetPixel = function() {
+    return { x: pacman.pixel.x, y: pacman.pixel.y };
+};
+blinky.drawTarget = function(ctx) {
+    if (!this.targetting) return;
+    ctx.fillStyle = this.color;
+    if (this.targetting == 'pacman')
+        renderer.drawCenterPixelSq(ctx, pacman.pixel.x, pacman.pixel.y, targetSize);
+    else
+        renderer.drawCenterTileSq(ctx, this.targetTile.x, this.targetTile.y, targetSize);
+};
+
+/////////////////////////////////////////////////////////////////
+// pinky targets four tiles ahead of pacman
+pinky.getTargetTile = function() {
+    let px = pacman.tile.x + 4*pacman.dir.x;
+    const py = pacman.tile.y + 4*pacman.dir.y;
+    if (pacman.dirEnum == DIR_UP) {
+        px -= 4;
+    }
+    return { x : px, y : py };
+};
+pinky.getTargetPixel = function() {
+    let px = pacman.pixel.x + 4*pacman.dir.x*tileSize;
+    const py = pacman.pixel.y + 4*pacman.dir.y*tileSize;
+    if (pacman.dirEnum == DIR_UP) {
+        px -= 4*tileSize;
+    }
+    return { x : px, y : py };
+};
+pinky.drawTarget = function(ctx) {
+    if (!this.targetting) return;
+    ctx.fillStyle = this.color;
+
+    const pixel = this.getTargetPixel();
+
+    if (this.targetting == 'pacman') {
+        ctx.beginPath();
+        ctx.moveTo(pacman.pixel.x, pacman.pixel.y);
+        if (pacman.dirEnum == DIR_UP) {
+            ctx.lineTo(pacman.pixel.x, pixel.y);
+        }
+        ctx.lineTo(pixel.x, pixel.y);
+        ctx.stroke();
+        renderer.drawCenterPixelSq(ctx, pixel.x, pixel.y, targetSize);
+    }
+    else
+        renderer.drawCenterTileSq(ctx, this.targetTile.x, this.targetTile.y, targetSize);
+};
+
+/////////////////////////////////////////////////////////////////
+// inky targets twice the distance from blinky to two tiles ahead of pacman
+inky.getTargetTile = function() {
+    let px = pacman.tile.x + 2*pacman.dir.x;
+    const py = pacman.tile.y + 2*pacman.dir.y;
+    if (pacman.dirEnum == DIR_UP) {
+        px -= 2;
+    }
+    return {
+        x : blinky.tile.x + 2*(px - blinky.tile.x),
+        y : blinky.tile.y + 2*(py - blinky.tile.y),
+    };
+};
+inky.getJointPixel = function() {
+    let px = pacman.pixel.x + 2*pacman.dir.x*tileSize;
+    const py = pacman.pixel.y + 2*pacman.dir.y*tileSize;
+    if (pacman.dirEnum == DIR_UP) {
+        px -= 2*tileSize;
+    }
+    return { x: px, y: py };
+};
+inky.getTargetPixel = function() {
+    let px = pacman.pixel.x + 2*pacman.dir.x*tileSize;
+    const py = pacman.pixel.y + 2*pacman.dir.y*tileSize;
+    if (pacman.dirEnum == DIR_UP) {
+        px -= 2*tileSize;
+    }
+    return {
+        x : blinky.pixel.x + 2*(px-blinky.pixel.x),
+        y : blinky.pixel.y + 2*(py-blinky.pixel.y),
+    };
+};
+inky.drawTarget = function(ctx) {
+    if (!this.targetting) return;
+
+    const joint = this.getJointPixel();
+
+    if (this.targetting == 'pacman') {
+        const pixel = this.getTargetPixel();
+        ctx.beginPath();
+        ctx.moveTo(pacman.pixel.x, pacman.pixel.y);
+        if (pacman.dirEnum == DIR_UP) {
+            ctx.lineTo(pacman.pixel.x, joint.y);
+        }
+        ctx.lineTo(joint.x, joint.y);
+        ctx.moveTo(blinky.pixel.x, blinky.pixel.y);
+        ctx.lineTo(pixel.x, pixel.y);
+        ctx.closePath();
+        ctx.stroke();
+
+        // draw seesaw joint
+        ctx.beginPath();
+        ctx.arc(joint.x, joint.y, 2,0,Math.PI*2);
+        ctx.fillStyle = ctx.strokeStyle;
+        ctx.fill();
+
+        ctx.fillStyle = this.color;
+        renderer.drawCenterPixelSq(ctx, pixel.x, pixel.y, targetSize);
+    }
+    else {
+        ctx.fillStyle = this.color;
+        renderer.drawCenterTileSq(ctx, this.targetTile.x, this.targetTile.y, targetSize);
+    }
+};
+
+/////////////////////////////////////////////////////////////////
+// clyde targets pacman if >=8 tiles away, otherwise targets home
+
+clyde.getTargetTile = function() {
+    const dx = pacman.tile.x - (this.tile.x + this.dir.x);
+    const dy = pacman.tile.y - (this.tile.y + this.dir.y);
+    const dist = dx*dx+dy*dy;
+    if (dist >= 64) {
+        this.targetting = 'pacman';
+        return { x: pacman.tile.x, y: pacman.tile.y };
+    }
+    else {
+        this.targetting = 'corner';
+        return { x: this.cornerTile.x, y: this.cornerTile.y };
+    }
+};
+clyde.getTargetPixel = function() {
+    // NOTE: won't ever need this function for corner tile because it is always outside
+    return { x: pacman.pixel.x, y: pacman.pixel.y };
+};
+clyde.drawTarget = function(ctx) {
+    if (!this.targetting) return;
+    ctx.fillStyle = this.color;
+
+    if (this.targetting == 'pacman') {
+        ctx.beginPath();
+        if (true) {
+            // draw a radius
+            ctx.arc(pacman.pixel.x, pacman.pixel.y, tileSize*8,0, 2*Math.PI);
+            ctx.closePath();
+        }
+        else {
+            // draw a distance stick
+            ctx.moveTo(pacman.pixel.x, pacman.pixel.y);
+            let dx = clyde.pixel.x - pacman.pixel.x;
+            let dy = clyde.pixel.y - pacman.pixel.y;
+            const dist = Math.sqrt(dx*dx+dy*dy);
+            dx = dx/dist*tileSize*8;
+            dy = dy/dist*tileSize*8;
+            ctx.lineTo(pacman.pixel.x + dx, pacman.pixel.y + dy);
+        }
+        ctx.stroke();
+        renderer.drawCenterPixelSq(ctx, pacman.pixel.x, pacman.pixel.y, targetSize);
+    }
+    else {
+        // draw a radius
+        if (ghostCommander.getCommand() == GHOST_CMD_CHASE) {
+            ctx.beginPath();
+            ctx.arc(pacman.pixel.x, pacman.pixel.y, tileSize*8,0, 2*Math.PI);
+            ctx.strokeStyle = "rgba(255,255,255,0.25)";
+            ctx.stroke();
+        }
+        renderer.drawCenterTileSq(ctx, this.targetTile.x, this.targetTile.y, targetSize);
+    }
+};
+
+
+/////////////////////////////////////////////////////////////////
+// pacman targets twice the distance from pinky to pacman or target pinky
+
+pacman.setTarget = function() {
+    if (blinky.mode == GHOST_GOING_HOME || blinky.scared) {
+        this.targetTile.x = pinky.tile.x;
+        this.targetTile.y = pinky.tile.y;
+        this.targetting = 'pinky';
+    }
+    else {
+        this.targetTile.x = pinky.tile.x + 2*(pacman.tile.x-pinky.tile.x);
+        this.targetTile.y = pinky.tile.y + 2*(pacman.tile.y-pinky.tile.y);
+        this.targetting = 'flee';
+    }
+};
+pacman.drawTarget = function(ctx) {
+    if (!this.ai) return;
+    ctx.fillStyle = this.color;
+
+    if (this.targetting == 'flee') {
+        let px = pacman.pixel.x - pinky.pixel.x;
+        let py = pacman.pixel.y - pinky.pixel.y;
+        px = pinky.pixel.x + 2*px;
+        py = pinky.pixel.y + 2*py;
+        ctx.beginPath();
+        ctx.moveTo(pinky.pixel.x, pinky.pixel.y);
+        ctx.lineTo(px,py);
+        ctx.closePath();
+        ctx.stroke();
+        renderer.drawCenterPixelSq(ctx, px, py, targetSize);
+    }
+    else {
+        renderer.drawCenterPixelSq(ctx, pinky.pixel.x, pinky.pixel.y, targetSize);
+    };
+
+};
+pacman.getPathDistLeft = function(fromPixel, dirEnum) {
+    let distLeft = tileSize;
+    if (this.targetting == 'pinky') {
+        if (dirEnum == DIR_UP || dirEnum == DIR_DOWN)
+            distLeft = Math.abs(fromPixel.y - pinky.pixel.y);
+        else
+            distLeft = Math.abs(fromPixel.x - pinky.pixel.x);
+    }
+    else { // 'flee'
+        let px = pacman.pixel.x - pinky.pixel.x;
+        let py = pacman.pixel.y - pinky.pixel.y;
+        px = pinky.pixel.x + 2*px;
+        py = pinky.pixel.y + 2*py;
+        if (dirEnum == DIR_UP || dirEnum == DIR_DOWN)
+            distLeft = Math.abs(py - fromPixel.y);
+        else
+            distLeft = Math.abs(px - fromPixel.x);
+    }
+    return distLeft;
+};
+
+})();
+//@line 1 "src/ghostCommander.js"
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Ghost Commander
+// Determines when a ghost should be chasing a target
+
+// modes representing the ghosts' current command
+const GHOST_CMD_CHASE = 0;
+const GHOST_CMD_SCATTER = 1;
+
+const ghostCommander = (function() {
+
+    // determine if there is to be a new command issued at the given time
+    const getNewCommand = (function(){
+        let t;
+        const times = [{},{},{}];
+        // level 1
+        times[0][t=7*60] = GHOST_CMD_CHASE;
+        times[0][t+=20*60] = GHOST_CMD_SCATTER;
+        times[0][t+=7*60] = GHOST_CMD_CHASE;
+        times[0][t+=20*60] = GHOST_CMD_SCATTER;
+        times[0][t+=5*60] = GHOST_CMD_CHASE;
+        times[0][t+=20*60] = GHOST_CMD_SCATTER;
+        times[0][t+=5*60] = GHOST_CMD_CHASE;
+        // level 2-4
+        times[1][t=7*60] = GHOST_CMD_CHASE;
+        times[1][t+=20*60] = GHOST_CMD_SCATTER;
+        times[1][t+=7*60] = GHOST_CMD_CHASE;
+        times[1][t+=20*60] = GHOST_CMD_SCATTER;
+        times[1][t+=5*60] = GHOST_CMD_CHASE;
+        times[1][t+=1033*60] = GHOST_CMD_SCATTER;
+        times[1][t+=1] = GHOST_CMD_CHASE;
+        // level 5+
+        times[2][t=5*60] = GHOST_CMD_CHASE;
+        times[2][t+=20*60] = GHOST_CMD_SCATTER;
+        times[2][t+=5*60] = GHOST_CMD_CHASE;
+        times[2][t+=20*60] = GHOST_CMD_SCATTER;
+        times[2][t+=5*60] = GHOST_CMD_CHASE;
+        times[2][t+=1037*60] = GHOST_CMD_SCATTER;
+        times[2][t+=1] = GHOST_CMD_CHASE;
+
+        return function(frame) {
+            let i;
+            if (level == 1)
+                i = 0;
+            else if (level >= 2 && level <= 4)
+                i = 1;
+            else
+                i = 2;
+            const newCmd = times[i][frame];
+
+            if (gameMode == GAME_PACMAN) {
+                return newCmd;
+            }
+            else if (frame <= 27*60) { // only revearse twice in Ms. Pac-Man (two happen in first 27 seconds)
+                if (newCmd != undefined) {
+                    return GHOST_CMD_CHASE; // always chase in Ms. Pac-Man mode
+                }
+            }
+        };
+    })();
+
+    let frame;   // current frame
+    let command; // last command given to ghosts
+
+    const savedFrame = {};
+    const savedCommand = {};
+
+    // save state at time t
+    const save = function(t) {
+        savedFrame[t] = frame;
+        savedCommand[t] = command;
+    };
+
+    // load state at time t
+    const load = function(t) {
+        frame = savedFrame[t];
+        command = savedCommand[t];
+    };
+
+    return {
+        save,
+        load,
+        reset() { 
+            command = GHOST_CMD_SCATTER;
+            frame = 0;
+        },
+        update() {
+            if (!energizer.isActive()) {
+                const newCmd = getNewCommand(frame);
+                if (newCmd != undefined) {
+                    command = newCmd;
+                    for (const g of ghosts)
+                        g.reverse();
+                }
+                frame++;
+            }
+        },
+        getCommand() {
+            return command; 
+        },
+        setCommand(cmd) {
+            command = cmd;
+        },
+    };
+})();
+//@line 1 "src/ghostReleaser.js"
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Ghost Releaser
+
+// Determines when to release ghosts from home
+
+const ghostReleaser = (function(){
+    // two separate counter modes for releasing the ghosts from home
+    const MODE_PERSONAL = 0;
+    const MODE_GLOBAL = 1;
+
+    // ghost enumerations
+    const PINKY = 1;
+    const INKY = 2;
+    const CLYDE = 3;
+
+    // this is how many frames it will take to release a ghost after pacman stops eating
+    const getTimeoutLimit = function() { return (level < 5) ? 4*60 : 3*60; };
+
+    // dot limits used in personal mode to release ghost after # of dots have been eaten
+    const personalDotLimit = {};
+    personalDotLimit[PINKY] = function() { return 0; };
+    personalDotLimit[INKY] = function() { return (level==1) ? 30 : 0; };
+    personalDotLimit[CLYDE] = function() {
+        if (level == 1) return 60;
+        if (level == 2) return 50;
+        return 0;
+    };
+
+    // dot limits used in global mode to release ghost after # of dots have been eaten
+    const globalDotLimit = {};
+    globalDotLimit[PINKY] = 7;
+    globalDotLimit[INKY] = 17;
+    globalDotLimit[CLYDE] = 32;
+
+    let framesSinceLastDot; // frames elapsed since last dot was eaten
+    let mode;               // personal or global dot counter mode
+    const ghostCounts = {};   // personal dot counts for each ghost
+    let globalCount;        // global dot count
+
+    const savedGlobalCount = {};
+    const savedFramesSinceLastDot = {};
+    const savedGhostCounts = {};
+
+    // save state at time t
+    const save = function(t) {
+        savedFramesSinceLastDot[t] = framesSinceLastDot;
+        if (mode == MODE_GLOBAL) {
+            savedGlobalCount[t] = globalCount;
+        }
+        else if (mode == MODE_PERSONAL) {
+            savedGhostCounts[t] = {};
+            savedGhostCounts[t][PINKY] = ghostCounts[PINKY];
+            savedGhostCounts[t][INKY] = ghostCounts[INKY];
+            savedGhostCounts[t][CLYDE] = ghostCounts[CLYDE];
+        }
+    };
+
+    // load state at time t
+    const load = function(t) {
+        framesSinceLastDot = savedFramesSinceLastDot[t];
+        if (mode == MODE_GLOBAL) {
+            globalCount = savedGlobalCount[t];
+        }
+        else if (mode == MODE_PERSONAL) {
+            ghostCounts[PINKY] = savedGhostCounts[t][PINKY];
+            ghostCounts[INKY] = savedGhostCounts[t][INKY];
+            ghostCounts[CLYDE] = savedGhostCounts[t][CLYDE];
+        }
+    };
+
+    return {
+        save,
+        load,
+        onNewLevel() {
+            mode = MODE_PERSONAL;
+            framesSinceLastDot = 0;
+            ghostCounts[PINKY] = 0;
+            ghostCounts[INKY] = 0;
+            ghostCounts[CLYDE] = 0;
+        },
+        onRestartLevel() {
+            mode = MODE_GLOBAL;
+            framesSinceLastDot = 0;
+            globalCount = 0;
+        },
+        onDotEat() {
+            framesSinceLastDot = 0;
+
+            if (mode == MODE_GLOBAL) {
+                globalCount++;
+            }
+            else {
+                for (let i=1;i<4;i++) {
+                    if (ghosts[i].mode == GHOST_PACING_HOME) {
+                        ghostCounts[i]++;
+                        break;
+                    }
+                }
+            }
+
+        },
+        update() {
+            // use personal dot counter
+            if (mode == MODE_PERSONAL) {
+                for (const [i,g] of ghosts.entries()) {
+                    if (g.mode == GHOST_PACING_HOME) {
+                        if (ghostCounts[i] >= personalDotLimit[i]()) {
+                            g.leaveHome();
+                            return;
+                        }
+                        break;
+                    }
+                }
+            }
+            // use global dot counter
+            else if (mode == MODE_GLOBAL) {
+                if (globalCount == globalDotLimit[PINKY] && pinky.mode == GHOST_PACING_HOME) {
+                    pinky.leaveHome();
+                    return;
+                }
+                else if (globalCount == globalDotLimit[INKY] && inky.mode == GHOST_PACING_HOME) {
+                    inky.leaveHome();
+                    return;
+                }
+                else if (globalCount == globalDotLimit[CLYDE] && clyde.mode == GHOST_PACING_HOME) {
+                    globalCount = 0;
+                    mode = MODE_PERSONAL;
+                    clyde.leaveHome();
+                    return;
+                }
+            }
+
+            // also use time since last dot was eaten
+            if (framesSinceLastDot > getTimeoutLimit()) {
+                framesSinceLastDot = 0;
+                for (const g of ghosts) {
+                    if (g.mode == GHOST_PACING_HOME) {
+                        g.leaveHome();
+                        break;
+                    }
+                }
+            }
+            else
+                framesSinceLastDot++;
+        },
+    };
+})();
+//@line 1 "src/elroyTimer.js"
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Elroy Timer
+
+// Determines when to put blinky into faster elroy modes
+
+const elroyTimer = (function(){
+
+    // get the number of dots left that should trigger elroy stage #1 or #2
+    const getDotsEatenLimit = (function(){
+        const dotsLeft = [
+            [20,30,40,40,40,50,50,50,60,60,60,70,70,70,100,100,100,100,120,120,120], // elroy1
+            [10,15,20,20,20,25,25,25,30,30,30,40,40,40, 50, 50, 50, 50, 60, 60, 60]]; // elroy2
+        return function(stage) {
+            let i = level;
+            if (i>21) i = 21;
+            const pacman_max_pellets = 244;
+            return pacman_max_pellets - dotsLeft[stage-1][i-1];
+        };
+    })();
+
+    // when level restarts, blinky must wait for clyde to leave home before resuming elroy mode
+    let waitForClyde;
+
+    const savedWaitForClyde = {};
+
+    // save state at time t
+    const save = function(t) {
+        savedWaitForClyde[t] = waitForClyde;
+    };
+
+    // load state at time t
+    const load = function(t) {
+        waitForClyde = savedWaitForClyde[t];
+    };
+
+    return {
+        onNewLevel() {
+            waitForClyde = false;
+        },
+        onRestartLevel() {
+            waitForClyde = true;
+        },
+        update() {
+
+            // stop waiting for clyde when clyde leaves home
+            if (waitForClyde && clyde.mode != GHOST_PACING_HOME)
+                waitForClyde = false;
+
+            if (waitForClyde) {
+                blinky.elroy = 0;
+            }
+            else {
+                if (map.dotsEaten >= getDotsEatenLimit(2)) {
+                    blinky.elroy = 2;
+                }
+                else if (map.dotsEaten >= getDotsEatenLimit(1)) {
+                    blinky.elroy = 1;
+                }
+                else {
+                    blinky.elroy = 0;
+                }
+            }
+        },
+        save,
+        load,
+    };
+})();
+//@line 1 "src/energizer.js"
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Energizer
+
+// This handles how long the energizer lasts as well as how long the
+// points will display after eating a ghost.
+
+const energizer = (function() {
+
+    // how many seconds to display points when ghost is eaten
+    const pointsDuration = 1;
+
+    // how long to stay energized based on current level
+    const getDuration = (function(){
+        const seconds = [6,5,4,3,2,5,2,2,1,5,2,1,1,3,1,1,0,1];
+        return function() {
+            const i = level;
+            return (i > 18) ? 0 : 60*seconds[i-1];
+        };
+    })();
+
+    // how many ghost flashes happen near the end of frightened mode based on current level
+    const getFlashes = (function(){
+        const flashes = [5,5,5,5,5,5,5,5,3,5,5,3,3,5,3,3,0,3];
+        return function() {
+            const i = level;
+            return (i > 18) ? 0 : flashes[i-1];
+        };
+    })();
+
+    // "The ghosts change colors every 14 game cycles when they start 'flashing'" -Jamey Pittman
+    const flashInterval = 14;
+
+    let count;  // how long in frames energizer has been active
+    let active; // indicates if energizer is currently active
+    let points; // points that the last eaten ghost was worth
+    let pointsFramesLeft; // number of frames left to display points earned from eating ghost
+
+    const savedCount = {};
+    const savedActive = {};
+    const savedPoints = {};
+    const savedPointsFramesLeft = {};
+
+    // save state at time t
+    const save = function(t) {
+        savedCount[t] = count;
+        savedActive[t] = active;
+        savedPoints[t] = points;
+        savedPointsFramesLeft[t] = pointsFramesLeft;
+    };
+
+    // load state at time t
+    const load = function(t) {
+        count = savedCount[t];
+        active = savedActive[t];
+        points = savedPoints[t];
+        pointsFramesLeft = savedPointsFramesLeft[t];
+    };
+
+    return {
+        save,
+        load,
+        reset() {
+            count = 0;
+            active = false;
+            points = 100;
+            pointsFramesLeft = 0;
+            for (const g of ghosts)
+                g.scared = false;
+        },
+        update() {
+            if (active) {
+                if (count == getDuration())
+                    this.reset();
+                else
+                    count++;
+            }
+        },
+        activate() { 
+            active = true;
+            count = 0;
+            points = 100;
+            for (const g of ghosts) {
+                g.onEnergized();
+            }
+            if (getDuration() == 0) { // if no duration, then immediately reset
+                this.reset();
+            }
+        },
+        isActive() { return active; },
+        isFlash() { 
+            const i = Math.floor((getDuration()-count)/flashInterval);
+            return (i<=2*getFlashes()-1) ? (i%2==0) : false;
+        },
+
+        getPoints() {
+            return points;
+        },
+        addPoints() {
+            addScore(points*=2);
+            pointsFramesLeft = pointsDuration*60;
+        },
+        showingPoints() { return pointsFramesLeft > 0; },
+        updatePointsTimer() { if (pointsFramesLeft > 0) pointsFramesLeft--; },
+    };
+})();
+//@line 1 "src/fruit.js"
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Fruit
+
+const bounceFrames = (() => {
+    const U = { dx:0, dy:-1 };
+    const D = { dx:0, dy:1 };
+    const L = { dx:-1, dy:0 };
+    const R = { dx:1, dy:0 };
+    const UL = { dx:-1, dy:-1 };
+    const UR = { dx:1, dy:-1 };
+    const DL = { dx:-1, dy:1 };
+    const DR = { dx:1, dy:1 };
+    const Z = { dx:0, dy:0 };
+
+    // A 16-frame animation for moving 8 pixels either up, down, left, or right.
+    return {
+        '^': [U, U, U, U, U, U, U, U, U, Z, U, Z, Z, D, Z, D],
+        '>': [Z, UR,Z, R, Z, UR,Z, R, Z, R, Z, R, Z, DR,DR,Z],
+        '<': [Z, Z, UL,Z, L, Z, UL,Z, L, Z, L, Z, L, Z, DL,DL],
+        'v': [Z, D, D, D, D, D, D, D, D, D, D, D, U, U, Z, U],
+    };
+})();
+
+class BaseFruit {
+    constructor() {
+        // pixel
+        this.pixel = {x:0, y:0};
+
+        this.fruitHistory = {};
+
+        this.scoreDuration = 2; // number of seconds that the fruit score is on the screen
+        this.scoreFramesLeft; // frames left until the picked-up fruit score is off the screen
+        this.savedScoreFramesLeft = {};
+    }
+    isScorePresent() {
+        return this.scoreFramesLeft > 0;
+    }
+    onNewLevel() {
+        this.buildFruitHistory();
+    }
+    setCurrentFruit(i) {
+        this.currentFruitIndex = i;
+    }
+    onDotEat() {
+        if (!this.isPresent() && (map.dotsEaten == this.dotLimit1 || map.dotsEaten == this.dotLimit2)) {
+            this.initiate();
+        }
+    }
+    save(t) {
+        this.savedScoreFramesLeft[t] = this.scoreFramesLeft;
+    }
+    load(t) {
+        this.scoreFramesLeft = this.savedScoreFramesLeft[t];
+    }
+    reset() {
+        this.scoreFramesLeft = 0;
+    }
+    getCurrentFruit() {
+        return this.fruits[this.currentFruitIndex];
+    }
+    getPoints() {
+        return this.getCurrentFruit().points;
+    }
+    update() {
+        if (this.scoreFramesLeft > 0)
+            this.scoreFramesLeft--;
+    }
+    isCollide() {
+        return Math.abs(pacman.pixel.y - this.pixel.y) <= midTile.y && Math.abs(pacman.pixel.x - this.pixel.x) <= midTile.x;
+    }
+    testCollide() {
+        if (this.isPresent() && this.isCollide()) {
+            addScore(this.getPoints());
+            this.reset();
+            this.scoreFramesLeft = this.scoreDuration*60;
+        }
+    }
+}
+
+// PAC-MAN FRUIT
+
+class PacFruit extends BaseFruit {
+    constructor() {
+        super();
+        this.fruits = [
+            {name:'cherry',     points:100},
+            {name:'strawberry', points:300},
+            {name:'orange',     points:500},
+            {name:'apple',      points:700},
+            {name:'melon',      points:1000},
+            {name:'galaxian',   points:2000},
+            {name:'bell',       points:3000},
+            {name:'key',        points:5000},
+        ];
+
+        this.order = [
+            0,  // level 1
+            1,  // level 2 
+            2,  // level 3
+            2,  // level 4
+            3,  // level 5
+            3,  // level 6
+            4,  // level 7
+            4,  // level 8
+            5,  // level 9
+            5,  // level 10
+            6,  // level 11
+            6,  // level 12
+            7]; // level 13+
+
+        this.dotLimit1 = 70;
+        this.dotLimit2 = 170;
+
+        this.duration = 9; // number of seconds that the fruit is on the screen
+        this.framesLeft; // frames left until fruit is off the screen
+
+        this.savedFramesLeft = {};
+    }
+
+    onNewLevel() {
+        this.setCurrentFruit(this.getFruitIndexFromLevel(level));
+        super.onNewLevel();
+    }
+
+    getFruitFromLevel(i) {
+        return this.fruits[this.getFruitIndexFromLevel(i)];
+    }
+
+    getFruitIndexFromLevel(i) {
+        if (i > 13) {
+            i = 13;
+        }
+        return this.order[i-1];
+    }
+
+    buildFruitHistory() {
+        this.fruitHistory = {};
+        for (let i=1; i<= level; i++) {
+            this.fruitHistory[i] = this.fruits[this.getFruitIndexFromLevel(i)];
+        }
+    }
+
+    initiate() {
+        const x = 13;
+        const y = 20;
+        this.pixel.x = tileSize*(1+x)-1;
+        this.pixel.y = tileSize*y + midTile.y;
+        this.framesLeft = 60*this.duration;
+    }
+
+    isPresent() {
+        return this.framesLeft > 0;
+    }
+
+    reset() {
+        super.reset();
+        this.framesLeft = 0;
+    }
+
+    update() {
+        super.update();
+
+        if (this.framesLeft > 0)
+            this.framesLeft--;
+    }
+
+    save(t) {
+        super.save(t);
+        this.savedFramesLeft[t] = this.framesLeft;
+    }
+    load(t) {
+        super.load(t);
+        this.framesLeft = this.savedFramesLeft[t];
+    }
+}
+
+// MS. PAC-MAN FRUIT
+
+const PATH_ENTER = 0;
+const PATH_PEN = 1;
+const PATH_EXIT = 2;
+
+class MsPacFruit extends BaseFruit {
+    constructor() {
+        super();
+        this.fruits = [
+            {name: 'cherry',     points: 100},
+            {name: 'strawberry', points: 200},
+            {name: 'orange',     points: 500},
+            {name: 'pretzel',    points: 700},
+            {name: 'apple',      points: 1000},
+            {name: 'pear',       points: 2000},
+            {name: 'banana',     points: 5000},
+        ];
+
+        this.dotLimit1 = 64;
+        this.dotLimit2 = 176;
+
+        this.pen_path = "<<<<<<^^^^^^>>>>>>>>>vvvvvv<<";
+
+        this.savedIsPresent = {};
+        this.savedPixel = {};
+        this.savedPathMode = {};
+        this.savedFrame = {};
+        this.savedNumFrames = {};
+        this.savedPath = {};
+    }
+
+    shouldRandomizeFruit() {
+        return level > 7;
+    }
+
+    getFruitFromLevel(i) {
+        if (i <= 7) {
+            return this.fruits[i-1];
+        }
+        else {
+            return undefined;
+        }
+    }
+
+    onNewLevel() {
+        if (!this.shouldRandomizeFruit()) {
+            this.setCurrentFruit(level-1);
+        }
+        else {
+            this.setCurrentFruit(0);
+        }
+        super.onNewLevel();
+    }
+
+    buildFruitHistory() {
+        this.fruitHistory = {};
+        for (let i=1; i<= Math.max(level,7); i++) {
+            this.fruitHistory[i] = this.fruits[i-1];
+        }
+    }
+
+    reset() {
+        super.reset();
+
+        this.frame = 0;
+        this.numFrames = 0;
+        this.path = undefined;
+    }
+
+    initiatePath(p) {
+        this.frame = 0;
+        this.numFrames = p.length*16;
+        this.path = p;
+    }
+
+    initiate() {
+        if (this.shouldRandomizeFruit()) {
+            this.setCurrentFruit(getRandomInt(0,6));
+        }
+        const {entrances} = map.fruitPaths;
+        const e = entrances[getRandomInt(0,entrances.length-1)];
+        this.initiatePath(e.path);
+        this.pathMode = PATH_ENTER;
+        this.pixel.x = e.start.x;
+        this.pixel.y = e.start.y;
+    }
+
+    isPresent() {
+        return this.frame < this.numFrames;
+    }
+
+    move() {
+        const p = this.path[Math.floor(this.frame/16)]; // get current path frame
+        const b = bounceFrames[p][this.frame%16]; // get current bounce animation frame
+        this.pixel.x += b.dx;
+        this.pixel.y += b.dy;
+        this.frame++;
+    }
+
+    setNextPath() {
+        if (this.pathMode == PATH_ENTER) {
+            this.pathMode = PATH_PEN;
+            this.initiatePath(this.pen_path);
+        }
+        else if (this.pathMode == PATH_PEN) {
+            this.pathMode = PATH_EXIT;
+            const {exits} = map.fruitPaths;
+            const e = exits[getRandomInt(0,exits.length-1)];
+            this.initiatePath(e.path);
+        }
+        else if (this.pathMode == PATH_EXIT) {
+            this.reset();
+        }
+    }
+
+    update() {
+        super.update();
+
+        if (this.isPresent()) {
+            this.move();
+            if (this.frame == this.numFrames) {
+                this.setNextPath();
+            }
+        }
+    }
+
+    save(t) {
+        super.save(t);
+
+        this.savedPixel[t] =        this.isPresent() ? {x:this.pixel.x, y:this.pixel.y} : undefined;
+        this.savedPathMode[t] =     this.pathMode;
+        this.savedFrame[t] =        this.frame;
+        this.savedNumFrames[t] =    this.numFrames;
+        this.savedPath[t] =         this.path;
+    }
+
+    load(t) {
+        super.load(t);
+
+        if (this.savedPixel[t]) {
+            this.pixel.x =      this.savedPixel[t].x;
+            this.pixel.y =      this.savedPixel[t].y;
+        }
+        this.pathMode =     this.savedPathMode[t];
+        this.frame =        this.savedFrame[t];
+        this.numFrames =    this.savedNumFrames[t]; 
+        this.path =         this.savedPath[t];
+    }
+}
+
+let fruit;
+const pacfruit = new PacFruit();
+const mspacfruit = new MsPacFruit();
+
+const setFruitFromGameMode = function() {
+    if (gameMode == GAME_PACMAN) {
+        fruit = pacfruit;
+    }
+    else {
+        fruit = mspacfruit;
+    }
+};
+//@line 1 "src/executive.js"
+
+
+const executive = (function(){
+
+    let framePeriod = 1000/60; // length of each frame at 60Hz (updates per second)
+    let gameTime; // virtual time of the last game update
+
+    let paused = false; // flag for pausing the state updates, while still drawing
+    let running = false; // flag for truly stopping everything
+
+    let fps;
+    const updateFps = (function(){
+        // TODO: fix this to reflect the average rate of the last n frames, where 0 < n < 60
+        const length = 60;
+        const times = [];
+        let startIndex = 0;
+        let endIndex = -1;
+        let filled = false;
+
+        return function(now) {
+            if (filled) {
+                startIndex = (startIndex+1) % length;
+            }
+            endIndex = (endIndex+1) % length;
+            if (endIndex == length-1) {
+                filled = true;
+            }
+
+            times[endIndex] = now;
+
+            const seconds = (now - times[startIndex]) / 1000;
+            let frames = endIndex - startIndex;
+            if (frames < 0) {
+                frames += length;
+            }
+            fps = frames / seconds;
+        };
+    })();
+        
+
+    let reqFrame; // id of requestAnimationFrame object
+    const tick = function(now) {
+        if (gameTime == undefined) {
+            gameTime = now;
+        }
+
+        // Update fps counter.
+        updateFps(now);
+
+        // Control frame-skipping by only allowing gameTime to lag behind the current time by some amount.
+        const maxFrameSkip = 3;
+        gameTime = Math.max(gameTime, now-maxFrameSkip*framePeriod);
+
+        // Prevent any updates from being called when paused.
+        if (paused || inGameMenu.isOpen()) {
+            gameTime = now;
+        }
+
+        hud.update();
+
+        // Update the game until the gameTime surpasses the current time.
+        while (gameTime < now) {
+            state.update();
+            gameTime += framePeriod;
+        }
+
+        // Draw.
+        renderer.beginFrame();
+        state.draw();
+        if (hud.isValidState()) {
+            renderer.renderFunc(hud.draw);
+        }
+        renderer.endFrame();
+
+        // Schedule the next tick.
+        reqFrame = requestAnimationFrame(tick);
+    };
+
+    return {
+
+        getFramePeriod() {
+            return framePeriod;
+        },
+        setUpdatesPerSecond(ups) {
+            framePeriod = 1000/ups;
+            //gameTime = undefined;
+            vcr.onFramePeriodChange();
+        },
+        init() {
+            const that = this;
+            window.addEventListener('focus', function() {that.start();});
+            window.addEventListener('blur', function() {that.stop();});
+            this.start();
+        },
+        start() {
+            if (!running) {
+                reqFrame = requestAnimationFrame(tick);
+                running = true;
+            }
+        },
+        stop() {
+            if (running) {
+                cancelAnimationFrame(reqFrame);
+                running = false;
+            }
+        },
+        togglePause() { paused = !paused; },
+        isPaused() { return paused; },
+        getFps() { return fps; },
+    };
+})();
+//@line 1 "src/states.js"
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// States
+// (main loops for each state of the game)
+// state is set to any of these states, each containing an init(), draw(), and update()
+
+// current game state
+let state;
+const setState = function(s) { state = s; };
+
+// switches to another game state
+const switchState = function(nextState,fadeDuration, continueUpdate1, continueUpdate2) {
+    state = (fadeDuration) ? fadeNextState(state,nextState,fadeDuration,continueUpdate1, continueUpdate2) : nextState;
+    state.init();
+    if (executive.isPaused()) {
+        executive.togglePause();
+    }
+};
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Fade state
+
+// Creates a state that will fade from a given state to another in the given amount of time.
+// if continueUpdate1 is true, then prevState.update will be called while fading out
+// if continueUpdate2 is true, then nextState.update will be called while fading in
+const fadeNextState = function (prevState, nextState, frameDuration, continueUpdate1, continueUpdate2) {
+    let frames;
+    const midFrame = Math.floor(frameDuration/2);
+    const inFirstState = function() { return frames < midFrame; };
+    const getStateTime = function() { return frames/frameDuration*2 + (inFirstState() ? 0 : -1); };
+    let initialized = false;
+
+    return {
+        init() {
+            frames = 0;
+            initialized = true;
+        },
+        draw() {
+            if (!initialized) return;
+            const t = getStateTime();
+            if (frames < midFrame) {
+                if (prevState) {
+                    prevState.draw();
+                    renderer.setOverlayColor("rgba(0,0,0,"+t+")");
+                }
+            }
+            else if (frames > midFrame) {
+                nextState.draw();
+                renderer.setOverlayColor("rgba(0,0,0,"+(1-t)+")");
+            }
+        },
+        update() {
+
+            // update prevState
+            if (frames < midFrame) {
+                if (continueUpdate1) {
+                    prevState.update();
+                }
+            }
+            // change to nextState
+            else if (frames == midFrame) {
+                nextState.init();
+            }
+            // update nextState
+            else if (frames < frameDuration) {
+                if (continueUpdate2) {
+                    nextState.update();
+                }
+            }
+            // hand over state to nextState
+            else {
+                state = nextState;
+                initialized = false;
+            }
+
+            frames++;
+        },
+    };
+};
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Home State
+// (the home title screen state)
+
+const homeState = (function(){
+
+    const exitTo = function(s) {
+        switchState(s);
+        menu.disable();
+    };
+
+    const menu = new Menu("CHOOSE A GAME",2*tileSize,0*tileSize,mapWidth-4*tileSize,3*tileSize,tileSize,tileSize+"px ArcadeR", "#EEE");
+    const getIconAnimFrame = function(frame) {
+        frame = Math.floor(frame/3)+1;
+        frame %= 4;
+        if (frame == 3) {
+            frame = 1;
+        }
+        return frame;
+    };
+    const getOttoAnimFrame = function(frame) {
+        frame = Math.floor(frame/3);
+        frame %= 4;
+        return frame;
+    };
+    menu.addTextIconButton(getGameName(GAME_PACMAN),
+        function() {
+            setGameMode(GAME_PACMAN);
+            exitTo(preNewGameState);
+        },
+        function(ctx,x,y,frame) {
+            atlas.drawPacmanSprite(ctx,x,y,DIR_RIGHT,getIconAnimFrame(frame));
+        });
+    menu.addTextIconButton(getGameName(GAME_MSPACMAN),
+        function() {
+            setGameMode(GAME_MSPACMAN);
+            exitTo(preNewGameState);
+        },
+        function(ctx,x,y,frame) {
+            atlas.drawMsPacmanSprite(ctx,x,y,DIR_RIGHT,getIconAnimFrame(frame));
+        });
+    menu.addTextIconButton(getGameName(GAME_COOKIE),
+        function() {
+            setGameMode(GAME_COOKIE);
+            exitTo(preNewGameState);
+        },
+        function(ctx,x,y,frame) {
+            drawCookiemanSprite(ctx,x,y,DIR_RIGHT,getIconAnimFrame(frame), true);
+        });
+
+    menu.addSpacer(0.5);
+    menu.addTextIconButton("LEARN",
+        function() {
+            exitTo(learnState);
+        },
+        function(ctx,x,y,frame) {
+            atlas.drawGhostSprite(ctx,x,y,Math.floor(frame/8)%2,DIR_RIGHT,false,false,false,blinky.color);
+        });
+
+    return {
+        init() {
+            menu.enable();
+        },
+        draw() {
+            renderer.clearMapFrame();
+            renderer.beginMapClip();
+            renderer.renderFunc(menu.draw,menu);
+            renderer.endMapClip();
+        },
+        update() {
+            menu.update();
+        },
+        getMenu() {
+            return menu;
+        },
+    };
+
+})();
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Learn State
+
+const learnState = (function(){
+
+    const exitTo = function(s) {
+        switchState(s);
+        menu.disable();
+        forEachCharBtn(function (btn) {
+            btn.disable();
+        });
+        setAllVisibility(true);
+        clearCheats();
+    };
+
+    const menu = new Menu("LEARN", 2*tileSize,-tileSize,mapWidth-4*tileSize,3*tileSize,tileSize,tileSize+"px ArcadeR", "#EEE");
+    menu.addSpacer(7);
+    menu.addTextButton("BACK",
+        function() {
+            exitTo(homeState);
+        });
+    menu.backButton = menu.buttons[menu.buttonCount-1];
+    menu.noArrowKeys = true;
+
+    const pad = tileSize;
+    const w = 30;
+    const h = 30;
+    let x = mapWidth/2 - 2*(w) - 1.5*pad;
+    const y = 4*tileSize;
+    const redBtn = new Button(x,y,w,h,function(){
+        setAllVisibility(false);
+        blinky.isVisible = true;
+        setVisibility(blinky,true);
+    });
+    redBtn.setIcon(function (ctx,x,y,frame) {
+        getGhostDrawFunc()(ctx,x,y,Math.floor(frame/6)%2,DIR_DOWN,undefined,undefined,undefined,blinky.color);
+    });
+    x += w+pad;
+    const pinkBtn = new Button(x,y,w,h,function(){
+        setAllVisibility(false);
+        setVisibility(pinky,true);
+    });
+    pinkBtn.setIcon(function (ctx,x,y,frame) {
+        getGhostDrawFunc()(ctx,x,y,Math.floor(frame/6)%2,DIR_DOWN,undefined,undefined,undefined,pinky.color);
+    });
+    x += w+pad;
+    const cyanBtn = new Button(x,y,w,h,function(){
+        setAllVisibility(false);
+        setVisibility(inky,true);
+    });
+    cyanBtn.setIcon(function (ctx,x,y,frame) {
+        getGhostDrawFunc()(ctx,x,y,Math.floor(frame/6)%2,DIR_DOWN,undefined,undefined,undefined,inky.color);
+    });
+    x += w+pad;
+    const orangeBtn = new Button(x,y,w,h,function(){
+        setAllVisibility(false);
+        setVisibility(clyde,true);
+    });
+    orangeBtn.setIcon(function (ctx,x,y,frame) {
+        getGhostDrawFunc()(ctx,x,y,Math.floor(frame/6)%2,DIR_DOWN,undefined,undefined,undefined,clyde.color);
+    });
+    const forEachCharBtn = function(callback) {
+        callback(redBtn);
+        callback(pinkBtn);
+        callback(cyanBtn);
+        callback(orangeBtn);
+    };
+
+    const setVisibility = function(g,visible) {
+        g.isVisible = g.isDrawTarget = g.isDrawPath = visible;
+    };
+
+    const setAllVisibility = function(visible) {
+        setVisibility(blinky,visible);
+        setVisibility(pinky,visible);
+        setVisibility(inky,visible);
+        setVisibility(clyde,visible);
+    };
+
+    return {
+        init() {
+
+            menu.enable();
+            forEachCharBtn(function (btn) {
+                btn.enable();
+            });
+
+            // set map
+            setMap(mapLearn);
+            renderer.drawMap();
+
+            // set game parameters
+            setLevel(1);
+            setPracticeMode(false);
+            setTurboMode(false);
+            setGameMode(GAME_PACMAN);
+
+            // reset relevant game state
+            ghostCommander.reset();
+            energizer.reset();
+            ghostCommander.setCommand(GHOST_CMD_CHASE);
+            ghostReleaser.onNewLevel();
+            elroyTimer.onNewLevel();
+
+            // set ghost states
+            for (const g of ghosts) {
+                g.reset();
+                g.mode = GHOST_OUTSIDE;
+            }
+            blinky.setPos(14*tileSize-1, 13*tileSize+midTile.y);
+            pinky.setPos(15*tileSize+midTile.x, 13*tileSize+midTile.y);
+            inky.setPos(9*tileSize+midTile.x, 16*tileSize+midTile.y);
+            clyde.setPos(18*tileSize+midTile.x, 16*tileSize+midTile.y);
+
+            // set pacman state
+            pacman.reset();
+            pacman.setPos(14*tileSize-1,22*tileSize+midTile.y);
+
+            // start with red ghost
+            redBtn.onclick();
+
+        },
+        draw() {
+            renderer.blitMap();
+            renderer.renderFunc(menu.draw,menu);
+            forEachCharBtn(function (btn) {
+                renderer.renderFunc(btn.draw,btn);
+            });
+            renderer.beginMapClip();
+            renderer.drawPaths();
+            renderer.drawActors();
+            renderer.drawTargets();
+            renderer.endMapClip();
+        },
+        update() {
+            menu.update();
+            forEachCharBtn(function (btn) {
+                btn.update();
+            });
+            for (let j=0; j<2; j++) {
+                pacman.update(j);
+                for (const g of ghosts) {
+                    g.update(j);
+                }
+            }
+            for (const a of actors)
+                a.frames++;
+        },
+        getMenu() {
+            return menu;
+        },
+    };
+
+})();
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Game Title
+// (provides functions for managing the game title with clickable player and enemies below it)
+
+const gameTitleState = (function() {
+
+    let name,nameColor;
+
+    const resetTitle = function() {
+        if (yellowBtn.isSelected) {
+            name = getGameName();
+            nameColor = gameMode == GAME_COOKIE ? "#47b8ff" : pacman.color;
+        }
+        else if (redBtn.isSelected) {
+            name = getGhostNames()[0];
+            nameColor = blinky.color;
+        }
+        else if (pinkBtn.isSelected) {
+            name = getGhostNames()[1];
+            nameColor = pinky.color;
+        }
+        else if (cyanBtn.isSelected) {
+            name = getGhostNames()[2];
+            nameColor = inky.color;
+        }
+        else if (orangeBtn.isSelected) {
+            name = getGhostNames()[3];
+            nameColor = clyde.color;
+        }
+        else {
+            name = getGameName();
+            nameColor = "#FFF";
+        }
+    };
+
+    const w = 20;
+    const h = 30;
+    let x = mapWidth/2 - 3*w;
+    const y = 3*tileSize;
+    const yellowBtn = new Button(x,y,w,h,function() {
+        if (gameMode == GAME_MSPACMAN) {
+            setGameMode(GAME_OTTO);
+        }
+        else if (gameMode == GAME_OTTO) {
+            setGameMode(GAME_MSPACMAN);
+        }
+    });
+    yellowBtn.setIcon(function (ctx,x,y,frame) {
+        getPlayerDrawFunc()(ctx,x,y,DIR_RIGHT,pacman.getAnimFrame(pacman.getStepFrame(Math.floor((gameMode==GAME_PACMAN?frame+4:frame)/1.5))),true);
+    });
+
+    x += 2*w;
+    const redBtn = new Button(x,y,w,h);
+    redBtn.setIcon(function (ctx,x,y,frame) {
+        getGhostDrawFunc()(ctx,x,y,Math.floor(frame/6)%2,DIR_LEFT,undefined,undefined,undefined,blinky.color);
+    });
+
+    x += w;
+    const pinkBtn = new Button(x,y,w,h);
+    pinkBtn.setIcon(function (ctx,x,y,frame) {
+        getGhostDrawFunc()(ctx,x,y,Math.floor(frame/6)%2,DIR_LEFT,undefined,undefined,undefined,pinky.color);
+    });
+
+    x += w;
+    const cyanBtn = new Button(x,y,w,h);
+    cyanBtn.setIcon(function (ctx,x,y,frame) {
+        getGhostDrawFunc()(ctx,x,y,Math.floor(frame/6)%2,DIR_LEFT,undefined,undefined,undefined,inky.color);
+    });
+
+    x += w;
+    const orangeBtn = new Button(x,y,w,h);
+    orangeBtn.setIcon(function (ctx,x,y,frame) {
+        getGhostDrawFunc()(ctx,x,y,Math.floor(frame/6)%2,DIR_LEFT,undefined,undefined,undefined,clyde.color);
+    });
+    
+    const forEachCharBtn = function(callback) {
+        callback(yellowBtn);
+        callback(redBtn);
+        callback(pinkBtn);
+        callback(cyanBtn);
+        callback(orangeBtn);
+    };
+    forEachCharBtn(function(btn) {
+        btn.borderBlurColor = btn.borderFocusColor = "#000";
+    });
+
+    return {
+        init() {
+            resetTitle();
+            forEachCharBtn(function (btn) {
+                btn.enable();
+            });
+        },
+        shutdown() {
+            forEachCharBtn(function (btn) {
+                btn.disable();
+            });
+        },
+        draw() {
+            forEachCharBtn(function (btn) {
+                renderer.renderFunc(btn.draw,btn);
+            });
+
+            resetTitle();
+            renderer.renderFunc(function(ctx){
+                ctx.font = tileSize+"px ArcadeR";
+                ctx.fillStyle = nameColor;
+                ctx.textAlign = "center";
+                ctx.textBaseline = "top";
+                ctx.fillText(name, mapWidth/2, tileSize);
+            });
+        },
+        update() {
+            forEachCharBtn(function (btn) {
+                btn.update();
+            });
+        },
+        getYellowBtn() {
+            return yellowBtn;
+        },
+    };
+
+})();
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Pre New Game State
+// (the main menu for the currently selected game)
+
+const preNewGameState = (function() {
+
+    const exitTo = function(s,fade) {
+        gameTitleState.shutdown();
+        menu.disable();
+        switchState(s,fade);
+    };
+
+    const menu = new Menu("",2*tileSize,0,mapWidth-4*tileSize,3*tileSize,tileSize,tileSize+"px ArcadeR", "#EEE");
+
+    menu.addSpacer(2);
+    menu.addTextButton("PLAY",
+        function() { 
+            setPracticeMode(false);
+            setTurboMode(false);
+            newGameState.setStartLevel(1);
+            exitTo(newGameState, 60);
+        });
+    menu.addTextButton("PLAY TURBO",
+        function() { 
+            setPracticeMode(false);
+            setTurboMode(true);
+            newGameState.setStartLevel(1);
+            exitTo(newGameState, 60);
+        });
+    menu.addTextButton("PRACTICE",
+        function() { 
+            setPracticeMode(true);
+            setTurboMode(false);
+            exitTo(selectActState);
+        });
+    menu.addSpacer(0.5);
+    menu.addTextButton("CUTSCENES",
+        function() { 
+            exitTo(cutSceneMenuState);
+        });
+    menu.addTextButton("ABOUT",
+        function() { 
+            exitTo(aboutGameState);
+        });
+    menu.addSpacer(0.5);
+    menu.addTextButton("BACK",
+        function() {
+            exitTo(homeState);
+        });
+    menu.backButton = menu.buttons[menu.buttonCount-1];
+
+    return {
+        init() {
+            menu.enable();
+            gameTitleState.init();
+            setMap(undefined);
+        },
+        draw() {
+            renderer.clearMapFrame();
+            renderer.renderFunc(menu.draw,menu);
+            gameTitleState.draw();
+        },
+        update() {
+            gameTitleState.update();
+        },
+        getMenu() {
+            return menu;
+        },
+    };
+})();
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Select Act State
+
+const selectActState = (function() {
+
+    // TODO: create ingame menu option to return to this menu (with last act played present)
+
+    let menu;
+    const numActs = 4;
+    const defaultStartAct = 1;
+    let startAct = defaultStartAct;
+
+    const exitTo = function(state,fade) {
+        gameTitleState.shutdown();
+        menu.disable();
+        switchState(state,fade);
+    };
+
+    const chooseLevelFromAct = function(act) {
+        selectLevelState.setAct(act);
+        exitTo(selectLevelState);
+    };
+
+    const scrollToAct = function(act) {
+        // just rebuild the menu
+        selectActState.setStartAct(act);
+        exitTo(selectActState);
+    };
+
+    const drawArrow = function(ctx,x,y,dir) {
+        ctx.save();
+        ctx.translate(x,y);
+        ctx.scale(1,dir);
+        ctx.beginPath();
+        ctx.moveTo(0,-tileSize/2);
+        ctx.lineTo(tileSize,tileSize/2);
+        ctx.lineTo(-tileSize,tileSize/2);
+        ctx.closePath();
+        ctx.fillStyle = "#FFF";
+        ctx.fill();
+        ctx.restore();
+    };
+
+    const buildMenu = function(act) {
+        // set buttons starting at the given act
+        startAct = act;
+
+        menu = new Menu("",2*tileSize,0,mapWidth-4*tileSize,3*tileSize,tileSize,tileSize+"px ArcadeR", "#EEE");
+        menu.addSpacer(2);
+        menu.addIconButton(
+            function(ctx,x,y) {
+                drawArrow(ctx,x,y,1);
+            },
+            function() {
+                scrollToAct(Math.max(1,act-numActs));
+            });
+        for (let i=0; i<numActs; i++) {
+            const range = getActRange(act+i);
+            menu.addTextIconButton("LEVELS "+range[0]+"-"+range[1],
+                (function(j){
+                    return function() { 
+                        chooseLevelFromAct(act+j);
+                    };
+                })(i),
+                (function(j){
+                    return function(ctx,x,y) {
+                        const s = tileSize/3*2;
+                        const r = tileSize/6;
+                        ctx.save();
+                        ctx.translate(x,y);
+                        ctx.beginPath();
+                        ctx.moveTo(-s,0);
+                        ctx.lineTo(-s,-r);
+                        ctx.quadraticCurveTo(-s,-s,-r,-s);
+                        ctx.lineTo(r,-s);
+                        ctx.quadraticCurveTo(s,-s,s,-r);
+                        ctx.lineTo(s,r);
+                        ctx.quadraticCurveTo(s,s,r,s);
+                        ctx.lineTo(-r,s);
+                        ctx.quadraticCurveTo(-s,s,-s,r);
+                        ctx.closePath();
+                        const colors = getActColor(act+j);
+                        ctx.fillStyle = colors.wallFillColor;
+                        ctx.strokeStyle = colors.wallStrokeColor;
+                        ctx.fill();
+                        ctx.stroke();
+                        ctx.restore();
+                    };
+                })(i));
+        }
+        menu.addIconButton(
+            function(ctx,x,y) {
+                drawArrow(ctx,x,y,-1);
+            },
+            function() {
+                scrollToAct(act+numActs);
+            });
+        menu.addTextButton("BACK",
+            function() {
+                exitTo(preNewGameState);
+            });
+        menu.backButton = menu.buttons[menu.buttonCount-1];
+        menu.enable();
+    };
+
+    return {
+        init() {
+            buildMenu(startAct);
+            gameTitleState.init();
+        },
+        setStartAct(act) {
+            startAct = act;
+        },
+        draw() {
+            renderer.clearMapFrame();
+            renderer.renderFunc(menu.draw,menu);
+            gameTitleState.draw();
+        },
+        update() {
+            gameTitleState.update();
+        },
+        getMenu() {
+            return menu;
+        },
+    };
+})();
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Select Level State
+
+const selectLevelState = (function() {
+
+    let menu;
+    let act = 1;
+
+    const exitTo = function(state,fade) {
+        gameTitleState.shutdown();
+        menu.disable();
+        switchState(state,fade);
+    };
+
+    const playLevel = function(i) {
+        // TODO: set level (will have to set up fruit history correctly)
+        newGameState.setStartLevel(i);
+        exitTo(newGameState, 60);
+    };
+
+    const buildMenu = function(act) {
+        const range = getActRange(act);
+
+        menu = new Menu("",2*tileSize,0,mapWidth-4*tileSize,3*tileSize,tileSize,tileSize+"px ArcadeR", "#EEE");
+        menu.addSpacer(2);
+        if (range[0] < range[1]) {
+            for (let i=range[0]; i<=range[1]; i++) {
+                menu.addTextIconButton("LEVEL "+i,
+                    (function(j){
+                        return function() { 
+                            playLevel(j);
+                        };
+                    })(i),
+                    (function(j){
+                        return function(ctx,x,y) {
+                            const f = fruit.getFruitFromLevel(j);
+                            if (f) {
+                                atlas.drawFruitSprite(ctx,x,y,f.name);
+                            }
+                        };
+                    })(i));
+            }
+        }
+        menu.addSpacer(0.5);
+        menu.addTextButton("BACK",
+            function() {
+                exitTo(selectActState);
+            });
+        menu.backButton = menu.buttons[menu.buttonCount-1];
+        menu.enable();
+    };
+
+    return {
+        init() {
+            setFruitFromGameMode();
+            buildMenu(act);
+            gameTitleState.init();
+        },
+        setAct(a) {
+            act = a;
+        },
+        draw() {
+            renderer.clearMapFrame();
+            renderer.renderFunc(menu.draw,menu);
+            gameTitleState.draw();
+        },
+        update() {
+            gameTitleState.update();
+        },
+        getMenu() {
+            return menu;
+        },
+    };
+})();
+
+//////////////////////////////////////////////////////////////////////////////////////
+// About Game State
+// (the screen shows some information about the game)
+
+const aboutGameState = (function() {
+
+    const exitTo = function(s,fade) {
+        gameTitleState.shutdown();
+        menu.disable();
+        switchState(s,fade);
+    };
+
+    const menu = new Menu("",2*tileSize,0,mapWidth-4*tileSize,3*tileSize,tileSize,tileSize+"px ArcadeR", "#EEE");
+
+    menu.addSpacer(8);
+    menu.addTextButton("BACK",
+        function() {
+            exitTo(preNewGameState);
+        });
+    menu.backButton = menu.buttons[menu.buttonCount-1];
+
+    let desc;
+    let numDescLines;
+
+    const drawDesc = function(ctx){
+        ctx.font = tileSize+"px ArcadeR";
+        ctx.fillStyle = "#FFF";
+        ctx.textBaseline = "top";
+        ctx.textAlign = "center";
+        const y = 12*tileSize;
+        for (let i=0; i<numDescLines; i++) {
+            ctx.fillText(desc[i],14*tileSize,y+i*2*tileSize);
+        }
+    };
+
+    return {
+        init() {
+            menu.enable();
+            gameTitleState.init();
+        },
+        draw() {
+            renderer.clearMapFrame();
+            renderer.renderFunc(menu.draw,menu);
+            gameTitleState.draw();
+            desc = getGameDescription();
+            numDescLines = desc.length;
+            renderer.renderFunc(drawDesc);
+        },
+        update() {
+            gameTitleState.update();
+        },
+        getMenu() {
+            return menu;
+        },
+    };
+})();
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Cut Scene Menu State
+// (the screen that shows a list of the available cutscenes for the current game)
+
+const cutSceneMenuState = (function() {
+
+    const exitTo = function(s,fade) {
+        gameTitleState.shutdown();
+        menu.disable();
+        switchState(s,fade);
+    };
+
+    const exitToCutscene = function(s) {
+        if (s) {
+            gameTitleState.shutdown();
+            menu.disable();
+            playCutScene(s,cutSceneMenuState);
+        }
+    };
+
+    const menu = new Menu("",2*tileSize,0,mapWidth-4*tileSize,3*tileSize,tileSize,tileSize+"px ArcadeR", "#EEE");
+
+    menu.addSpacer(2);
+    menu.addTextButton("CUTSCENE 1",
+        function() { 
+            exitToCutscene(cutscenes[gameMode][0]);
+        });
+    menu.addTextButton("CUTSCENE 2",
+        function() { 
+            exitToCutscene(cutscenes[gameMode][1]);
+        });
+    menu.addTextButton("CUTSCENE 3",
+        function() { 
+            exitToCutscene(cutscenes[gameMode][2]);
+        });
+    menu.addSpacer();
+    menu.addTextButton("BACK",
+        function() {
+            exitTo(preNewGameState);
+        });
+    menu.backButton = menu.buttons[menu.buttonCount-1];
+
+    return {
+        init() {
+            menu.enable();
+            gameTitleState.init();
+            setLevel(0);
+        },
+        draw() {
+            renderer.clearMapFrame();
+            renderer.renderFunc(menu.draw,menu);
+            gameTitleState.draw();
+        },
+        update() {
+            gameTitleState.update();
+        },
+        getMenu() {
+            return menu;
+        },
+    };
+})();
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Score State
+// (the high score screen state)
+
+const scoreState = (function(){
+
+    const exitTo = function(s) {
+        switchState(s);
+        menu.disable();
+    };
+
+    const menu = new Menu("", 2*tileSize,mapHeight-6*tileSize,mapWidth-4*tileSize,3*tileSize,tileSize,tileSize+"px ArcadeR", "#EEE");
+    menu.addTextButton("BACK",
+        function() {
+            exitTo(homeState);
+        });
+    menu.backButton = menu.buttons[menu.buttonCount-1];
+
+    let frame = 0;
+
+    const bulbs = {};
+    let numBulbs;
+    (function(){
+        const x = -1.5*tileSize;
+        const y = -1*tileSize;
+        const w = 18*tileSize;
+        const h = 29*tileSize;
+        const s = 3;
+
+        let i=0;
+        let x0 = x;
+        let y0 = y;
+        const addBulb = function(x,y) { bulbs[i++] = { x:x, y:y }; };
+        for (; y0<y+h; y0+=s) { addBulb(x0,y0); }
+        for (; x0<x+w; x0+=s) { addBulb(x0,y0); }
+        for (; y0>y; y0-=s) { addBulb(x0,y0); }
+        for (; x0>x; x0-=s) { addBulb(x0,y0); }
+
+        numBulbs = i;
+    })();
+
+    const drawScoreBox = function(ctx) {
+
+        // draw chaser lights around the marquee
+        ctx.fillStyle = "#555";
+        const s=2;
+        for (let i=0; i<numBulbs; i++) {
+            const b = bulbs[i];
+            ctx.fillRect(b.x, b.y, s, s);
+        }
+        ctx.fillStyle = "#FFF";
+        for (let i=0; i<63; i++) {
+            const b = bulbs[(i*4+Math.floor(frame/2))%numBulbs];
+            ctx.fillRect(b.x, b.y, s, s);
+        }
+
+        ctx.font = tileSize+"px ArcadeR";
+        ctx.textBaseline = "top";
+        ctx.textAlign = "right";
+        const scoreColor = "#AAA";
+        const captionColor = "#444";
+
+        const x = 9*tileSize;
+        let y = 0;
+        ctx.fillStyle = "#FFF"; ctx.fillText("HIGH SCORES", x+4*tileSize,y);
+        y += tileSize*4;
+
+        const drawContrails = function(x,y) {
+            ctx.lineWidth = 1.0;
+            ctx.lineCap = "round";
+            ctx.strokeStyle = "rgba(255,255,255,0.5)";
+
+            ctx.save();
+            ctx.translate(-2.5,0);
+
+            for (let dy=-4; dy<=4; dy+=2) {
+                ctx.beginPath();
+                ctx.moveTo(x+tileSize,y+dy);
+                ctx.lineTo(x+tileSize*(Math.random()*0.5+1.5),y+dy);
+                ctx.stroke();
+            }
+            ctx.restore();
+
+        };
+
+        ctx.fillStyle = scoreColor; ctx.fillText(highScores[0], x,y);
+        atlas.drawPacmanSprite(ctx,x+2*tileSize,y+tileSize/2,DIR_LEFT,1);
+        y += tileSize*2;
+        ctx.fillStyle = scoreColor; ctx.fillText(highScores[1], x,y);
+        drawContrails(x+2*tileSize,y+tileSize/2);
+        atlas.drawPacmanSprite(ctx,x+2*tileSize,y+tileSize/2,DIR_LEFT,1);
+
+        y += tileSize*3;
+        ctx.fillStyle = scoreColor; ctx.fillText(highScores[2], x,y);
+        atlas.drawMsPacmanSprite(ctx,x+2*tileSize,y+tileSize/2,DIR_LEFT,1);
+        y += tileSize*2;
+        ctx.fillStyle = scoreColor; ctx.fillText(highScores[3], x,y);
+        drawContrails(x+2*tileSize,y+tileSize/2);
+        atlas.drawMsPacmanSprite(ctx,x+2*tileSize,y+tileSize/2,DIR_LEFT,1);
+
+        y += tileSize*3;
+        ctx.fillStyle = scoreColor; ctx.fillText(highScores[6], x,y);
+        atlas.drawOttoSprite(ctx,x+2*tileSize,y+tileSize/2,DIR_LEFT,0);
+        y += tileSize*2;
+        ctx.fillStyle = scoreColor; ctx.fillText(highScores[7], x,y);
+        drawContrails(x+2*tileSize,y+tileSize/2);
+        atlas.drawOttoSprite(ctx,x+2*tileSize,y+tileSize/2,DIR_LEFT,0);
+
+        y += tileSize*3;
+        ctx.fillStyle = scoreColor; ctx.fillText(highScores[4], x,y);
+        atlas.drawCookiemanSprite(ctx,x+2*tileSize,y+tileSize/2,DIR_LEFT,1);
+        y += tileSize*2;
+        ctx.fillStyle = scoreColor; ctx.fillText(highScores[5], x,y);
+        drawContrails(x+2*tileSize,y+tileSize/2);
+        atlas.drawCookiemanSprite(ctx,x+2*tileSize,y+tileSize/2,DIR_LEFT,1);
+    };
+
+    const drawFood = function(ctx) {
+        ctx.globalAlpha = 0.5;
+        ctx.font = tileSize + "px sans-serif";
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "left";
+
+        let x = 20*tileSize;
+        let y = 0;
+
+        ctx.fillStyle = "#ffb8ae";
+        ctx.fillRect(x-1,y-1.5,2,2);
+        ctx.fillStyle = "#FFF";
+        ctx.fillText("10",x+tileSize,y);
+        y += 1.5*tileSize;
+
+        ctx.fillStyle = "#ffb8ae";
+        ctx.beginPath();
+        ctx.arc(x,y-0.5,tileSize/2,0,Math.PI*2);
+        ctx.fill();
+        ctx.fillStyle = "#FFF";
+        ctx.fillText("50",x+tileSize,y);
+
+        y += 3*tileSize;
+        atlas.drawGhostSprite(ctx,x,y,0,DIR_RIGHT,true);
+        atlas.drawGhostPoints(ctx,x+2*tileSize,y,200);
+
+        const alpha = ctx.globalAlpha;
+
+        y += 2*tileSize;
+        ctx.globalAlpha = alpha*0.5;
+        atlas.drawGhostSprite(ctx,x,y,0,DIR_RIGHT,true);
+        ctx.globalAlpha = alpha;
+        atlas.drawGhostSprite(ctx,x+2*tileSize,y,0,DIR_RIGHT,true);
+        atlas.drawGhostPoints(ctx,x+4*tileSize,y,400);
+
+        y += 2*tileSize;
+        ctx.globalAlpha = alpha*0.5;
+        atlas.drawGhostSprite(ctx,x,y,0,DIR_RIGHT,true);
+        atlas.drawGhostSprite(ctx,x+2*tileSize,y,0,DIR_RIGHT,true);
+        ctx.globalAlpha = alpha;
+        atlas.drawGhostSprite(ctx,x+4*tileSize,y,0,DIR_RIGHT,true);
+        atlas.drawGhostPoints(ctx,x+6*tileSize,y,800);
+
+        y += 2*tileSize;
+        ctx.globalAlpha = alpha*0.5;
+        atlas.drawGhostSprite(ctx,x,y,0,DIR_RIGHT,true);
+        atlas.drawGhostSprite(ctx,x+2*tileSize,y,0,DIR_RIGHT,true);
+        atlas.drawGhostSprite(ctx,x+4*tileSize,y,0,DIR_RIGHT,true);
+        ctx.globalAlpha = alpha;
+        atlas.drawGhostSprite(ctx,x+6*tileSize,y,0,DIR_RIGHT,true);
+        atlas.drawGhostPoints(ctx,x+8*tileSize,y,1600);
+
+        const mspac_fruits = [
+            {name: 'cherry',     points: 100},
+            {name: 'strawberry', points: 200},
+            {name: 'orange',     points: 500},
+            {name: 'pretzel',    points: 700},
+            {name: 'apple',      points: 1000},
+            {name: 'pear',       points: 2000},
+            {name: 'banana',     points: 5000},
+        ];
+
+        const pac_fruits = [
+            {name:'cherry',     points:100},
+            {name:'strawberry', points:300},
+            {name:'orange',     points:500},
+            {name:'apple',      points:700},
+            {name:'melon',      points:1000},
+            {name:'galaxian',   points:2000},
+            {name:'bell',       points:3000},
+            {name:'key',        points:5000},
+        ];
+
+        y += 3*tileSize;
+        for (let i=0; i<pac_fruits.length; i++) {
+            const f = pac_fruits[i];
+            atlas.drawFruitSprite(ctx,x,y,f.name);
+            atlas.drawPacFruitPoints(ctx,x+2*tileSize,y,f.points);
+            y += 2*tileSize;
+        }
+        x += 6*tileSize;
+        y = 13.5*tileSize;
+        for (let i=0; i<mspac_fruits.length; i++) {
+            const f = mspac_fruits[i];
+            atlas.drawFruitSprite(ctx,x,y,f.name);
+            atlas.drawMsPacFruitPoints(ctx,x+2*tileSize,y,f.points);
+            y += 2*tileSize;
+        }
+        ctx.globalAlpha = 1;
+    };
+
+    return {
+        init() {
+            menu.enable();
+        },
+        draw() {
+            renderer.clearMapFrame();
+            renderer.renderFunc(drawScoreBox);
+            renderer.renderFunc(drawFood);
+            renderer.renderFunc(menu.draw,menu);
+        },
+        update() {
+            menu.update();
+            frame++;
+        },
+        getMenu() {
+            return menu;
+        },
+    };
+
+})();
+
+//////////////////////////////////////////////////////////////////////////////////////
+// About State
+// (the about screen state)
+
+const aboutState = (function(){
+
+    const exitTo = function(s) {
+        switchState(s);
+        menu.disable();
+    };
+
+    const menu = new Menu("", 2*tileSize,mapHeight-11*tileSize,mapWidth-4*tileSize,3*tileSize,tileSize,tileSize+"px ArcadeR", "#EEE");
+    menu.addTextButton("GO TO PROJECT PAGE",
+        function() {
+            window.open("https://github.com/shaunew/Pac-Man");
+        });
+    menu.addTextButton("BACK",
+        function() {
+            exitTo(homeState);
+        });
+    menu.backButton = menu.buttons[menu.buttonCount-1];
+
+    const drawBody = function(ctx) {
+        ctx.font = tileSize+"px ArcadeR";
+        ctx.textBaseline = "top";
+        ctx.textAlign = "left";
+
+        const x = 2*tileSize;
+        let y = 0*tileSize;
+        ctx.fillStyle = "#0FF";
+        ctx.fillText("DEVELOPER", x,y);
+        y += tileSize*2;
+        ctx.fillStyle = "#777";
+        ctx.fillText("SHAUN WILLIAMS", x,y);
+
+        y += tileSize*4;
+        ctx.fillStyle = "#0FF";
+        ctx.fillText("REVERSE-ENGINEERS",x,y);
+        y += tileSize*2;
+        ctx.fillStyle = "#777";
+        ctx.fillText("JAMEY PITTMAN",x,y);
+        y += tileSize*2;
+        ctx.fillText("BART GRANTHAM",x,y);
+
+        y += tileSize*4;
+        ctx.fillStyle = "#FF0";
+        ctx.fillText("PAC-MAN",x,y);
+        y += tileSize*2;
+        ctx.fillStyle = "#777";
+        ctx.fillText("NAMCO",x,y);
+
+        y += tileSize*4;
+        ctx.fillStyle = "#FF0";
+        ctx.fillText("MS. PAC-MAN / CRAZY OTTO",x,y);
+        y += tileSize*2;
+        ctx.fillStyle = "#777";
+        ctx.fillText("GENERAL COMPUTING",x,y);
+    };
+
+    return {
+        init() {
+            menu.enable();
+            galagaStars.init();
+        },
+        draw() {
+            renderer.clearMapFrame();
+            renderer.beginMapClip();
+            renderer.renderFunc(galagaStars.draw);
+            renderer.renderFunc(drawBody);
+            renderer.renderFunc(menu.draw,menu);
+            renderer.endMapClip();
+        },
+        update() {
+            galagaStars.update();
+            menu.update();
+        },
+        getMenu() {
+            return menu;
+        },
+    };
+
+})();
+
+////////////////////////////////////////////////////
+// New Game state
+// (state when first starting a new game)
+
+const newGameState = (function() {
+    let frames;
+    const duration = 2;
+    let startLevel = 1;
+
+    return {
+        init() {
+            clearCheats();
+            frames = 0;
+            setLevel(startLevel-1);
+            setExtraLives(practiceMode ? Infinity : 3);
+            setScore(0);
+            setFruitFromGameMode();
+            readyNewState.init();
+        },
+        setStartLevel(i) {
+            startLevel = i;
+        },
+        draw() {
+            if (!map)
+                return;
+            renderer.blitMap();
+            renderer.drawScore();
+            renderer.drawMessage("PLAYER ONE", "#0FF", 9, 14);
+            renderer.drawReadyMessage();
+        },
+        update() {
+            if (frames == duration*60) {
+                extraLives--;
+                state = readyNewState;
+                renderer.drawMap();
+            }
+            else 
+                frames++;
+        },
+    };
+})();
+
+////////////////////////////////////////////////////
+// Ready state
+// (state when map is displayed and pausing before play)
+
+const readyState =  (function(){
+    let frames;
+    const duration = 2;
+    
+    return {
+        init() {
+            for (const a of actors)
+                a.reset();
+            ghostCommander.reset();
+            fruit.reset();
+            energizer.reset();
+            map.resetTimeEaten();
+            frames = 0;
+            vcr.init();
+        },
+        draw() {
+            if (!map)
+                return;
+            renderer.blitMap();
+            renderer.drawScore();
+            renderer.drawActors();
+            renderer.drawReadyMessage();
+        },
+        update() {
+            if (frames == duration*60)
+                switchState(playState);
+            else
+                frames++;
+        },
+    };
+})();
+
+////////////////////////////////////////////////////
+// Ready New Level state
+// (ready state when pausing before new level)
+
+const readyNewState = newChildObject(readyState, {
+
+    init() {
+
+        // increment level and ready the next map
+        setLevel(level+1);
+        if (gameMode == GAME_PACMAN) {
+            setMap(mapPacman);
+        }
+        else if (gameMode == GAME_MSPACMAN || gameMode == GAME_OTTO) {
+            setNextMsPacMap();
+        }
+        else if (gameMode == GAME_COOKIE) {
+            setNextCookieMap();
+        }
+        map.resetCurrent();
+        fruit.onNewLevel();
+        renderer.drawMap();
+
+        // notify other objects of new level
+        ghostReleaser.onNewLevel();
+        elroyTimer.onNewLevel();
+
+        // inherit attributes from readyState
+        readyState.init.call(this);
+    },
+});
+
+////////////////////////////////////////////////////
+// Ready Restart Level state
+// (ready state when pausing before restarted level)
+
+const readyRestartState = newChildObject(readyState, {
+
+    init() {
+        extraLives--;
+        ghostReleaser.onRestartLevel();
+        elroyTimer.onRestartLevel();
+        renderer.drawMap();
+
+        // inherit attributes from readyState
+        readyState.init.call(this);
+    },
+});
+
+////////////////////////////////////////////////////
+// Play state
+// (state when playing the game)
+
+const playState = {
+    init() { 
+        if (practiceMode) {
+            vcr.reset();
+        }
+    },
+    draw() {
+        renderer.setLevelFlash(false);
+        renderer.blitMap();
+        renderer.drawScore();
+        renderer.beginMapClip();
+        renderer.drawFruit();
+        renderer.drawPaths();
+        renderer.drawActors();
+        renderer.drawTargets();
+        renderer.endMapClip();
+    },
+
+    // handles collision between pac-man and ghosts
+    // returns true if collision happened
+    isPacmanCollide() {
+        for (const g of ghosts) {
+            if (g.tile.x == pacman.tile.x && g.tile.y == pacman.tile.y && g.mode == GHOST_OUTSIDE) {
+                if (g.scared) { // eat ghost
+                    energizer.addPoints();
+                    g.onEaten();
+                }
+                else if (pacman.invincible) // pass through ghost
+                    continue;
+                else // killed by ghost
+                    switchState(deadState);
+                return true;
+            }
+        }
+        return false;
+    },
+    update() {
+        
+        if (vcr.isSeeking()) {
+            vcr.seek();
+        }
+        else {
+            // record current state
+            if (vcr.getMode() == VCR_RECORD) {
+                vcr.record();
+            }
+
+            const maxSteps = 2;
+            let skip = false;
+
+            // skip this frame if needed,
+            // but update ghosts running home
+            if (energizer.showingPoints()) {
+                for (let j=0; j<maxSteps; j++)
+                    for (const g of ghosts)
+                        if (g.mode == GHOST_GOING_HOME || g.mode == GHOST_ENTERING_HOME)
+                            g.update(j);
+                energizer.updatePointsTimer();
+                skip = true;
+            }
+            else { // make ghosts go home immediately after points disappear
+                for (const g of ghosts)
+                    if (g.mode == GHOST_EATEN) {
+                        g.mode = GHOST_GOING_HOME;
+                        g.targetting = 'door';
+                    }
+            }
+            
+            if (!skip) {
+
+                // update counters
+                ghostReleaser.update();
+                ghostCommander.update();
+                elroyTimer.update();
+                fruit.update();
+                energizer.update();
+
+                // update actors one step at a time
+                for (let j=0; j<maxSteps; j++) {
+
+                    // advance pacman
+                    pacman.update(j);
+
+                    // test collision with fruit
+                    fruit.testCollide();
+
+                    // finish level if all dots have been eaten
+                    if (map.allDotsEaten()) {
+                        //this.draw();
+                        switchState(finishState);
+                        break;
+                    }
+
+                    // test pacman collision before and after updating ghosts
+                    // (redundant to prevent pass-throughs)
+                    // (if collision happens, stop immediately.)
+                    if (this.isPacmanCollide()) break;
+                    for (const g of ghosts) g.update(j);
+                    if (this.isPacmanCollide()) break;
+                }
+
+                // update frame counts
+                for (const a of actors)
+                    a.frames++;
+            }
+        }
+    },
+};
+
+////////////////////////////////////////////////////
+// Script state
+// (a state that triggers functions at certain times)
+
+const scriptState = (function(){
+
+    return {
+        init() {
+            this.frames = 0;        // frames since state began
+            this.triggerFrame = 0;  // frames since last trigger
+
+            const trigger = this.triggers[0];
+            this.drawFunc = trigger ? trigger.draw : undefined;   // current draw function
+            this.updateFunc = trigger ? trigger.update : undefined; // current update function
+        },
+        update() {
+
+            // if trigger is found for current time,
+            // call its init() function
+            // and store its draw() and update() functions
+            const trigger = this.triggers[this.frames];
+            if (trigger) {
+                if (trigger.init) trigger.init();
+                this.drawFunc = trigger.draw;
+                this.updateFunc = trigger.update;
+                this.triggerFrame = 0;
+            }
+
+            // call the last trigger's update function
+            if (this.updateFunc) 
+                this.updateFunc(this.triggerFrame);
+
+            this.frames++;
+            this.triggerFrame++;
+        },
+        draw() {
+            // call the last trigger's draw function
+            if (this.drawFunc) 
+                this.drawFunc(this.triggerFrame);
+        },
+    };
+})();
+
+////////////////////////////////////////////////////
+// Seekable Script state
+// (a script state that can be controled by the VCR)
+
+const seekableScriptState = newChildObject(scriptState, {
+
+    init() {
+        scriptState.init.call(this);
+        this.savedFrames = {};
+        this.savedTriggerFrame = {};
+        this.savedDrawFunc = {};
+        this.savedUpdateFunc = {};
+    },
+
+    save(t) {
+        this.savedFrames[t] = this.frames;
+        this.savedTriggerFrame[t] = this.triggerFrame;
+        this.savedDrawFunc[t] = this.drawFunc;
+        this.savedUpdateFunc[t] = this.updateFunc;
+    },
+    load(t) {
+        this.frames = this.savedFrames[t];
+        this.triggerFrame = this.savedTriggerFrame[t];
+        this.drawFunc = this.savedDrawFunc[t];
+        this.updateFunc = this.savedUpdateFunc[t];
+    },
+    update() {
+        if (vcr.isSeeking()) {
+            vcr.seek();
+        }
+        else {
+            if (vcr.getMode() == VCR_RECORD) {
+                vcr.record();
+            }
+            scriptState.update.call(this);
+        }
+    },
+    draw() {
+        if (this.drawFunc) {
+            scriptState.draw.call(this);
+        }
+    },
+});
+
+////////////////////////////////////////////////////
+// Dead state
+// (state when player has lost a life)
+
+const deadState = (function() {
+    
+    // this state will always have these drawn
+    const commonDraw = function() {
+        renderer.blitMap();
+        renderer.drawScore();
+    };
+
+    return newChildObject(seekableScriptState, {
+
+        // script functions for each time
+        triggers: {
+            0: { // freeze
+                update() {
+                    for (const g of ghosts) 
+                        g.frames++; // keep animating ghosts
+                },
+                draw() {
+                    commonDraw();
+                    renderer.beginMapClip();
+                    renderer.drawFruit();
+                    renderer.drawActors();
+                    renderer.endMapClip();
+                }
+            },
+            60: {
+                draw() { // isolate pacman
+                    commonDraw();
+                    renderer.beginMapClip();
+                    renderer.drawPlayer();
+                    renderer.endMapClip();
+                },
+            },
+            120: {
+                draw(t) { // dying animation
+                    commonDraw();
+                    renderer.beginMapClip();
+                    renderer.drawDyingPlayer(t/75);
+                    renderer.endMapClip();
+                },
+            },
+            195: {
+                draw() {
+                    commonDraw();
+                    renderer.beginMapClip();
+                    renderer.drawDyingPlayer(1);
+                    renderer.endMapClip();
+                },
+            },
+            240: {
+                draw() {
+                    commonDraw();
+                    renderer.beginMapClip();
+                    renderer.drawDyingPlayer(1);
+                    renderer.endMapClip();
+                },
+                init() { // leave
+                    switchState( extraLives == 0 ? overState : readyRestartState);
+                }
+            },
+        },
+    });
+})();
+
+////////////////////////////////////////////////////
+// Finish state
+// (state when player has completed a level)
+
+const finishState = (function(){
+
+    // this state will always have these drawn
+    const commonDraw = function() {
+        renderer.blitMap();
+        renderer.drawScore();
+
+        renderer.beginMapClip();
+        renderer.drawPlayer();
+        renderer.endMapClip();
+    };
+    
+    // flash the floor and draw
+    const flashFloorAndDraw = function(on) {
+        renderer.setLevelFlash(on);
+        commonDraw();
+    };
+
+    return newChildObject(seekableScriptState, {
+
+        // script functions for each time
+        triggers: {
+            0:   { draw() {
+                    renderer.setLevelFlash(false);
+                    renderer.blitMap();
+                    renderer.drawScore();
+                    renderer.beginMapClip();
+                    renderer.drawFruit();
+                    renderer.drawActors();
+                    renderer.drawTargets();
+                    renderer.endMapClip();
+            } },
+            120:  { draw() { flashFloorAndDraw(true); } },
+            132: { draw() { flashFloorAndDraw(false); } },
+            144: { draw() { flashFloorAndDraw(true); } },
+            156: { draw() { flashFloorAndDraw(false); } },
+            168: { draw() { flashFloorAndDraw(true); } },
+            180: { draw() { flashFloorAndDraw(false); } },
+            192: { draw() { flashFloorAndDraw(true); } },
+            204: { draw() { flashFloorAndDraw(false); } },
+            216: {
+                init() {
+                    if (!triggerCutsceneAtEndLevel()) {
+                        switchState(readyNewState,60);
+                    }
+                }
+            },
+        },
+    });
+})();
+
+////////////////////////////////////////////////////
+// Game Over state
+// (state when player has lost last life)
+
+const overState = (function() {
+    let frames;
+    return {
+        init() {
+            frames = 0;
+        },
+        draw() {
+            renderer.blitMap();
+            renderer.drawScore();
+            renderer.drawMessage("GAME  OVER", "#F00", 9, 20);
+        },
+        update() {
+            if (frames == 120) {
+                switchState(homeState,60);
+            }
+            else
+                frames++;
+        },
+    };
+})();
+
+//@line 1 "src/input.js"
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Input
+// (Handles all key presses and touches)
+
+(function(){
+
+    // A Key Listener class (each key maps to an array of callbacks)
+    const KeyEventListener = function() {
+        this.listeners = {};
+    };
+    KeyEventListener.prototype = {
+        add: function(key, callback, isActive) {
+            this.listeners[key] = this.listeners[key] || [];
+            this.listeners[key].push({
+                isActive: isActive,
+                callback: callback,
+            });
+        },
+        exec: function(key, e) {
+            const keyListeners = this.listeners[key];
+            if (!keyListeners) {
+                return;
+            }
+            const numListeners = keyListeners.length;
+            for (let i=0; i<numListeners; i++) {
+                const l = keyListeners[i];
+                if (!l.isActive || l.isActive()) {
+                    e.preventDefault();
+                    if (l.callback()) { // do not propagate keys if returns true
+                        break;
+                    }
+                }
+            }
+        },
+    };
+
+    // declare key event listeners
+    const keyDownListeners = new KeyEventListener();
+    const keyUpListeners = new KeyEventListener();
+
+    // helper functions for adding custom key listeners
+    const addKeyDown = function(key,callback,isActive) { keyDownListeners.add(key,callback,isActive); };
+    const addKeyUp   = function(key,callback,isActive) { keyUpListeners.add(key,callback,isActive); };
+
+    // boolean states of each key
+    const keyStates = {};
+
+    // hook my key listeners to the window's listeners
+    window.addEventListener("keydown", function(e) {
+        const key = (e||window.event).keyCode;
+
+        // only execute at first press event
+        if (!keyStates[key]) {
+            keyStates[key] = true;
+            keyDownListeners.exec(key, e);
+        }
+    });
+    window.addEventListener("keyup",function(e) {
+        const key = (e||window.event).keyCode;
+
+        keyStates[key] = false;
+        keyUpListeners.exec(key, e);
+    });
+
+
+    // key enumerations
+
+    const KEY_ENTER = 13;
+    const KEY_ESC = 27;
+
+    const KEY_LEFT = 37;
+    const KEY_RIGHT = 39;
+    const KEY_UP = 38;
+    const KEY_DOWN = 40;
+
+    const KEY_SHIFT = 16;
+    const KEY_CTRL = 17;
+    const KEY_ALT = 18;
+
+    const KEY_SPACE = 32;
+
+    const KEY_M = 77;
+    const KEY_N = 78;
+    const KEY_Q = 81;
+    const KEY_W = 87;
+    const KEY_E = 69;
+    const KEY_R = 82;
+    const KEY_T = 84;
+
+    const KEY_A = 65;
+    const KEY_S = 83;
+    const KEY_D = 68;
+    const KEY_F = 70;
+    const KEY_G = 71;
+
+    const KEY_I = 73;
+    const KEY_O = 79;
+    const KEY_P = 80;
+
+    const KEY_1 = 49;
+    const KEY_2 = 50;
+
+    const KEY_END = 35;
+
+    // Custom Key Listeners
+
+    // Menu Navigation Keys
+    let menu;
+    const isInMenu = function() {
+        menu = (state.getMenu && state.getMenu());
+        if (!menu && inGameMenu.isOpen()) {
+            menu = inGameMenu.getMenu();
+        }
+        return menu;
+    };
+    addKeyDown(KEY_ESC,   function(){ menu.backButton ? menu.backButton.onclick():0; return true; }, isInMenu);
+    addKeyDown(KEY_ENTER, function(){ menu.clickCurrentOption(); }, isInMenu);
+    const isMenuKeysAllowed = function() {
+        const menu = isInMenu();
+        return menu && !menu.noArrowKeys;
+    };
+    addKeyDown(KEY_UP,    function(){ menu.selectPrevOption(); }, isMenuKeysAllowed);
+    addKeyDown(KEY_DOWN,  function(){ menu.selectNextOption(); }, isMenuKeysAllowed);
+    const isInGameMenuButtonClickable = function() {
+        return hud.isValidState() && !inGameMenu.isOpen();
+    };
+    addKeyDown(KEY_ESC, function() { inGameMenu.getMenuButton().onclick(); return true; }, isInGameMenuButtonClickable);
+
+    // Move Pac-Man
+    const isPlayState = function() { return !vcr.isSeeking() && (state == learnState || state == newGameState || state == playState || state == readyNewState || state == readyRestartState); };
+    addKeyDown(KEY_LEFT,  function() { pacman.setInputDir(DIR_LEFT); },  isPlayState);
+    addKeyDown(KEY_RIGHT, function() { pacman.setInputDir(DIR_RIGHT); }, isPlayState);
+    addKeyDown(KEY_UP,    function() { pacman.setInputDir(DIR_UP); },    isPlayState);
+    addKeyDown(KEY_DOWN,  function() { pacman.setInputDir(DIR_DOWN); },  isPlayState);
+    addKeyUp  (KEY_LEFT,  function() { pacman.clearInputDir(DIR_LEFT); },  isPlayState);
+    addKeyUp  (KEY_RIGHT, function() { pacman.clearInputDir(DIR_RIGHT); }, isPlayState);
+    addKeyUp  (KEY_UP,    function() { pacman.clearInputDir(DIR_UP); },    isPlayState);
+    addKeyUp  (KEY_DOWN,  function() { pacman.clearInputDir(DIR_DOWN); },  isPlayState);
+
+    // Slow-Motion
+    const isPracticeMode = function() { return isPlayState() && practiceMode; };
+    //isPracticeMode = function() { return true; };
+    addKeyDown(KEY_1, function() { executive.setUpdatesPerSecond(30); }, isPracticeMode);
+    addKeyDown(KEY_2,  function() { executive.setUpdatesPerSecond(15); }, isPracticeMode);
+    addKeyUp  (KEY_1, function() { executive.setUpdatesPerSecond(60); }, isPracticeMode);
+    addKeyUp  (KEY_2,  function() { executive.setUpdatesPerSecond(60); }, isPracticeMode);
+
+    // Toggle VCR
+    const canSeek = function() { return !isInMenu() && vcr.getMode() != VCR_NONE; };
+    addKeyDown(KEY_SHIFT, function() { vcr.startSeeking(); },   canSeek);
+    addKeyUp  (KEY_SHIFT, function() { vcr.startRecording(); }, canSeek);
+
+    // Adjust VCR seeking
+    const isSeekState = function() { return vcr.isSeeking(); };
+    addKeyDown(KEY_UP,   function() { vcr.nextSpeed(1); },  isSeekState);
+    addKeyDown(KEY_DOWN, function() { vcr.nextSpeed(-1); }, isSeekState);
+
+    // Skip Level
+    const canSkip = function() {
+        return isPracticeMode() && 
+            (state == newGameState ||
+            state == readyNewState ||
+            state == readyRestartState ||
+            state == playState ||
+            state == deadState ||
+            state == finishState ||
+            state == overState);
+    };
+    addKeyDown(KEY_N, function() { switchState(readyNewState, 60); }, canSkip);
+    addKeyDown(KEY_M, function() { switchState(finishState); }, function() { return state == playState; });
+
+    // Draw Actor Targets (fishpoles)
+    addKeyDown(KEY_Q, function() { blinky.isDrawTarget = !blinky.isDrawTarget; }, isPracticeMode);
+    addKeyDown(KEY_W, function() { pinky.isDrawTarget = !pinky.isDrawTarget; }, isPracticeMode);
+    addKeyDown(KEY_E, function() { inky.isDrawTarget = !inky.isDrawTarget; }, isPracticeMode);
+    addKeyDown(KEY_R, function() { clyde.isDrawTarget = !clyde.isDrawTarget; }, isPracticeMode);
+    addKeyDown(KEY_T, function() { pacman.isDrawTarget = !pacman.isDrawTarget; }, isPracticeMode);
+
+    // Draw Actor Paths
+    addKeyDown(KEY_A, function() { blinky.isDrawPath = !blinky.isDrawPath; }, isPracticeMode);
+    addKeyDown(KEY_S, function() { pinky.isDrawPath = !pinky.isDrawPath; }, isPracticeMode);
+    addKeyDown(KEY_D, function() { inky.isDrawPath = !inky.isDrawPath; }, isPracticeMode);
+    addKeyDown(KEY_F, function() { clyde.isDrawPath = !clyde.isDrawPath; }, isPracticeMode);
+    addKeyDown(KEY_G, function() { pacman.isDrawPath = !pacman.isDrawPath; }, isPracticeMode);
+
+    // Miscellaneous Cheats
+    addKeyDown(KEY_I, function() { pacman.invincible = !pacman.invincible; }, isPracticeMode);
+    addKeyDown(KEY_O, function() { setTurboMode(!turboMode); }, isPracticeMode);
+    addKeyDown(KEY_P, function() { pacman.ai = !pacman.ai; }, isPracticeMode);
+
+    addKeyDown(KEY_END, function() { executive.togglePause(); });
+
+})();
+
+const initSwipe = function() {
+
+    // position of anchor
+    let x = 0;
+    let y = 0;
+
+    // current distance from anchor
+    let dx = 0;
+    let dy = 0;
+
+    // minimum distance from anchor before direction is registered
+    const r = 4;
+    
+    const touchStart = function(event) {
+        event.preventDefault();
+        const fingerCount = event.touches.length;
+        if (fingerCount == 1) {
+
+            // commit new anchor
+            x = event.touches[0].pageX;
+            y = event.touches[0].pageY;
+
+        }
+        else {
+            touchCancel(event);
+        }
+    };
+
+    const touchMove = function(event) {
+        event.preventDefault();
+        const fingerCount = event.touches.length;
+        if (fingerCount == 1) {
+
+            // get current distance from anchor
+            dx = event.touches[0].pageX - x;
+            dy = event.touches[0].pageY - y;
+
+            // if minimum move distance is reached
+            if (dx*dx+dy*dy >= r*r) {
+
+                // commit new anchor
+                x += dx;
+                y += dy;
+
+                // register direction
+                if (Math.abs(dx) >= Math.abs(dy)) {
+                    pacman.setInputDir(dx>0 ? DIR_RIGHT : DIR_LEFT);
+                }
+                else {
+                    pacman.setInputDir(dy>0 ? DIR_DOWN : DIR_UP);
+                }
+            }
+        }
+        else {
+            touchCancel(event);
+        }
+    };
+
+    const touchEnd = function(event) {
+        event.preventDefault();
+    };
+
+    const touchCancel = function(event) {
+        event.preventDefault();
+        x=y=dx=dy=0;
+    };
+
+    const touchTap = function(event) {
+        // tap to clear input directions
+        pacman.clearInputDir(undefined);
+    };
+    
+    // register touch events
+    document.onclick = touchTap;
+    document.ontouchstart = touchStart;
+    document.ontouchend = touchEnd;
+    document.ontouchmove = touchMove;
+    document.ontouchcancel = touchCancel;
+};
+//@line 1 "src/cutscenes.js"
+
+
+////////////////////////////////////////////////
+// Cutscenes
+//
+
+const playCutScene = function(cutScene, nextState) {
+
+    // redraw map buffer with fruit list but no map structure
+    setMap(undefined);
+    renderer.drawMap(true);
+
+    cutScene.nextState = nextState;
+    switchState(cutScene, 60);
+};
+
+const pacmanCutscene1 = newChildObject(scriptState, {
+    init() {
+        scriptState.init.call(this);
+
+        // initialize actor positions
+        pacman.setPos(232, 164);
+        blinky.setPos(257, 164);
+
+        // initialize actor directions
+        blinky.setDir(DIR_LEFT);
+        blinky.faceDirEnum = DIR_LEFT;
+        pacman.setDir(DIR_LEFT);
+
+        // initialize misc actor properties
+        blinky.scared = false;
+        blinky.mode = GHOST_OUTSIDE;
+
+        // clear other states
+        backupCheats();
+        clearCheats();
+        energizer.reset();
+
+        // temporarily override actor step sizes
+        pacman.getNumSteps = function() {
+            return Actor.prototype.getStepSizeFromTable.call(this, 5, STEP_PACMAN);
+        };
+        blinky.getNumSteps = function() {
+            return Actor.prototype.getStepSizeFromTable.call(this, 5, STEP_ELROY2);
+        };
+
+        // temporarily override steering functions
+        pacman.steer = blinky.steer = function(){};
+    },
+    triggers: {
+
+        // Blinky chases Pac-Man
+        0: {
+            update() {
+                for (let j=0; j<2; j++) {
+                    pacman.update(j);
+                    blinky.update(j);
+                }
+                pacman.frames++;
+                blinky.frames++;
+            },
+            draw() {
+                renderer.blitMap();
+                renderer.beginMapClip();
+                renderer.drawPlayer();
+                renderer.drawGhost(blinky);
+                renderer.endMapClip();
+            },
+        },
+
+        // Pac-Man chases Blinky
+        260: {
+            init() {
+                pacman.setPos(-193, 155);
+                blinky.setPos(-8, 164);
+
+                // initialize actor directions
+                blinky.setDir(DIR_RIGHT);
+                blinky.faceDirEnum = DIR_RIGHT;
+                pacman.setDir(DIR_RIGHT);
+
+                // initialize misc actor properties
+                blinky.scared = true;
+
+                // temporarily override step sizes
+                pacman.getNumSteps = function() {
+                    return Actor.prototype.getStepSizeFromTable.call(this, 5, STEP_PACMAN_FRIGHT);
+                };
+                blinky.getNumSteps = function() {
+                    return Actor.prototype.getStepSizeFromTable.call(this, 5, STEP_GHOST_FRIGHT);
+                };
+            },
+            update() {
+                for (let j=0; j<2; j++) {
+                    pacman.update(j);
+                    blinky.update(j);
+                }
+                pacman.frames++;
+                blinky.frames++;
+            },
+            draw() {
+                renderer.blitMap();
+                renderer.beginMapClip();
+                renderer.drawGhost(blinky);
+                renderer.renderFunc(function(ctx) {
+                    let frame = Math.floor(pacman.steps/4) % 4; // slower to switch animation frame when giant
+                    if (frame == 3) {
+                        frame = 1;
+                    }
+                    drawGiantPacmanSprite(ctx, pacman.pixel.x, pacman.pixel.y, pacman.dirEnum, frame);
+                });
+                renderer.endMapClip();
+            },
+        },
+
+        // end
+        640: {
+            init() {
+                // disable custom steps
+                delete pacman.getNumSteps;
+                delete blinky.getNumSteps;
+
+                // disable custom steering
+                delete pacman.steer;
+                delete blinky.steer;
+
+                // exit to next level
+                restoreCheats();
+                switchState(pacmanCutscene1.nextState, 60);
+            },
+        },
+    },
+});
+
+const mspacmanCutscene1 = (function() {
+
+    // create new players pac and mspac for this scene
+    const pac = new Player();
+    const mspac = new Player();
+
+    // draws pac or mspac
+    const drawPlayer = function(ctx,player) {
+        const frame = player.getAnimFrame();
+        let func;
+        if (player == pac) {
+            func = gameMode == GAME_MSPACMAN ? atlas.drawPacmanSprite : atlas.drawOttoSprite;
+        }
+        else if (player == mspac) {
+            func = gameMode == GAME_MSPACMAN ? atlas.drawMsPacmanSprite : atlas.drawMsOttoSprite;
+        }
+        func(ctx, player.pixel.x, player.pixel.y, player.dirEnum, frame);
+    };
+
+    // draws all actors
+    const draw = function() {
+        renderer.blitMap();
+        renderer.beginMapClip();
+        renderer.renderFunc(function(ctx) {
+            drawPlayer(ctx,pac);
+            drawPlayer(ctx,mspac);
+        });
+        renderer.drawGhost(inky);
+        renderer.drawGhost(pinky);
+        renderer.endMapClip();
+    };
+
+    // updates all actors
+    const update = function() {
+        for (let j=0; j<2; j++) {
+            pac.update(j);
+            mspac.update(j);
+            inky.update(j);
+            pinky.update(j);
+        }
+        pac.frames++;
+        mspac.frames++;
+        inky.frames++;
+        pinky.frames++;
+    };
+
+    const exit = function() {
+        // disable custom steps
+        delete inky.getNumSteps;
+        delete pinky.getNumSteps;
+
+        // disable custom steering
+        delete inky.steer;
+        delete pinky.steer;
+
+        // disable custom animation steps
+        delete inky.getAnimFrame;
+        delete pinky.getAnimFrame;
+
+        // exit to next level
+        restoreCheats();
+        switchState(mspacmanCutscene1.nextState, 60);
+    };
+
+    return newChildObject(scriptState, {
+
+        init() {
+            scriptState.init.call(this);
+
+            // chosen by trial-and-error to match animations
+            mspac.frames = 20;
+            pac.frames = 12;
+
+            // initialize actor states
+            pac.setPos(-10, 99);
+            pac.setDir(DIR_RIGHT);
+            mspac.setPos(232, 180);
+            mspac.setDir(DIR_LEFT);
+            
+            // initial ghost states
+            inky.frames = 0;
+            inky.mode = GHOST_OUTSIDE;
+            inky.scared = false;
+            inky.setPos(pac.pixel.x-42, 99);
+            inky.setDir(DIR_RIGHT);
+            inky.faceDirEnum = DIR_RIGHT;
+            pinky.frames = 3;
+            pinky.mode = GHOST_OUTSIDE;
+            pinky.scared = false;
+            pinky.setPos(mspac.pixel.x+49, 180);
+            pinky.setDir(DIR_LEFT);
+            pinky.faceDirEnum = DIR_LEFT;
+
+            // clear other states
+            backupCheats();
+            clearCheats();
+            energizer.reset();
+
+            // step player animation every four frames
+            pac.getStepFrame = function() { return Math.floor(this.frames/4)%4; };
+            mspac.getStepFrame = function() { return Math.floor(this.frames/4)%4; };
+
+            // step ghost animation every six frames
+            inky.getAnimFrame = function() { return Math.floor(this.frames/8)%2; };
+            pinky.getAnimFrame = function() { return Math.floor(this.frames/8)%2; };
+
+            // set actor step sizes
+            pac.getNumSteps = function() { return 1; };
+            mspac.getNumSteps = function() { return 1; };
+            inky.getNumSteps = function() { return 1; };
+            pinky.getNumSteps = function() { return 1; };
+
+            // set steering functions
+            pac.steer = function(){};
+            mspac.steer = function(){};
+            inky.steer = function(){};
+            pinky.steer = function(){};
+        },
+        triggers: {
+
+            // Inky chases Pac, Pinky chases Mspac
+            0: {
+                update() {
+                    update();
+                    if (inky.pixel.x == 105) {
+                        // speed up the ghosts
+                        inky.getNumSteps = function() {
+                            return Actor.prototype.getStepSizeFromTable.call(this, 5, STEP_ELROY2);
+                        };
+                        pinky.getNumSteps = function() {
+                            return Actor.prototype.getStepSizeFromTable.call(this, 5, STEP_ELROY2);
+                        };
+                    }
+                },
+                draw,
+            },
+
+            // MsPac and Pac converge with ghosts chasing
+            300: (function(){
+
+                // bounce animation when ghosts bump heads
+                const inkyBounceX =  [ 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0];
+                const inkyBounceY =  [-1, 0,-1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0,-1, 0,-1, 0, 0, 0, 0, 0, 1, 0, 1];
+                const pinkyBounceX = [ 0, 0, 0, 0,-1, 0,-1, 0, 0,-1, 0,-1, 0,-1, 0, 0,-1, 0,-1, 0,-1, 0, 0,-1, 0,-1, 0,-1, 0, 0];
+                const pinkyBounceY = [ 0, 0, 0,-1, 0,-1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0,-1, 0,-1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0];
+                let inkyBounceFrame = 0;
+                let pinkyBounceFrame = 0;
+                const inkyBounceFrameLen = inkyBounceX.length;
+                const pinkyBounceFrameLen = pinkyBounceX.length;
+
+                // ramp animation for players
+                const rampX = [0, 1, 1, 1, 1, 0, 0];
+                const rampY = [0, 0,-1,-1,-1, 0, 0];
+                let rampFrame = 0;
+                const rampFrameLen = rampX.length;
+
+                // climbing
+                let climbFrame = 0;
+
+                // meeting
+                let meetFrame = 0;
+
+                let ghostMode;
+                const GHOST_RUN = 0;
+                const GHOST_BUMP = 1;
+
+                let playerMode;
+                const PLAYER_RUN = 0;
+                const PLAYER_RAMP = 1;
+                const PLAYER_CLIMB = 2;
+                const PLAYER_MEET = 3;
+                     
+                return {
+                    init() {
+                        // reset frames
+                        inkyBounceFrame = pinkyBounceFrame = rampFrame = climbFrame = meetFrame = 0;
+
+                        // set modes
+                        ghostMode = GHOST_RUN;
+                        playerMode = PLAYER_RUN;
+
+                        // set initial positions and directions
+                        mspac.setPos(-8,143);
+                        mspac.setDir(DIR_RIGHT);
+
+                        pinky.setPos(-81,143);
+                        pinky.faceDirEnum = DIR_RIGHT;
+                        pinky.setDir(DIR_RIGHT);
+
+                        pac.setPos(223+8+3,142);
+                        pac.setDir(DIR_LEFT);
+
+                        inky.setPos(302,143);
+                        inky.faceDirEnum = DIR_LEFT;
+                        inky.setDir(DIR_LEFT);
+
+                        // set ghost speed
+                        inky.getNumSteps = pinky.getNumSteps = function() {
+                            return "11211212"[this.frames%8];
+                        };
+                    },
+                    update() {
+
+                        // update players
+                        if (playerMode == PLAYER_RUN) {
+                            for (let j=0; j<2; j++) {
+                                pac.update(j);
+                                mspac.update(j);
+                            }
+                            if (mspac.pixel.x == 102) {
+                                playerMode++;
+                            }
+                        }
+                        else if (playerMode == PLAYER_RAMP) {
+                            pac.pixel.x -= rampX[rampFrame];
+                            pac.pixel.y += rampY[rampFrame];
+                            pac.commitPos();
+                            mspac.pixel.x += rampX[rampFrame];
+                            mspac.pixel.y += rampY[rampFrame];
+                            mspac.commitPos();
+                            rampFrame++;
+                            if (rampFrame == rampFrameLen) {
+                                playerMode++;
+                            }
+                        }
+                        else if (playerMode == PLAYER_CLIMB) {
+                            if (climbFrame == 0) {
+                                // set initial climb state for mspac
+                                mspac.pixel.y -= 2;
+                                mspac.commitPos();
+                                mspac.setDir(DIR_UP);
+
+                                // set initial climb state for pac
+                                pac.pixel.x -= 1;
+                                pac.commitPos();
+                                pac.setDir(DIR_UP);
+                            }
+                            else {
+                                for (let j=0; j<2; j++) {
+                                    pac.update(j);
+                                    mspac.update(j);
+                                }
+                            }
+                            climbFrame++;
+                            if (mspac.pixel.y == 91) {
+                                playerMode++;
+                            }
+                        }
+                        else if (playerMode == PLAYER_MEET) {
+                            if (meetFrame == 0) {
+                                // set initial meet state for mspac
+                                mspac.pixel.y++;
+                                mspac.setDir(DIR_RIGHT);
+                                mspac.commitPos();
+
+                                // set initial meet state for pac
+                                pac.pixel.y--;
+                                pac.pixel.x++;
+                                pac.setDir(DIR_LEFT);
+                                pac.commitPos();
+                            }
+                            if (meetFrame > 18) {
+                                // pause player frames after a certain period
+                                pac.frames--;
+                                mspac.frames--;
+                            }
+                            if (meetFrame == 78) {
+                                exit();
+                            }
+                            meetFrame++;
+                        }
+                        pac.frames++;
+                        mspac.frames++;
+
+                        // update ghosts
+                        if (ghostMode == GHOST_RUN) {
+                            for (let j=0; j<2; j++) {
+                                inky.update(j);
+                                pinky.update(j);
+                            }
+
+                            // stop at middle
+                            inky.pixel.x = Math.max(120, inky.pixel.x);
+                            inky.commitPos();
+                            pinky.pixel.x = Math.min(105, pinky.pixel.x);
+                            pinky.commitPos();
+
+                            if (pinky.pixel.x == 105) {
+                                ghostMode++;
+                            }
+                        }
+                        else if (ghostMode == GHOST_BUMP) {
+                            if (inkyBounceFrame < inkyBounceFrameLen) {
+                                inky.pixel.x += inkyBounceX[inkyBounceFrame];
+                                inky.pixel.y += inkyBounceY[inkyBounceFrame];
+                            }
+                            if (pinkyBounceFrame < pinkyBounceFrameLen) {
+                                pinky.pixel.x += pinkyBounceX[pinkyBounceFrame];
+                                pinky.pixel.y += pinkyBounceY[pinkyBounceFrame];
+                            }
+                            inkyBounceFrame++;
+                            pinkyBounceFrame++;
+                        }
+                        inky.frames++;
+                        pinky.frames++;
+                    },
+                    draw() {
+                        renderer.blitMap();
+                        renderer.beginMapClip();
+                        renderer.renderFunc(function(ctx) {
+                            drawPlayer(ctx,pac);
+                            drawPlayer(ctx,mspac);
+                        });
+                        if (inkyBounceFrame < inkyBounceFrameLen) {
+                            renderer.drawGhost(inky);
+                        }
+                        if (pinkyBounceFrame < pinkyBounceFrameLen) {
+                            renderer.drawGhost(pinky);
+                        }
+                        if (playerMode == PLAYER_MEET) {
+                            renderer.renderFunc(function(ctx) {
+                                drawHeartSprite(ctx, 112, 73);
+                            });
+                        }
+                        renderer.endMapClip();
+                    },
+                }; // returned object
+            })(), // trigger at 300
+        }, // triggers
+    }); // returned object
+})(); // mspacCutscene1
+
+const mspacmanCutscene2 = (function() {
+
+    // create new players pac and mspac for this scene
+    const pac = new Player();
+    const mspac = new Player();
+
+    // draws pac or mspac
+    const drawPlayer = function(ctx,player) {
+        const frame = player.getAnimFrame();
+        let func;
+        if (player == pac) {
+            func = gameMode == GAME_MSPACMAN ? atlas.drawPacmanSprite : atlas.drawOttoSprite;
+        }
+        else if (player == mspac) {
+            func = gameMode == GAME_MSPACMAN ? atlas.drawMsPacmanSprite : atlas.drawMsOttoSprite;
+        }
+        func(ctx, player.pixel.x, player.pixel.y, player.dirEnum, frame);
+    };
+
+    // draws all actors
+    const draw = function() {
+        renderer.blitMap();
+        renderer.beginMapClip();
+        renderer.renderFunc(function(ctx) {
+            drawPlayer(ctx,pac);
+            drawPlayer(ctx,mspac);
+        });
+        renderer.endMapClip();
+    };
+
+    // updates all actors
+    const update = function() {
+        for (let j=0; j<7; j++) {
+            pac.update(j);
+            mspac.update(j);
+        }
+        pac.frames++;
+        mspac.frames++;
+    };
+
+    const exit = function() {
+        // exit to next level
+        restoreCheats();
+        switchState(mspacmanCutscene2.nextState, 60);
+    };
+
+    const getChaseSteps = function() { return 3; };
+    const getFleeSteps = function() { return "32"[this.frames%2]; };
+    const getDartSteps = function() { return 7; };
+
+    return newChildObject(scriptState, {
+
+        init() {
+            scriptState.init.call(this);
+
+            // chosen by trial-and-error to match animations
+            mspac.frames = 20;
+            pac.frames = 12;
+
+            // step player animation every four frames
+            pac.getStepFrame = function() { return Math.floor(this.frames/4)%4; };
+            mspac.getStepFrame = function() { return Math.floor(this.frames/4)%4; };
+
+            // set steering functions
+            pac.steer = function(){};
+            mspac.steer = function(){};
+            
+            backupCheats();
+            clearCheats();
+        },
+        triggers: {
+            0: {
+                draw() {
+                    renderer.blitMap();
+                },
+            },
+
+            160: {
+                init() {
+                    pac.setPos(-8, 67);
+                    pac.setDir(DIR_RIGHT);
+
+                    mspac.setPos(-106, 68);
+                    mspac.setDir(DIR_RIGHT);
+
+                    pac.getNumSteps = getFleeSteps;
+                    mspac.getNumSteps = getChaseSteps;
+                },
+                update,
+                draw,
+            },
+            410: {
+                init() {
+                    pac.setPos(329, 163);
+                    pac.setDir(DIR_LEFT);
+
+                    mspac.setPos(223+8, 164);
+                    mspac.setDir(DIR_LEFT);
+
+                    pac.getNumSteps = getChaseSteps;
+                    mspac.getNumSteps = getFleeSteps;
+                },
+                update,
+                draw,
+            },
+            670: {
+                init() {
+                    pac.setPos(-8,142);
+                    pac.setDir(DIR_RIGHT);
+
+                    mspac.setPos(-106, 143);
+                    mspac.setDir(DIR_RIGHT);
+
+                    pac.getNumSteps = getFleeSteps;
+                    mspac.getNumSteps = getChaseSteps;
+                },
+                update,
+                draw,
+            },
+            930: {
+                init() {
+                    pac.setPos(233+148,99);
+                    pac.setDir(DIR_LEFT);
+
+                    mspac.setPos(233,100);
+                    mspac.setDir(DIR_LEFT);
+
+                    pac.getNumSteps = getDartSteps;
+                    mspac.getNumSteps = getDartSteps;
+                },
+                update() {
+                    if (pac.pixel.x <= 17 && pac.dirEnum == DIR_LEFT) {
+                        pac.setPos(-2,195);
+                        pac.setDir(DIR_RIGHT);
+
+                        mspac.setPos(-2-148,196);
+                        mspac.setDir(DIR_RIGHT);
+                    }
+                    update();
+                },
+                draw,
+            },
+            1140: {
+                init: exit,
+            },
+        }, // triggers
+    }); // returned object
+})(); // mspacCutscene2
+
+const cookieCutscene1 = newChildObject(scriptState, {
+
+    init() {
+        scriptState.init.call(this);
+
+        // initialize actor positions
+        pacman.setPos(232, 164);
+        blinky.setPos(257, 164);
+
+        // initialize actor directions
+        blinky.setDir(DIR_LEFT);
+        blinky.faceDirEnum = DIR_LEFT;
+        pacman.setDir(DIR_LEFT);
+
+        // initialize misc actor properties
+        blinky.scared = false;
+        blinky.mode = GHOST_OUTSIDE;
+
+        // clear other states
+        backupCheats();
+        clearCheats();
+        energizer.reset();
+
+        // temporarily override actor step sizes
+        pacman.getNumSteps = function() {
+            return Actor.prototype.getStepSizeFromTable.call(this, 5, STEP_PACMAN);
+        };
+        blinky.getNumSteps = function() {
+            return Actor.prototype.getStepSizeFromTable.call(this, 5, STEP_ELROY2);
+        };
+
+        // temporarily override steering functions
+        pacman.steer = blinky.steer = function(){};
+    },
+    triggers: {
+
+        // Blinky chases Pac-Man
+        0: {
+            update() {
+                for (let j=0; j<2; j++) {
+                    pacman.update(j);
+                    blinky.update(j);
+                }
+                pacman.frames++;
+                blinky.frames++;
+            },
+            draw() {
+                renderer.blitMap();
+                renderer.beginMapClip();
+                renderer.drawPlayer();
+                renderer.drawGhost(blinky);
+                renderer.endMapClip();
+            },
+        },
+
+        // Pac-Man chases Blinky
+        260: {
+            init() {
+                pacman.setPos(-193, 164);
+                blinky.setPos(-8, 155);
+
+                // initialize actor directions
+                blinky.setDir(DIR_RIGHT);
+                blinky.faceDirEnum = DIR_RIGHT;
+                pacman.setDir(DIR_RIGHT);
+
+                // initialize misc actor properties
+                blinky.scared = true;
+
+                // temporarily override step sizes
+                pacman.getNumSteps = function() {
+                    return Actor.prototype.getStepSizeFromTable.call(this, 5, STEP_PACMAN_FRIGHT);
+                };
+                blinky.getNumSteps = function() {
+                    return Actor.prototype.getStepSizeFromTable.call(this, 5, STEP_GHOST_FRIGHT);
+                };
+            },
+            update() {
+                for (let j=0; j<2; j++) {
+                    pacman.update(j);
+                    blinky.update(j);
+                }
+                pacman.frames++;
+                blinky.frames++;
+            },
+            draw() {
+                renderer.blitMap();
+                renderer.beginMapClip();
+                renderer.drawPlayer();
+                renderer.renderFunc(function(ctx) {
+                    const y = blinky.getBounceY(blinky.pixel.x, blinky.pixel.y, DIR_RIGHT);
+                    const x = blinky.pixel.x;
+                    ctx.save();
+                    ctx.translate(x,y);
+                    const s = 16/6;
+                    ctx.scale(s,s);
+                    drawCookie(ctx,0,0);
+                    ctx.restore();
+                });
+                renderer.endMapClip();
+            },
+        },
+
+        // end
+        640: {
+            init() {
+                // disable custom steps
+                delete pacman.getNumSteps;
+                delete blinky.getNumSteps;
+
+                // disable custom steering
+                delete pacman.steer;
+                delete blinky.steer;
+
+                // exit to next level
+                restoreCheats();
+                switchState(cookieCutscene1.nextState, 60);
+            },
+        },
+    },
+});
+
+const cookieCutscene2 = (function() {
+
+    /*
+    NOTE:
+    This is a copy-paste of mspacmanCutscene1.
+    pac is replaced with a scared ghost (bouncing cookie)
+    mspac is replaced with Cookie-Man
+    */
+
+    // create new players pac and mspac for this scene
+    const pac = new Ghost();
+    pac.scared = true;
+    pac.mode = GHOST_OUTSIDE;
+    const mspac = new Player();
+
+    // draws pac or mspac
+    const drawPlayer = function(ctx,player) {
+        const frame = player.getAnimFrame();
+        let func;
+        if (player == pac) {
+            const y = player.getBounceY(player.pixel.x, player.pixel.y, player.dirEnum);
+            atlas.drawMuppetSprite(ctx, player.pixel.x, y, 0, player.dirEnum, true, false);
+        }
+        else if (player == mspac) {
+            drawCookiemanSprite(ctx, player.pixel.x, player.pixel.y, player.dirEnum, frame, true);
+        }
+    };
+
+    // draws all actors
+    const draw = function() {
+        renderer.blitMap();
+        renderer.beginMapClip();
+        renderer.renderFunc(function(ctx) {
+            drawPlayer(ctx,pac);
+            drawPlayer(ctx,mspac);
+        });
+        renderer.drawGhost(inky);
+        renderer.drawGhost(pinky);
+        renderer.endMapClip();
+    };
+
+    // updates all actors
+    const update = function() {
+        for (let j=0; j<2; j++) {
+            pac.update(j);
+            mspac.update(j);
+            inky.update(j);
+            pinky.update(j);
+        }
+        pac.frames++;
+        mspac.frames++;
+        inky.frames++;
+        pinky.frames++;
+    };
+
+    const exit = function() {
+        // disable custom steps
+        delete inky.getNumSteps;
+        delete pinky.getNumSteps;
+
+        // disable custom steering
+        delete inky.steer;
+        delete pinky.steer;
+
+        // disable custom animation steps
+        delete inky.getAnimFrame;
+        delete pinky.getAnimFrame;
+
+        // exit to next level
+        restoreCheats();
+        switchState(cookieCutscene2.nextState, 60);
+    };
+
+    return newChildObject(scriptState, {
+
+        init() {
+            scriptState.init.call(this);
+
+            // chosen by trial-and-error to match animations
+            mspac.frames = 14;
+            pac.frames = 12;
+
+            // initialize actor states
+            pac.setPos(-10, 99);
+            pac.setDir(DIR_RIGHT);
+            mspac.setPos(232, 180);
+            mspac.setDir(DIR_LEFT);
+            
+            // initial ghost states
+            inky.frames = 0;
+            inky.mode = GHOST_OUTSIDE;
+            inky.scared = false;
+            inky.setPos(pac.pixel.x-42, 99);
+            inky.setDir(DIR_RIGHT);
+            inky.faceDirEnum = DIR_RIGHT;
+            pinky.frames = 3;
+            pinky.mode = GHOST_OUTSIDE;
+            pinky.scared = false;
+            pinky.setPos(mspac.pixel.x+49, 180);
+            pinky.setDir(DIR_LEFT);
+            pinky.faceDirEnum = DIR_LEFT;
+
+            // clear other states
+            backupCheats();
+            clearCheats();
+            energizer.reset();
+
+            // step player animation every four frames
+            pac.getStepFrame = function() { return Math.floor(this.frames/4)%4; };
+            mspac.getStepFrame = function() { return Math.floor(this.frames/4)%4; };
+
+            // step ghost animation every six frames
+            inky.getAnimFrame = function() { return Math.floor(this.frames/8)%2; };
+            pinky.getAnimFrame = function() { return Math.floor(this.frames/8)%2; };
+
+            // set actor step sizes
+            pac.getNumSteps = function() { return 1; };
+            mspac.getNumSteps = function() { return 1; };
+            inky.getNumSteps = function() { return 1; };
+            pinky.getNumSteps = function() { return 1; };
+
+            // set steering functions
+            pac.steer = function(){};
+            mspac.steer = function(){};
+            inky.steer = function(){};
+            pinky.steer = function(){};
+        },
+        triggers: {
+
+            // Inky chases Pac, Pinky chases Mspac
+            0: {
+                update() {
+                    update();
+                    if (inky.pixel.x == 105) {
+                        // speed up the ghosts
+                        inky.getNumSteps = function() {
+                            return Actor.prototype.getStepSizeFromTable.call(this, 5, STEP_ELROY2);
+                        };
+                        pinky.getNumSteps = function() {
+                            return Actor.prototype.getStepSizeFromTable.call(this, 5, STEP_ELROY2);
+                        };
+                    }
+                },
+                draw,
+            },
+
+            // MsPac and Pac converge with ghosts chasing
+            300: (function(){
+
+                // bounce animation when ghosts bump heads
+                const inkyBounceX =  [ 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0];
+                const inkyBounceY =  [-1, 0,-1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0,-1, 0,-1, 0, 0, 0, 0, 0, 1, 0, 1];
+                const pinkyBounceX = [ 0, 0, 0, 0,-1, 0,-1, 0, 0,-1, 0,-1, 0,-1, 0, 0,-1, 0,-1, 0,-1, 0, 0,-1, 0,-1, 0,-1, 0, 0];
+                const pinkyBounceY = [ 0, 0, 0,-1, 0,-1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0,-1, 0,-1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0];
+                let inkyBounceFrame = 0;
+                let pinkyBounceFrame = 0;
+                const inkyBounceFrameLen = inkyBounceX.length;
+                const pinkyBounceFrameLen = pinkyBounceX.length;
+
+                // ramp animation for players
+                const rampX = [0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1];
+                const rampY = [0, 0,-1,-1,-1, 0, 0, 0, 0, 0, 0, 0, 0];
+                let rampFrame = 0;
+                const rampFrameLen = rampX.length;
+
+                // climbing
+                let climbFrame = 0;
+
+                // meeting
+                let meetFrame = 0;
+
+                let ghostMode;
+                const GHOST_RUN = 0;
+                const GHOST_BUMP = 1;
+
+                let playerMode;
+                const PLAYER_RUN = 0;
+                const PLAYER_RAMP = 1;
+                const PLAYER_CLIMB = 2;
+                const PLAYER_MEET = 3;
+                     
+                return {
+                    init() {
+                        // reset frames
+                        inkyBounceFrame = pinkyBounceFrame = rampFrame = climbFrame = meetFrame = 0;
+
+                        // set modes
+                        ghostMode = GHOST_RUN;
+                        playerMode = PLAYER_RUN;
+
+                        // set initial positions and directions
+                        mspac.setPos(-8,143);
+                        mspac.setDir(DIR_RIGHT);
+
+                        pinky.setPos(-81,143);
+                        pinky.faceDirEnum = DIR_RIGHT;
+                        pinky.setDir(DIR_RIGHT);
+
+                        pac.setPos(223+8+3,142);
+                        pac.setDir(DIR_LEFT);
+
+                        inky.setPos(302,143);
+                        inky.faceDirEnum = DIR_LEFT;
+                        inky.setDir(DIR_LEFT);
+
+                        // set ghost speed
+                        inky.getNumSteps = pinky.getNumSteps = function() {
+                            return "11211212"[this.frames%8];
+                        };
+                    },
+                    update() {
+
+                        // update players
+                        if (playerMode == PLAYER_RUN) {
+                            for (let j=0; j<2; j++) {
+                                pac.update(j);
+                                mspac.update(j);
+                            }
+                            if (mspac.pixel.x == 102) {
+                                playerMode++;
+                            }
+                        }
+                        else if (playerMode == PLAYER_RAMP) {
+                            pac.pixel.x -= rampX[rampFrame];
+                            pac.pixel.y += rampY[rampFrame];
+                            pac.commitPos();
+                            mspac.pixel.x += rampX[rampFrame];
+                            mspac.pixel.y += rampY[rampFrame];
+                            mspac.commitPos();
+                            rampFrame++;
+                            if (rampFrame == rampFrameLen) {
+                                playerMode++;
+                            }
+                        }
+                        else if (playerMode == PLAYER_CLIMB) {
+                            if (climbFrame == 0) {
+                                // set initial climb state for mspac
+                                mspac.pixel.y -= 2;
+                                mspac.commitPos();
+                                mspac.setDir(DIR_UP);
+                            }
+                            else {
+                                for (let j=0; j<2; j++) {
+                                    mspac.update(j);
+                                }
+                            }
+                            climbFrame++;
+                            if (mspac.pixel.y == 91) {
+                                playerMode++;
+                            }
+                        }
+                        else if (playerMode == PLAYER_MEET) {
+                            if (meetFrame == 0) {
+                                // set initial meet state for mspac
+                                mspac.pixel.y++;
+                                mspac.setDir(DIR_RIGHT);
+                                mspac.commitPos();
+                            }
+                            if (meetFrame > 18) {
+                                // pause player frames after a certain period
+                                mspac.frames--;
+                            }
+                            if (meetFrame == 78) {
+                                exit();
+                            }
+                            meetFrame++;
+                        }
+                        pac.frames++;
+                        mspac.frames++;
+
+                        // update ghosts
+                        if (ghostMode == GHOST_RUN) {
+                            for (let j=0; j<2; j++) {
+                                inky.update(j);
+                                pinky.update(j);
+                            }
+
+                            // stop at middle
+                            inky.pixel.x = Math.max(120, inky.pixel.x);
+                            inky.commitPos();
+                            pinky.pixel.x = Math.min(105, pinky.pixel.x);
+                            pinky.commitPos();
+
+                            if (pinky.pixel.x == 105) {
+                                ghostMode++;
+                            }
+                        }
+                        else if (ghostMode == GHOST_BUMP) {
+                            if (inkyBounceFrame < inkyBounceFrameLen) {
+                                inky.pixel.x += inkyBounceX[inkyBounceFrame];
+                                inky.pixel.y += inkyBounceY[inkyBounceFrame];
+                            }
+                            if (pinkyBounceFrame < pinkyBounceFrameLen) {
+                                pinky.pixel.x += pinkyBounceX[pinkyBounceFrame];
+                                pinky.pixel.y += pinkyBounceY[pinkyBounceFrame];
+                            }
+                            inkyBounceFrame++;
+                            pinkyBounceFrame++;
+                        }
+                        inky.frames++;
+                        pinky.frames++;
+                    },
+                    draw() {
+                        renderer.blitMap();
+                        renderer.beginMapClip();
+                        renderer.renderFunc(function(ctx) {
+                            if (playerMode <= PLAYER_RAMP) {
+                                drawPlayer(ctx,pac);
+                            }
+                            drawPlayer(ctx,mspac);
+                        });
+                        if (inkyBounceFrame < inkyBounceFrameLen) {
+                            renderer.drawGhost(inky);
+                        }
+                        if (pinkyBounceFrame < pinkyBounceFrameLen) {
+                            renderer.drawGhost(pinky);
+                        }
+                        if (playerMode == PLAYER_MEET) {
+                            renderer.renderFunc(function(ctx) {
+                                drawHeartSprite(ctx, 112, 73);
+                            });
+                        }
+                        renderer.endMapClip();
+                    },
+                }; // returned object
+            })(), // trigger at 300
+        }, // triggers
+    }); // returned object
+})(); // mspacCutscene1
+
+const cutscenes = [
+    [pacmanCutscene1], // GAME_PACMAN
+    [mspacmanCutscene1, mspacmanCutscene2], // GAME_MSPACMAN
+    [cookieCutscene1, cookieCutscene2], // GAME_COOKIE
+    [mspacmanCutscene1, mspacmanCutscene2], // GAME_OTTO
+];
+
+const isInCutScene = function() {
+    const scenes = cutscenes[gameMode];
+    const len = scenes.length;
+    for (let i=0; i<len; i++) {
+        if (state == scenes[i]) {
+            return true;
+        }
+    }
+    return false;
+};
+
+// TODO: no cutscene after board 17 (last one after completing board 17)
+const triggerCutsceneAtEndLevel = function() {
+    if (gameMode == GAME_PACMAN) {
+        if (level == 2) {
+            playCutScene(pacmanCutscene1, readyNewState);
+            return true;
+        }
+        /*
+        else if (level == 5) {
+            playCutScene(pacmanCutscene2, readyNewState);
+            return true;
+        }
+        else if (level >= 9 && (level-9)%4 == 0) {
+            playCutScene(pacmanCutscene3, readyNewState);
+            return true;
+        }
+        */
+    }
+    else if (gameMode == GAME_MSPACMAN || gameMode == GAME_OTTO) {
+        if (level == 2) {
+            playCutScene(mspacmanCutscene1, readyNewState);
+            return true;
+        }
+        else if (level == 5) {
+            playCutScene(mspacmanCutscene2, readyNewState);
+            return true;
+        }
+    }
+    else if (gameMode == GAME_COOKIE) {
+        if (level == 2) {
+            playCutScene(cookieCutscene1, readyNewState);
+            return true;
+        }
+        else if (level == 5) {
+            playCutScene(cookieCutscene2, readyNewState);
+            return true;
+        }
+    }
+
+    // no cutscene triggered
+    return false;
+};
+
+//@line 1 "src/maps.js"
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Maps
+
+// Definitions of playable maps
+
+// current map
+let map;
+const setMap = function(m) { map = m; };
+
+// actor starting states
+
+blinky.startDirEnum = DIR_LEFT;
+blinky.startPixel = {
+    x: 14*tileSize-1,
+    y: 14*tileSize+midTile.y
+};
+blinky.cornerTile = {
+    x: 28-1-2,
+    y: 0
+};
+blinky.startMode = GHOST_OUTSIDE;
+blinky.arriveHomeMode = GHOST_LEAVING_HOME;
+
+pinky.startDirEnum = DIR_DOWN;
+pinky.startPixel = {
+    x: 14*tileSize-1,
+    y: 17*tileSize+midTile.y,
+};
+pinky.cornerTile = {
+    x: 2,
+    y: 0
+};
+pinky.startMode = GHOST_PACING_HOME;
+pinky.arriveHomeMode = GHOST_PACING_HOME;
+
+inky.startDirEnum = DIR_UP;
+inky.startPixel = {
+    x: 12*tileSize-1,
+    y: 17*tileSize + midTile.y,
+};
+inky.cornerTile = {
+    x: 28-1,
+    y: 36 - 2,
+};
+inky.startMode = GHOST_PACING_HOME;
+inky.arriveHomeMode = GHOST_PACING_HOME;
+
+clyde.startDirEnum = DIR_UP;
+clyde.startPixel = {
+    x: 16*tileSize-1,
+    y: 17*tileSize + midTile.y,
+};
+clyde.cornerTile = {
+    x: 0,
+    y: 36-2,
+};
+clyde.startMode = GHOST_PACING_HOME;
+clyde.arriveHomeMode = GHOST_PACING_HOME;
+
+pacman.startDirEnum = DIR_LEFT;
+pacman.startPixel = {
+    x: 14*tileSize-1,
+    y: 26*tileSize + midTile.y,
+};
+
+// Learning Map
+const mapLearn = new Map(28, 36, (
+    "____________________________" +
+    "____________________________" +
+    "____________________________" +
+    "____________________________" +
+    "____________________________" +
+    "____________________________" +
+    "____________________________" +
+    "____________________________" +
+    "____________________________" +
+    "__||||||||||||||||||||||||__" +
+    "__|                      |__" +
+    "__| ||||| |||||||| ||||| |__" +
+    "__| ||||| |||||||| ||||| |__" +
+    "__| ||    ||    ||    || |__" +
+    "__| || || || || || || || |__" +
+    "||| || || || || || || || |||" +
+    "       ||    ||    ||       " +
+    "||| ||||| |||||||| ||||| |||" +
+    "__| ||||| |||||||| ||||| |__" +
+    "__|    ||          ||    |__" +
+    "__| || || |||||||| || || |__" +
+    "__| || || |||||||| || || |__" +
+    "__| ||    ||    ||    || |__" +
+    "__| || || || || || || || |__" +
+    "||| || || || || || || || |||" +
+    "       ||    ||    ||       " +
+    "||| |||||||| || |||||||| |||" +
+    "__| |||||||| || |||||||| |__" +
+    "__|                      |__" +
+    "__||||||||||||||||||||||||__" +
+    "____________________________" +
+    "____________________________" +
+    "____________________________" +
+    "____________________________" +
+    "____________________________" +
+    "____________________________"));
+
+mapLearn.name = "Pac-Man";
+mapLearn.wallStrokeColor = "#47b897"; // from Pac-Man Plus
+mapLearn.wallFillColor = "#000";
+mapLearn.pelletColor = "#ffb8ae";
+mapLearn.shouldDrawMapOnly = true;
+
+// Original Pac-Man map
+const mapPacman = new Map(28, 36, (
+    "____________________________" +
+    "____________________________" +
+    "____________________________" +
+    "||||||||||||||||||||||||||||" +
+    "|............||............|" +
+    "|.||||.|||||.||.|||||.||||.|" +
+    "|o||||.|||||.||.|||||.||||o|" +
+    "|.||||.|||||.||.|||||.||||.|" +
+    "|..........................|" +
+    "|.||||.||.||||||||.||.||||.|" +
+    "|.||||.||.||||||||.||.||||.|" +
+    "|......||....||....||......|" +
+    "||||||.||||| || |||||.||||||" +
+    "_____|.||||| || |||||.|_____" +
+    "_____|.||          ||.|_____" +
+    "_____|.|| |||--||| ||.|_____" +
+    "||||||.|| |______| ||.||||||" +
+    "      .   |______|   .      " +
+    "||||||.|| |______| ||.||||||" +
+    "_____|.|| |||||||| ||.|_____" +
+    "_____|.||          ||.|_____" +
+    "_____|.|| |||||||| ||.|_____" +
+    "||||||.|| |||||||| ||.||||||" +
+    "|............||............|" +
+    "|.||||.|||||.||.|||||.||||.|" +
+    "|.||||.|||||.||.|||||.||||.|" +
+    "|o..||.......  .......||..o|" +
+    "|||.||.||.||||||||.||.||.|||" +
+    "|||.||.||.||||||||.||.||.|||" +
+    "|......||....||....||......|" +
+    "|.||||||||||.||.||||||||||.|" +
+    "|.||||||||||.||.||||||||||.|" +
+    "|..........................|" +
+    "||||||||||||||||||||||||||||" +
+    "____________________________" +
+    "____________________________"));
+
+mapPacman.name = "Pac-Man";
+//mapPacman.wallStrokeColor = "#47b897"; // from Pac-Man Plus
+mapPacman.wallStrokeColor = "#2121ff"; // from original
+mapPacman.wallFillColor = "#000";
+mapPacman.pelletColor = "#ffb8ae";
+mapPacman.constrainGhostTurns = function(tile,openTiles) {
+    // prevent ghost from turning up at these tiles
+    if ((tile.x == 12 || tile.x == 15) && (tile.y == 14 || tile.y == 26)) {
+        openTiles[DIR_UP] = false;
+    }
+};
+
+// Levels are grouped into "acts."
+// In Ms. Pac-Man (and Cookie-Man) a map only changes after the end of an act.
+// The levels within an act progress in difficulty.
+// But the beginning of an act is generally easier than the end of the previous act to stave frustration.
+// Completing an act results in a cutscene.
+const getLevelAct = function(level) {
+    // Act 1: (levels 1,2)
+    // Act 2: (levels 3,4,5)
+    // Act 3: (levels 6,7,8,9)
+    // Act 4: (levels 10,11,12,13)
+    // Act 5: (levels 14,15,16,17)
+    // ...
+    if (level <= 2) {
+        return 1;
+    }
+    else if (level <= 5) {
+        return 2;
+    }
+    else {
+        return 3 + Math.floor((level - 6)/4);
+    }
+};
+
+const getActColor = function(act) {
+    if (gameMode == GAME_PACMAN) {
+        return {
+            wallFillColor: mapPacman.wallFillColor,
+            wallStrokeColor: mapPacman.wallStrokeColor,
+            pelletColor: mapPacman.pelletColor,
+        };
+    }
+    else if (gameMode == GAME_MSPACMAN || gameMode == GAME_OTTO) {
+        return getMsPacActColor(act);
+    }
+    else if (gameMode == GAME_COOKIE) {
+        return getCookieActColor(act);
+    }
+};
+
+const getActRange = function(act) {
+    if (act == 1) {
+        return [1,2];
+    }
+    else if (act == 2) {
+        return [3,5];
+    }
+    else {
+        const start = act*4-6;
+        return [start, start+3];
+    }
+};
+
+const getCookieActColor = function(act) {
+    const colors = [
+        "#359c9c", "#80d8fc", // turqoise
+        "#c2b853", "#e6f1e7", // yellow
+        "#86669c", "#f2c1db", // purple
+        "#ed0a04", "#e8b4cd", // red
+        "#2067c1", "#63e0b6", // blue
+        "#c55994", "#fd61c3", // pink
+        "#12bc76", "#b4e671", // green
+        "#5036d9", "#618dd4", // violet
+        "#939473", "#fdfdf4", // grey
+    ];
+    const i = ((act-1)*2) % colors.length;
+    return {
+        wallFillColor: colors[i],
+        wallStrokeColor: colors[i+1],
+        pelletColor: "#ffb8ae",
+    };
+};
+
+const setNextCookieMap = function() {
+    // cycle the colors
+    const act = getLevelAct(level);
+    if (!map || level == 1 || act != getLevelAct(level-1)) {
+        setMap(mapgen());
+        const colors = getCookieActColor(act);
+        map.wallFillColor = colors.wallFillColor;
+        map.wallStrokeColor = colors.wallStrokeColor;
+        map.pelletColor = colors.pelletColor;
+    }
+};
+
+// Ms. Pac-Man map 1
+
+const getMsPacActColor = function(act) {
+    act -= 1;
+    const mapIndex = (act <= 1) ? act : (act%2)+2;
+    const maps = [mapMsPacman1, mapMsPacman2, mapMsPacman3, mapMsPacman4];
+    const map = maps[mapIndex];
+    if (act >= 4) {
+        return [
+            {
+                wallFillColor: "#ffb8ff",
+                wallStrokeColor: "#FFFF00",
+                pelletColor: "#00ffff",
+            },
+            {
+                wallFillColor: "#FFB8AE",
+                wallStrokeColor: "#FF0000",
+                pelletColor: "#dedeff",
+            },
+            {
+                wallFillColor: "#de9751",
+                wallStrokeColor: "#dedeff",
+                pelletColor: "#ff0000",
+            },
+            {
+                wallFillColor: "#2121ff",
+                wallStrokeColor: "#ffb851",
+                pelletColor: "#dedeff",
+            },
+        ][act%4];
+    }
+    else {
+        return {
+            wallFillColor: map.wallFillColor,
+            wallStrokeColor: map.wallStrokeColor,
+            pelletColor: map.pelletColor,
+        };
+    }
+};
+
+const setNextMsPacMap = function() {
+    const maps = [mapMsPacman1, mapMsPacman2, mapMsPacman3, mapMsPacman4];
+
+    // The third and fourth maps repeat indefinitely after the second map.
+    // (i.e. act1=map1, act2=map2, act3=map3, act4=map4, act5=map3, act6=map4, ...)
+    const act = getLevelAct(level)-1;
+    const mapIndex = (act <= 1) ? act : (act%2)+2;
+    setMap(maps[mapIndex]);
+    if (act >= 4) {
+        const colors = getMsPacActColor(act+1);
+        map.wallFillColor = colors.wallFillColor;
+        map.wallStrokeColor = colors.wallStrokeColor;
+        map.pelletColor = colors.pelletColor;
+    }
+};
+
+const mapMsPacman1 = new Map(28, 36, (
+    "____________________________" +
+    "____________________________" +
+    "____________________________" +
+    "||||||||||||||||||||||||||||" +
+    "|......||..........||......|" +
+    "|o||||.||.||||||||.||.||||o|" +
+    "|.||||.||.||||||||.||.||||.|" +
+    "|..........................|" +
+    "|||.||.|||||.||.|||||.||.|||" +
+    "__|.||.|||||.||.|||||.||.|__" +
+    "|||.||.|||||.||.|||||.||.|||" +
+    "   .||.......||.......||.   " +
+    "|||.||||| |||||||| |||||.|||" +
+    "__|.||||| |||||||| |||||.|__" +
+    "__|.                    .|__" +
+    "__|.||||| |||--||| |||||.|__" +
+    "__|.||||| |______| |||||.|__" +
+    "__|.||    |______|    ||.|__" +
+    "__|.|| || |______| || ||.|__" +
+    "|||.|| || |||||||| || ||.|||" +
+    "   .   ||          ||   .   " +
+    "|||.|||||||| || ||||||||.|||" +
+    "__|.|||||||| || ||||||||.|__" +
+    "__|.......   ||   .......|__" +
+    "__|.|||||.||||||||.|||||.|__" +
+    "|||.|||||.||||||||.|||||.|||" +
+    "|............  ............|" +
+    "|.||||.|||||.||.|||||.||||.|" +
+    "|.||||.|||||.||.|||||.||||.|" +
+    "|.||||.||....||....||.||||.|" +
+    "|o||||.||.||||||||.||.||||o|" +
+    "|.||||.||.||||||||.||.||||.|" +
+    "|..........................|" +
+    "||||||||||||||||||||||||||||" +
+    "____________________________" +
+    "____________________________"));
+
+mapMsPacman1.name = "Ms. Pac-Man 1";
+mapMsPacman1.wallFillColor = "#FFB8AE";
+mapMsPacman1.wallStrokeColor = "#FF0000";
+mapMsPacman1.pelletColor = "#dedeff";
+mapMsPacman1.fruitPaths = {
+             "entrances": [
+                 { "start": { "y": 164, "x": 228 }, "path": "<<<<vvv<<<<<<<<<^^^" }, 
+                 { "start": { "y": 164, "x": -4 }, "path": ">>>>vvvvvv>>>>>>>>>>>>>>>^^^<<<^^^" }, 
+                 { "start": { "y": 92, "x": -4 }, "path": ">>>>^^^^>>>vvvv>>>vvv>>>>>>>>>vvvvvv<<<" }, 
+                 { "start": { "y": 92, "x": 228 }, "path": "<<<<vvvvvvvvv<<<^^^<<<vvv<<<" }
+             ], 
+             "exits": [
+                 { "path": "<vvv>>>>>>>>>^^^>>>>" }, 
+                 { "path": "<<<<vvv<<<<<<<<<^^^<<<<" }, 
+                 { "path": "<<<<<<<^^^^^^<<<<<<^^^<<<<" }, 
+                 { "path": "<vvv>>>>>>>>>^^^^^^^^^^^^>>>>" }
+             ]
+         };
+
+// Ms. Pac-Man map 2
+
+const mapMsPacman2 = new Map(28, 36, (
+    "____________________________" +
+    "____________________________" +
+    "____________________________" +
+    "||||||||||||||||||||||||||||" +
+    "       ||..........||       " +
+    "|||||| ||.||||||||.|| ||||||" +
+    "|||||| ||.||||||||.|| ||||||" +
+    "|o...........||...........o|" +
+    "|.|||||||.||.||.||.|||||||.|" +
+    "|.|||||||.||.||.||.|||||||.|" +
+    "|.||......||.||.||......||.|" +
+    "|.||.|||| ||....|| ||||.||.|" +
+    "|.||.|||| |||||||| ||||.||.|" +
+    "|......|| |||||||| ||......|" +
+    "||||||.||          ||.||||||" +
+    "||||||.|| |||--||| ||.||||||" +
+    "|......|| |______| ||......|" +
+    "|.||||.|| |______| ||.||||.|" +
+    "|.||||.   |______|   .||||.|" +
+    "|...||.|| |||||||| ||.||...|" +
+    "|||.||.||          ||.||.|||" +
+    "__|.||.|||| |||| ||||.||.|__" +
+    "__|.||.|||| |||| ||||.||.|__" +
+    "__|.........||||.........|__" +
+    "__|.|||||||.||||.|||||||.|__" +
+    "|||.|||||||.||||.|||||||.|||" +
+    "   ....||...    ...||....   " +
+    "|||.||.||.||||||||.||.||.|||" +
+    "|||.||.||.||||||||.||.||.|||" +
+    "|o..||.......||.......||..o|" +
+    "|.||||.|||||.||.|||||.||||.|" +
+    "|.||||.|||||.||.|||||.||||.|" +
+    "|..........................|" +
+    "||||||||||||||||||||||||||||" +
+    "____________________________" +
+    "____________________________"));
+
+mapMsPacman2.name = "Ms. Pac-Man 2";
+mapMsPacman2.wallFillColor = "#47b8ff";
+mapMsPacman2.wallStrokeColor = "#dedeff";
+mapMsPacman2.pelletColor = "#ffff00";
+mapMsPacman2.fruitPaths = {
+             "entrances": [
+                 { "start": { "y": 212, "x": 228 }, "path": "<<<<^^^<<<<<<<<^^^<" }, 
+                 { "start": { "y": 212, "x": -4 }, "path": ">>>>^^^>>>>>>>>vvv>>>>>^^^^^^<" }, 
+                 { "start": { "y": 36, "x": -4 }, "path": ">>>>>>>vvv>>>vvvvvvv>>>>>>>>>vvvvvv<<<" }, 
+                 { "start": { "y": 36, "x": 228 }, "path": "<<<<<<<vvv<<<vvvvvvvvvvvvv<<<" }
+             ], 
+             "exits": [
+                 { "path": "vvv>>>>>>>>vvv>>>>" }, 
+                 { "path": "vvvvvv<<<<<^^^<<<<<<<<vvv<<<<" }, 
+                 { "path": "<<<<<<<^^^^^^^^^^^^^<<<^^^<<<<<<<" }, 
+                 { "path": "vvv>>>>>^^^^^^^^^^>>>>>^^^^^^<<<<<^^^>>>>>>>" }
+             ]
+         };
+
+// Ms. Pac-Man map 3
+
+const mapMsPacman3 = new Map(28, 36, (
+    "____________________________" +
+    "____________________________" +
+    "____________________________" +
+    "||||||||||||||||||||||||||||" +
+    "|.........||....||.........|" +
+    "|.|||||||.||.||.||.|||||||.|" +
+    "|o|||||||.||.||.||.|||||||o|" +
+    "|.||.........||.........||.|" +
+    "|.||.||.||||.||.||||.||.||.|" +
+    "|....||.||||.||.||||.||....|" +
+    "||||.||.||||.||.||||.||.||||" +
+    "||||.||..............||.||||" +
+    " ....|||| |||||||| ||||.... " +
+    "|.|| |||| |||||||| |||| ||.|" +
+    "|.||                    ||.|" +
+    "|.|||| || |||--||| || ||||.|" +
+    "|.|||| || |______| || ||||.|" +
+    "|.     || |______| ||     .|" +
+    "|.|| |||| |______| |||| ||.|" +
+    "|.|| |||| |||||||| |||| ||.|" +
+    "|.||                    ||.|" +
+    "|.|||| ||||| || ||||| ||||.|" +
+    "|.|||| ||||| || ||||| ||||.|" +
+    "|......||....||....||......|" +
+    "|||.||.||.||||||||.||.||.|||" +
+    "|||.||.||.||||||||.||.||.|||" +
+    "|o..||.......  .......||..o|" +
+    "|.||||.|||||.||.|||||.||||.|" +
+    "|.||||.|||||.||.|||||.||||.|" +
+    "|......||....||....||......|" +
+    "|.||||.||.||||||||.||.||||.|" +
+    "|.||||.||.||||||||.||.||||.|" +
+    "|......||..........||......|" +
+    "||||||||||||||||||||||||||||" +
+    "____________________________" +
+    "____________________________"));
+
+mapMsPacman3.name = "Ms. Pac-Man 3";
+mapMsPacman3.wallFillColor = "#de9751";
+mapMsPacman3.wallStrokeColor = "#dedeff";
+mapMsPacman3.pelletColor = "#ff0000";
+mapMsPacman3.fruitPaths = {
+             "entrances": [
+                 { "start": { "y": 100, "x": 228 }, "path": "<<<<<vv<<<<<vvvvvv<<<" }, 
+                 { "start": { "y": 100, "x": -4 }, "path": ">>>>>vv>>>>>>>>>>>>>>vvvvvv<<<" }, 
+                 { "start": { "y": 100, "x": -4 }, "path": ">>>>>vv>>>>>>>>>>>>>>vvvvvv<<<" }, 
+                 { "start": { "y": 100, "x": 228 }, "path": "<<vvvvv<<<vvv<<<<<<<<" }
+             ], 
+             "exits": [
+                 { "path": "<vvv>>>vvv>>>^^^>>>>>^^^^^^^^^^^>>" }, 
+                 { "path": "<<<<vvv<<<vvv<<<^^^<<<<<^^^^^^^^^^^<<" }, 
+                 { "path": "<<<<vvv<<<vvv<<<^^^<<<<<^^^^^^^^^^^<<" }, 
+                 { "path": "<vvv>>>vvv>>>^^^^^^<<<^^^^^^>>>>>^^>>>>>" }
+             ]
+         };
+mapMsPacman3.constrainGhostTurns = function(tile,openTiles,dirEnum) {
+    // prevent ghost from turning down when exiting tunnels
+    if (tile.y == 12) {
+        if ((tile.x == 1 && dirEnum == DIR_RIGHT) || (tile.x == 26 && dirEnum == DIR_LEFT)) {
+            openTiles[DIR_DOWN] = false;
+        }
+    }
+};
+
+// Ms. Pac-Man map 4
+
+const mapMsPacman4 = new Map(28, 36, (
+    "____________________________" +
+    "____________________________" +
+    "____________________________" +
+    "||||||||||||||||||||||||||||" +
+    "|..........................|" +
+    "|.||.||||.||||||||.||||.||.|" +
+    "|o||.||||.||||||||.||||.||o|" +
+    "|.||.||||.||....||.||||.||.|" +
+    "|.||......||.||.||......||.|" +
+    "|.||||.||.||.||.||.||.||||.|" +
+    "|.||||.||.||.||.||.||.||||.|" +
+    "|......||....||....||......|" +
+    "|||.|||||||| || ||||||||.|||" +
+    "__|.|||||||| || ||||||||.|__" +
+    "__|....||          ||....|__" +
+    "||| ||.|| |||--||| ||.|| |||" +
+    "    ||.|| |______| ||.||    " +
+    "||||||.   |______|   .||||||" +
+    "||||||.|| |______| ||.||||||" +
+    "    ||.|| |||||||| ||.||    " +
+    "||| ||.||          ||.|| |||" +
+    "__|....||||| || |||||....|__" +
+    "__|.||.||||| || |||||.||.|__" +
+    "__|.||....   ||   ....||.|__" +
+    "__|.|||||.|| || ||.|||||.|__" +
+    "|||.|||||.|| || ||.|||||.|||" +
+    "|.........||    ||.........|" +
+    "|.||||.||.||||||||.||.||||.|" +
+    "|.||||.||.||||||||.||.||||.|" +
+    "|.||...||..........||...||.|" +
+    "|o||.|||||||.||.|||||||.||o|" +
+    "|.||.|||||||.||.|||||||.||.|" +
+    "|............||............|" +
+    "||||||||||||||||||||||||||||" +
+    "____________________________" +
+    "____________________________"));
+
+mapMsPacman4.name = "Ms. Pac-Man 4";
+mapMsPacman4.wallFillColor = "#2121ff";
+mapMsPacman4.wallStrokeColor = "#ffb851";
+mapMsPacman4.pelletColor = "#dedeff";
+mapMsPacman4.fruitPaths = {
+             "entrances": [
+                 { "start": { "y": 156, "x": 228 }, "path": "<<<<vv<<<vv<<<<<<^^^" }, 
+                 { "start": { "y": 156, "x": -4 }, "path": ">>>>vv>>>vv>>>>>>vvv>>>^^^^^^" }, 
+                 { "start": { "y": 132, "x": -4 }, "path": ">>>>^^^^^>>>^^^>>>vvv>>>vvv>>>>>>vvvvvv<<<" }, 
+                 { "start": { "y": 132, "x": 228 }, "path": "<<<<^^<<<vvv<<<vvv<<<" }
+             ], 
+             "exits": [
+                 { "path": "<vvv>>>>>>^^>>>^^>>>>" }, 
+                 { "path": "<<<<vvv<<<<<<^^<<<^^<<<<" }, 
+                 { "path": "<<<<<<<^^^<<<^^^<<<vv<<<<" }, 
+                 { "path": "<vvv>>>>>>^^^^^^^^^>>>vv>>>>" }
+             ]
+         };
+//@line 1 "src/vcr.js"
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// VCR
+// This coordinates the recording, rewinding, and replaying of the game state.
+// Inspired by Braid.
+
+const VCR_NONE = -1;
+const VCR_RECORD = 0;
+const VCR_REWIND = 1;
+const VCR_FORWARD = 2;
+const VCR_PAUSE = 3;
+
+const vcr = (function() {
+
+    let mode;
+
+    // controls whether to increment the frame before recording.
+    let initialized;
+
+    // current time
+    let time;
+
+    // tracking speed
+    let speedIndex;
+    const speeds = [-8,-4,-2,-1,0,1,2,4,8];
+    const speedCount = speeds.length;
+    const speedColors = [
+        "rgba(255,255,0,0.25)",
+        "rgba(255,255,0,0.20)",
+        "rgba(255,255,0,0.15)",
+        "rgba(255,255,0,0.10)",
+        "rgba(0,0,0,0)",
+        "rgba(0,0,255,0.10)",
+        "rgba(0,0,255,0.15)",
+        "rgba(0,0,255,0.20)",
+        "rgba(0,0,255,0.25)",
+    ];
+
+    // This is the number of "footprint" frames to display along the seek direction around a player
+    // to create the rewind/forward blurring.  
+    // This is also inversely used to determine the number of footprint frames to display OPPOSITE the seek direction
+    // around a player.
+    //
+    // For example: 
+    //   nextFrames = speedPrints[speedIndex];
+    //   prevFrames = speedPrints[speedCount-1-speedIndex];
+    const speedPrints = [
+        18,// -8x
+        13,// -4x
+        8, // -2x
+        3, // -1x
+        3, //  0x
+        10,//  1x
+        15,//  2x
+        20,//  4x
+        25,//  8x
+    ];
+
+    // The distance between each footprint used in the rewind/forward blurring.
+    // Step size grows when seeking speed increases to show emphasize time dilation.
+    const speedPrintStep = [
+        6,  // -8x
+        5,  // -4x
+        4,  // -2x
+        3,  // -1x
+        3,  //  0x
+        3,  //  1x
+        4,  //  2x
+        5,  //  4x
+        6,  //  8x
+    ];
+
+    // current frame associated with current time
+    // (frame == time % maxFrames)
+    let frame;
+
+    // maximum number of frames to record
+    const maxFrames = 15*60;
+
+    // rolling bounds of the recorded frames
+    let startFrame; // can't rewind past this
+    let stopFrame; // can't replay past this
+
+    // reset the VCR
+    const reset = function() {
+        time = 0;
+        frame = 0;
+        startFrame = 0;
+        stopFrame = 0;
+        startRecording();
+    };
+
+    // load the state of the current time
+    const load = function() {
+        for (const a of actors) {
+            a.load(frame);
+        }
+        elroyTimer.load(frame);
+        energizer.load(frame);
+        fruit.load(frame);
+        ghostCommander.load(frame);
+        ghostReleaser.load(frame);
+        map.load(frame,time);
+        loadGame(frame);
+        if (state == deadState) {
+            deadState.load(frame);
+        }
+        else if (state == finishState) {
+            finishState.load(frame);
+        }
+    };
+
+    // save the state of the current time
+    const save = function() {
+        for (const a of actors) {
+            a.save(frame);
+        }
+        elroyTimer.save(frame);
+        energizer.save(frame);
+        fruit.save(frame);
+        ghostCommander.save(frame);
+        ghostReleaser.save(frame);
+        map.save(frame);
+        saveGame(frame);
+        if (state == deadState) {
+            deadState.save(frame);
+        }
+        else if (state == finishState) {
+            finishState.save(frame);
+        }
+    };
+
+    // erase any states after the current time
+    // (only necessary for saves that do interpolation)
+    const eraseFuture = function() {
+        map.eraseFuture(time);
+        stopFrame = frame;
+    };
+
+    // increment or decrement the time
+    const addTime = function(dt) {
+        time += dt;
+        frame = (frame+dt)%maxFrames;
+        if (frame < 0) {
+            frame += maxFrames;
+        }
+    };
+
+    // measures the modular distance if increasing from x0 to x1 on our circular frame buffer.
+    const getForwardDist = function(x0,x1) {
+        return (x0 <= x1) ? x1-x0 : x1+maxFrames-x0;
+    };
+
+    // caps the time increment or decrement to prevent going over our rolling bounds.
+    const capSeekTime = function(dt) {
+        if (!initialized || dt == 0) {
+            return 0;
+        }
+        const maxForward = getForwardDist(frame,stopFrame);
+        const maxReverse = getForwardDist(startFrame,frame);
+        return (dt > 0) ? Math.min(maxForward,dt) : Math.max(-maxReverse,dt);
+    };
+
+    const init = function() {
+        mode = VCR_NONE;
+    };
+
+    // seek to the state at the given relative time difference.
+    const seek = function(dt) {
+        if (dt == undefined) {
+            dt = speeds[speedIndex];
+        }
+        if (initialized) {
+            addTime(capSeekTime(dt));
+            load();
+        }
+    };
+
+    // record a new state.
+    const record = function() {
+        if (initialized) {
+            addTime(1);
+            if (frame == startFrame) {
+                startFrame = (startFrame+1)%maxFrames;
+            }
+            stopFrame = frame;
+        }
+        else {
+            initialized = true;
+        }
+        save();
+    };
+
+    const startRecording = function() {
+        mode = VCR_RECORD;
+        initialized = false;
+        eraseFuture();
+        seekUpBtn.disable();
+        seekDownBtn.disable();
+        seekToggleBtn.setIcon(function(ctx,x,y,frame) {
+            drawRewindSymbol(ctx,x,y,"#FFF");
+        });
+        seekToggleBtn.setText();
+    };
+
+    const refreshSeekDisplay = function() {
+        seekToggleBtn.setText(speeds[speedIndex]+"x");
+    };
+
+    const startSeeking = function() {
+        speedIndex = 3;
+        updateMode();
+        seekUpBtn.enable();
+        seekDownBtn.enable();
+        seekToggleBtn.setIcon(undefined);
+        refreshSeekDisplay();
+    };
+
+    const nextSpeed = function(di) {
+        if (speeds[speedIndex+di] != undefined) {
+            speedIndex = speedIndex+di;
+        }
+        updateMode();
+        refreshSeekDisplay();
+    };
+
+    const pad = 5;
+    const x = mapWidth+1;
+    const h = 25;
+    const w = 25;
+    const y = mapHeight/2-h/2;
+
+    const seekUpBtn = new Button(x,y-h-pad,w,h,
+        function() {
+            nextSpeed(1);
+        });
+    seekUpBtn.setIcon(function(ctx,x,y,frame) {
+        drawUpSymbol(ctx,x,y,"#FFF");
+    });
+    const seekDownBtn = new Button(x,y+h+pad,w,h,
+        function() {
+            nextSpeed(-1);
+        });
+    seekDownBtn.setIcon(function(ctx,x,y,frame) {
+        drawDownSymbol(ctx,x,y,"#FFF");
+    });
+    const seekToggleBtn = new ToggleButton(x,y,w,h,
+        function() {
+            return mode != VCR_RECORD;
+        },
+        function(on) {
+            on ? startSeeking() : startRecording();
+        });
+    seekToggleBtn.setIcon(function(ctx,x,y,frame) {
+        drawRewindSymbol(ctx,x,y,"#FFF");
+    });
+    seekToggleBtn.setFont((tileSize-1)+"px ArcadeR", "#FFF");
+    const slowBtn = new ToggleButton(-w-pad-1,y,w,h,
+        function() {
+            return executive.getFramePeriod() == 1000/15;
+        },
+        function(on) {
+            executive.setUpdatesPerSecond(on ? 15 : 60);
+        });
+    slowBtn.setIcon(function(ctx,x,y) {
+        atlas.drawSnail(ctx,x,y,1);
+    });
+
+    const onFramePeriodChange = function() {
+        if (slowBtn.isOn()) {
+            slowBtn.setIcon(function(ctx,x,y) {
+                atlas.drawSnail(ctx,x,y,0);
+            });
+        }
+        else {
+            slowBtn.setIcon(function(ctx,x,y) {
+                atlas.drawSnail(ctx,x,y,1);
+            });
+        }
+    };
+
+    const onHudEnable = function() {
+        if (practiceMode) {
+            if (mode == VCR_NONE || mode == VCR_RECORD) {
+                seekUpBtn.disable();
+                seekDownBtn.disable();
+            }
+            else {
+                seekUpBtn.enable();
+                seekDownBtn.enable();
+            }
+            seekToggleBtn.enable();
+            slowBtn.enable();
+        }
+    };
+
+    const onHudDisable = function() {
+        if (practiceMode) {
+            seekUpBtn.disable();
+            seekDownBtn.disable();
+            seekToggleBtn.disable();
+            slowBtn.disable();
+        }
+    };
+
+    const isValidState = function() {
+        return (
+            !inGameMenu.isOpen() && (
+            state == playState ||
+            state == finishState ||
+            state == deadState));
+    };
+
+    const draw = function(ctx) {
+        if (practiceMode) {
+            if (isValidState() && vcr.getMode() != VCR_RECORD) {
+                // change the hue to reflect speed
+                renderer.setOverlayColor(speedColors[speedIndex]);
+            }
+
+            if (seekUpBtn.isEnabled) {
+                seekUpBtn.draw(ctx);
+            }
+            if (seekDownBtn.isEnabled) {
+                seekDownBtn.draw(ctx);
+            }
+            if (seekToggleBtn.isEnabled) {
+                seekToggleBtn.draw(ctx);
+            }
+            if (slowBtn.isEnabled) {
+                slowBtn.draw(ctx);
+            }
+        }
+    };
+
+    const updateMode = function() {
+        const speed = speeds[speedIndex];
+        if (speed == 0) {
+            mode = VCR_PAUSE;
+        }
+        else if (speed < 0) {
+            mode = VCR_REWIND;
+        }
+        else if (speed > 0) {
+            mode = VCR_FORWARD;
+        }
+    };
+
+    return {
+        init,
+        reset,
+        seek,
+        record,
+        draw,
+        onFramePeriodChange,
+        onHudEnable,
+        onHudDisable,
+        eraseFuture,
+        startRecording,
+        startSeeking,
+        nextSpeed,
+        isSeeking() {
+            return (
+                mode == VCR_REWIND ||
+                mode == VCR_FORWARD ||
+                mode == VCR_PAUSE);
+        },
+        getTime() { return time; },
+        getFrame() { return frame; },
+        getMode() { return mode; },
+
+        drawHistory(ctx,callback) {
+            if (!this.isSeeking()) {
+                return;
+            }
+
+            // determine start frame
+            const maxReverse = getForwardDist(startFrame,frame);
+            let start = (frame - Math.min(maxReverse,speedPrints[speedIndex])) % maxFrames;
+            if (start < 0) {
+                start += maxFrames;
+            }
+
+            // determine end frame
+            const maxForward = getForwardDist(frame,stopFrame);
+            const end = (frame + Math.min(maxForward,speedPrints[speedCount-1-speedIndex])) % maxFrames;
+
+            const backupAlpha = ctx.globalAlpha;
+            ctx.globalAlpha = 0.2;
+            
+            let t = start;
+            const step = speedPrintStep[speedIndex];
+            if (start > end) {
+                for (; t<maxFrames; t+=step) {
+                    callback(t);
+                }
+                t %= maxFrames;
+            }
+            for (; t<end; t+=step) {
+                callback(t);
+            }
+
+            ctx.globalAlpha = backupAlpha;
+        },
+    };
+})();
+//@line 1 "src/main.js"
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Entry Point
+
+window.addEventListener("load", function() {
+    loadHighScores();
+    initRenderer();
+    atlas.create();
+    initSwipe();
+    const anchor = window.location.hash.substring(1);
+    if (anchor == "learn") {
+        switchState(learnState);
+    }
+    else if (anchor == "cheat_pac" || anchor == "cheat_mspac") {
+        setGameMode((anchor == "cheat_pac") ? GAME_PACMAN : GAME_MSPACMAN);
+        setPracticeMode(true);
+        switchState(newGameState);
+        for (const g of ghosts) {
+            g.isDrawTarget = true;
+            g.isDrawPath = true;
+        }
+    }
+    else {
+        switchState(homeState);
+    }
+    executive.init();
+});
+})();

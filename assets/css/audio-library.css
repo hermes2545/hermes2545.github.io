@@ -93,7 +93,7 @@
   box-shadow: inset 0 0 18px rgba(255,255,255,.75);
   transform: perspective(180px) rotateX(4deg) rotateY(-5deg);
 }
-.audio-library-mark .library-logo { filter: grayscale(1) contrast(.55) brightness(.6); opacity: .8; }
+.audio-library-mark .library-logo { filter: none; opacity: 1; }
 .audio-page .eyebrow, .audio-page .section-kicker {
   color: #6e6e73;
   font-size: .66rem;

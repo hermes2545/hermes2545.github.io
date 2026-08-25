@@ -18,7 +18,8 @@
       "primary": "#73793B",
       "accent": "#FFD700",
       "ink": "#101208"
-    }
+    },
+    "sticker": "assets/app-stickers/battle-tank.webp"
   },
   {
     "id": "bakery-center",
@@ -39,7 +40,8 @@
       "primary": "#F4E7D3",
       "accent": "#C4502E",
       "ink": "#3A2A1C"
-    }
+    },
+    "sticker": null
   },
   {
     "id": "loderunner",
@@ -60,6 +62,95 @@
       "primary": "#E7E2D2",
       "accent": "#D4871A",
       "ink": "#1C1710"
+    },
+    "sticker": "assets/app-stickers/loderunner.webp"
+  },
+  {
+    "id": "pacman",
+    "title": "Pac-Man — HTML5 Historical Tribute",
+    "short_title": "Pac-Man",
+    "href": "app/pacman.html",
+    "category": "Game",
+    "summary": "เกม Pac-Man แบบ HTML5 ที่มี Pac-Man, Ms. Pac-Man, Crazy Otto และ Cookie-Man พร้อม Turbo, Learn, Practice และ Rewind modes",
+    "published_at": "2026-08-25T00:11:55-05:00",
+    "source_repository": "https://github.com/shaunlebron/pacman",
+    "source_commit": "51048a29df603391be1d12cd4118699fb0a38790",
+    "source_sha256": "46dd569754c3e73c93f814388db1a9846abe2cf5779cadc053836d7051fa6647",
+    "import_mode": "wrapper-preserved-runtime",
+    "sticker": "assets/app-stickers/pacman.webp",
+    "label": {
+      "kicker": "HTML5 ARCADE · GPL",
+      "mark": "PM",
+      "version": "4 GAME MODES",
+      "primary": "#FFF04A",
+      "accent": "#1D4ED8",
+      "ink": "#111111"
+    }
+  },
+  {
+    "id": "rl-battle-city",
+    "title": "RL Battle City — AI Tank Agent",
+    "short_title": "RL Battle City",
+    "href": "app/rl-battle-city.html",
+    "category": "Game",
+    "summary": "Browser port จาก Python/Pygame/Gymnasium project เล่นรถถังปกป้องฐานได้เองหรือเปิด AI autopilot เพื่อดู Agent เคลื่อนที่และยิงอัตโนมัติ",
+    "published_at": "2024-01-21T12:16:22+01:00",
+    "source_repository": "https://github.com/danisotelo/RL_battle_city",
+    "source_commit": "6bd87671b066a9d187a3f488cc25b87f013f8e2d",
+    "source_sha256": "3340fb0583a35bc9b839a92a304433006a7c7085f52798cf0d8c75faafbe9a71",
+    "import_mode": "browser-port",
+    "sticker": "assets/app-stickers/rl-battle-city.webp",
+    "label": {
+      "kicker": "RL · PPO AGENT",
+      "mark": "RL",
+      "version": "AI DEMO",
+      "primary": "#D9F99D",
+      "accent": "#16A34A",
+      "ink": "#10220F"
+    }
+  },
+  {
+    "id": "new-rally-x",
+    "title": "New Rally-X — Retro Remake",
+    "short_title": "New Rally-X",
+    "href": "app/new-rally-x.html",
+    "category": "Game",
+    "summary": "Browser port จาก MonoGame source ขับรถในเขาวงกต เก็บธง หลบรถศัตรู ใช้ม่านควัน และบริหารน้ำมันให้ผ่านด่าน",
+    "published_at": "2023-02-18T18:38:14-05:00",
+    "source_repository": "https://github.com/codehoose/new-rally-x",
+    "source_commit": "5e2fa82f31b9534830f8c9cc611f9e575515555c",
+    "source_sha256": "6ba5678752142cb10dc85e6f630515e83d0df8e69ffd76b75c7ede512cfdd699",
+    "import_mode": "browser-port",
+    "sticker": "assets/app-stickers/new-rally-x.webp",
+    "label": {
+      "kicker": "MONOGAME SOURCE PORT",
+      "mark": "RX",
+      "version": "WEB EDITION",
+      "primary": "#0B2A5B",
+      "accent": "#38BDF8",
+      "ink": "#F8FAFC"
+    }
+  },
+  {
+    "id": "galaga",
+    "title": "Galaga — Library Browser Port",
+    "short_title": "Galaga",
+    "href": "app/galaga.html",
+    "category": "Game",
+    "summary": "Browser port จาก Unity source ใช้ Sprite และ Level config ต้นฉบับ บังคับยาน ยิงฝูงศัตรู หลบการดิ่งโจมตี และผ่าน Wave ต่อเนื่อง",
+    "published_at": "2022-06-07T20:39:27+03:00",
+    "source_repository": "https://github.com/cholushkin/Galaga",
+    "source_commit": "f127e92130d3f3f50c9fc8ea5f169aebe8d4e0ce",
+    "source_sha256": "5c9cbd801e108f9ac029019df65c904698b9a0b5161a5a98529fbf7b9a457e6f",
+    "import_mode": "browser-port",
+    "sticker": "assets/app-stickers/galaga.webp",
+    "label": {
+      "kicker": "UNITY SOURCE PORT",
+      "mark": "GG",
+      "version": "WEB EDITION",
+      "primary": "#07111F",
+      "accent": "#F43F5E",
+      "ink": "#F8FAFC"
     }
   }
 ]

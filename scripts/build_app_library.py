@@ -30,6 +30,12 @@ def render_app(app: dict) -> str:
     published = datetime.fromisoformat(app["published_at"]).strftime("%d/%m/%Y")
     searchable = " ".join((app["title"], app["short_title"], app["category"], app["summary"]))
     label = app["label"]
+    sticker = app.get("sticker")
+    sticker_markup = (
+        f'\n        <img class="diskette-sticker" src="{esc(sticker)}" alt="" loading="lazy">'
+        if sticker else ""
+    )
+    label_class = "diskette-label has-sticker" if sticker else "diskette-label"
     return f'''<article class="app-card" data-app-id="{esc(app["id"])}" data-category="{esc(app["category"])}" data-search="{esc(searchable)}" style="--label-primary:{esc(label["primary"])};--label-accent:{esc(label["accent"])};--label-ink:{esc(label["ink"])}">
   <a class="app-link" href="{esc(app["href"])}" target="_blank" rel="noopener" aria-label="เปิด App {esc(app["title"])} ในแท็บใหม่">
     <div class="app-meta">
@@ -39,8 +45,8 @@ def render_app(app: dict) -> str:
     </div>
     <div class="diskette" aria-hidden="true">
       <div class="diskette-shutter"><span></span></div>
-      <div class="diskette-label">
-        <span class="label-kicker">{esc(label["kicker"])}</span>
+      <div class="{label_class}">
+        <span class="label-kicker">{esc(label["kicker"])}</span>{sticker_markup}
         <span class="label-mark">{esc(label["mark"])}</span>
         <strong>{esc(app["short_title"])}</strong>
         <span class="label-version">{esc(label["version"])}</span>

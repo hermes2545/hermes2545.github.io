@@ -80,7 +80,8 @@ class HomepageBuildTests(unittest.TestCase):
     def test_new_brand_navigation_icons_and_library_favicon(self):
         self.assertIn("The Knowledge Shelf", self.html)
         self.assertIn("Curated Guides, Ideas &amp; Audio", self.html)
-        self.assertIn('href="assets/icons/library.svg"', self.html)
+        self.assertIn('href="assets/icons/shelfkeeper-librarian.webp"', self.html)
+        self.assertIn('src="assets/icons/shelfkeeper-librarian.webp"', self.html)
         self.assertEqual(self.html.count('class="nav-icon"'), 3)
         self.assertIn('href="app-library.html"', self.html)
 

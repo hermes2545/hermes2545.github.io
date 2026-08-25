@@ -140,7 +140,8 @@ class AudioLibraryTests(unittest.TestCase):
     def test_new_brand_navigation_icons_and_library_favicon(self):
         self.assertIn("The Knowledge Shelf", self.page)
         self.assertIn("Curated Guides, Ideas &amp; Audio", self.page)
-        self.assertIn('href="assets/icons/library.svg"', self.page)
+        self.assertIn('href="assets/icons/shelfkeeper-librarian.webp"', self.page)
+        self.assertIn('src="assets/icons/shelfkeeper-librarian.webp"', self.page)
         self.assertEqual(self.page.count('class="nav-icon"'), 3)
         self.assertIn('href="app-library.html"', self.page)
 

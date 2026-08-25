@@ -124,7 +124,7 @@ body::before {
   font: 700 clamp(2rem, 5vw, 4rem)/1 var(--serif);
 }
 .library-mark span { transform: translateY(-.03em); }
-.library-logo { width: 70%; height: 70%; display: block; }
+.library-logo { width: 100%; height: 100%; display: block; object-fit: cover; }
 .eyebrow, .section-kicker {
   margin: 0 0 .55rem;
   color: var(--brass-light);
