@@ -21,13 +21,16 @@
 .app-page .site-nav a:hover { color: #171511; }
 .app-page .site-nav a[aria-current="page"] { color: #005b6d; border-bottom-color: #00758a; text-shadow: none; }
 .app-library-mark {
+  width: clamp(92px, 9vw, 112px);
+  aspect-ratio: 314 / 270;
+  padding: .28rem;
   color: #11181b;
   border: 3px ridge #e7e4d9;
   outline-color: rgba(82,235,241,.26);
-  background: linear-gradient(145deg, #f1efe7, #8e918e 70%);
+  background: #fff;
   box-shadow: 8px 9px 0 #050709, inset 0 1px rgba(255,255,255,.8);
-  font: 900 1.25rem/1 Tahoma, sans-serif;
 }
+.pantip-logo { width: 100%; height: 100%; display: block; object-fit: contain; }
 .app-page .eyebrow, .app-page .section-kicker { color: #8a5b00; }
 .app-page .subtitle { color: #6a645b; }
 .app-page .collection-seal { color: #5e4318; border-color: rgba(93,66,24,.38); background: rgba(255,255,255,.48); }
@@ -59,11 +62,11 @@
   text-shadow: 0 0 3px var(--led-color), 0 0 9px var(--led-color), 0 0 17px color-mix(in srgb, var(--led-color) 55%, transparent);
   filter: saturate(1.2);
   will-change: left, transform, color;
-  animation: app-led-scroll-right 28s linear infinite;
+  animation: app-led-scroll-left 28s linear infinite;
 }
-@keyframes app-led-scroll-right {
-  from { left: 0; transform: translate(-100%, -50%); }
-  to { left: 100%; transform: translate(0, -50%); }
+@keyframes app-led-scroll-left {
+  from { left: 100%; transform: translate(0, -50%); }
+  to { left: 0; transform: translate(-100%, -50%); }
 }
 .app-tools { grid-template-columns: minmax(250px, .9fr) minmax(360px, 1.1fr); }
 .app-search-panel {

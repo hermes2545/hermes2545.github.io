@@ -98,6 +98,8 @@ class AudioLibraryTests(unittest.TestCase):
             self.assertIn(marker, stylesheet)
         self.assertIn("FIFTH AVENUE LISTENING ROOM", template)
         self.assertIn("A bright gallery for sound and ideas", template)
+        self.assertIn("<h1>The Audio Shelf</h1>", template)
+        self.assertNotIn("<h1>The Knowledge Shelf</h1>", template)
 
     def test_duration_is_in_the_lower_panel_above_play(self):
         cards = self.page.split('<article class="book-card audio-card"')[1:]

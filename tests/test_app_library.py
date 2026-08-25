@@ -139,17 +139,28 @@ class AppLibraryTests(unittest.TestCase):
         self.assertIn("function columnsForViewport()", script)
         self.assertIn('itemName = "App"', script)
 
-    def test_pantip_title_and_led_marquee_scroll_right_with_loop_colors(self):
+    def test_pantip_title_logo_and_led_marquee_scroll_left_with_loop_colors(self):
         template = (ROOT / "templates" / "app-library.template.html").read_text(encoding="utf-8")
         stylesheet = (ROOT / "assets" / "css" / "app-library.css").read_text(encoding="utf-8")
         script = (ROOT / "assets" / "js" / "app-library.js").read_text(encoding="utf-8")
+        logo = ROOT / "assets" / "icons" / "pantip-logo.webp"
         message = "ซอฟท์แวร์, โปรแกรม, CD เถื่อน ทุกประเภท, MP3 ประเทืองล่าสุด, ปลอมแท้ต้อง Vampire, รับ copy แผ่น, หนังญี่ปุ่น, ฝรั่ง, สะกิดคนขายได้  😎😎😎"
         self.assertIn("<h1>พันธุ์ทิพย์พลาซ่า</h1>", template)
+        self.assertIn('class="pantip-logo"', template)
+        self.assertIn('src="assets/icons/pantip-logo.webp"', template)
+        self.assertNotIn("<span>3½</span>", template)
+        self.assertTrue(logo.is_file())
+        logo_bytes = logo.read_bytes()
+        self.assertGreater(len(logo_bytes), 5000)
+        self.assertEqual(logo_bytes[:4], b"RIFF")
+        self.assertEqual(logo_bytes[8:12], b"WEBP")
+        self.assertIn(".pantip-logo", stylesheet)
         self.assertIn(message, template)
         self.assertIn('class="app-marquee-message"', template)
-        self.assertIn("@keyframes app-led-scroll-right", stylesheet)
-        self.assertIn("animation: app-led-scroll-right 28s linear infinite", stylesheet)
-        self.assertIn("left: 100%;", stylesheet)
+        self.assertIn("@keyframes app-led-scroll-left", stylesheet)
+        self.assertIn("animation: app-led-scroll-left 28s linear infinite", stylesheet)
+        self.assertIn("from { left: 100%; transform: translate(0, -50%); }", stylesheet)
+        self.assertIn("to { left: 0; transform: translate(-100%, -50%); }", stylesheet)
         self.assertIn('const ledColors = ["#ff3b30", "#20b548", "#ffd20a", "#2b6cff"]', script)
         self.assertIn('marquee.addEventListener("animationiteration"', script)
 

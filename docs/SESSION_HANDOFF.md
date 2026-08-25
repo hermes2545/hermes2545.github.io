@@ -34,6 +34,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 - Audio titles no longer show the redundant `AUDIO BOOK` kicker.
 - Each item and the playlist button open YouTube in a new tab.
 - The Audio room uses a light premium technology-retail theme inspired by Apple Fifth Avenue's architectural materials: a luminous glass-cube mark, circular skylights, pale stone/off-white terrazzo surfaces, stainless-steel details, translucent dark navigation, and maple display tables. Apple Blue is reserved for interactive controls.
+- The Audio collection header is titled **The Audio Shelf** while the Reading collection retains **The Knowledge Shelf**.
 
 ### App collection
 
@@ -44,7 +45,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 - Development tools, executable files, source disk images, repository metadata, and unrelated README files are excluded from the imported Lode Runner runtime.
 - Every App appears as a CSS-rendered 3.5-inch diskette with a content-specific sticker label rather than a book cover.
 - The App room uses a light Pantip Plaza 1990s software-floor visual language: pale retail wall, perforated metal display board, LED signage, Windows 95-style search panel, and metal shelf edges.
-- The App header is branded **พันธุ์ทิพย์พลาซ่า**. Its long Thai LED shop message scrolls continuously from left to right at a restrained 28-second pace and changes red → green → yellow → blue on each completed loop.
+- The App header is branded **พันธุ์ทิพย์พลาซ่า** and uses the user-supplied Pantip Plaza logo at the upper-left instead of the former `3½` badge. Its long Thai LED shop message scrolls continuously from right to left at a restrained 28-second pace and changes red → green → yellow → blue on each completed loop.
 
 ### Shared visual behavior
 
