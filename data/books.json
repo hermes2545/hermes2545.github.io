@@ -1,5 +1,16 @@
 [
   {
+    "id": "vault-ai-safety",
+    "title": "VAULT: คู่มือคุม AI ไม่ให้พลาด — ตรวจสอบได้ ควบคุมความเสี่ยง และมีมนุษย์กำกับ",
+    "short_title": "คุม AI ไม่ให้พลาดด้วย VAULT",
+    "href": "VAULT_AI_Safety_Interactive_Guide_TH.html",
+    "cover": "assets/covers/custom/vault-ai-safety.webp",
+    "category": "AI Governance",
+    "summary": "กรอบปฏิบัติสำหรับเลือก Deterministic, AI หรือ Hybrid ตรวจข้อมูลและผลลัพธ์ วาง Human approval ตามระดับความเสี่ยง และเก็บหลักฐานให้ตรวจย้อนหลังได้",
+    "accent": "#5FE6EE",
+    "published_at": "2026-08-25T21:00:09+07:00"
+  },
+  {
     "id": "agent-reach-comparison",
     "title": "Agent Reach vs Direct Transcript — เปรียบเทียบจากการทดสอบจริง",
     "short_title": "Agent Reach หรือดึง Transcript ตรง",

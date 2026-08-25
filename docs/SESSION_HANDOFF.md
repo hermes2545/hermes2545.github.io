@@ -16,18 +16,18 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 
 ### Reading collection
 
-- 19 standalone HTML guides indexed from `data/books.json`.
-- `AgentReach_comparison-vs-onepage.html` is the newest guide, comparing direct transcript extraction with Agent Reach/yt-dlp using a split-system 600×900 custom WebP cover.
+- 20 standalone HTML guides indexed from `data/books.json`.
+- `VAULT_AI_Safety_Interactive_Guide_TH.html` is the newest guide, explaining how to verify AI outputs, choose deterministic/AI/hybrid workflows, place human approval gates, and keep inspectable evidence; it uses the selected Cobalt Ice 600×900 custom WebP cover.
 - The imported `hermes-memory` and `hermes-guardian` repositories retain their original source commits under dedicated subdirectories.
-- All 19 shelf-facing short titles use Thai-first labels while retaining necessary product and technical terms.
+- All 20 shelf-facing short titles use Thai-first labels while retaining necessary product and technical terms.
 - Newest publication appears at the upper-left, then flows right and downward.
 - Every guide opens in a new browser tab.
-- All 19 reading books use individually designed 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork.
-- Reproducible cover designs live under `templates/`, including `agent-reach-comparison-cover.template.html` and `hermes-concepts-for-everyone-cover.template.html`; legacy Facebook assets remain archived but unused.
+- All 20 reading books use individually designed 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork.
+- Reproducible cover designs live under `templates/`, including `vault-ai-safety-cover.template.html`, `agent-reach-comparison-cover.template.html`, and `hermes-concepts-for-everyone-cover.template.html`; legacy Facebook assets remain archived but unused.
 
 ### Audio collection
 
-- 47 YouTube entries indexed from `data/audio-books.json`; the newest is the corrected **ในหัวของ Hermes มีอะไร? แกะระบบ AI Agent ให้คนทั่วไปเข้าใจ | ฉบับแก้ไข** (`4zmH_6gM4h4`). The original `KtHYNnLM_Dk` is Unlisted and is no longer referenced by the active catalog.
+- 48 YouTube entries indexed from `data/audio-books.json`; the newest is **คุม AI ไม่ให้พลาด: กรอบ VAULT สำหรับระบบที่ตรวจสอบได้และควบคุมความเสี่ยง** (`lL2eb4GeoAU`). The original Hermes podcast `KtHYNnLM_Dk` remains Unlisted and is not referenced by the active catalog.
 - Newest publication appears at the upper-left.
 - Local thumbnail assets are stored under `assets/audio-covers/`.
 - Each audio item uses a large iPod-style device at the existing book footprint: a full 4:3 thumbnail screen above a click wheel, with duration at the upper-right of the lower control panel and a PLAY label below.
@@ -65,7 +65,7 @@ python scripts/build_audio_library.py --check
 git diff --check
 ```
 
-Expected verified result at close: **41 tests passed**, both generated pages current, and no diff-check errors.
+Expected verified result at close: **43 tests passed**, both generated pages current, and no diff-check errors.
 
 ## Publication workflow
 

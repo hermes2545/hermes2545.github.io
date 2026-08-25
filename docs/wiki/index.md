@@ -37,6 +37,7 @@ tags: [library, index]
 - [Dedicated Library AI Agent Profile Blueprint](../DEDICATED_LIBRARY_AGENT_PROFILE_BLUEPRINT.md)
 - [Hermes Profile Backup and Restore Public Guide](../guides/HERMES_PROFILE_BACKUP_RESTORE_PUBLIC_GUIDE.md)
 - [Hermes Agent Concepts for Everyone — Thai Guide](../guides/HERMES_AGENT_CONCEPTS_FOR_EVERYONE_TH.md)
+- [VAULT — คู่มือออกแบบระบบ AI ที่ตรวจสอบได้และควบคุมความเสี่ยง](../guides/VAULT_AI_SAFETY_GUIDE_TH.md)
 
 ## Reports
 

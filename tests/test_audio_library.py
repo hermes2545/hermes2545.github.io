@@ -15,9 +15,9 @@ class AudioLibraryTests(unittest.TestCase):
         self.page = render_audio_library(self.items)
 
     def test_playlist_catalog_is_complete_and_unique(self):
-        self.assertEqual(len(self.items), 47)
-        self.assertEqual(len({item["video_id"] for item in self.items}), 47)
-        self.assertEqual(len({item["youtube_url"] for item in self.items}), 47)
+        self.assertEqual(len(self.items), 48)
+        self.assertEqual(len({item["video_id"] for item in self.items}), 48)
+        self.assertEqual(len({item["youtube_url"] for item in self.items}), 48)
 
     def test_catalog_is_sorted_newest_first_with_playlist_order_as_tiebreak(self):
         expected = sorted(
@@ -25,12 +25,20 @@ class AudioLibraryTests(unittest.TestCase):
             key=lambda item: (-item["published_epoch_ms"], item["playlist_position"]),
         )
         self.assertEqual(self.items, expected)
-        self.assertEqual(self.items[0]["video_id"], "4zmH_6gM4h4")
+        self.assertEqual(self.items[0]["video_id"], "lL2eb4GeoAU")
 
     def test_latest_hermes_inside_podcast_metadata(self):
-        item = self.items[0]
+        item = next(item for item in self.items if item["video_id"] == "4zmH_6gM4h4")
         self.assertEqual(item["title"], "ในหัวของ Hermes มีอะไร? แกะระบบ AI Agent ให้คนทั่วไปเข้าใจ | ฉบับแก้ไข")
         self.assertEqual(item["duration_seconds"], 2029)
+        self.assertEqual(item["playlist_position"], 2)
+        self.assertEqual(item["uploader"], "manny calavara")
+
+    def test_latest_vault_ai_safety_podcast_metadata(self):
+        item = self.items[0]
+        self.assertEqual(item["video_id"], "lL2eb4GeoAU")
+        self.assertEqual(item["title"], "คุม AI ไม่ให้พลาด: กรอบ VAULT สำหรับระบบที่ตรวจสอบได้และควบคุมความเสี่ยง")
+        self.assertEqual(item["duration_seconds"], 1592)
         self.assertEqual(item["playlist_position"], 1)
         self.assertEqual(item["uploader"], "manny calavara")
 
@@ -49,23 +57,23 @@ class AudioLibraryTests(unittest.TestCase):
             self.assertGreater(cover.stat().st_size, 500, cover)
 
     def test_page_renders_all_items_with_dates_durations_and_new_tabs(self):
-        self.assertEqual(self.page.count('class="book-card audio-card"'), 47)
-        self.assertEqual(self.page.count('target="_blank"'), 48)  # 47 items + playlist button
-        self.assertEqual(self.page.count('rel="noopener"'), 48)
-        self.assertEqual(self.page.count('publish on '), 47)
-        self.assertEqual(self.page.count('class="audio-duration"'), 47)
+        self.assertEqual(self.page.count('class="book-card audio-card"'), 48)
+        self.assertEqual(self.page.count('target="_blank"'), 49)  # 48 items + playlist button
+        self.assertEqual(self.page.count('rel="noopener"'), 49)
+        self.assertEqual(self.page.count('publish on '), 48)
+        self.assertEqual(self.page.count('class="audio-duration"'), 48)
         self.assertIn('publish on 24/08/2026', self.page)
         self.assertIn('25:42', self.page)
 
     def test_audio_covers_show_full_four_by_three_thumbnail_over_play_panel(self):
-        self.assertEqual(self.page.count('class="audio-thumbnail-frame"'), 47)
-        self.assertEqual(self.page.count('class="audio-play-panel"'), 47)
-        self.assertEqual(self.page.count('class="audio-play-button"'), 47)
+        self.assertEqual(self.page.count('class="audio-thumbnail-frame"'), 48)
+        self.assertEqual(self.page.count('class="audio-play-panel"'), 48)
+        self.assertEqual(self.page.count('class="audio-play-button"'), 48)
 
     def test_audio_cards_are_ipods_without_audio_book_kickers(self):
         self.assertNotIn("AUDIO BOOK", self.page)
-        self.assertEqual(self.page.count('class="book-cover-wrap audio-cover-wrap audio-ipod"'), 47)
-        self.assertEqual(self.page.count('class="audio-click-wheel"'), 47)
+        self.assertEqual(self.page.count('class="book-cover-wrap audio-cover-wrap audio-ipod"'), 48)
+        self.assertEqual(self.page.count('class="audio-click-wheel"'), 48)
         stylesheet = (ROOT / "assets" / "css" / "audio-library.css").read_text(encoding="utf-8")
         self.assertIn(".audio-ipod", stylesheet)
         self.assertIn("aspect-ratio: 2 / 3;", stylesheet)
@@ -73,7 +81,7 @@ class AudioLibraryTests(unittest.TestCase):
 
     def test_duration_is_in_the_lower_panel_above_play(self):
         cards = self.page.split('<article class="book-card audio-card"')[1:]
-        self.assertEqual(len(cards), 47)
+        self.assertEqual(len(cards), 48)
         for card in cards:
             for marker in (
                 'class="audio-play-panel"',
@@ -89,11 +97,11 @@ class AudioLibraryTests(unittest.TestCase):
             self.assertLess(panel, duration)
             self.assertLess(duration, wheel)
             self.assertLess(wheel, play)
-        self.assertEqual(self.page.count('class="audio-play-label">PLAY'), 47)
+        self.assertEqual(self.page.count('class="audio-play-label">PLAY'), 48)
 
     def test_audio_text_is_above_each_book_cover(self):
         cards = self.page.split('<article class="book-card audio-card"')[1:]
-        self.assertEqual(len(cards), 47)
+        self.assertEqual(len(cards), 48)
         for card in cards:
             self.assertLess(card.index('class="book-meta audio-meta"'), card.index('class="book-cover-wrap audio-cover-wrap audio-ipod"'))
 
