@@ -25,14 +25,17 @@ class AudioLibraryTests(unittest.TestCase):
             key=lambda item: (-item["published_epoch_ms"], item["playlist_position"]),
         )
         self.assertEqual(self.items, expected)
-        self.assertEqual(self.items[0]["video_id"], "KtHYNnLM_Dk")
+        self.assertEqual(self.items[0]["video_id"], "4zmH_6gM4h4")
 
     def test_latest_hermes_inside_podcast_metadata(self):
         item = self.items[0]
-        self.assertEqual(item["title"], "ในหัวของ Hermes มีอะไร? แกะระบบ AI Agent ให้คนทั่วไปเข้าใจ")
-        self.assertEqual(item["duration_seconds"], 2070)
+        self.assertEqual(item["title"], "ในหัวของ Hermes มีอะไร? แกะระบบ AI Agent ให้คนทั่วไปเข้าใจ | ฉบับแก้ไข")
+        self.assertEqual(item["duration_seconds"], 2029)
         self.assertEqual(item["playlist_position"], 1)
         self.assertEqual(item["uploader"], "manny calavara")
+
+    def test_dead_air_replacement_supersedes_old_public_video(self):
+        self.assertNotIn("KtHYNnLM_Dk", {item["video_id"] for item in self.items})
 
     def test_every_audio_book_has_a_local_cover_and_required_metadata(self):
         required = {
