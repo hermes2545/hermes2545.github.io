@@ -1,0 +1,59 @@
+[
+  {
+    "id": "battle-tank",
+    "title": "Tank Battle — Classic Arcade",
+    "short_title": "Battle Tank",
+    "href": "app/battle-tank.html",
+    "category": "Game",
+    "summary": "เกมรถถังอาร์เคดแบบ 8-bit ปกป้องฐาน ทำลายกำแพง เก็บ Power-up และเล่นได้ทั้งคีย์บอร์ดกับหน้าจอสัมผัส",
+    "published_at": "2026-04-10T00:00:45+07:00",
+    "source_repository": "https://github.com/p2544/battle-tank",
+    "source_commit": "1ee3598a5ba84348915cf1cf6b140f52cc2e7bf2",
+    "label": {
+      "kicker": "CLASSIC ARCADE",
+      "mark": "TB",
+      "version": "v1.9",
+      "primary": "#73793B",
+      "accent": "#FFD700",
+      "ink": "#101208"
+    }
+  },
+  {
+    "id": "bakery-center",
+    "title": "Bakery Center",
+    "short_title": "Bakery Center",
+    "href": "app/bakery-center.html",
+    "category": "Productivity",
+    "summary": "ผู้ช่วยทำเบเกอรี่บนมือถือ รวมคลังสูตร ปรับสัดส่วน จับเวลา เครื่องคำนวณ Starter tracker บันทึกการอบ และต้นทุน",
+    "published_at": "2026-06-06T16:01:50+00:00",
+    "source_repository": "https://github.com/p2544/bakery-center",
+    "source_commit": "53320b6f4a51d1cad62f302857f9aebd8afd5cdb",
+    "label": {
+      "kicker": "BAKER'S COMPANION",
+      "mark": "BC",
+      "version": "v1.3",
+      "primary": "#F4E7D3",
+      "accent": "#C4502E",
+      "ink": "#3A2A1C"
+    }
+  },
+  {
+    "id": "loderunner",
+    "title": "Lode Runner — Total Recall",
+    "short_title": "Lode Runner",
+    "href": "app/loderunner.html",
+    "category": "Game",
+    "summary": "เกม Lode Runner ฉบับ HTML5 พร้อม Challenge, Training, Edit และ Demo mode รวมด่านคลาสสิกและธีม Apple II กับ Commodore 64",
+    "published_at": "2025-04-13T14:26:09+08:00",
+    "source_repository": "https://github.com/p2544/loderunner",
+    "source_commit": "cceca5d5a15a21f724836654a46bf2501968e142",
+    "label": {
+      "kicker": "APPLE II • C64",
+      "mark": "LR",
+      "version": "TOTAL RECALL",
+      "primary": "#E7E2D2",
+      "accent": "#D4871A",
+      "ink": "#1C1710"
+    }
+  }
+]

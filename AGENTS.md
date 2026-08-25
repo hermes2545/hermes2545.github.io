@@ -21,8 +21,9 @@ Read in this order before work:
 
 - Reading catalog: `data/books.json`
 - Audio catalog: `data/audio-books.json`
-- Generated pages: `index.html`, `audio-library.html`
-- Generators: `scripts/build_catalog.py`, `scripts/build_audio_library.py`
+- App catalog: `data/apps.json`
+- Generated pages: `index.html`, `audio-library.html`, `app-library.html`
+- Generators: `scripts/build_catalog.py`, `scripts/build_audio_library.py`, `scripts/build_app_library.py`
 - Project knowledge: `docs/wiki/`
 - Local-only external links and Drive registry: `.hermes/`
 
@@ -40,6 +41,7 @@ Shelfkeeper must obtain explicit approval before public push/publish, destructiv
 python -m unittest discover -s tests -v
 python scripts/build_catalog.py --check
 python scripts/build_audio_library.py --check
+python scripts/build_app_library.py --check
 git diff --check
 ```
 

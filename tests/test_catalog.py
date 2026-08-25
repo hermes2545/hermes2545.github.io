@@ -12,12 +12,19 @@ class CatalogTests(unittest.TestCase):
         self.books = json.loads(CATALOG.read_text(encoding="utf-8"))
 
     def test_catalog_contains_every_distinct_existing_guide(self):
+        generated_collection_pages = {
+            Path("index.html"),
+            Path("audio-library.html"),
+            Path("app-library.html"),
+        }
         html_files = {
             str(path.relative_to(ROOT))
             for path in ROOT.rglob("*.html")
             if ".git" not in path.parts
+            and ".hermes" not in path.relative_to(ROOT).parts
             and "templates" not in path.relative_to(ROOT).parts
-            and path.relative_to(ROOT) not in {Path("index.html"), Path("audio-library.html")}
+            and "app" not in path.relative_to(ROOT).parts
+            and path.relative_to(ROOT) not in generated_collection_pages
         }
         catalog_targets = {unquote(urlparse(book["href"]).path) for book in self.books}
         # The root token guide and folder token guide are byte-identical aliases.

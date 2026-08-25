@@ -81,7 +81,8 @@ class HomepageBuildTests(unittest.TestCase):
         self.assertIn("The Knowledge Shelf", self.html)
         self.assertIn("Curated Guides, Ideas &amp; Audio", self.html)
         self.assertIn('href="assets/icons/library.svg"', self.html)
-        self.assertEqual(self.html.count('class="nav-icon"'), 2)
+        self.assertEqual(self.html.count('class="nav-icon"'), 3)
+        self.assertIn('href="app-library.html"', self.html)
 
     def test_homepage_escapes_catalog_text(self):
         book = dict(self.books[0])

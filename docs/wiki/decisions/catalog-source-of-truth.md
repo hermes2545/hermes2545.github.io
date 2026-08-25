@@ -4,8 +4,8 @@ type: decision
 status: active
 visibility: public
 created: 2026-08-23
-updated: 2026-08-23
-sources: [data/books.json, data/audio-books.json]
+updated: 2026-08-25
+sources: [data/books.json, data/audio-books.json, data/apps.json]
 tags: [library, catalog, json]
 ---
 
@@ -13,7 +13,7 @@ tags: [library, catalog, json]
 
 ## Decision
 
-`data/books.json` is the sole reading inventory and `data/audio-books.json` is the sole audio inventory.
+`data/books.json` is the sole reading inventory, `data/audio-books.json` is the sole audio inventory, and `data/apps.json` is the sole App inventory and source-provenance registry.
 
 Do not duplicate these facts into YAML, wiki tables, or Drive spreadsheets.
 

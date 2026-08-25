@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#F7EFE3">
+<title>Bakery Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🥖</text></svg>">
+<style>
+:root{
+  --bg:#F7EFE3; --surface:#FFFBF4; --surface2:#F1E5D2; --ink:#3A2A1C; --muted:#8A7560;
+  --primary:#9C5B2B; --primary-ink:#FFF8EE; --accent:#C4502E; --gold:#C98F2E;
+  --line:#E7D7BF; --ok:#5B7A3A; --shadow:0 6px 24px rgba(90,60,30,.10), 0 1px 3px rgba(90,60,30,.08);
+  --r:18px; --r-s:12px; --nav-h:64px;
+}
+[data-theme="dark"]{
+  --bg:#191210; --surface:#231A15; --surface2:#2E2118; --ink:#F3E7D7; --muted:#A8927C;
+  --primary:#D98E4A; --primary-ink:#241405; --accent:#E2714B; --gold:#D9A441;
+  --line:#3B2C21; --ok:#9DBA6E; --shadow:0 6px 24px rgba(0,0,0,.45), 0 1px 3px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Sarabun',sans-serif; background:var(--bg); color:var(--ink);
+  font-size:16.5px; line-height:1.55; padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom));
+  background-image:radial-gradient(rgba(150,110,60,.06) 1px, transparent 1.4px);
+  background-size:22px 22px; min-height:100vh;
+}
+h1,h2,h3,.display{font-family:'Fraunces',serif; line-height:1.2; margin:0 0 .4em}
+button{font-family:inherit}
+header.app{
+  position:sticky; top:0; z-index:30; display:flex; align-items:center; gap:8px;
+  padding:calc(10px + env(safe-area-inset-top)) 16px 10px; background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid var(--line);
+}
+header.app .brand{font-family:'Fraunces',serif; font-weight:700; font-size:21px; letter-spacing:.2px; flex:1; display:flex; align-items:center; gap:8px}
+header.app .brand .crumb{display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--accent)}
+.iconbtn{
+  border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:999px;
+  min-width:42px; height:42px; padding:0 12px; font-size:15px; font-weight:600; cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center; gap:6px;
+}
+.iconbtn:active{transform:scale(.96)}
+main{padding:18px 16px 28px; max-width:760px; margin:0 auto}
+.tagline{color:var(--muted); font-size:14px; margin:-4px 0 14px}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow); padding:16px; margin-bottom:14px}
+.card.flat{box-shadow:none}
+.row{display:flex; gap:10px; align-items:center}
+.row .grow{flex:1}
+.chip{display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:999px; background:var(--surface2); border:1px solid var(--line); font-size:13px; font-weight:600; color:var(--muted)}
+.chip.on{background:var(--primary); color:var(--primary-ink); border-color:var(--primary)}
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px; cursor:pointer;
+  background:var(--primary); color:var(--primary-ink); border:none; border-radius:999px;
+  padding:13px 22px; font-size:16px; font-weight:700; box-shadow:var(--shadow);
+}
+.btn.big{width:100%; padding:16px; font-size:18px}
+.btn.ghost{background:var(--surface); color:var(--ink); border:1px solid var(--line); box-shadow:none}
+.btn.warn{background:var(--accent); color:#fff}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.45; pointer-events:none}
+input,select,textarea{
+  font-family:inherit; font-size:16px; color:var(--ink); background:var(--surface);
+  border:1.5px solid var(--line); border-radius:var(--r-s); padding:11px 12px; width:100%;
+}
+input:focus,select:focus,textarea:focus{outline:none; border-color:var(--primary)}
+label.f{display:block; font-size:13px; font-weight:700; color:var(--muted); margin:12px 0 5px; text-transform:uppercase; letter-spacing:.4px}
+nav.bottom{
+  position:fixed; left:0; right:0; bottom:0; z-index:40; height:calc(var(--nav-h) + env(safe-area-inset-bottom));
+  padding-bottom:env(safe-area-inset-bottom); display:flex; background:var(--surface);
+  border-top:1px solid var(--line); box-shadow:0 -4px 20px rgba(80,50,20,.08);
+}
+nav.bottom button{
+  flex:1; border:none; background:none; color:var(--muted); font-size:11px; font-weight:700;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; padding-top:6px;
+}
+nav.bottom button svg{width:24px; height:24px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
+nav.bottom button.on{color:var(--primary)}
+nav.bottom button.on svg{stroke-width:2.3}
+.recipe-card{display:flex; gap:14px; align-items:center; cursor:pointer}
+.recipe-card .ico{width:54px; height:54px; border-radius:16px; background:var(--surface2); display:flex; align-items:center; justify-content:center; font-size:28px; flex-shrink:0}
+.recipe-card h3{margin:0; font-size:18px}
+.recipe-card .meta{color:var(--muted); font-size:13.5px; margin-top:2px}
+.pillrow{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 16px}
+table.ing{width:100%; border-collapse:collapse; font-size:15.5px}
+table.ing td{padding:9px 4px; border-bottom:1px dashed var(--line)}
+table.ing td:nth-child(2){text-align:right; font-weight:700; white-space:nowrap}
+table.ing td:nth-child(3){text-align:right; color:var(--muted); font-size:13px; width:64px; white-space:nowrap}
+.stepline{display:flex; gap:12px; padding:10px 0; border-bottom:1px dashed var(--line); align-items:baseline}
+.stepline .n{font-family:'Fraunces',serif; font-weight:700; color:var(--accent); min-width:26px}
+.stepline .tmr{margin-left:auto; color:var(--muted); font-size:13px; white-space:nowrap; font-weight:700}
+.timer-display{font-family:'Fraunces',serif; font-weight:700; font-size:72px; text-align:center; letter-spacing:1px; margin:8px 0; font-variant-numeric:tabular-nums}
+.timer-display.done{color:var(--accent); animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.45}}
+.progressbar{height:8px; background:var(--surface2); border-radius:99px; overflow:hidden; margin:10px 0}
+.progressbar i{display:block; height:100%; background:linear-gradient(90deg,var(--gold),var(--accent)); border-radius:99px; transition:width .5s}
+.stars{display:flex; gap:6px; font-size:30px; cursor:pointer; user-select:none}
+.stars span{opacity:.25; transition:.15s}
+.stars span.on{opacity:1}
+.photo-grid{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px}
+.photo-grid img{width:92px; height:92px; object-fit:cover; border-radius:12px; border:1px solid var(--line)}
+.photo-grid .addph{width:92px; height:92px; border-radius:12px; border:2px dashed var(--line); display:flex; align-items:center; justify-content:center; font-size:28px; color:var(--muted); cursor:pointer; background:none}
+.modal-bg{position:fixed; inset:0; background:rgba(30,18,8,.5); z-index:60; display:flex; align-items:flex-end; justify-content:center; animation:fade .2s}
+@keyframes fade{from{opacity:0}}
+.modal{
+  background:var(--bg); width:100%; max-width:760px; max-height:92vh; overflow:auto;
+  border-radius:24px 24px 0 0; padding:20px 18px calc(24px + env(safe-area-inset-bottom));
+  animation:up .25s cubic-bezier(.2,.9,.3,1);
+}
+@keyframes up{from{transform:translateY(40px); opacity:0}}
+.modal .handle{width:44px; height:5px; border-radius:99px; background:var(--line); margin:0 auto 14px}
+.empty{text-align:center; color:var(--muted); padding:36px 10px}
+.empty .big{font-size:44px; margin-bottom:8px}
+.kbd{background:var(--surface2); border:1px solid var(--line); border-radius:6px; padding:1px 7px; font-size:13px; font-weight:700}
+.note{font-size:13.5px; color:var(--muted)}
+pre.code{background:var(--surface2); border:1px solid var(--line); border-radius:var(--r-s); padding:12px; font-size:12.5px; white-space:pre-wrap; word-break:break-word; max-height:300px; overflow:auto}
+.seg{display:flex; background:var(--surface2); border-radius:999px; padding:4px; gap:4px; border:1px solid var(--line)}
+.seg button{flex:1; border:none; border-radius:999px; padding:9px 6px; background:none; color:var(--muted); font-weight:700; font-size:14px; cursor:pointer}
+.seg button.on{background:var(--surface); color:var(--ink); box-shadow:var(--shadow)}
+.toolgrid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.toolgrid .card{margin:0; text-align:center; cursor:pointer; padding:20px 10px}
+.toolgrid .card .em{font-size:34px; margin-bottom:6px}
+.toolgrid .card h3{font-size:15.5px; margin:0}
+.result-box{background:var(--surface2); border-radius:var(--r-s); padding:14px; text-align:center; margin-top:14px}
+.result-box .v{font-family:'Fraunces',serif; font-size:34px; font-weight:700; color:var(--primary)}
+.feeditem{display:flex; gap:12px; padding:12px 0; border-bottom:1px dashed var(--line)}
+.feeditem .dot{width:12px; height:12px; border-radius:50%; background:var(--gold); margin-top:6px; flex-shrink:0}
+.toast{position:fixed; bottom:calc(var(--nav-h) + 18px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%); background:var(--ink); color:var(--bg); padding:11px 20px; border-radius:999px; font-weight:600; z-index:90; animation:fade .2s; max-width:88vw; text-align:center}
+.del-x{border:none; background:none; color:var(--accent); font-size:20px; cursor:pointer; padding:4px 8px}
+@media(min-width:700px){ .toolgrid{grid-template-columns:repeat(3,1fr)} .modal{border-radius:24px; align-self:center} .modal-bg{align-items:center} }
+</style>
+</head>
+<body data-theme="light">
+<header class="app">
+  <div class="brand"><span class="crumb"></span> Bakery Center</div>
+  <button class="iconbtn" id="btnLang" onclick="toggleLang()">EN</button>
+  <button class="iconbtn" id="btnTheme" onclick="toggleTheme()">◐</button>
+  <button class="iconbtn" onclick="openHelp()">?</button>
+  <button class="iconbtn" onclick="openSettings()">⚙</button>
+</header>
+<main id="view"></main>
+<nav class="bottom" id="nav"></nav>
+<div id="modalRoot"></div>
+<div id="toastRoot"></div>
+<script>
+/* ============ i18n ============ */
+const I18N = {
+  nav_recipes:["Recipes","สูตร"], nav_bake:["Bake","อบขนม"], nav_tools:["Tools","เครื่องมือ"],
+  nav_starter:["Starter","Starter"], nav_log:["Log","บันทึก"],
+  recipes_title:["Recipe Library","คลังสูตร"], recipes_sub:["Tap a recipe to view, scale & bake","แตะสูตรเพื่อดู ปรับขนาด และเริ่มอบ"],
+  add_recipe:["Add Recipe","เพิ่มสูตร"], import_ai:["Import with AI","Import ด้วย AI"],
+  search:["Search recipes...","ค้นหาสูตร..."],
+  cat_all:["All","ทั้งหมด"], cat_sourdough:["Sourdough","Sourdough"], cat_italian:["Italian Bread","ขนมปังอิตาเลียน"], cat_cookies:["Cookies","คุกกี้"], cat_brownies:["Brownies","บราวนี่"], cat_other:["Other","อื่นๆ"],
+  ingredients:["Ingredients","ส่วนผสม"], steps:["Steps","ขั้นตอน"], bakers_pct:["Baker's %","Baker's %"],
+  scale:["Scale recipe","ปรับขนาดสูตร"], target_flour:["Target flour (g)","น้ำหนักแป้งที่ต้องการ (g)"],
+  multiplier:["Multiplier","ตัวคูณ"], start_bake:["Start Baking","เริ่มอบ"], edit:["Edit","แก้ไข"], delete:["Delete","ลบ"],
+  duplicate:["Duplicate","คัดลอก"], total_dough:["Total dough","น้ำหนักโดรวม"], hydration:["Hydration","Hydration"],
+  step:["Step","ขั้นที่"], of:["of","จาก"], no_timer:["No timer — tap Next when done","ไม่มีจับเวลา — เสร็จแล้วกด Next"],
+  next_step:["Next Step","ขั้นถัดไป"], skip_timer:["Skip timer","ข้าม timer"], add_5m:["+5 min","+5 นาที"],
+  pause:["Pause","หยุดพัก"], resume:["Resume","ทำต่อ"], abort:["Abort bake","ยกเลิกการอบ"],
+  step_done:["⏰ Time's up!","⏰ ครบเวลาแล้ว!"], finish_bake:["Finish & Save Log","เสร็จสิ้น & บันทึก Log"],
+  bake_none:["No active bake session","ยังไม่มี session การอบ"], bake_none_sub:["Pick a recipe and tap Start Baking — the app will guide you step-by-step with timers.","เลือกสูตรแล้วกด เริ่มอบ — แอปจะพาทำทีละขั้นพร้อมจับเวลาให้"],
+  resume_bake:["Resume bake in progress","ทำการอบที่ค้างไว้ต่อ"],
+  browse_recipes:["Browse Recipes","ไปดูสูตร"], elapsed:["overtime","เกินเวลา"],
+  keep_awake:["Screen stays awake during baking","หน้าจอจะไม่ดับระหว่างอบ"],
+  tools_title:["Baker's Toolbox","กล่องเครื่องมือ Baker"],
+  t_bakers:["Baker's % Calculator","คำนวณ Baker's %"], t_hydration:["Hydration Calculator","คำนวณ Hydration"],
+  t_units:["Unit Converter","แปลงหน่วย"], t_ddt:["DDT — Water Temp","DDT — อุณหภูมิน้ำ"], t_pan:["Pan Size Converter","แปลงขนาดถาด"],
+  flour_weight:["Flour weight (g)","น้ำหนักแป้ง (g)"], ingredient:["Ingredient","ส่วนผสม"], percent:["%","%"], grams:["g","g"],
+  add_row:["+ Add row","+ เพิ่มแถว"], water:["Water","น้ำ"], salt:["Salt","เกลือ"], starter:["Starter (levain)","Starter (levain)"],
+  water_g:["Water (g)","น้ำ (g)"], starter_g:["Starter (g)","Starter (g)"], starter_hyd:["Starter hydration %","Hydration ของ starter %"],
+  total_hydration:["Total hydration","Hydration รวม"],
+  u_what:["Ingredient type","ชนิดวัตถุดิบ"], u_amount:["Amount","ปริมาณ"], u_from:["From","จาก"], u_temp:["Temperature","อุณหภูมิ"],
+  ddt_desired:["Desired dough temp (°C)","อุณหภูมิโดที่ต้องการ (°C)"], ddt_room:["Room temp (°C)","อุณหภูมิห้อง (°C)"],
+  ddt_flour:["Flour temp (°C)","อุณหภูมิแป้ง (°C)"], ddt_friction:["Friction factor (°C)","Friction factor (°C)"],
+  ddt_result:["Use water at","ใช้น้ำอุณหภูมิ"],
+  pan_orig:["Original pan","ถาดในสูตร"], pan_new:["Your pan","ถาดของคุณ"], pan_round:["Round Ø (cm)","กลม Ø (cm)"],
+  pan_rect:["Rectangle (cm)","สี่เหลี่ยม (cm)"], pan_result:["Multiply recipe by","คูณสูตรด้วย"],
+  starter_title:["Starter Tracker","Starter Tracker"], starter_sub:["Log every feeding to know your starter","จดทุกครั้งที่ให้อาหาร เพื่อรู้จัก starter ของเรา"],
+  fed_now:["Log Feeding","บันทึกให้อาหาร"], ratio:["Ratio (starter:flour:water)","Ratio (starter:แป้ง:น้ำ)"],
+  peak_hours:["Hours to peak (optional)","กี่ชม.ถึง peak (ไม่บังคับ)"], rise:["Rise (e.g. 2x)","ขึ้นกี่เท่า (เช่น 2x)"],
+  feed_note:["Note (temp, smell, ...)","โน้ต (อุณหภูมิ, กลิ่น, ...)"], last_fed:["Last fed","ให้อาหารล่าสุด"],
+  hours_ago:["h ago","ชม.ที่แล้ว"], no_feedings:["No feedings logged yet","ยังไม่มีบันทึกการให้อาหาร"],
+  log_title:["Bake Log","สมุดบันทึกการอบ"], log_sub:["Every bake makes you better","ทุกครั้งที่อบ คือบทเรียน"],
+  add_log:["Add Entry","เพิ่มบันทึก"], log_recipe:["Recipe","สูตร"], log_rating:["Rating","คะแนน"],
+  log_notes:["Notes — what worked, what to change","โน้ต — อะไรดี อะไรต้องปรับ"], log_photos:["Photos (max 3)","รูปถ่าย (สูงสุด 3)"],
+  no_logs:["No bake logs yet","ยังไม่มีบันทึกการอบ"],
+  save:["Save","บันทึก"], cancel:["Cancel","ยกเลิก"], close:["Close","ปิด"], confirm_del:["Delete this item?","ลบรายการนี้?"],
+  name:["Recipe name","ชื่อสูตร"], category:["Category","หมวด"], type_bread:["Bread (show baker's %)","ขนมปัง (แสดง baker's %)"],
+  type_pastry:["Pastry / Cookie","เพสตรี้ / คุกกี้"], is_flour:["flour","แป้ง"],
+  step_title:["Step title","ชื่อขั้นตอน"], step_desc:["Description","รายละเอียด"], minutes:["min","นาที"],
+  add_ing:["+ Ingredient","+ ส่วนผสม"], add_step:["+ Step","+ ขั้นตอน"],
+  settings:["Settings & Backup","ตั้งค่า & สำรองข้อมูล"],
+  export_data:["Export backup (JSON)","Export สำรองข้อมูล (JSON)"], import_data:["Import backup","Import ข้อมูลสำรอง"],
+  export_note:["Download all recipes, logs & starter data as one file. Do this monthly!","ดาวน์โหลดสูตร บันทึก และข้อมูล starter ทั้งหมดเป็นไฟล์เดียว แนะนำทำเดือนละครั้ง!"],
+  import_warn:["Importing replaces ALL current data. Continue?","การ import จะแทนที่ข้อมูลทั้งหมด ดำเนินการต่อ?"],
+  data_saved:["Saved ✓","บันทึกแล้ว ✓"], copied:["Copied ✓","คัดลอกแล้ว ✓"],
+  auto_backup_done:["📦 Daily backup saved","📦 บันทึก backup ประจำวันแล้ว"],
+  last_backup:["Last backup","backup ล่าสุด"], never_backup:["never yet","ยังไม่เคย"],
+  auto_backup_note:["Auto-backup is on: a backup file downloads the first time you open the app each day.","backup อัตโนมัติเปิดอยู่: ไฟล์สำรองจะถูกดาวน์โหลดครั้งแรกที่เปิดแอปในแต่ละวัน"],
+  help_title:["Help & Updates","ช่วยเหลือ & อัปเดต"], help_guide:["User Guide","คู่มือใช้งาน"], help_changelog:["What's New","มีอะไรใหม่"],
+  ai_title:["Import recipe with AI","Import สูตรด้วย AI"],
+  ai_how:["1. Copy the prompt below\n2. Paste it into any AI (Claude, ChatGPT, Gemini)\n3. Paste the recipe text after it (any language, cups OK)\n4. Copy the JSON the AI returns and paste it in the box below","1. คัดลอก prompt ด้านล่าง\n2. วางใน AI ตัวไหนก็ได้ (Claude, ChatGPT, Gemini)\n3. แปะข้อความสูตรต่อท้าย (ภาษาไหน/หน่วย cup ก็ได้)\n4. คัดลอก JSON ที่ AI ตอบ มาวางในช่องล่าง"],
+  copy_prompt:["Copy Prompt","คัดลอก Prompt"], paste_json:["Paste JSON from AI here...","วาง JSON จาก AI ที่นี่..."],
+  import_btn:["Import Recipe","Import สูตร"], invalid_json:["Invalid JSON — please check","JSON ไม่ถูกต้อง กรุณาตรวจสอบ"],
+  bake_saved:["Bake logged! Great job 🎉","บันทึกการอบแล้ว เก่งมาก 🎉"],
+  min_short:["min","นาที"], hr_short:["h","ชม."],
+  started:["Started","เริ่มเมื่อ"], scaled:["scaled","ปรับขนาด"],
+  source:["Source (URL / book)","ที่มา (URL / หนังสือ)"], notes_opt:["Recipe notes (optional)","โน้ตของสูตร (ไม่บังคับ)"],
+  cost:["Cost","ต้นทุน"], total_cost:["Total cost","ต้นทุนรวม"], cost_per_piece:["Cost per piece","ต้นทุนต่อชิ้น"],
+  yield_pieces:["Yield (pieces, optional)","จำนวนชิ้นที่ได้ (ไม่บังคับ)"], price_per_kg:["฿/kg","฿/กก."],
+  price_book:["Ingredient Prices","สมุดราคาส่วนผสม"],
+  price_book_note:["Set the price per kilogram for ingredients you use often. Recipes use these to estimate cost — water is counted as free.","ตั้งราคาต่อกิโลกรัมของส่วนผสมที่ใช้บ่อย สูตรจะใช้ราคานี้ประเมินต้นทุนให้ (น้ำคิดเป็นฟรี)"],
+  no_prices:["No ingredient prices set yet","ยังไม่ได้ตั้งราคาส่วนผสม"], set_prices:["Set ingredient prices","ตั้งราคาส่วนผสม"],
+  unpriced:["No price set","ยังไม่ได้ตั้งราคา"], pull_from_recipes:["Add ingredients from recipes","ดึงชื่อส่วนผสมจากสูตร"],
+  price_name:["Ingredient","ส่วนผสม"], price_book_btn:["💰 Ingredient Prices","💰 สมุดราคาส่วนผสม"],
+};
+let LANG = 'en';
+const t = k => (I18N[k]||[k,k])[LANG==='en'?0:1];
+const tn = obj => typeof obj==='string' ? obj : (obj?.[LANG] || obj?.en || obj?.th || '');
+
+/* ============ IndexedDB ============ */
+const DB_NAME='bakery-center', DB_VER=1;
+let db;
+function openDB(){return new Promise((res,rej)=>{
+  const r=indexedDB.open(DB_NAME,DB_VER);
+  r.onupgradeneeded=e=>{const d=e.target.result;
+    ['recipes','logs','feedings','kv'].forEach(s=>{if(!d.objectStoreNames.contains(s))d.createObjectStore(s,{keyPath:'id'});});
+  };
+  r.onsuccess=e=>{db=e.target.result;res(db)}; r.onerror=()=>rej(r.error);
+});}
+const tx=(store,mode='readonly')=>db.transaction(store,mode).objectStore(store);
+const dbAll=s=>new Promise(r=>{const q=tx(s).getAll();q.onsuccess=()=>r(q.result||[])});
+const dbGet=(s,id)=>new Promise(r=>{const q=tx(s).get(id);q.onsuccess=()=>r(q.result)});
+const dbPut=(s,v)=>new Promise(r=>{const q=tx(s,'readwrite').put(v);q.onsuccess=()=>r(v)});
+const dbDel=(s,id)=>new Promise(r=>{const q=tx(s,'readwrite').delete(id);q.onsuccess=()=>r()});
+const dbClear=s=>new Promise(r=>{const q=tx(s,'readwrite').clear();q.onsuccess=()=>r()});
+const kvGet=async k=>(await dbGet('kv',k))?.v;
+const kvSet=(k,v)=>dbPut('kv',{id:k,v});
+const uid=()=> Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+
+/* ============ Seed recipes ============ */
+const SEEDS = [
+{id:'seed-sd-loaf',seed:true,icon:'🍞',cat:'sourdough',type:'bread',
+ name:{en:'Sourdough Country Loaf',th:'ขนมปัง Sourdough พื้นฐาน'},
+ source:'Classic 72% hydration country loaf',
+ notes:{en:'The fundamental sourdough. Use an active starter that doubles within 4-6h of feeding.',th:'สูตรพื้นฐานที่สุดของ sourdough ใช้ starter ที่ active (ขึ้น 2 เท่าใน 4-6 ชม.หลังให้อาหาร)'},
+ ingredients:[
+  {name:{en:'Bread flour',th:'แป้งขนมปัง'},g:450,flour:true},
+  {name:{en:'Whole wheat flour',th:'แป้งโฮลวีท'},g:50,flour:true},
+  {name:{en:'Water (warm ~30°C)',th:'น้ำอุ่น ~30°C'},g:360},
+  {name:{en:'Active starter (100% hyd.)',th:'Starter ที่ active (100% hyd.)'},g:100},
+  {name:{en:'Salt',th:'เกลือ'},g:10}],
+ steps:[
+  {t:{en:'Autolyse',th:'Autolyse'},d:{en:'Mix flour + water only (no salt/starter). Cover and rest.',th:'ผสมแป้ง + น้ำเท่านั้น (ยังไม่ใส่เกลือ/starter) ปิดฝาพัก'},m:60},
+  {t:{en:'Add starter & salt',th:'ใส่ starter และเกลือ'},d:{en:'Pinch and fold starter + salt into dough until incorporated (~5 min).',th:'บีบและพับ starter + เกลือเข้าเนื้อโดจนเข้ากัน (~5 นาที)'},m:0},
+  {t:{en:'Stretch & Fold #1',th:'Stretch & Fold รอบ 1'},d:{en:'Wet hands, stretch one side up and fold over. Rotate, repeat 4 sides. Rest 30 min.',th:'มือเปียกน้ำ ดึงโดด้านหนึ่งขึ้นแล้วพับทับ หมุนทำครบ 4 ด้าน พัก 30 นาที'},m:30},
+  {t:{en:'Stretch & Fold #2',th:'Stretch & Fold รอบ 2'},d:{en:'Repeat the folding. Dough should feel smoother.',th:'พับซ้ำ โดจะเริ่มเนียนขึ้น'},m:30},
+  {t:{en:'Stretch & Fold #3',th:'Stretch & Fold รอบ 3'},d:{en:'Repeat. Be gentle — keep the air in.',th:'พับซ้ำ เบามือ รักษาฟองอากาศไว้'},m:30},
+  {t:{en:'Stretch & Fold #4',th:'Stretch & Fold รอบ 4'},d:{en:'Last fold, then leave untouched for bulk fermentation.',th:'พับรอบสุดท้าย แล้วพักยาวสำหรับ bulk fermentation'},m:30},
+  {t:{en:'Bulk fermentation',th:'Bulk fermentation'},d:{en:'Rest at ~26°C until grown ~50% with bubbles on the surface. Time varies with temperature!',th:'พักที่ ~26°C จนโดขึ้น ~50% มีฟองที่ผิว เวลาขึ้นกับอุณหภูมิห้อง!'},m:150},
+  {t:{en:'Preshape',th:'Preshape'},d:{en:'Turn out, shape into a loose round with a bench scraper. Bench rest.',th:'เทโดออก ขึ้นรูปกลมหลวมๆ ด้วย scraper แล้วพักบนโต๊ะ'},m:25},
+  {t:{en:'Final shape & basket',th:'ขึ้นรูปจริง + ลงตะกร้า'},d:{en:'Shape tight, place seam-up in floured banneton.',th:'ขึ้นรูปให้ตึง วางรอยต่อขึ้นบนใน banneton โรยแป้ง'},m:0},
+  {t:{en:'Cold proof (fridge)',th:'Cold proof (ตู้เย็น)'},d:{en:'Cover and refrigerate 8-14 h. Long & cold = more flavor.',th:'ปิดแล้วแช่ตู้เย็น 8-14 ชม. ยิ่งเย็นนาน รสยิ่งดี'},m:720},
+  {t:{en:'Preheat oven + Dutch oven 250°C',th:'อุ่นเตา + หม้อ Dutch oven 250°C'},d:{en:'Preheat with the pot inside.',th:'อุ่นเตาพร้อมหม้ออยู่ข้างใน'},m:45},
+  {t:{en:'Score & bake covered',th:'กรีดหน้า + อบปิดฝา'},d:{en:'Flip dough onto paper, score, into pot, lid on. 250°C.',th:'คว่ำโดลงกระดาษ กรีดหน้า ลงหม้อ ปิดฝา 250°C'},m:20},
+  {t:{en:'Bake uncovered',th:'อบเปิดฝา'},d:{en:'Remove lid, lower to 230°C, bake until deep brown.',th:'เปิดฝา ลดเหลือ 230°C อบจนสีน้ำตาลเข้ม'},m:22},
+  {t:{en:'Cool completely',th:'พักให้เย็นสนิท'},d:{en:'On a rack, at least 1 h before slicing. Listen to it crackle!',th:'พักบนตะแกรงอย่างน้อย 1 ชม.ก่อนหั่น ฟังเสียงเปลือกแตกเพลินๆ'},m:60}]},
+{id:'seed-sd-focaccia',seed:true,icon:'🫓',cat:'sourdough',type:'bread',
+ name:{en:'Sourdough Focaccia',th:'Sourdough Focaccia'},
+ source:'No-knead pan focaccia, 80% hydration',
+ notes:{en:'Much more forgiving than a loaf — a perfect first sourdough bake.',th:'พลาดยากกว่า loaf มาก เหมาะเป็น sourdough ก้อนแรก'},
+ ingredients:[
+  {name:{en:'Bread flour',th:'แป้งขนมปัง'},g:500,flour:true},
+  {name:{en:'Water',th:'น้ำ'},g:400},
+  {name:{en:'Active starter',th:'Starter ที่ active'},g:100},
+  {name:{en:'Salt',th:'เกลือ'},g:10},
+  {name:{en:'Olive oil (pan + top)',th:'น้ำมันมะกอก (ทาถาด + ราดหน้า)'},g:45}],
+ steps:[
+  {t:{en:'Mix all',th:'ผสมทั้งหมด'},d:{en:'Mix flour, water, starter, salt to a shaggy dough.',th:'ผสมแป้ง น้ำ starter เกลือ พอเข้ากันหยาบๆ'},m:0},
+  {t:{en:'Fold #1',th:'Fold รอบ 1'},d:{en:'4 coil folds in the bowl, rest 30 min.',th:'Coil fold ในชาม 4 ครั้ง พัก 30 นาที'},m:30},
+  {t:{en:'Fold #2',th:'Fold รอบ 2'},d:{en:'Repeat coil folds.',th:'Coil fold ซ้ำ'},m:30},
+  {t:{en:'Fold #3',th:'Fold รอบ 3'},d:{en:'Last folds — dough should be smooth and elastic.',th:'รอบสุดท้าย โดจะเนียนยืดหยุ่น'},m:30},
+  {t:{en:'Bulk fermentation',th:'Bulk fermentation'},d:{en:'Rest until ~75% grown and bubbly (3-4 h at 26°C).',th:'พักจนขึ้น ~75% และมีฟอง (3-4 ชม.ที่ 26°C)'},m:200},
+  {t:{en:'Into oiled pan',th:'ลงถาดทาน้ำมัน'},d:{en:'Pour into a well-oiled 23×33 cm pan, gently stretch, cover.',th:'เทลงถาด 23×33 cm ทาน้ำมันเยอะๆ ดึงเบาๆ ให้เต็มถาด ปิดไว้'},m:0},
+  {t:{en:'Pan proof',th:'Proof ในถาด'},d:{en:'Rest until jiggly and puffy. (Or fridge overnight for next-day bake.)',th:'พักจนโดฟูเด้ง (หรือแช่ตู้เย็นข้ามคืน อบพรุ่งนี้ก็ได้)'},m:120},
+  {t:{en:'Dimple & top',th:'จิ้มหลุม + โรยหน้า'},d:{en:'Oil fingers, dimple deeply, drizzle oil, flaky salt, rosemary.',th:'ทาน้ำมันที่นิ้ว จิ้มหลุมลึกๆ ราดน้ำมัน โรยเกลือ/โรสแมรี่'},m:0},
+  {t:{en:'Bake 220°C',th:'อบ 220°C'},d:{en:'Until deep golden, bottom crisp.',th:'จนเหลืองทองเข้ม ก้นกรอบ'},m:25},
+  {t:{en:'Cool 15 min',th:'พัก 15 นาที'},d:{en:'Out of pan onto a rack so the bottom stays crisp.',th:'เอาออกจากถาดวางตะแกรง ก้นจะได้ไม่ชื้น'},m:15}]},
+{id:'seed-focaccia',seed:true,icon:'🌿',cat:'italian',type:'bread',
+ name:{en:'Classic Focaccia (yeast)',th:'Focaccia คลาสสิก (ยีสต์)'},
+ source:'Same-day yeasted focaccia',
+ notes:{en:'Done in ~4 hours — the weekday focaccia.',th:'เสร็จใน ~4 ชม. เหมาะทำวันธรรมดา'},
+ ingredients:[
+  {name:{en:'Bread flour',th:'แป้งขนมปัง'},g:500,flour:true},
+  {name:{en:'Water (warm)',th:'น้ำอุ่น'},g:400},
+  {name:{en:'Instant yeast',th:'ยีสต์ instant'},g:7},
+  {name:{en:'Salt',th:'เกลือ'},g:10},
+  {name:{en:'Olive oil',th:'น้ำมันมะกอก'},g:50}],
+ steps:[
+  {t:{en:'Mix',th:'ผสม'},d:{en:'Mix everything except oil into a wet dough.',th:'ผสมทุกอย่างยกเว้นน้ำมัน เป็นโดเหลวๆ'},m:0},
+  {t:{en:'Fold #1',th:'Fold รอบ 1'},d:{en:'4 folds in bowl, rest 30 min covered.',th:'พับในชาม 4 ครั้ง ปิดพัก 30 นาที'},m:30},
+  {t:{en:'Fold #2',th:'Fold รอบ 2'},d:{en:'Repeat folds.',th:'พับซ้ำ'},m:30},
+  {t:{en:'Rise',th:'พักให้ขึ้น'},d:{en:'Rest until doubled.',th:'พักจนขึ้น 2 เท่า'},m:60},
+  {t:{en:'Pan + proof',th:'ลงถาด + proof'},d:{en:'Stretch into oiled pan, proof until puffy.',th:'ดึงลงถาดทาน้ำมัน proof จนฟู'},m:60},
+  {t:{en:'Dimple & top',th:'จิ้มหลุม + โรยหน้า'},d:{en:'Dimple, olive oil, flaky salt, toppings.',th:'จิ้มหลุม ราดน้ำมัน โรยเกลือและหน้าต่างๆ'},m:0},
+  {t:{en:'Bake 220°C',th:'อบ 220°C'},d:{en:'Until golden and crisp.',th:'จนเหลืองทองกรอบ'},m:25}]},
+{id:'seed-ciabatta',seed:true,icon:'🥖',cat:'italian',type:'bread',
+ name:{en:'Ciabatta',th:'Ciabatta'},
+ source:'Direct-method ciabatta, 80% hydration',
+ notes:{en:'Very wet dough — trust the process, use a wet bench scraper.',th:'โดเปียกมาก อย่าตกใจ ใช้ scraper ชุบน้ำช่วย'},
+ ingredients:[
+  {name:{en:'Bread flour',th:'แป้งขนมปัง'},g:500,flour:true},
+  {name:{en:'Water',th:'น้ำ'},g:400},
+  {name:{en:'Instant yeast',th:'ยีสต์ instant'},g:5},
+  {name:{en:'Salt',th:'เกลือ'},g:10},
+  {name:{en:'Olive oil',th:'น้ำมันมะกอก'},g:15}],
+ steps:[
+  {t:{en:'Mix',th:'ผสม'},d:{en:'Mix all into a very wet dough, rest 15 min.',th:'ผสมทั้งหมดเป็นโดเปียกมาก พัก 15 นาที'},m:15},
+  {t:{en:'Fold #1',th:'Fold รอบ 1'},d:{en:'Stretch & fold in bowl with wet hands.',th:'Stretch & fold ในชาม มือเปียกน้ำ'},m:30},
+  {t:{en:'Fold #2',th:'Fold รอบ 2'},d:{en:'Repeat.',th:'พับซ้ำ'},m:30},
+  {t:{en:'Fold #3',th:'Fold รอบ 3'},d:{en:'Repeat — dough gains strength each time.',th:'พับซ้ำ โดจะแข็งแรงขึ้นทุกรอบ'},m:30},
+  {t:{en:'Bulk rise',th:'พักให้ขึ้น'},d:{en:'Until doubled and very bubbly.',th:'จนขึ้น 2 เท่า ฟองเยอะ'},m:60},
+  {t:{en:'Divide & proof',th:'แบ่ง + proof'},d:{en:'Tip onto heavily floured surface, cut 2 slippers. DO NOT degas. Proof on floured couche.',th:'เทลงพื้นโรยแป้งหนา ตัดเป็น 2 แท่ง ห้ามไล่อากาศ proof บนผ้าโรยแป้ง'},m:45},
+  {t:{en:'Preheat 230°C + steam',th:'อุ่นเตา 230°C + ไอน้ำ'},d:{en:'Stone/steel in oven, tray for steam at bottom.',th:'หิน/เหล็กอบในเตา วางถาดน้ำร้อนล่างเตาให้มีไอน้ำ'},m:30},
+  {t:{en:'Bake',th:'อบ'},d:{en:'230°C until golden, hollow sound when tapped.',th:'230°C จนเหลืองทอง เคาะก้นเสียงโปร่ง'},m:22},
+  {t:{en:'Cool',th:'พักให้เย็น'},d:{en:'On a rack 30 min.',th:'บนตะแกรง 30 นาที'},m:30}]},
+{id:'seed-ccc',seed:true,icon:'🍪',cat:'cookies',type:'pastry',
+ name:{en:'Chocolate Chip Cookies',th:'คุกกี้ช็อกโกแลตชิป'},
+ source:'Classic chewy chocolate chip cookies (~24 pcs)',
+ notes:{en:'Chilling the dough 30+ min = thicker, chewier cookies.',th:'แช่โดเย็น 30+ นาที จะได้คุกกี้หนานุ่มหนึบกว่า'},
+ ingredients:[
+  {name:{en:'Unsalted butter (soft)',th:'เนยจืด (นิ่ม)'},g:225},
+  {name:{en:'Brown sugar',th:'น้ำตาลทรายแดง'},g:200},
+  {name:{en:'White sugar',th:'น้ำตาลทรายขาว'},g:100},
+  {name:{en:'Eggs (2 large)',th:'ไข่ไก่ (2 ฟองใหญ่)'},g:110},
+  {name:{en:'Vanilla extract',th:'กลิ่นวานิลลา'},g:8},
+  {name:{en:'All-purpose flour',th:'แป้งอเนกประสงค์'},g:310,flour:true},
+  {name:{en:'Baking soda',th:'เบกกิ้งโซดา'},g:5},
+  {name:{en:'Salt',th:'เกลือ'},g:5},
+  {name:{en:'Chocolate chips',th:'ช็อกโกแลตชิป'},g:340}],
+ steps:[
+  {t:{en:'Cream butter & sugars',th:'ตีเนย + น้ำตาล'},d:{en:'Beat until light and fluffy (~3 min).',th:'ตีจนฟูสีอ่อน (~3 นาที)'},m:0},
+  {t:{en:'Add eggs & vanilla',th:'ใส่ไข่ + วานิลลา'},d:{en:'Beat in eggs one at a time.',th:'ใส่ไข่ทีละฟอง ตีให้เข้ากัน'},m:0},
+  {t:{en:'Fold dry + chips',th:'ผสมของแห้ง + ชิป'},d:{en:'Fold in flour, soda, salt just until combined. Add chips.',th:'ตะล่อมแป้ง โซดา เกลือ พอเข้ากัน อย่าผสมเกิน แล้วใส่ชิป'},m:0},
+  {t:{en:'Chill dough',th:'แช่โดเย็น'},d:{en:'Cover and refrigerate.',th:'ปิดแล้วแช่ตู้เย็น'},m:30},
+  {t:{en:'Preheat 180°C',th:'อุ่นเตา 180°C'},d:{en:'Line trays with parchment. Scoop ~50g balls.',th:'รองถาดด้วยกระดาษไข ตักก้อนละ ~50g'},m:15},
+  {t:{en:'Bake batch',th:'อบ'},d:{en:'180°C — edges golden, centers still soft.',th:'180°C ขอบเหลืองทอง กลางยังนิ่ม'},m:11},
+  {t:{en:'Cool on tray',th:'พักบนถาด'},d:{en:'10 min on the tray — they finish cooking there.',th:'พักบนถาด 10 นาที คุกกี้จะสุกต่อเอง'},m:10}]},
+{id:'seed-brownie',seed:true,icon:'🍫',cat:'brownies',type:'pastry',
+ name:{en:'Fudgy Brownies',th:'บราวนี่เนื้อหนึบ (Fudgy)'},
+ source:'One-bowl fudgy brownies, 20×20 cm pan',
+ notes:{en:'Do not overbake! A few moist crumbs on the tester = perfect.',th:'อย่าอบเกิน! ไม้จิ้มมีเศษหมาดๆ ติด = กำลังดี'},
+ ingredients:[
+  {name:{en:'Unsalted butter',th:'เนยจืด'},g:170},
+  {name:{en:'Dark chocolate (chopped)',th:'ดาร์กช็อกโกแลต (สับ)'},g:120},
+  {name:{en:'Sugar',th:'น้ำตาล'},g:250},
+  {name:{en:'Eggs (2 large)',th:'ไข่ไก่ (2 ฟองใหญ่)'},g:110},
+  {name:{en:'Vanilla extract',th:'กลิ่นวานิลลา'},g:5},
+  {name:{en:'Cocoa powder',th:'ผงโกโก้'},g:65},
+  {name:{en:'All-purpose flour',th:'แป้งอเนกประสงค์'},g:65,flour:true},
+  {name:{en:'Salt',th:'เกลือ'},g:3}],
+ steps:[
+  {t:{en:'Prep & preheat 175°C',th:'เตรียม + อุ่นเตา 175°C'},d:{en:'Line a 20×20 cm pan with parchment.',th:'รองถาด 20×20 cm ด้วยกระดาษไข'},m:15},
+  {t:{en:'Melt butter + chocolate',th:'ละลายเนย + ช็อกโกแลต'},d:{en:'Microwave in bursts or double boiler. Stir smooth.',th:'ไมโครเวฟทีละช่วงสั้นๆ หรือตุ๋นบนน้ำร้อน คนจนเนียน'},m:0},
+  {t:{en:'Whisk sugar & eggs in',th:'ตีน้ำตาล + ไข่'},d:{en:'Whisk sugar into warm mixture, then eggs + vanilla vigorously ~1 min (this makes the shiny top!).',th:'ตีน้ำตาลลงไป ตามด้วยไข่ + วานิลลา ตีแรงๆ ~1 นาที (ได้หน้าฟิล์มเงา!)'},m:0},
+  {t:{en:'Fold dry',th:'ตะล่อมของแห้ง'},d:{en:'Sift cocoa, flour, salt. Fold just until no streaks.',th:'ร่อนโกโก้ แป้ง เกลือ ตะล่อมพอไม่เห็นแป้ง'},m:0},
+  {t:{en:'Bake 175°C',th:'อบ 175°C'},d:{en:'Tester should come out with moist crumbs.',th:'จิ้มไม้ออกมามีเศษหมาดๆ ติด'},m:28},
+  {t:{en:'Cool in pan',th:'พักในถาดให้เย็น'},d:{en:'At least 1 h before cutting — fudginess develops as it cools.',th:'อย่างน้อย 1 ชม.ก่อนตัด เนื้อจะหนึบขึ้นตอนเย็น'},m:60}]}
+];
+
+/* ============ App state & helpers ============ */
+let TAB='recipes', recipes=[], session=null, tickInt=null, wakeLock=null, curRecipe=null;
+let recipeFilter='all', recipeSearch='';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function toast(msg){const r=$('#toastRoot');r.innerHTML=`<div class="toast">${esc(msg)}</div>`;setTimeout(()=>r.innerHTML='',2200);}
+function modal(html){$('#modalRoot').innerHTML=`<div class="modal-bg" onclick="if(event.target===this)closeModal()"><div class="modal"><div class="handle"></div>${html}</div></div>`;}
+function closeModal(){$('#modalRoot').innerHTML='';}
+const fmtG=g=>Math.round(g*10)/10;
+const fmtB=b=>Math.round(b*10)/10;          // ราคา (บาท) แสดง 1 ทศนิยม — คำนวณไม่ปัด
+const catName=c=>t('cat_'+c);
+const CATS=['sourdough','italian','cookies','brownies','other'];
+const ICONS={sourdough:'🍞',italian:'🥖',cookies:'🍪',brownies:'🍫',other:'🧁'};
+
+/* ============ Cost (ต้นทุน) ============ */
+let PRICES={};                               // สมุดราคากลาง { ชื่อส่วนผสม : ฿/กก. } เก็บใน kv 'prices'
+const pnorm=s=>(tn(s)||'').toString().trim().toLowerCase();
+const isWaterName=n=>{const s=(tn(n)||'').toLowerCase();
+  return /water|น้ำอุ่น|^น้ำ/.test(s)&&!/น้ำมัน|น้ำตาล|oil|sugar|milk|นม|honey|น้ำผึ้ง/.test(s);};
+function priceMap(){const m={};for(const k in PRICES){const v=PRICES[k];if(v>0)m[pnorm(k)]=v;}return m;}
+function ingPrice(i,pm){if(i.price>0)return i.price;const p=pm[pnorm(i.name)];return p>0?p:0;}  // ฿/กก.
+function costOf(r,scale){
+  const pm=priceMap(); let total=0; const unpriced=[];
+  r.ingredients.forEach(i=>{
+    const pk=ingPrice(i,pm);
+    if(pk>0) total += i.g*scale*pk/1000;                 // กรัม → กก. แล้วคูณราคา
+    else if(!isWaterName(i.name)) unpriced.push(tn(i.name));
+  });
+  return {total, unpriced, allUnpriced: total===0&&unpriced.length>0,
+          perPiece: r.yield>0 ? total/r.yield : null};
+}
+
+function flourTotal(r){return r.ingredients.filter(i=>i.flour).reduce((a,i)=>a+i.g,0);}
+function doughTotal(r){return r.ingredients.reduce((a,i)=>a+i.g,0);}
+function hydrationOf(r){
+  const f=flourTotal(r); if(!f)return null;
+  let water=0,sFlour=0,sWater=0;
+  r.ingredients.forEach(i=>{
+    const n=(tn(i.name)||'').toLowerCase();
+    if(i.flour)return;
+    if(/starter|levain/.test(n)){sFlour+=i.g/2;sWater+=i.g/2;}
+    else if(/water|น้ำอุ่น|^น้ำ/.test(n)&&!/น้ำมัน|น้ำตาล|oil|sugar/.test(n))water+=i.g;
+  });
+  return Math.round((water+sWater)/(f+sFlour)*100);
+}
+
+/* ============ Navigation ============ */
+const NAV=[
+ ['recipes','M4 5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zM13 3v5h5M8 13h8M8 17h5'],
+ ['bake','M5 11a7 7 0 0 1 14 0v1H5zM4 12h16M7 12v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-5M12 4v-2'],
+ ['tools','M9 3h6v4a3 3 0 0 1-6 0zM12 7v6m-4 8a4 4 0 0 1 8 0zM12 13a4 4 0 0 0-4 4m8 0a4 4 0 0 0-4-4'],
+ ['starter','M8 3h8M9 3v2a6 6 0 0 1-2 4.5A5.5 5.5 0 0 0 5 14v3a4 4 0 0 0 4 4h6a4 4 0 0 0 4-4v-3a5.5 5.5 0 0 0-2-4.5A6 6 0 0 1 15 5V3M5 14h14'],
+ ['log','M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3zM5 17V4M9 8h6M9 12h4']
+];
+function renderNav(){
+  $('#nav').innerHTML=NAV.map(([k,p])=>`<button class="${TAB===k?'on':''}" onclick="go('${k}')">
+   <svg viewBox="0 0 24 24"><path d="${p}"/></svg>${t('nav_'+k)}</button>`).join('');
+}
+function go(tab){TAB=tab;curRecipe=null;render();}
+function render(){
+  renderNav();
+  $('#btnLang').textContent=LANG.toUpperCase();
+  ({recipes:vRecipes,bake:vBake,tools:vTools,starter:vStarter,log:vLog})[TAB]();
+  window.scrollTo(0,0);
+}
+
+/* ============ Theme & Lang ============ */
+async function toggleTheme(){
+  const cur=document.body.dataset.theme==='dark'?'light':'dark';
+  document.body.dataset.theme=cur; await kvSet('theme',cur);
+  document.querySelector('meta[name=theme-color]').content=cur==='dark'?'#191210':'#F7EFE3';
+}
+async function toggleLang(){LANG=LANG==='en'?'th':'en';await kvSet('lang',LANG);render();}
+
+/* ============ Recipes tab ============ */
+async function vRecipes(){
+  recipes=await dbAll('recipes');
+  const list=recipes
+    .filter(r=>recipeFilter==='all'||r.cat===recipeFilter)
+    .filter(r=>!recipeSearch||tn(r.name).toLowerCase().includes(recipeSearch.toLowerCase()))
+    .sort((a,b)=>tn(a.name).localeCompare(tn(b.name)));
+  $('#view').innerHTML=`
+  <h1>${t('recipes_title')}</h1><div class="tagline">${t('recipes_sub')}</div>
+  <div class="row" style="margin-bottom:12px">
+    <input class="grow" placeholder="${t('search')}" value="${esc(recipeSearch)}" oninput="recipeSearch=this.value;vRecipes()">
+  </div>
+  <div class="pillrow">
+    <span class="chip ${recipeFilter==='all'?'on':''}" onclick="recipeFilter='all';vRecipes()">${t('cat_all')}</span>
+    ${CATS.map(c=>`<span class="chip ${recipeFilter===c?'on':''}" onclick="recipeFilter='${c}';vRecipes()">${catName(c)}</span>`).join('')}
+  </div>
+  ${list.map(r=>`<div class="card recipe-card" onclick="vRecipeDetail('${r.id}')">
+     <div class="ico">${r.icon||ICONS[r.cat]||'🧁'}</div>
+     <div class="grow"><h3>${esc(tn(r.name))}</h3>
+       <div class="meta">${catName(r.cat)} · ${r.steps.length} ${t('steps').toLowerCase()}${r.type==='bread'&&hydrationOf(r)?` · ${hydrationOf(r)}% hydration`:''}</div>
+     </div><div style="color:var(--muted)">›</div></div>`).join('')
+   || `<div class="empty"><div class="big">🥣</div>${LANG==='en'?'No recipes found':'ไม่พบสูตร'}</div>`}
+  <div class="row" style="margin-top:18px">
+    <button class="btn grow" onclick="recipeEditor()">＋ ${t('add_recipe')}</button>
+    <button class="btn ghost grow" onclick="aiImport()">✦ ${t('import_ai')}</button>
+  </div>`;
+}
+
+let curScale=1;
+async function vRecipeDetail(id,scale){
+  const r=await dbGet('recipes',id); if(!r)return go('recipes');
+  curScale=scale||1; curRecipe=id;
+  const f=flourTotal(r), hyd=hydrationOf(r);
+  const isBread=r.type==='bread'&&f>0;
+  const pm=priceMap(), cost=costOf(r,curScale), showCost=!cost.allUnpriced;
+  const costCell=i=>{const pk=ingPrice(i,pm);
+    return pk>0?'฿'+fmtB(i.g*curScale*pk/1000):(isWaterName(i.name)?'฿0':'–');};
+  $('#view').innerHTML=`
+  <button class="iconbtn" onclick="go('recipes')" style="margin-bottom:12px">‹ ${t('nav_recipes')}</button>
+  <div class="row"><div style="font-size:42px">${r.icon||ICONS[r.cat]||'🧁'}</div>
+    <div class="grow"><h1 style="margin:0;font-size:26px">${esc(tn(r.name))}</h1>
+    <div class="note">${esc(r.source||'')}</div></div></div>
+  ${r.notes?`<div class="card flat" style="margin-top:12px;background:var(--surface2);border-style:dashed">💡 ${esc(tn(r.notes))}</div>`:''}
+  <div class="card" style="margin-top:12px">
+    <h3 style="margin-bottom:4px">${t('scale')}</h3>
+    <div class="seg" style="margin:10px 0">
+      ${[0.5,1,1.5,2].map(m=>`<button class="${curScale===m?'on':''}" onclick="vRecipeDetail('${id}',${m})">×${m}</button>`).join('')}
+    </div>
+    ${isBread?`<label class="f">${t('target_flour')}</label>
+      <input type="number" inputmode="decimal" value="${fmtG(f*curScale)}" onchange="vRecipeDetail('${id}',(+this.value||${f})/${f})">`:''}
+    <div class="note" style="margin-top:8px">${t('total_dough')}: <b>${fmtG(doughTotal(r)*curScale)} g</b>${isBread&&hyd?` · ${t('hydration')}: <b>${hyd}%</b>`:''}</div>
+  </div>
+  <div class="card">
+    <h3>${t('ingredients')}</h3>
+    <table class="ing">${r.ingredients.map(i=>`<tr>
+      <td>${esc(tn(i.name))}${i.flour?` <span class="chip" style="padding:1px 8px;font-size:11px">${t('is_flour')}</span>`:''}</td>
+      <td>${fmtG(i.g*curScale)} g</td>
+      <td>${isBread?Math.round(i.g/f*1000)/10+'%':''}</td>
+      ${showCost?`<td style="text-align:right;color:var(--muted)">${costCell(i)}</td>`:''}</tr>`).join('')}</table>
+    ${isBread?`<div class="note" style="margin-top:8px">${t('bakers_pct')} — flour = 100%</div>`:''}
+  </div>
+  <div class="card">
+    <h3>💰 ${t('cost')}</h3>
+    ${cost.allUnpriced
+      ? `<div class="note">${t('no_prices')}</div>
+         <button class="btn ghost" style="margin-top:10px" onclick="openPriceBook()">${t('set_prices')}</button>`
+      : `<div class="note">${t('total_cost')}: <b>฿${fmtB(cost.total)}</b>${cost.perPiece!=null?` · ${t('cost_per_piece')}: <b>฿${fmtB(cost.perPiece)}</b>`:''}</div>
+         ${cost.unpriced.length?`<div class="note" style="margin-top:8px;color:var(--accent)">${t('unpriced')}: ${cost.unpriced.map(esc).join(', ')}</div>`:''}
+         <button class="btn ghost" style="margin-top:10px" onclick="openPriceBook()">${t('price_book_btn')}</button>`}
+  </div>
+  <div class="card">
+    <h3>${t('steps')}</h3>
+    ${r.steps.map((s,i)=>`<div class="stepline"><span class="n">${i+1}</span>
+      <div class="grow"><b>${esc(tn(s.t))}</b><div class="note">${esc(tn(s.d))}</div></div>
+      ${s.m?`<span class="tmr">⏱ ${s.m>=60?(Math.round(s.m/6)/10)+' '+t('hr_short'):s.m+' '+t('min_short')}</span>`:''}</div>`).join('')}
+  </div>
+  <button class="btn big" onclick="startBake('${id}',curScale)">▶ ${t('start_bake')}</button>
+  <div class="row" style="margin-top:12px">
+    <button class="btn ghost grow" onclick="recipeEditor('${id}')">✎ ${t('edit')}</button>
+    <button class="btn ghost grow" onclick="dupRecipe('${id}')">⧉ ${t('duplicate')}</button>
+    ${r.seed?'':`<button class="btn ghost grow" style="color:var(--accent)" onclick="delRecipe('${id}')">🗑 ${t('delete')}</button>`}
+  </div>`;
+}
+async function dupRecipe(id){
+  const r=await dbGet('recipes',id);
+  const c=JSON.parse(JSON.stringify(r)); c.id=uid(); c.seed=false;
+  if(typeof c.name==='object'){c.name={en:c.name.en+' (copy)',th:(c.name.th||c.name.en)+' (copy)'};}else c.name+=' (copy)';
+  await dbPut('recipes',c); toast(t('data_saved')); vRecipeDetail(c.id);
+}
+async function delRecipe(id){if(!confirm(t('confirm_del')))return; await dbDel('recipes',id); go('recipes');}
+
+/* ============ Recipe editor ============ */
+let ed=null;
+async function recipeEditor(id){
+  ed = id ? JSON.parse(JSON.stringify(await dbGet('recipes',id)))
+          : {id:uid(),icon:'🧁',cat:'other',type:'bread',name:'',source:'',notes:'',ingredients:[{name:'',g:0,flour:true}],steps:[{t:'',d:'',m:0}]};
+  if(id){ed.seed=false; if(typeof ed.name==='object')ed.name=tn(ed.name);
+    if(typeof ed.notes==='object')ed.notes=tn(ed.notes);
+    ed.ingredients.forEach(i=>{if(typeof i.name==='object')i.name=tn(i.name)});
+    ed.steps.forEach(s=>{if(typeof s.t==='object')s.t=tn(s.t); if(typeof s.d==='object')s.d=tn(s.d)});
+  }
+  edRender();
+}
+function edRender(){
+  modal(`<h2>${ed.nameSaved?t('edit'):t('add_recipe')}</h2>
+  <label class="f">${t('name')}</label><input id="edName" value="${esc(ed.name)}">
+  <div class="row" style="margin-top:12px">
+    <div class="grow"><label class="f" style="margin-top:0">${t('category')}</label>
+      <select id="edCat">${CATS.map(c=>`<option value="${c}" ${ed.cat===c?'selected':''}>${catName(c)}</option>`).join('')}</select></div>
+    <div class="grow"><label class="f" style="margin-top:0">Icon</label><input id="edIcon" value="${esc(ed.icon||'')}" maxlength="4"></div>
+  </div>
+  <label class="f">Type</label>
+  <select id="edType"><option value="bread" ${ed.type==='bread'?'selected':''}>${t('type_bread')}</option>
+  <option value="pastry" ${ed.type==='pastry'?'selected':''}>${t('type_pastry')}</option></select>
+  <label class="f">${t('source')}</label><input id="edSrc" value="${esc(ed.source||'')}">
+  <label class="f">${t('notes_opt')}</label><textarea id="edNotes" rows="2">${esc(ed.notes||'')}</textarea>
+  <label class="f">${t('yield_pieces')}</label>
+  <input id="edYield" type="number" inputmode="numeric" value="${ed.yield||''}" placeholder="${t('yield_pieces')}">
+  <label class="f">${t('ingredients')}</label>
+  <div id="edIngs">${ed.ingredients.map((i,x)=>`<div class="card flat" style="padding:10px;margin-bottom:8px">
+    <div class="row">
+      <input class="grow" placeholder="${t('ingredient')}" value="${esc(i.name)}" onchange="ed.ingredients[${x}].name=this.value">
+      <button class="del-x" onclick="ed.ingredients.splice(${x},1);edSync();edRender()">✕</button>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <input type="number" inputmode="decimal" style="width:84px" placeholder="g" value="${i.g||''}" onchange="ed.ingredients[${x}].g=+this.value||0">
+      <label style="font-size:12px;display:flex;align-items:center;gap:6px">${t('is_flour')}
+        <input type="checkbox" style="width:20px;height:20px" ${i.flour?'checked':''} onchange="ed.ingredients[${x}].flour=this.checked"></label>
+      <input class="grow" type="number" inputmode="decimal" placeholder="${t('price_per_kg')}" value="${i.price||''}" onchange="ed.ingredients[${x}].price=+this.value||0">
+    </div></div>`).join('')}</div>
+  <button class="btn ghost" onclick="edSync();ed.ingredients.push({name:'',g:0});edRender()">${t('add_ing')}</button>
+  <label class="f">${t('steps')}</label>
+  <div id="edSteps">${ed.steps.map((s,x)=>`<div class="card flat" style="padding:10px;margin-bottom:8px">
+    <div class="row"><b style="color:var(--accent)">${x+1}</b>
+      <input class="grow" placeholder="${t('step_title')}" value="${esc(s.t)}" onchange="ed.steps[${x}].t=this.value">
+      <input type="number" inputmode="numeric" style="width:74px" placeholder="${t('minutes')}" value="${s.m||''}" onchange="ed.steps[${x}].m=+this.value||0">
+      <button class="del-x" onclick="ed.steps.splice(${x},1);edSync();edRender()">✕</button></div>
+    <input style="margin-top:8px" placeholder="${t('step_desc')}" value="${esc(s.d)}" onchange="ed.steps[${x}].d=this.value"></div>`).join('')}</div>
+  <button class="btn ghost" onclick="edSync();ed.steps.push({t:'',d:'',m:0});edRender()">${t('add_step')}</button>
+  <div class="row" style="margin-top:20px">
+    <button class="btn ghost grow" onclick="closeModal()">${t('cancel')}</button>
+    <button class="btn grow" onclick="edSave()">${t('save')}</button>
+  </div>`);
+}
+function edSync(){
+  ed.name=$('#edName')?.value??ed.name; ed.cat=$('#edCat')?.value??ed.cat;
+  ed.icon=$('#edIcon')?.value??ed.icon; ed.type=$('#edType')?.value??ed.type;
+  ed.source=$('#edSrc')?.value??ed.source; ed.notes=$('#edNotes')?.value??ed.notes;
+  if($('#edYield'))ed.yield=+$('#edYield').value||0;
+}
+async function edSave(){
+  edSync();
+  if(!ed.name.trim())return toast(LANG==='en'?'Name required':'กรุณาใส่ชื่อสูตร');
+  ed.ingredients=ed.ingredients.filter(i=>String(i.name).trim());
+  ed.steps=ed.steps.filter(s=>String(s.t).trim());
+  await dbPut('recipes',ed); closeModal(); toast(t('data_saved')); vRecipeDetail(ed.id);
+}
+
+/* ============ AI Import ============ */
+const AI_SCHEMA=`{
+  "name": "Recipe name",
+  "cat": "sourdough | italian | cookies | brownies | other",
+  "type": "bread | pastry",
+  "icon": "one emoji",
+  "source": "original source / URL",
+  "notes": "key tips in one or two sentences",
+  "ingredients": [ {"name": "Bread flour", "g": 500, "flour": true}, {"name": "Water", "g": 360} ],
+  "steps": [ {"t": "Step title", "d": "What to do", "m": 30} ]
+}`;
+function aiPrompt(){return `You are a recipe-structuring assistant for a baking app. Convert the recipe I paste below into EXACTLY this JSON format and output ONLY the JSON (no markdown, no explanation):
+
+${AI_SCHEMA}
+
+Rules:
+- ALL ingredient amounts must be in grams. Convert volumes accurately by ingredient (flour 1 cup = 120 g, granulated sugar 1 cup = 200 g, brown sugar 1 cup = 220 g, butter 1 cup = 227 g, water/milk 1 cup = 240 g, oil 1 cup = 218 g, cocoa 1 cup = 85 g, 1 tbsp = 1/16 cup, 1 tsp = 1/3 tbsp, 1 oz = 28.35 g). Eggs: 1 large egg = 55 g.
+- Mark every flour ingredient with "flour": true.
+- Convert all temperatures to °C inside step descriptions.
+- "m" = minutes of waiting/timer for that step (0 if the step is active work with no waiting). Split repeated actions (e.g. "fold every 30 min, 4 times") into separate steps.
+- Keep step titles short; put details in "d".
+- Respond in ${LANG==='th'?'Thai (keep technical baking terms like autolyse, bulk ferment, proof in English)':'English'}.
+
+Here is the recipe:
+`;}
+function aiImport(){
+  modal(`<h2>${t('ai_title')}</h2>
+  <div class="note" style="white-space:pre-line;margin-bottom:12px">${t('ai_how')}</div>
+  <button class="btn" onclick="navigator.clipboard.writeText(aiPrompt()).then(()=>toast(t('copied')))">⧉ ${t('copy_prompt')}</button>
+  <details style="margin-top:10px"><summary class="note">Preview prompt</summary><pre class="code">${esc(aiPrompt())}</pre></details>
+  <label class="f">JSON</label>
+  <textarea id="aiJson" rows="7" placeholder="${t('paste_json')}"></textarea>
+  <div class="row" style="margin-top:16px">
+    <button class="btn ghost grow" onclick="closeModal()">${t('cancel')}</button>
+    <button class="btn grow" onclick="aiDoImport()">${t('import_btn')}</button>
+  </div>`);
+}
+async function aiDoImport(){
+  let txt=$('#aiJson').value.trim().replace(/^```json?/i,'').replace(/```$/,'').trim();
+  try{
+    const j=JSON.parse(txt);
+    const r={id:uid(),seed:false,icon:j.icon||'🧁',cat:CATS.includes(j.cat)?j.cat:'other',
+      type:j.type==='pastry'?'pastry':'bread',name:String(j.name||'Imported recipe'),
+      source:String(j.source||''),notes:String(j.notes||''),
+      ingredients:(j.ingredients||[]).map(i=>({name:String(i.name||''),g:+i.g||0,flour:!!i.flour})),
+      steps:(j.steps||[]).map(s=>({t:String(s.t||''),d:String(s.d||''),m:+s.m||0}))};
+    if(!r.ingredients.length||!r.steps.length)throw 0;
+    await dbPut('recipes',r); closeModal(); toast(t('data_saved')); vRecipeDetail(r.id);
+  }catch(e){toast(t('invalid_json'));}
+}
+
+/* ============ Guided Bake session ============ */
+async function startBake(id,scale){
+  const r=await dbGet('recipes',id);
+  session={recipeId:id,recipeName:tn(r.name),scale:scale||1,step:0,startedAt:Date.now(),
+           stepStartedAt:Date.now(),endsAt:null,paused:false,pausedRemain:0,acknowledged:false};
+  const m=r.steps[0]?.m||0;
+  session.endsAt=m?Date.now()+m*60000:null;
+  await kvSet('session',session);
+  TAB='bake'; render();
+}
+async function vBake(){
+  session = session || await kvGet('session');
+  if(!session){
+    $('#view').innerHTML=`<h1>${t('nav_bake')}</h1>
+    <div class="empty"><div class="big">🔥</div><h3>${t('bake_none')}</h3>
+    <div class="note" style="max-width:340px;margin:8px auto 20px">${t('bake_none_sub')}</div>
+    <button class="btn" onclick="go('recipes')">${t('browse_recipes')}</button></div>`;
+    stopTick(); releaseWake(); return;
+  }
+  const r=await dbGet('recipes',session.recipeId);
+  if(!r){session=null;await kvSet('session',null);return vBake();}
+  const s=r.steps[session.step], last=session.step>=r.steps.length-1;
+  $('#view').innerHTML=`
+  <div class="note">${esc(session.recipeName)} ${session.scale!==1?`· ×${session.scale} ${t('scaled')}`:''}</div>
+  <h1 style="font-size:22px;margin:2px 0 4px">${t('step')} ${session.step+1} ${t('of')} ${r.steps.length}: ${esc(tn(s.t))}</h1>
+  <div class="progressbar"><i style="width:${(session.step)/r.steps.length*100}%"></i></div>
+  <div class="card">
+    <div style="font-size:17px">${esc(tn(s.d))}</div>
+    ${stepIngHint(r,s)}
+  </div>
+  <div class="card" style="text-align:center">
+    ${s.m?`<div class="timer-display" id="tmr">--:--</div>
+      <div class="note" id="tmrNote"></div>
+      <div class="row" style="margin-top:12px;justify-content:center">
+        <button class="btn ghost" onclick="addTime(5)">${t('add_5m')}</button>
+        <button class="btn ghost" id="btnPause" onclick="pauseTimer()">${session.paused?t('resume'):t('pause')}</button>
+      </div>`
+     :`<div style="font-size:40px;margin:6px 0">👨‍🍳</div><div class="note">${t('no_timer')}</div>`}
+  </div>
+  <button class="btn big ${last?'warn':''}" onclick="${last?'finishBake()':'nextStep()'}">${last?'✓ '+t('finish_bake'):t('next_step')+' ›'}</button>
+  <div class="row" style="margin-top:12px">
+    <button class="btn ghost grow" onclick="vRecipeDetail('${r.id}',${session.scale})">${t('nav_recipes')}: ${t('ingredients')}</button>
+    <button class="btn ghost" style="color:var(--accent)" onclick="abortBake()">✕ ${t('abort')}</button>
+  </div>
+  <div class="note" style="text-align:center;margin-top:14px">🔆 ${t('keep_awake')}</div>`;
+  if(s.m){startTick();}else{stopTick();}
+  acquireWake();
+}
+function stepIngHint(r,s){
+  const words=(tn(s.t)+' '+tn(s.d)).toLowerCase();
+  const hits=r.ingredients.filter(i=>{
+    const n=tn(i.name).toLowerCase().split(/[\s(（]/)[0];
+    return n.length>2&&words.includes(n);
+  });
+  if(!hits.length)return '';
+  return `<div style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)" class="note">
+    ${hits.map(i=>`<b>${esc(tn(i.name))}</b> ${fmtG(i.g*session.scale)} g`).join(' · ')}</div>`;
+}
+function startTick(){stopTick(); tick(); tickInt=setInterval(tick,500);}
+function stopTick(){if(tickInt){clearInterval(tickInt);tickInt=null;}}
+function tick(){
+  if(!session||!session.endsAt)return;
+  const el=$('#tmr'); if(!el)return;
+  let remain=session.paused?session.pausedRemain:session.endsAt-Date.now();
+  const over=remain<0; const abs=Math.abs(remain);
+  const m=Math.floor(abs/60000), sec=Math.floor(abs%60000/1000);
+  const hh=m>=60?Math.floor(m/60)+':'+String(m%60).padStart(2,'0')+':'+String(sec).padStart(2,'0')
+             :m+':'+String(sec).padStart(2,'0');
+  el.textContent=(over?'+':'')+hh;
+  el.classList.toggle('done',over);
+  $('#tmrNote').textContent=over?t('elapsed')+' — '+t('step_done'):'';
+  if(over&&!session.acknowledged){session.acknowledged=true;kvSet('session',session);ringBell();}
+}
+function addTime(min){
+  if(!session.endsAt)return;
+  if(session.paused)session.pausedRemain+=min*60000; else session.endsAt+=min*60000;
+  session.acknowledged=false; kvSet('session',session); tick();
+}
+function pauseTimer(){
+  if(session.paused){session.endsAt=Date.now()+session.pausedRemain;session.paused=false;}
+  else{session.pausedRemain=session.endsAt-Date.now();session.paused=true;}
+  kvSet('session',session); $('#btnPause').textContent=session.paused?t('resume'):t('pause');
+}
+async function nextStep(){
+  const r=await dbGet('recipes',session.recipeId);
+  session.step++; session.stepStartedAt=Date.now(); session.acknowledged=false; session.paused=false;
+  const m=r.steps[session.step]?.m||0;
+  session.endsAt=m?Date.now()+m*60000:null;
+  await kvSet('session',session); vBake();
+}
+async function abortBake(){
+  if(!confirm(LANG==='en'?'Abort this bake?':'ยกเลิกการอบครั้งนี้?'))return;
+  session=null; await kvSet('session',null); stopTick(); releaseWake(); vBake();
+}
+async function finishBake(){
+  const fin={recipeId:session.recipeId,recipeName:session.recipeName,scale:session.scale,startedAt:session.startedAt};
+  session=null; await kvSet('session',null); stopTick(); releaseWake();
+  logEditor(null,fin);
+}
+
+/* ============ Bell & Wake Lock ============ */
+let actx;
+function primeAudio(){
+  try{
+    actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+    if(actx.state==='suspended')actx.resume();
+  }catch(e){}
+}
+document.addEventListener('click',primeAudio,{capture:true});
+document.addEventListener('touchend',primeAudio,{capture:true});
+function ringBell(){
+  try{
+    actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+    if(actx.state==='suspended')actx.resume();
+    let n=0;
+    const ding=()=>{
+      if(n++>5)return;
+      [880,1318].forEach((f,i)=>{
+        const o=actx.createOscillator(),g=actx.createGain();
+        o.frequency.value=f; o.type='sine'; o.connect(g); g.connect(actx.destination);
+        const t0=actx.currentTime+i*.05;
+        g.gain.setValueAtTime(.001,t0); g.gain.exponentialRampToValueAtTime(.4,t0+.02);
+        g.gain.exponentialRampToValueAtTime(.001,t0+.9); o.start(t0); o.stop(t0+1);
+      });
+      setTimeout(ding,1400);
+    };
+    ding();
+  }catch(e){}
+  if(navigator.vibrate)navigator.vibrate([300,150,300,150,500]);
+}
+async function acquireWake(){
+  try{ if(!wakeLock&&'wakeLock' in navigator) wakeLock=await navigator.wakeLock.request('screen'); }catch(e){}
+}
+function releaseWake(){ try{wakeLock?.release(); wakeLock=null;}catch(e){} }
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&session)acquireWake(); });
+
+/* ============ Tools ============ */
+let TOOL=null;
+function vTools(){
+  if(TOOL)return TOOLS[TOOL]();
+  $('#view').innerHTML=`<h1>${t('tools_title')}</h1>
+  <div class="toolgrid">
+    ${[['bakers','⚖️','t_bakers'],['hyd','💧','t_hydration'],['units','🔄','t_units'],['ddt','🌡️','t_ddt'],['pan','📐','t_pan']]
+    .map(([k,em,lb])=>`<div class="card" onclick="TOOL='${k}';vTools()"><div class="em">${em}</div><h3>${t(lb)}</h3></div>`).join('')}
+  </div>`;
+}
+const toolBack=`<button class="iconbtn" onclick="TOOL=null;vTools()" style="margin-bottom:12px">‹ Tools</button>`;
+let bpRows=[['Water',72],['Salt',2],['Starter (levain)',20]], bpFlour=500;
+const TOOLS={
+ bakers(){
+  $('#view').innerHTML=`${toolBack}<h1>${t('t_bakers')}</h1>
+  <div class="card">
+    <label class="f" style="margin-top:0">${t('flour_weight')}</label>
+    <input id="bpF" type="number" inputmode="decimal" value="${bpFlour}" oninput="bpFlour=+this.value||0;bpCalc()">
+    ${bpRows.map((r,i)=>`<div class="row" style="margin-top:10px">
+      <input class="grow" value="${esc(r[0])}" onchange="bpRows[${i}][0]=this.value">
+      <input type="number" inputmode="decimal" style="width:84px" value="${r[1]}" oninput="bpRows[${i}][1]=+this.value||0;bpCalc()">
+      <span style="width:20px">%</span><b id="bpR${i}" style="min-width:74px;text-align:right"></b>
+      <button class="del-x" onclick="bpRows.splice(${i},1);vTools()">✕</button></div>`).join('')}
+    <button class="btn ghost" style="margin-top:12px" onclick="bpRows.push(['',0]);vTools()">${t('add_row')}</button>
+    <div class="result-box"><div class="note">${t('total_dough')}</div><div class="v" id="bpTotal"></div></div>
+  </div>`;
+  bpCalc();
+ },
+ hyd(){
+  $('#view').innerHTML=`${toolBack}<h1>${t('t_hydration')}</h1>
+  <div class="card">
+    <label class="f" style="margin-top:0">${t('flour_weight')}</label><input id="hF" type="number" inputmode="decimal" value="500" oninput="hCalc()">
+    <label class="f">${t('water_g')}</label><input id="hW" type="number" inputmode="decimal" value="360" oninput="hCalc()">
+    <label class="f">${t('starter_g')}</label><input id="hS" type="number" inputmode="decimal" value="100" oninput="hCalc()">
+    <label class="f">${t('starter_hyd')}</label><input id="hSH" type="number" inputmode="decimal" value="100" oninput="hCalc()">
+    <div class="result-box"><div class="note">${t('total_hydration')}</div><div class="v" id="hOut"></div></div>
+  </div>`;
+  hCalc();
+ },
+ units(){
+  $('#view').innerHTML=`${toolBack}<h1>${t('t_units')}</h1>
+  <div class="card">
+    <label class="f" style="margin-top:0">${t('u_what')}</label>
+    <select id="uIng" onchange="uCalc()">${Object.keys(CUPG).map(k=>`<option value="${k}">${k}</option>`).join('')}</select>
+    <div class="row" style="margin-top:12px">
+      <div class="grow"><label class="f" style="margin-top:0">${t('u_amount')}</label><input id="uAmt" type="number" inputmode="decimal" value="1" oninput="uCalc()"></div>
+      <div class="grow"><label class="f" style="margin-top:0">${t('u_from')}</label>
+        <select id="uUnit" onchange="uCalc()"><option value="cup">cup</option><option value="tbsp">tbsp</option><option value="tsp">tsp</option><option value="oz">oz</option></select></div>
+    </div>
+    <div class="result-box"><div class="v" id="uOut"></div></div>
+  </div>
+  <div class="card">
+    <label class="f" style="margin-top:0">${t('u_temp')}</label>
+    <div class="row"><input id="uF" type="number" inputmode="decimal" placeholder="°F" oninput="$('#uC').value=Math.round((this.value-32)*5/9*10)/10">
+    <span>⇄</span><input id="uC" type="number" inputmode="decimal" placeholder="°C" oninput="$('#uF').value=Math.round((this.value*9/5+32)*10)/10"></div>
+  </div>`;
+  uCalc();
+ },
+ ddt(){
+  $('#view').innerHTML=`${toolBack}<h1>${t('t_ddt')}</h1>
+  <div class="card">
+    <label class="f" style="margin-top:0">${t('ddt_desired')}</label><input id="dD" type="number" inputmode="decimal" value="25" oninput="dCalc()">
+    <label class="f">${t('ddt_room')}</label><input id="dR" type="number" inputmode="decimal" value="30" oninput="dCalc()">
+    <label class="f">${t('ddt_flour')}</label><input id="dF" type="number" inputmode="decimal" value="29" oninput="dCalc()">
+    <label class="f">${t('ddt_friction')}</label><input id="dX" type="number" inputmode="decimal" value="1" oninput="dCalc()">
+    <div class="result-box"><div class="note">${t('ddt_result')}</div><div class="v" id="dOut"></div></div>
+    <div class="note" style="margin-top:8px">Water temp = (DDT × 3) − room − flour − friction</div>
+  </div>`;
+  dCalc();
+ },
+ pan(){
+  $('#view').innerHTML=`${toolBack}<h1>${t('t_pan')}</h1>
+  <div class="card">
+    <h3 style="font-size:16px">${t('pan_orig')}</h3>${panInputs('a')}
+    <h3 style="font-size:16px;margin-top:16px">${t('pan_new')}</h3>${panInputs('b')}
+    <div class="result-box"><div class="note">${t('pan_result')}</div><div class="v" id="pOut"></div></div>
+  </div>`;
+  pCalc();
+ }
+};
+function panInputs(p){return `
+  <div class="seg" style="margin-bottom:8px">
+    <button id="${p}Rd" class="on" onclick="panShape('${p}','round')">${t('pan_round')}</button>
+    <button id="${p}Rc" onclick="panShape('${p}','rect')">${t('pan_rect')}</button></div>
+  <div class="row">
+    <input id="${p}1" type="number" inputmode="decimal" value="20" oninput="pCalc()" placeholder="cm">
+    <span id="${p}x" style="display:none">×</span>
+    <input id="${p}2" type="number" inputmode="decimal" value="20" oninput="pCalc()" placeholder="cm" style="display:none"></div>`;}
+const panShapeState={a:'round',b:'round'};
+function panShape(p,s){panShapeState[p]=s;
+  $('#'+p+'Rd').classList.toggle('on',s==='round'); $('#'+p+'Rc').classList.toggle('on',s==='rect');
+  $('#'+p+'2').style.display=$('#'+p+'x').style.display=s==='rect'?'':'none'; pCalc();}
+const panArea=p=>{const a=+$('#'+p+'1').value||0,b=+$('#'+p+'2').value||0;
+  return panShapeState[p]==='round'?Math.PI*(a/2)**2:a*b;};
+function pCalc(){const A=panArea('a'),B=panArea('b'); $('#pOut').textContent=A?'× '+(Math.round(B/A*100)/100):'—';}
+function bpCalc(){const f=+$('#bpF').value||0;let tot=f;
+  bpRows.forEach((r,i)=>{const g=f*r[1]/100;tot+=g;const el=$('#bpR'+i);if(el)el.textContent=fmtG(g)+' g';});
+  $('#bpTotal').textContent=fmtG(tot)+' g';}
+function hCalc(){const f=+$('#hF').value||0,w=+$('#hW').value||0,s=+$('#hS').value||0,sh=+$('#hSH').value||100;
+  const sf=s/(1+sh/100), sw=s-sf;
+  $('#hOut').textContent=f+sf?Math.round((w+sw)/(f+sf)*1000)/10+' %':'—';}
+const CUPG={'Flour (AP/bread)':120,'Whole wheat flour':113,'Granulated sugar':200,'Brown sugar (packed)':220,
+ 'Powdered sugar':120,'Butter':227,'Cocoa powder':85,'Water / Milk':240,'Vegetable oil':218,'Olive oil':216,
+ 'Honey / Syrup':340,'Chocolate chips':170,'Oats (rolled)':90,'Salt (table)':288,'Instant yeast':150};
+function uCalc(){const g=CUPG[$('#uIng').value],a=+$('#uAmt').value||0,u=$('#uUnit').value;
+  const cups=u==='cup'?a:u==='tbsp'?a/16:u==='tsp'?a/48:0;
+  const out=u==='oz'?a*28.35:cups*g;
+  $('#uOut').textContent=fmtG(out)+' g';}
+function dCalc(){const v=(+$('#dD').value*3)-(+$('#dR').value)-(+$('#dF').value)-(+$('#dX').value);
+  $('#dOut').textContent=Math.round(v*10)/10+' °C';}
+
+/* ============ Starter tracker ============ */
+async function vStarter(){
+  const feeds=(await dbAll('feedings')).sort((a,b)=>b.at-a.at);
+  const last=feeds[0];
+  const ago=last?Math.round((Date.now()-last.at)/3600000*10)/10:null;
+  $('#view').innerHTML=`<h1>${t('starter_title')}</h1><div class="tagline">${t('starter_sub')}</div>
+  ${last?`<div class="card" style="display:flex;align-items:center;gap:14px">
+    <div style="font-size:38px">🫙</div>
+    <div><div class="note">${t('last_fed')}</div>
+    <div style="font-family:'Fraunces',serif;font-size:26px;font-weight:700">${ago} ${t('hours_ago')}</div>
+    <div class="note">${esc(last.ratio||'')} ${last.rise?'· '+esc(last.rise):''}</div></div></div>`:''}
+  <button class="btn big" onclick="feedEditor()">🥄 ${t('fed_now')}</button>
+  <div class="card" style="margin-top:14px">
+    ${feeds.map(f=>`<div class="feeditem"><div class="dot"></div>
+      <div class="grow"><b>${new Date(f.at).toLocaleString(LANG==='th'?'th-TH':'en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</b>
+        <span class="note"> · ${esc(f.ratio||'')}</span>
+        ${f.peak?`<span class="note"> · peak ${esc(f.peak)} ${t('hr_short')}</span>`:''}
+        ${f.rise?`<span class="note"> · ${esc(f.rise)}</span>`:''}
+        ${f.note?`<div class="note">${esc(f.note)}</div>`:''}</div>
+      <button class="del-x" onclick="delFeed('${f.id}')">✕</button></div>`).join('')
+     || `<div class="empty"><div class="big">🫙</div>${t('no_feedings')}</div>`}
+  </div>`;
+}
+function feedEditor(){
+  modal(`<h2>${t('fed_now')}</h2>
+  <label class="f">${t('ratio')}</label><input id="fdRatio" value="1:5:5" placeholder="1:5:5">
+  <div class="row" style="margin-top:4px">
+    <div class="grow"><label class="f">${t('peak_hours')}</label><input id="fdPeak" type="number" inputmode="decimal" placeholder="5"></div>
+    <div class="grow"><label class="f">${t('rise')}</label><input id="fdRise" placeholder="2x"></div>
+  </div>
+  <label class="f">${t('feed_note')}</label><input id="fdNote" placeholder="">
+  <div class="row" style="margin-top:18px">
+    <button class="btn ghost grow" onclick="closeModal()">${t('cancel')}</button>
+    <button class="btn grow" onclick="saveFeed()">${t('save')}</button>
+  </div>`);
+}
+async function saveFeed(){
+  await dbPut('feedings',{id:uid(),at:Date.now(),ratio:$('#fdRatio').value,peak:$('#fdPeak').value,rise:$('#fdRise').value,note:$('#fdNote').value});
+  closeModal(); toast(t('data_saved')); vStarter();
+}
+async function delFeed(id){if(!confirm(t('confirm_del')))return; await dbDel('feedings',id); vStarter();}
+
+/* ============ Bake Log ============ */
+let logPhotos=[];
+async function vLog(){
+  const logs=(await dbAll('logs')).sort((a,b)=>b.at-a.at);
+  $('#view').innerHTML=`<h1>${t('log_title')}</h1><div class="tagline">${t('log_sub')}</div>
+  <button class="btn big" onclick="logEditor()">＋ ${t('add_log')}</button>
+  <div style="margin-top:14px">
+  ${logs.map(l=>`<div class="card">
+    <div class="row"><div class="grow"><h3 style="margin:0;font-size:17px">${esc(l.recipeName)}</h3>
+      <div class="note">${new Date(l.at).toLocaleString(LANG==='th'?'th-TH':'en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}${l.scale&&l.scale!==1?' · ×'+l.scale:''}</div></div>
+      <div style="color:var(--gold);font-size:16px;white-space:nowrap">${'★'.repeat(l.rating||0)}<span style="opacity:.25">${'★'.repeat(5-(l.rating||0))}</span></div>
+      <button class="del-x" onclick="delLog('${l.id}')">✕</button></div>
+    ${l.notes?`<div style="margin-top:8px;font-size:15px">${esc(l.notes)}</div>`:''}
+    ${l.photos?.length?`<div class="photo-grid">${l.photos.map(p=>`<img src="${p}" onclick="viewPhoto('${l.id}',${l.photos.indexOf(p)})">`).join('')}</div>`:''}
+  </div>`).join('') || `<div class="empty"><div class="big">📓</div>${t('no_logs')}</div>`}
+  </div>`;
+}
+async function viewPhoto(logId,idx){
+  const l=await dbGet('logs',logId);
+  modal(`<img src="${l.photos[idx]}" style="width:100%;border-radius:14px">
+  <button class="btn ghost big" style="margin-top:12px" onclick="closeModal()">${t('close')}</button>`);
+}
+async function logEditor(id,prefill){
+  recipes=await dbAll('recipes');
+  const l=id?await dbGet('logs',id):{id:uid(),at:Date.now(),recipeId:prefill?.recipeId||'',recipeName:prefill?.recipeName||'',scale:prefill?.scale||1,rating:0,notes:'',photos:[]};
+  logPhotos=[...(l.photos||[])]; let rating=l.rating||0;
+  window._logRate=v=>{rating=v;document.querySelectorAll('.stars span').forEach((s,i)=>s.classList.toggle('on',i<v));};
+  window._logSave=async()=>{
+    l.recipeId=$('#lgRec').value; l.recipeName=$('#lgRec').selectedOptions[0]?.dataset.name||$('#lgRec').selectedOptions[0]?.text||'';
+    l.rating=rating; l.notes=$('#lgNotes').value; l.photos=logPhotos;
+    await dbPut('logs',l); closeModal();
+    toast(prefill?t('bake_saved'):t('data_saved')); TAB='log'; render();
+  };
+  modal(`<h2>${t('add_log')} ${prefill?'🎉':''}</h2>
+  <label class="f">${t('log_recipe')}</label>
+  <select id="lgRec">${recipes.map(r=>`<option value="${r.id}" data-name="${esc(tn(r.name))}" ${r.id===l.recipeId?'selected':''}>${esc(tn(r.name))}</option>`).join('')}
+    <option value="" ${!l.recipeId?'selected':''}>${LANG==='en'?'(other)':'(อื่นๆ)'}</option></select>
+  <label class="f">${t('log_rating')}</label>
+  <div class="stars">${[1,2,3,4,5].map(i=>`<span class="${i<=rating?'on':''}" onclick="_logRate(${i})">★</span>`).join('')}</div>
+  <label class="f">${t('log_notes')}</label><textarea id="lgNotes" rows="3">${esc(l.notes||'')}</textarea>
+  <label class="f">${t('log_photos')}</label>
+  <div class="photo-grid" id="lgPhotos"></div>
+  <input type="file" id="lgFile" accept="image/*" style="display:none" onchange="addLogPhoto(this)">
+  <div class="row" style="margin-top:18px">
+    <button class="btn ghost grow" onclick="closeModal()">${t('cancel')}</button>
+    <button class="btn grow" onclick="_logSave()">${t('save')}</button>
+  </div>`);
+  renderLogPhotos();
+}
+function renderLogPhotos(){
+  $('#lgPhotos').innerHTML=logPhotos.map((p,i)=>`<div style="position:relative"><img src="${p}">
+    <button class="del-x" style="position:absolute;top:-6px;right:-6px;background:var(--surface);border-radius:50%;border:1px solid var(--line)" onclick="logPhotos.splice(${i},1);renderLogPhotos()">✕</button></div>`).join('')
+  +(logPhotos.length<3?`<button class="addph" onclick="$('#lgFile').click()">＋</button>`:'');
+}
+function addLogPhoto(input){
+  const file=input.files[0]; if(!file)return;
+  const img=new Image(), rd=new FileReader();
+  rd.onload=()=>{img.src=rd.result};
+  img.onload=()=>{
+    const MAX=900, sc=Math.min(1,MAX/Math.max(img.width,img.height));
+    const c=document.createElement('canvas'); c.width=img.width*sc; c.height=img.height*sc;
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    logPhotos.push(c.toDataURL('image/jpeg',.72)); renderLogPhotos();
+  };
+  rd.readAsDataURL(file); input.value='';
+}
+async function delLog(id){if(!confirm(t('confirm_del')))return; await dbDel('logs',id); vLog();}
+
+/* ============ Settings / Backup ============ */
+async function openSettings(){
+  const lb=await kvGet('lastBackup');
+  modal(`<h2>${t('settings')}</h2>
+  <div class="note" style="margin-bottom:14px">${t('export_note')}</div>
+  <button class="btn big" onclick="exportData()">⬇ ${t('export_data')}</button>
+  <input type="file" id="impFile" accept=".json" style="display:none" onchange="importData(this)">
+  <button class="btn ghost big" style="margin-top:10px" onclick="$('#impFile').click()">⬆ ${t('import_data')}</button>
+  <button class="btn ghost big" style="margin-top:10px" onclick="openPriceBook()">${t('price_book_btn')}</button>
+  <div class="note" style="margin-top:14px"><b>${t('last_backup')}:</b> ${lb||t('never_backup')}<br>${t('auto_backup_note')}</div>
+  <div class="note" style="margin-top:18px;text-align:center">Bakery Center v1.3 · Made with 🤎 for bakers</div>
+  <button class="btn ghost big" style="margin-top:10px" onclick="closeModal()">${t('close')}</button>`);
+}
+async function gatherBackup(){
+  return {app:'bakery-center',version:1,exportedAt:new Date().toISOString(),
+    recipes:await dbAll('recipes'),logs:await dbAll('logs'),feedings:await dbAll('feedings'),
+    prices:await kvGet('prices')||{}};
+}
+function downloadBackup(data){
+  const blob=new Blob([JSON.stringify(data)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='bakery-center-backup-'+new Date().toISOString().slice(0,10)+'.json'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
+async function exportData(){
+  downloadBackup(await gatherBackup());
+  await kvSet('lastBackup',dayStr()); toast(t('data_saved'));
+}
+async function importData(input){
+  const file=input.files[0]; if(!file)return;
+  if(!confirm(t('import_warn')))return void(input.value='');
+  try{
+    const j=JSON.parse(await file.text());
+    if(j.app!=='bakery-center')throw 0;
+    await dbClear('recipes'); await dbClear('logs'); await dbClear('feedings');
+    for(const r of j.recipes||[])await dbPut('recipes',r);
+    for(const l of j.logs||[])await dbPut('logs',l);
+    for(const f of j.feedings||[])await dbPut('feedings',f);
+    if(j.prices){PRICES=j.prices; await kvSet('prices',j.prices);}
+    closeModal(); toast(t('data_saved')); render();
+  }catch(e){toast(t('invalid_json'));}
+  input.value='';
+}
+
+/* ============ Price Book (สมุดราคากลาง) ============ */
+let pbRows=[];
+async function openPriceBook(){
+  pbRows=Object.entries(PRICES).map(([n,p])=>[n,p]);
+  if(!pbRows.length)pbRows=[['',0]];
+  pbRender();
+}
+function pbRender(){
+  modal(`<h2>${t('price_book')}</h2>
+  <div class="note" style="margin-bottom:12px">${t('price_book_note')}</div>
+  <div id="pbList">${pbRows.map((r,i)=>`<div class="row" style="margin-bottom:8px">
+    <input class="grow" placeholder="${t('price_name')}" value="${esc(r[0])}" onchange="pbRows[${i}][0]=this.value">
+    <input type="number" inputmode="decimal" style="width:96px" placeholder="${t('price_per_kg')}" value="${r[1]||''}" onchange="pbRows[${i}][1]=+this.value||0">
+    <button class="del-x" onclick="pbSync();pbRows.splice(${i},1);pbRender()">✕</button></div>`).join('')}</div>
+  <button class="btn ghost" onclick="pbSync();pbRows.push(['',0]);pbRender()">${t('add_row')}</button>
+  <button class="btn ghost" style="margin-top:8px" onclick="pbPull()">${t('pull_from_recipes')}</button>
+  <div class="row" style="margin-top:20px">
+    <button class="btn ghost grow" onclick="closeModal()">${t('cancel')}</button>
+    <button class="btn grow" onclick="pbSave()">${t('save')}</button>
+  </div>`);
+}
+function pbSync(){  // อ่านค่าจาก input ปัจจุบันกลับเข้า pbRows ก่อน re-render (onchange อาจยังไม่ยิง)
+  const list=$('#pbList'); if(!list)return;
+  [...list.children].forEach((row,i)=>{const ins=row.querySelectorAll('input');
+    if(pbRows[i]){pbRows[i][0]=ins[0].value; pbRows[i][1]=+ins[1].value||0;}});
+}
+async function pbPull(){  // ดึงชื่อส่วนผสมที่ยังไม่มีในสมุด จากทุกสูตร (ข้ามน้ำ)
+  pbSync();
+  const have=new Set(pbRows.map(r=>pnorm(r[0]))), seen=new Set();
+  for(const r of await dbAll('recipes')) r.ingredients.forEach(i=>{
+    const n=tn(i.name).trim(), k=pnorm(n);
+    if(n&&!have.has(k)&&!seen.has(k)&&!isWaterName(n)){seen.add(k); pbRows.push([n,0]);}
+  });
+  pbRender();
+}
+async function pbSave(){
+  pbSync();
+  const obj={}; pbRows.forEach(([n,p])=>{if(String(n).trim())obj[String(n).trim()]=+p||0;});
+  PRICES=obj; await kvSet('prices',obj); closeModal(); toast(t('data_saved'));
+  if(curRecipe)vRecipeDetail(curRecipe,curScale); else render();
+}
+
+/* ============ Auto daily backup ============ */
+function dayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+let backupDue=false;
+async function runAutoBackup(){
+  if(!backupDue)return; backupDue=false;
+  const data=await gatherBackup();
+  // backup เฉพาะเมื่อมีข้อมูลของผู้ใช้จริง (ไม่นับสูตร seed) — กันไฟล์เปล่ารกเครื่อง
+  if(!(data.logs.length||data.feedings.length||data.recipes.some(r=>!r.seed)))return;
+  downloadBackup(data);
+  await kvSet('lastBackup',dayStr()); toast(t('auto_backup_done'));
+}
+function armAutoBackup(){
+  // iOS ยอมให้ดาวน์โหลดไฟล์เฉพาะตอนมี user gesture → ยิง backup ตอนแตะหน้าจอครั้งแรกของการเปิดแอป
+  const h=()=>{document.removeEventListener('click',h,true);document.removeEventListener('touchend',h,true);runAutoBackup();};
+  document.addEventListener('click',h,true);
+  document.addEventListener('touchend',h,true);
+}
+
+/* ============ Help: User Guide & Changelog ============ */
+const GUIDE=[
+ {icon:'📚',t:{en:'Recipes',th:'คลังสูตร'},d:{en:'Browse, search and filter recipes by category. Tap one to open it. Change the batch size with ×0.5–×2 or by typing a target flour weight — every ingredient updates. Add a recipe with the ＋ button, or import one with ✦ AI.',th:'ดู ค้นหา และกรองสูตรตามหมวด แตะสูตรเพื่อเปิด ปรับขนาดด้วย ×0.5–×2 หรือพิมพ์น้ำหนักแป้งที่ต้องการ ส่วนผสมทุกตัวจะปรับตาม เพิ่มสูตรด้วยปุ่ม ＋ หรือ Import ด้วย ✦ AI'}},
+ {icon:'✦',t:{en:'Import with AI',th:'Import ด้วย AI'},d:{en:'Tap ✦ Import with AI, copy the prompt, and paste it into any AI chat (Claude, ChatGPT, Gemini) with a recipe in any language or units. Paste the JSON the AI returns — the recipe is added with amounts converted to grams.',th:'กด ✦ Import ด้วย AI แล้วคัดลอก prompt ไปวางในแชต AI ตัวไหนก็ได้ (Claude, ChatGPT, Gemini) พร้อมข้อความสูตร (ภาษา/หน่วยไหนก็ได้) เอา JSON ที่ AI ตอบมาวาง สูตรจะถูกเพิ่มพร้อมแปลงเป็นกรัมให้'}},
+ {icon:'🔥',t:{en:'Guided Baking',th:'โหมดเริ่มอบ'},d:{en:'Open a recipe and tap ▶ Start Baking. The app guides you step by step with a timer on each step and rings a bell when time is up. Use Pause, +5 min or Skip as needed. The timer stays correct even if the screen sleeps, and you can close the app and resume later.',th:'เปิดสูตรแล้วกด ▶ เริ่มอบ แอปจะพาทำทีละขั้น มีจับเวลาทุกขั้นและส่งเสียงเตือนเมื่อครบเวลา ใช้ปุ่มหยุดพัก +5 นาที หรือข้ามได้ เวลายังแม่นแม้จอดับ และปิดแอปแล้วกลับมาทำต่อได้'}},
+ {icon:'🧰',t:{en:'Tools',th:'เครื่องมือ'},d:{en:'Five baker calculators: Baker’s %, Hydration (counts the water in your starter), Unit converter (cups/tbsp/tsp/oz → grams + °F/°C), DDT water temperature, and Pan size converter.',th:'เครื่องคำนวณ 5 ตัว: Baker’s %, Hydration (รวมน้ำใน starter), แปลงหน่วย (cup/tbsp/tsp/oz → กรัม + °F/°C), DDT อุณหภูมิน้ำ และแปลงขนาดถาด'}},
+ {icon:'💰',t:{en:'Cost',th:'ต้นทุน'},d:{en:'Each recipe shows what its ingredients cost, and the cost per piece if you set a yield in the editor. First open ⚙ Settings → Ingredient Prices and enter ฿/kg for the ingredients you use (tap “Add ingredients from recipes” to fill the list quickly). The cost scales automatically when you change the batch size, and water is counted as free.',th:'แต่ละสูตรจะบอกต้นทุนค่าวัตถุดิบ และต้นทุนต่อชิ้นถ้าใส่จำนวนชิ้นในหน้าแก้สูตร เริ่มจากกด ⚙ Settings → สมุดราคาส่วนผสม แล้วใส่ ฿/กก. ของส่วนผสมที่ใช้ (กด “ดึงชื่อส่วนผสมจากสูตร” เพื่อเติมรายการเร็วๆ) ต้นทุนจะปรับตามขนาดที่ scale อัตโนมัติ และน้ำคิดเป็นฟรี'}},
+ {icon:'🫙',t:{en:'Starter Tracker',th:'ตัวจด Starter'},d:{en:'Tap Log Feeding every time you feed your sourdough starter. The card shows how many hours ago you last fed it, and the timeline keeps the full history.',th:'กดบันทึกให้อาหารทุกครั้งที่ให้อาหาร starter การ์ดจะบอกว่าให้อาหารล่าสุดกี่ชั่วโมงที่แล้ว และไทม์ไลน์เก็บประวัติทั้งหมด'}},
+ {icon:'📓',t:{en:'Bake Log',th:'สมุดบันทึกการอบ'},d:{en:'Record each bake with a 1–5 star rating, notes, and up to 3 photos. After you finish a guided bake, a log entry opens automatically with the recipe filled in.',th:'บันทึกการอบแต่ละครั้งด้วยดาว 1–5 โน้ต และรูปสูงสุด 3 รูป เมื่ออบเสร็จในโหมดเริ่มอบ หน้าบันทึกจะเปิดให้อัตโนมัติพร้อมชื่อสูตร'}},
+ {icon:'💾',t:{en:'Backup & Data',th:'สำรองข้อมูล'},d:{en:'Your data lives only on this device. Tap ⚙ to Export a backup file, or Import one to restore. A backup also downloads automatically once a day. Never tap “Clear Website Data” in your browser — it erases everything.',th:'ข้อมูลอยู่ในเครื่องนี้เท่านั้น กด ⚙ เพื่อ Export ไฟล์สำรอง หรือ Import เพื่อกู้คืน และจะมีไฟล์ backup ดาวน์โหลดอัตโนมัติวันละครั้ง อย่ากด “Clear Website Data” ในเบราว์เซอร์เด็ดขาด เพราะข้อมูลจะหายหมด'}},
+ {icon:'🌐',t:{en:'Language, Theme & Install',th:'ภาษา ธีม และติดตั้ง'},d:{en:'Use the top bar to switch language (EN/TH) and light/dark mode anytime. Add the app to your home screen to open it full-screen like a real app — it works offline.',th:'ใช้แถบบนสลับภาษา (EN/TH) และโหมดสว่าง/มืดได้ทุกเมื่อ เพิ่มแอปลงหน้าจอโฮมเพื่อเปิดเต็มจอเหมือนแอปจริง ใช้งานออฟไลน์ได้'}},
+];
+const CHANGELOG=[
+ {v:'1.3',d:'2026-06-06',c:[
+   {en:'Cost calculation — each recipe now shows its ingredient cost (and cost per piece if you set a yield), scaling with the batch size.',th:'คำนวณต้นทุน — แต่ละสูตรแสดงต้นทุนค่าวัตถุดิบ (และต้นทุนต่อชิ้นถ้าใส่จำนวนชิ้น) ปรับตามขนาดที่ scale'},
+   {en:'New Ingredient Prices book (⚙ Settings) — set ฿/kg once and every recipe uses it; you can also set a price on a single ingredient inside a recipe.',th:'เพิ่มสมุดราคาส่วนผสม (⚙ Settings) — ตั้ง ฿/กก. ครั้งเดียว ทุกสูตรนำไปใช้; หรือใส่ราคาเฉพาะส่วนผสมในสูตรก็ได้'},
+   {en:'Ingredient prices are included in your backup file.',th:'ราคาส่วนผสมถูกรวมอยู่ในไฟล์ backup ด้วย'}]},
+ {v:'1.2',d:'2026-06-06',c:[{en:'Added this in-app User Guide and What’s New list (the ? button).',th:'เพิ่มคู่มือการใช้งานและรายการอัปเดตในแอป (ปุ่ม ?)'}]},
+ {v:'1.1',d:'2026-06-06',c:[
+   {en:'Automatic daily backup — a backup file downloads the first time you open the app each day.',th:'สำรองข้อมูลอัตโนมัติวันละครั้ง — เปิดแอปครั้งแรกของวันแล้วไฟล์ backup จะดาวน์โหลดให้เอง'},
+   {en:'Settings now shows the date of your last backup.',th:'หน้า Settings แสดงวันที่ backup ล่าสุด'}]},
+ {v:'1.0',d:'2026-06-06',c:[{en:'First release: recipe library, guided baking with timers, 5 calculators, sourdough starter tracker, bake log, EN/TH, dark mode, offline, backup & restore.',th:'เวอร์ชันแรก: คลังสูตร, โหมดเริ่มอบพร้อมจับเวลา, เครื่องคำนวณ 5 ตัว, ตัวจด starter, สมุดบันทึกการอบ, 2 ภาษา EN/TH, โหมดมืด, ใช้ออฟไลน์, สำรอง/กู้ข้อมูล'}]},
+];
+let helpTab='guide';
+function openHelp(tab){
+  if(tab)helpTab=tab;
+  const guide=GUIDE.map(g=>`<div class="card flat" style="background:var(--surface2);margin-bottom:10px;padding:12px">
+    <b>${g.icon} ${esc(tn(g.t))}</b><div class="note" style="margin-top:4px">${esc(tn(g.d))}</div></div>`).join('');
+  const log=CHANGELOG.map(e=>`<div class="card flat" style="margin-bottom:10px;padding:10px 12px">
+    <div class="row"><b style="font-family:'Fraunces',serif;color:var(--primary)">v${e.v}</b>
+      <span class="note grow" style="text-align:right">${e.d}</span></div>
+    <ul style="margin:6px 0 0;padding-left:18px">${e.c.map(c=>`<li class="note">${esc(tn(c))}</li>`).join('')}</ul></div>`).join('');
+  modal(`<h2>${t('help_title')}</h2>
+  <div class="seg" style="margin-bottom:14px">
+    <button class="${helpTab==='guide'?'on':''}" onclick="openHelp('guide')">${t('help_guide')}</button>
+    <button class="${helpTab==='log'?'on':''}" onclick="openHelp('log')">${t('help_changelog')}</button>
+  </div>
+  ${helpTab==='guide'?guide:log}
+  <button class="btn ghost big" style="margin-top:8px" onclick="closeModal()">${t('close')}</button>`);
+}
+
+/* ============ Boot ============ */
+(async function(){
+  await openDB();
+  PRICES=await kvGet('prices')||{};
+  const seeded=await kvGet('seeded-v1');
+  if(!seeded){ for(const s of SEEDS) if(!(await dbGet('recipes',s.id))) await dbPut('recipes',s); await kvSet('seeded-v1',true); }
+  LANG=(await kvGet('lang'))||'en';
+  const th=(await kvGet('theme'))||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  document.body.dataset.theme=th;
+  document.querySelector('meta[name=theme-color]').content=th==='dark'?'#191210':'#F7EFE3';
+  session=await kvGet('session');
+  if(session) TAB='bake';
+  if((await kvGet('lastBackup'))!==dayStr()){ backupDue=true; armAutoBackup(); }
+  render();
+})();
+</script>
+</body>
+</html>

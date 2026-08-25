@@ -1,6 +1,6 @@
 # The Knowledge Shelf — Session Handoff
 
-**Closed:** 2026-08-23
+**Updated:** 2026-08-25
 
 **Public site:** https://hermes2545.github.io/
 
@@ -12,7 +12,7 @@
 
 ## Current state
 
-The site is a static GitHub Pages library branded **The Knowledge Shelf** with the subtitle **Curated Guides, Ideas & Audio**.
+The site is a static GitHub Pages library branded **The Knowledge Shelf** with three generated collections: Reading, Audio, and App.
 
 ### Reading collection
 
@@ -34,6 +34,16 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 - Audio titles no longer show the redundant `AUDIO BOOK` kicker.
 - Each item and the playlist button open YouTube in a new tab.
 
+### App collection
+
+- 3 browser apps indexed from `data/apps.json`: **Bakery Center**, **Battle Tank**, and **Lode Runner**.
+- The generated shelf is `app-library.html`; stable launchers are `app/bakery-center.html`, `app/battle-tank.html`, and `app/loderunner.html`.
+- Bakery Center and Battle Tank preserve their imported source HTML byte-for-byte from the recorded source commits.
+- Lode Runner keeps its multi-file runtime under `app/loderunner/`; `app/loderunner.html` is a minimal same-origin fullscreen wrapper.
+- Development tools, executable files, source disk images, repository metadata, and unrelated README files are excluded from the imported Lode Runner runtime.
+- Every App appears as a CSS-rendered 3.5-inch diskette with a content-specific sticker label rather than a book cover.
+- The App room uses a Pantip Plaza 1990s software-floor visual language: perforated metal display wall, fluorescent/LED signage, Windows 95-style search panel, and metal shelf edges.
+
 ### Shared visual behavior
 
 - Responsive shelves rebuild to one real shelf per visual row: 5/4/3/2 books at desktop/tablet/mobile breakpoints.
@@ -42,6 +52,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 - Reading category plaques are interactive filters; clicking a plaque filters to that category and clicking the active category again restores all books.
 - Book covers rest 3–4px above the shelf lip, leaving enough clearance for the 12px hover lift without overlapping the shelf.
 - Navigation includes reading-glasses and headphones icons.
+- Navigation includes Reading, Audio, and App destinations; the App destination uses a software-window icon.
 - `assets/icons/library.svg` is the shared site icon and favicon.
 - Search uses `assets/js/library.js`; the separate reading-category filter row is intentionally removed because categories are shown on shelf plaques.
 
@@ -49,8 +60,10 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 
 - Reading catalog: `data/books.json`
 - Audio catalog: `data/audio-books.json`
+- App catalog and source provenance: `data/apps.json`
 - Reading generator: `scripts/build_catalog.py`
 - Audio generator: `scripts/build_audio_library.py`
+- App generator: `scripts/build_app_library.py`
 - Custom reading-cover design sources: `templates/reading-cover-designs.template.html`, `templates/mega-prompt-business-book-cover.template.html`, and `templates/reading-cover-assets/`
 - Legacy Facebook-cover generator: `scripts/build_facebook_covers.py` (retained but not used by the active catalog)
 - Shared template/styles: `templates/`, `assets/css/`, `assets/js/`
@@ -62,10 +75,11 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 python -m unittest discover -s tests -v
 python scripts/build_catalog.py --check
 python scripts/build_audio_library.py --check
+python scripts/build_app_library.py --check
 git diff --check
 ```
 
-Expected verified result at close: **43 tests passed**, both generated pages current, and no diff-check errors.
+Expected verified result at close: **52 tests passed**, all three generated pages current, and no diff-check errors.
 
 ## Publication workflow
 
@@ -85,7 +99,7 @@ Expected verified result at close: **43 tests passed**, both generated pages cur
 
 ## Next recommended step
 
-When a new HTML guide is supplied, match it to its original post image, generate the new vertical cover, add `published_at` metadata, rebuild the reading page, and verify both responsive shelf layout and production links.
+For the current App Shelf work, review the prepared desktop/mobile screenshots and approve or revise the diskette direction. Public push remains blocked until explicitly approved.
 
 ## Published artifact
 
