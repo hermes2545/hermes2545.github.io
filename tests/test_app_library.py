@@ -16,28 +16,32 @@ class AppLibraryTests(unittest.TestCase):
         self.apps = load_apps(CATALOG)
         self.page = render_app_library(self.apps)
 
-    def test_catalog_has_three_unique_apps_with_required_metadata(self):
+    def test_catalog_has_five_unique_apps_with_required_metadata(self):
         required = {
             "id", "title", "short_title", "href", "category", "summary",
             "published_at", "source_repository", "source_commit", "source_sha256",
             "import_mode", "sticker", "label",
         }
-        self.assertEqual(len(self.apps), 4)
+        self.assertEqual(len(self.apps), 5)
         self.assertEqual(
             {app["id"] for app in self.apps},
-            {"battle-tank", "bakery-center", "loderunner", "pacman"},
+            {"battle-tank", "bakery-center", "loderunner", "pacman", "pdf-password-remover"},
         )
-        self.assertEqual(len({app["href"] for app in self.apps}), 4)
+        self.assertEqual(len({app["href"] for app in self.apps}), 5)
         for app in self.apps:
             self.assertTrue(required <= app.keys(), app)
             self.assertRegex(app["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
-            self.assertRegex(app["source_commit"], r"^[0-9a-f]{40}$")
             self.assertRegex(app["source_sha256"], r"^[0-9a-f]{64}$")
-            self.assertTrue(app["source_repository"].startswith("https://github.com/"))
+            if app["import_mode"] == "user-supplied-preserved":
+                self.assertIsNone(app["source_repository"])
+                self.assertIsNone(app["source_commit"])
+            else:
+                self.assertRegex(app["source_commit"], r"^[0-9a-f]{40}$")
+                self.assertTrue(app["source_repository"].startswith("https://github.com/"))
             self.assertEqual(set(app["label"]), {"kicker", "mark", "version", "primary", "accent", "ink"})
             for color in ("primary", "accent", "ink"):
                 self.assertRegex(app["label"][color], r"^#[0-9A-Fa-f]{6}$")
-            if app["id"] == "bakery-center":
+            if app["id"] in {"bakery-center", "pdf-password-remover"}:
                 self.assertIsNone(app["sticker"])
             else:
                 self.assertEqual(app["sticker"], f'assets/app-stickers/{app["id"]}.webp')
@@ -66,6 +70,11 @@ class AppLibraryTests(unittest.TestCase):
                 "app/pacman.html",
                 "https://github.com/shaunlebron/pacman",
                 "51048a29df603391be1d12cd4118699fb0a38790",
+            ),
+            "pdf-password-remover": (
+                "app/pdf-password-remover.html",
+                None,
+                None,
             ),
         }
         actual = {app["id"]: app for app in self.apps}
@@ -102,6 +111,25 @@ class AppLibraryTests(unittest.TestCase):
             self.assertIn(marker, source)
         self.assertNotIn("for(const r of j.recipes||[])await dbPut('recipes',r);", source)
 
+    def test_pdf_password_remover_preserves_user_supplied_bytes_and_verified_cdn_pins(self):
+        apps_by_id = {app["id"]: app for app in self.apps}
+        self.assertIn("pdf-password-remover", apps_by_id)
+        app = apps_by_id["pdf-password-remover"]
+        source_path = ROOT / app["href"]
+        source = source_path.read_text(encoding="utf-8")
+        self.assertEqual(app["import_mode"], "user-supplied-preserved")
+        self.assertEqual(hashlib.sha256(source_path.read_bytes()).hexdigest(), app["source_sha256"])
+        self.assertEqual(app["source_sha256"], "454dad79d097b0669a55fc76d23723b6a3bf5255c72f42529923c6a5fd40e665")
+        self.assertIn("https://cdn.jsdelivr.net/npm/qpdf-run@0.2.1", source)
+        for integrity in (
+            "sha384-uzCijgvXJJyitdtBSpGIYugGqP/ya67leAPzNA5lOfBXdVqA3Op9YoD+oyGH3wbw",
+            "sha384-8JQ296Kl6my6ZEIFfge+ay+RkYF6zeri7BCOU5+ERbf+5hMsF5Fx59nAhIOdmS6Y",
+            "sha384-8vJ9fwHzza+9rKKmZee3P599NbPQixkKlS/2xH1kx0xxnNuHZWYTaonz4UBQbpCN",
+        ):
+            self.assertIn(integrity, source)
+        self.assertIn("passwords stay in page memory only", source.lower())
+        self.assertNotIn("pdf-remover.password", source)
+
     def test_loderunner_keeps_upstream_runtime_unchanged_behind_stable_wrapper(self):
         wrapper = (ROOT / "app" / "loderunner.html").read_text(encoding="utf-8")
         runtime = ROOT / "app" / "loderunner" / "lodeRunner.html"
@@ -123,7 +151,7 @@ class AppLibraryTests(unittest.TestCase):
     def test_apps_sort_newest_first(self):
         timestamps = [app["published_at"] for app in self.apps]
         self.assertEqual(timestamps, sorted(timestamps, reverse=True))
-        self.assertEqual(self.apps[0]["id"], "pacman")
+        self.assertEqual(self.apps[0]["id"], "pdf-password-remover")
 
     def test_pacman_preserves_browser_runtime_and_gpl_license(self):
         app = next(app for app in self.apps if app["id"] == "pacman")
@@ -147,14 +175,14 @@ class AppLibraryTests(unittest.TestCase):
             self.assertFalse((ROOT / "assets" / "app-stickers" / f"{app_id}.webp").exists(), app_id)
 
     def test_page_renders_each_app_as_a_three_and_half_inch_diskette(self):
-        self.assertEqual(self.page.count('class="app-card"'), 4)
-        self.assertEqual(self.page.count('class="diskette"'), 4)
-        self.assertEqual(self.page.count('class="diskette-shutter"'), 4)
-        self.assertEqual(self.page.count('class="diskette-label'), 4)
-        self.assertEqual(self.page.count('class="diskette-hub"'), 4)
+        self.assertEqual(self.page.count('class="app-card"'), 5)
+        self.assertEqual(self.page.count('class="diskette"'), 5)
+        self.assertEqual(self.page.count('class="diskette-shutter"'), 5)
+        self.assertEqual(self.page.count('class="diskette-label'), 5)
+        self.assertEqual(self.page.count('class="diskette-hub"'), 5)
         self.assertEqual(self.page.count('class="diskette-sticker"'), 3)
-        self.assertEqual(self.page.count('target="_blank"'), 4)
-        self.assertEqual(self.page.count('rel="noopener"'), 4)
+        self.assertEqual(self.page.count('target="_blank"'), 5)
+        self.assertEqual(self.page.count('rel="noopener"'), 5)
         for app in self.apps:
             self.assertEqual(self.page.count(f'href="{app["href"]}"'), 1)
             self.assertIn(html.escape(app["short_title"]), self.page)

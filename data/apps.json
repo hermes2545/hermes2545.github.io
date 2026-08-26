@@ -86,5 +86,27 @@
       "accent": "#1D4ED8",
       "ink": "#111111"
     }
+  },
+  {
+    "id": "pdf-password-remover",
+    "title": "PDF Password Remover — Local Browser Utility",
+    "short_title": "PDF Remover",
+    "href": "app/pdf-password-remover.html",
+    "category": "Utility",
+    "summary": "เครื่องมือถอดรหัสผ่านเปิดไฟล์ PDF ที่คุณมีสิทธิ์เข้าถึง ทำงานในเบราว์เซอร์โดยไม่อัปโหลดเอกสาร และบันทึกไฟล์ที่ปลดล็อกกลับลงเครื่อง",
+    "published_at": "2026-08-27T01:03:56+07:00",
+    "source_repository": null,
+    "source_commit": null,
+    "source_sha256": "454dad79d097b0669a55fc76d23723b6a3bf5255c72f42529923c6a5fd40e665",
+    "import_mode": "user-supplied-preserved",
+    "sticker": null,
+    "label": {
+      "kicker": "LOCAL PDF UTILITY",
+      "mark": "PDF",
+      "version": "qpdf WASM · v1.0",
+      "primary": "#EADDFF",
+      "accent": "#6750A4",
+      "ink": "#21005D"
+    }
   }
 ]
