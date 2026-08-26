@@ -4,7 +4,7 @@ type: meta
 status: active
 visibility: public
 created: 2026-08-23
-updated: 2026-08-25
+updated: 2026-08-26
 sources: [docs/SESSION_HANDOFF.md]
 tags: [library, changelog]
 ---
@@ -63,3 +63,7 @@ tags: [library, changelog]
 - Applied the approved Audio wallpaper Option 3: the Apple Fifth Avenue retail floor by Seasider53 (CC BY 4.0). Added the local 1600×1200 EXIF-free WebP and attribution report, then converted Audio navigation/header/search/bookshelf surfaces and shelf planks to translucent iOS-style Liquid Glass while preserving all 48 iPods and responsive shelf reconstruction.
 - Shortened the initial Audio Shelf with progressive disclosure: show the newest 10, load 10 more, show all 48, or collapse to 10. Added a lightweight year archive generated from existing publication timestamps; Search bypasses the limit to query all 48 and resets to the newest 10 when cleared. Server HTML remains complete for progressive enhancement and No-JS access.
 - Added a shared Sticky Floating Library Dock loaded after each collection's own theme stylesheet. The centered three-segment Liquid Glass switcher remains visible while scrolling, keeps icon + label text on desktop and mobile, and highlights Reading green, Audio Apple Blue, or App Pantip Cyan without altering collection-specific page styling.
+
+## 2026-08-26
+
+- Added the fourth generated collection, **Gallery**, from `data/gallery.json` with eight original project infographic PNGs, a user/project-owner supplied EXIF-free WebP hero, filter/sort, grid/list modes, and a keyboard-accessible lightbox with focus restoration. Expanded the shared Sticky Dock to four equal segments and documented the Gallery generator and operating runbook; changes remain local pending separate publication approval.

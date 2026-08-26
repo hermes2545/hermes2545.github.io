@@ -4,7 +4,7 @@ type: meta
 status: active
 visibility: public
 created: 2026-08-23
-updated: 2026-08-25
+updated: 2026-08-26
 sources: [PROJECT.md, AGENTS.md]
 tags: [library, index]
 ---
@@ -26,6 +26,7 @@ tags: [library, index]
 - [Add a reading book](runbooks/add-reading-book.md)
 - [Add an audio book](runbooks/add-audio-book.md)
 - [Add an App](runbooks/add-app.md)
+- [Add Gallery artwork](runbooks/add-gallery-artwork.md)
 - [Verify and publish](runbooks/verify-and-publish.md)
 - [Sync project documents to Drive](runbooks/sync-drive-docs.md)
 

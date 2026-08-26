@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071c2b">
+  <meta name="description" content="The Knowledge Shelf — Gallery of visual knowledge">
+  <title>GALLERY — ห้องจัดแสดงความคิด</title>
+  <link rel="icon" type="image/webp" href="assets/icons/shelfkeeper-librarian.webp">
+  <link rel="stylesheet" href="assets/css/gallery.css">
+  <link rel="stylesheet" href="assets/css/library-dock.css">
+  <script src="assets/js/gallery.js" defer></script>
+</head>
+<body class="gallery-page">
+  <a class="skip-link" href="#main-content">ข้ามไปยังแกลอรี่</a>
+
+  <nav class="site-nav" aria-label="เมนูห้องสมุด">
+    <a href="index.html"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="7" cy="14" r="4"></circle><circle cx="17" cy="14" r="4"></circle><path d="M11 14h2M3 13l1-5M21 13l-1-5"></path></svg>หนังสืออ่าน</a>
+    <a href="audio-library.html"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"></path><rect x="3" y="13" width="4" height="7" rx="2"></rect><rect x="17" y="13" width="4" height="7" rx="2"></rect></svg>หนังสือเสียง</a>
+    <a href="gallery.html" aria-current="page"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="1"></rect><path d="m6 16 4-4 3 3 4-6 2 3"></path><circle cx="8" cy="8" r="1"></circle></svg>แกลอรี่</a>
+    <a href="app-library.html"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="1"></rect><path d="M3 9h18M7 6.5h.01M10 6.5h.01M7 13h4v4H7zM14 13h3M14 16h3"></path></svg>App</a>
+  </nav>
+
+  <header class="gallery-header">
+    <a class="gallery-brand" href="index.html" aria-label="The Knowledge Shelf หน้าแรก"><span class="brand-mark" aria-hidden="true"></span><span>LIBRARY / VISUAL NOTES</span></a>
+    <div class="page-id"><strong>GALLERY</strong><span>แกลอรี่</span></div>
+  </header>
+
+  <main id="main-content">
+    <section class="gallery-hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow">Curated visual knowledge</p>
+        <h1 id="hero-title">GALLERY<span>ห้องจัดแสดงความคิด</span></h1>
+        <p>สำรวจองค์ความรู้ด้านเทคโนโลยีผ่านภาพ—คัดสรรให้ดูง่าย เปิดอ่านได้เต็มรายละเอียด และกลับมาค้นพบสิ่งใหม่ได้เสมอ</p>
+      </div>
+      <div class="hero-art"><img src="assets/gallery/gallery-hero.webp" alt="ห้องแกลอรี่จัดแสดงผลงานภาพบนผนังเหนือม้านั่ง" width="1280" height="559"></div>
+    </section>
+
+    <section class="gallery-catalog" id="catalog" aria-labelledby="catalog-title">
+      <div class="catalog-head">
+        <div><p class="catalog-kicker">The visual collection</p><h2 id="catalog-title">นิทรรศการล่าสุด <span>8 ผลงานที่คัดสรร</span></h2></div>
+      </div>
+      <div class="toolbar" aria-label="เครื่องมือแกลอรี่">
+        <div class="filters" role="group" aria-label="กรองตามหมวดหมู่">
+          <button class="chip" type="button" data-filter="All" aria-pressed="true">All</button>
+          <button class="chip" type="button" data-filter="AI" aria-pressed="false">AI</button>
+          <button class="chip" type="button" data-filter="Data" aria-pressed="false">Data</button>
+          <button class="chip" type="button" data-filter="Security" aria-pressed="false">Security</button>
+          <button class="chip" type="button" data-filter="Development" aria-pressed="false">Development</button>
+        </div>
+        <div class="tools">
+          <label class="sort-wrap"><span class="sr-only">เรียงลำดับ</span><select id="gallery-sort"><option value="featured">จัดเรียง: แนะนำ</option><option value="newest">ใหม่ที่สุด</option><option value="title">ชื่อ A–Z</option></select></label>
+          <div class="view-toggle" role="group" aria-label="รูปแบบการแสดงผล">
+            <button class="icon-button" id="grid-view" type="button" aria-label="แสดงแบบตาราง" aria-pressed="true"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 3h7v7H3zm11 0h7v7h-7zM3 14h7v7H3zm11 0h7v7h-7z"></path></svg></button>
+            <button class="icon-button" id="list-view" type="button" aria-label="แสดงแบบรายการ" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 4h4v4H3zm6 0h12v4H9zM3 10h4v4H3zm6 0h12v4H9zM3 16h4v4H3zm6 0h12v4H9z"></path></svg></button>
+          </div>
+        </div>
+      </div>
+      <p class="result-line" id="gallery-result" aria-live="polite">แสดง 8 จาก 8 ผลงาน</p>
+      <div class="gallery-grid" id="gallery-grid">
+        <article class="art-card" data-id="how-ai-agents-work" data-category="AI" data-date="2026-08-20" data-title="How AI Agents Work" data-featured="1">
+  <button class="art-button" type="button" aria-label="เปิดภาพเต็ม How AI Agents Work">
+    <img src="assets/gallery/artworks/01-how-ai-agents-work-16x9.png" alt="อินโฟกราฟิก How AI Agents Work แสดงวงจร Goal, Plan, Tools และ Check" width="1600" height="900" loading="lazy">
+  </button>
+  <div class="meta">
+    <div class="meta-row"><span class="category">AI</span><span class="format">16:9</span></div>
+    <h3>How AI Agents Work</h3>
+    <div class="meta-foot"><time datetime="2026-08-20">20/08/2026</time><button class="view-link" type="button">ดูภาพเต็ม</button></div>
+  </div>
+</article>
+        <article class="art-card" data-id="rag-architecture" data-category="Data" data-date="2026-08-18" data-title="RAG Architecture" data-featured="2">
+  <button class="art-button" type="button" aria-label="เปิดภาพเต็ม RAG Architecture">
+    <img src="assets/gallery/artworks/02-rag-architecture-4x3.png" alt="อินโฟกราฟิก RAG Architecture แสดงขั้นตอน Index และ Answer" width="1200" height="900" loading="lazy">
+  </button>
+  <div class="meta">
+    <div class="meta-row"><span class="category">Data</span><span class="format">4:3</span></div>
+    <h3>RAG Architecture</h3>
+    <div class="meta-foot"><time datetime="2026-08-18">18/08/2026</time><button class="view-link" type="button">ดูภาพเต็ม</button></div>
+  </div>
+</article>
+        <article class="art-card" data-id="cloud-vs-on-premise" data-category="Development" data-date="2026-08-16" data-title="Cloud vs On-Premise" data-featured="3">
+  <button class="art-button" type="button" aria-label="เปิดภาพเต็ม Cloud vs On-Premise">
+    <img src="assets/gallery/artworks/03-cloud-vs-on-premise-square.png" alt="อินโฟกราฟิกเปรียบเทียบ Cloud กับ On-Premise" width="1080" height="1080" loading="lazy">
+  </button>
+  <div class="meta">
+    <div class="meta-row"><span class="category">Development</span><span class="format">1:1</span></div>
+    <h3>Cloud vs On-Premise</h3>
+    <div class="meta-foot"><time datetime="2026-08-16">16/08/2026</time><button class="view-link" type="button">ดูภาพเต็ม</button></div>
+  </div>
+</article>
+        <article class="art-card" data-id="system-design-overview" data-category="Development" data-date="2026-08-14" data-title="System Design Overview" data-featured="4">
+  <button class="art-button" type="button" aria-label="เปิดภาพเต็ม System Design Overview">
+    <img src="assets/gallery/artworks/04-system-design-overview-16x9.png" alt="อินโฟกราฟิก System Design Overview แสดง request path และ operational plane" width="1600" height="900" loading="lazy">
+  </button>
+  <div class="meta">
+    <div class="meta-row"><span class="category">Development</span><span class="format">16:9</span></div>
+    <h3>System Design Overview</h3>
+    <div class="meta-foot"><time datetime="2026-08-14">14/08/2026</time><button class="view-link" type="button">ดูภาพเต็ม</button></div>
+  </div>
+</article>
+        <article class="art-card" data-id="cybersecurity-checklist" data-category="Security" data-date="2026-08-12" data-title="Cybersecurity Checklist" data-featured="5">
+  <button class="art-button" type="button" aria-label="เปิดภาพเต็ม Cybersecurity Checklist">
+    <img src="assets/gallery/artworks/05-cybersecurity-checklist-square.png" alt="อินโฟกราฟิก Cybersecurity Checklist แบ่งหัวข้อ Identity, Patching, Secrets และ Backup" width="1080" height="1080" loading="lazy">
+  </button>
+  <div class="meta">
+    <div class="meta-row"><span class="category">Security</span><span class="format">1:1</span></div>
+    <h3>Cybersecurity Checklist</h3>
+    <div class="meta-foot"><time datetime="2026-08-12">12/08/2026</time><button class="view-link" type="button">ดูภาพเต็ม</button></div>
+  </div>
+</article>
+        <article class="art-card" data-id="git-workflow" data-category="Development" data-date="2026-08-10" data-title="Git Workflow" data-featured="6">
+  <button class="art-button" type="button" aria-label="เปิดภาพเต็ม Git Workflow">
+    <img src="assets/gallery/artworks/06-git-workflow-4x3.png" alt="อินโฟกราฟิก Git Workflow แสดงเส้นทาง commit, branch, review และ merge" width="1200" height="900" loading="lazy">
+  </button>
+  <div class="meta">
+    <div class="meta-row"><span class="category">Development</span><span class="format">4:3</span></div>
+    <h3>Git Workflow</h3>
+    <div class="meta-foot"><time datetime="2026-08-10">10/08/2026</time><button class="view-link" type="button">ดูภาพเต็ม</button></div>
+  </div>
+</article>
+        <article class="art-card" data-id="evolution-of-ai" data-category="AI" data-date="2026-08-08" data-title="Evolution of AI" data-featured="7">
+  <button class="art-button" type="button" aria-label="เปิดภาพเต็ม Evolution of AI">
+    <img src="assets/gallery/artworks/07-evolution-of-ai-tall-poster.png" alt="โปสเตอร์แนวตั้ง Evolution of AI จาก Rules สู่ Agents" width="900" height="1600" loading="lazy">
+  </button>
+  <div class="meta">
+    <div class="meta-row"><span class="category">AI</span><span class="format">Poster</span></div>
+    <h3>Evolution of AI</h3>
+    <div class="meta-foot"><time datetime="2026-08-08">08/08/2026</time><button class="view-link" type="button">ดูภาพเต็ม</button></div>
+  </div>
+</article>
+        <article class="art-card" data-id="linux-command-cheat-sheet" data-category="Development" data-date="2026-08-06" data-title="Linux Command Cheat Sheet" data-featured="8">
+  <button class="art-button" type="button" aria-label="เปิดภาพเต็ม Linux Command Cheat Sheet">
+    <img src="assets/gallery/artworks/08-linux-command-cheat-sheet-a4.png" alt="โปสเตอร์ Linux Command Cheat Sheet รวมคำสั่งพื้นฐานแบบหมวดหมู่" width="1240" height="1754" loading="lazy">
+  </button>
+  <div class="meta">
+    <div class="meta-row"><span class="category">Development</span><span class="format">A4</span></div>
+    <h3>Linux Command Cheat Sheet</h3>
+    <div class="meta-foot"><time datetime="2026-08-06">06/08/2026</time><button class="view-link" type="button">ดูภาพเต็ม</button></div>
+  </div>
+</article>
+      </div>
+      <div class="gallery-empty" id="gallery-empty" hidden>ยังไม่มีผลงานในหมวดหมู่นี้</div>
+    </section>
+    <noscript><p class="noscript-note">ตัวกรองและภาพเต็มต้องใช้ JavaScript แต่ผลงานทั้ง 8 ชิ้นยังแสดงอยู่ด้านบน</p></noscript>
+  </main>
+
+  <dialog id="gallery-viewer" aria-labelledby="viewer-title">
+    <div class="lightbox">
+      <button class="lightbox-button lightbox-close" type="button" aria-label="ปิดภาพเต็ม">×</button>
+      <button class="lightbox-button lightbox-prev" type="button" aria-label="ภาพก่อนหน้า">‹</button>
+      <figure class="lightbox-figure"><img id="viewer-image" alt=""><figcaption class="lightbox-caption"><strong id="viewer-title"></strong><span id="viewer-meta"></span></figcaption></figure>
+      <button class="lightbox-button lightbox-next" type="button" aria-label="ภาพถัดไป">›</button>
+    </div>
+  </dialog>
+</body>
+</html>

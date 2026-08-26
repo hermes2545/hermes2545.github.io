@@ -4,14 +4,14 @@ type: architecture
 status: active
 visibility: public
 created: 2026-08-23
-updated: 2026-08-25
-sources: [data/books.json, data/audio-books.json, data/apps.json, scripts/build_catalog.py, scripts/build_audio_library.py, scripts/build_app_library.py]
+updated: 2026-08-26
+sources: [data/books.json, data/audio-books.json, data/apps.json, data/gallery.json, scripts/build_catalog.py, scripts/build_audio_library.py, scripts/build_app_library.py, scripts/build_gallery.py]
 tags: [library, architecture, static-site]
 ---
 
 # Site Architecture Overview
 
-The Knowledge Shelf is a static GitHub Pages site with three generated collections.
+The Knowledge Shelf is a static GitHub Pages site with four generated collections.
 
 ## Reading
 
@@ -29,6 +29,13 @@ The Knowledge Shelf is a static GitHub Pages site with three generated collectio
 - Single-file source apps are preserved byte-for-byte when feasible.
 - Multi-file runtimes live under `app/<app-id>/`; a stable wrapper keeps the public launcher URL unchanged.
 - App shelf objects are CSS-rendered 3.5-inch diskettes with content-specific labels rather than book covers.
+
+## Gallery
+
+`data/gallery.json` → `scripts/build_gallery.py` + Gallery template → `gallery.html`.
+
+- Approved artwork and the user/project-owner supplied hero are local under `assets/gallery/`.
+- The generated page provides filter/sort, grid/list, and an accessible keyboard-operated lightbox.
 
 ## Shared presentation
 

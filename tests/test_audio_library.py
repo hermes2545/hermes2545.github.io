@@ -190,8 +190,9 @@ class AudioLibraryTests(unittest.TestCase):
         self.assertIn("Curated Guides, Ideas &amp; Audio", self.page)
         self.assertIn('href="assets/icons/shelfkeeper-librarian.webp"', self.page)
         self.assertIn('src="assets/icons/shelfkeeper-librarian.webp"', self.page)
-        self.assertEqual(self.page.count('class="nav-icon"'), 3)
+        self.assertEqual(self.page.count('class="nav-icon"'), 4)
         self.assertIn('href="app-library.html"', self.page)
+        self.assertIn('href="gallery.html"', self.page)
 
     def test_publish_badge_is_visibly_larger_on_both_pages(self):
         stylesheet = (ROOT / "assets" / "css" / "library.css").read_text(encoding="utf-8")
@@ -210,8 +211,10 @@ class AudioLibraryTests(unittest.TestCase):
         homepage = (ROOT / "index.html").read_text(encoding="utf-8")
         self.assertIn('href="audio-library.html"', homepage)
         self.assertIn('href="app-library.html"', homepage)
+        self.assertIn('href="gallery.html"', homepage)
         self.assertIn('href="index.html"', self.page)
         self.assertIn('href="app-library.html"', self.page)
+        self.assertIn('href="gallery.html"', self.page)
         self.assertIn('aria-current="page"', self.page)
 
 

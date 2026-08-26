@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Maintain a public static library of practical guides, audio content, and browser apps with reproducible catalogs, covers or labels, generators, tests, documentation, and safe publication workflows.
+Maintain a public static library of practical guides, audio content, browser apps, and visual knowledge with reproducible catalogs, assets, generators, tests, documentation, and safe publication workflows.
 
 ## Agent
 
@@ -24,7 +24,8 @@ Maintain a public static library of practical guides, audio content, and browser
 
 - Reading collection uses `data/books.json`.
 - Audio collection uses `data/audio-books.json`.
-- App collection uses `data/apps.json`; source runtimes live under `app/` and the generated shelf is `app-library.html`.
+- App catalog uses `data/apps.json`; source runtimes live under `app/` and the generated shelf is `app-library.html`.
+- Gallery catalog uses `data/gallery.json`; approved local artwork lives under `assets/gallery/` and the generated page is `gallery.html`.
 - Reading covers use individually designed 600×900 custom artwork under `assets/covers/custom/`; reproducible design sources live under `templates/`.
 - Audio covers use locally cached playlist thumbnails.
 - App shelf objects are 3.5-inch diskette designs whose labels reflect each program's content.

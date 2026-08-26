@@ -214,7 +214,7 @@ class AppLibraryTests(unittest.TestCase):
         self.assertEqual(checked_in, self.page)
         self.assertNotIn("/home/", checked_in)
 
-    def test_all_collection_pages_have_three_way_navigation(self):
+    def test_all_collection_pages_have_four_way_navigation(self):
         for relative_path in (
             "templates/index.template.html",
             "templates/audio-library.template.html",
@@ -224,8 +224,9 @@ class AppLibraryTests(unittest.TestCase):
             self.assertIn('href="index.html"', text)
             self.assertIn('href="audio-library.html"', text)
             self.assertIn('href="app-library.html"', text)
+            self.assertIn('href="gallery.html"', text)
             self.assertIn('href="assets/icons/shelfkeeper-librarian.webp"', text)
-            self.assertEqual(text.count('class="nav-icon"'), 3)
+            self.assertEqual(text.count('class="nav-icon"'), 4)
         icon = ROOT / "assets" / "icons" / "shelfkeeper-librarian.webp"
         self.assertTrue(icon.is_file())
         data = icon.read_bytes()

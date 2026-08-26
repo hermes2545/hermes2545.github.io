@@ -82,8 +82,9 @@ class HomepageBuildTests(unittest.TestCase):
         self.assertIn("Curated Guides, Ideas &amp; Audio", self.html)
         self.assertIn('href="assets/icons/shelfkeeper-librarian.webp"', self.html)
         self.assertIn('src="assets/icons/shelfkeeper-librarian.webp"', self.html)
-        self.assertEqual(self.html.count('class="nav-icon"'), 3)
+        self.assertEqual(self.html.count('class="nav-icon"'), 4)
         self.assertIn('href="app-library.html"', self.html)
+        self.assertIn('href="gallery.html"', self.html)
 
     def test_reading_room_uses_bright_garden_glass_and_text_only_book_metadata(self):
         template = (ROOT / "templates" / "index.template.html").read_text(encoding="utf-8")
@@ -156,12 +157,13 @@ class HomepageBuildTests(unittest.TestCase):
         for marker in (
             "position: sticky;",
             "top: 12px;",
-            "width: min(650px, calc(100% - 24px));",
-            "grid-template-columns: repeat(3, minmax(0, 1fr));",
+            "width: min(720px, calc(100% - 24px));",
+            "grid-template-columns: repeat(4, minmax(0, 1fr));",
             "backdrop-filter: blur(24px) saturate(1.65);",
             ".reading-page { --dock-accent: #2f6f50;",
             ".audio-page { --dock-accent: #0071e3;",
             ".app-page { --dock-accent: #00758a;",
+            ".gallery-page { --dock-accent:",
             "@media (max-width: 650px)",
             "min-height: 46px;",
         ):

@@ -1,6 +1,6 @@
 # The Knowledge Shelf — Session Handoff
 
-**Updated:** 2026-08-25
+**Updated:** 2026-08-26
 
 **Public site:** https://hermes2545.github.io/
 
@@ -12,7 +12,7 @@
 
 ## Current state
 
-The site is a static GitHub Pages library branded **The Knowledge Shelf** with three generated collections: Reading, Audio, and App.
+The site is a static GitHub Pages library branded **The Knowledge Shelf** with four generated collections: Reading, Audio, App, and Gallery.
 
 ### Reading collection
 
@@ -55,17 +55,24 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 - The App header is branded **พันธุ์ทิพย์พลาซ่า** and uses the user-supplied Pantip Plaza logo at the upper-left instead of the former `3½` badge. Its long Thai LED shop message scrolls continuously from right to left at a restrained 28-second pace and changes red → green → yellow → blue on each completed loop.
 - The App LED is functional storefront signage, not decorative motion. `app-library.css` explicitly preserves its 28-second infinite animation even when the browser reports `prefers-reduced-motion: reduce`; this narrowly overrides the shared decorative-animation reduction without changing other pages.
 
+### Gallery collection
+
+- 8 original project infographic PNGs are indexed from `data/gallery.json` and generated into `gallery.html`.
+- The hero is a user/project-owner supplied image converted locally to an EXIF-free 1280×559 RGB WebP at `assets/gallery/gallery-hero.webp`; public-safe attribution is recorded in `docs/reports/GALLERY_IMAGE_ATTRIBUTION.md`.
+- The page supports category filtering, Featured/Newest/Title sorting, grid/list views, and a modal lightbox with previous/next controls, arrow keys, Escape, and focus restoration.
+- The responsive artwork grid uses 4 columns on desktop, 2 on tablet, and 1 on mobile. All runtime assets are local.
+
 ### Shared visual behavior
 
-- All three collections load `assets/css/library-dock.css` last and share one centered Sticky Floating Library Dock. Desktop uses a 650×56px three-segment Liquid Glass switcher fixed 12px below the viewport top while scrolling; mobile uses a 374×58px version 8px from the top. Labels and icons remain visible, and the current collection uses green (Reading), Apple Blue (Audio), or Pantip Cyan (App) accents.
+- All four collections load `assets/css/library-dock.css` last and share one centered Sticky Floating Library Dock. Desktop uses a maximum 720×56px four-segment Liquid Glass switcher fixed 12px below the viewport top while scrolling; mobile uses the available width with 46px minimum hit targets 8px from the top. Labels and icons remain visible, and the current collection uses its own accent.
 - Responsive shelves rebuild to one real shelf per visual row: 5/4/3/2 books at desktop/tablet/mobile breakpoints.
 - Reading titles and publication dates sit above each cover; audio titles and publication dates sit above each iPod-style player.
 - Reading categories are removed from the title block and rendered as realistic metal plaques aligned to each book on the shelf edge.
 - Reading category plaques are interactive filters; clicking a plaque filters to that category and clicking the active category again restores all books.
 - Book covers rest 3–4px above the shelf lip, leaving enough clearance for the 12px hover lift without overlapping the shelf.
 - Navigation includes reading-glasses and headphones icons.
-- Navigation includes Reading, Audio, and App destinations; the App destination uses a software-window icon.
-- `assets/icons/shelfkeeper-librarian.webp` is the shared Reading/Audio header icon and favicon for all three collection pages; the App storefront header keeps the Pantip logo.
+- Navigation includes Reading, Audio, App, and Gallery destinations.
+- `assets/icons/shelfkeeper-librarian.webp` is the shared Reading/Audio header icon and favicon for all four collection pages; the App storefront header keeps the Pantip logo.
 - Search uses `assets/js/library.js`; the separate reading-category filter row is intentionally removed because categories are shown on shelf plaques.
 
 ## Sources of truth
@@ -73,9 +80,11 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 - Reading catalog: `data/books.json`
 - Audio catalog: `data/audio-books.json`
 - App catalog and source provenance: `data/apps.json`
+- Gallery catalog: `data/gallery.json`
 - Reading generator: `scripts/build_catalog.py`
 - Audio generator: `scripts/build_audio_library.py`
 - App generator: `scripts/build_app_library.py`
+- Gallery generator: `scripts/build_gallery.py`
 - Custom reading-cover design sources: `templates/reading-cover-designs.template.html`, `templates/mega-prompt-business-book-cover.template.html`, and `templates/reading-cover-assets/`
 - Legacy Facebook-cover generator: `scripts/build_facebook_covers.py` (retained but not used by the active catalog)
 - Shared template/styles: `templates/`, `assets/css/library.css`, `assets/js/`; Reading-only environment styles: `assets/css/reading-library.css`
@@ -88,10 +97,11 @@ python -m unittest discover -s tests -v
 python scripts/build_catalog.py --check
 python scripts/build_audio_library.py --check
 python scripts/build_app_library.py --check
+python scripts/build_gallery.py --check
 git diff --check
 ```
 
-Expected verified result at close: **63 tests passed**, all three generated pages current, and no diff-check errors.
+Expected verified result at close: **74 tests passed**, all four generated pages current, and no diff-check errors.
 
 ## Publication workflow
 
@@ -111,7 +121,7 @@ Expected verified result at close: **63 tests passed**, all three generated page
 
 ## Next recommended step
 
-For the current App Shelf work, review the prepared desktop/mobile screenshots and approve or revise the diskette direction. Public push remains blocked until explicitly approved.
+Run browser QA for the locally implemented Gallery at desktop and 390px mobile, then request explicit approval before any commit or public push.
 
 ## Published artifact
 

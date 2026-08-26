@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071c2b">
+  <meta name="description" content="The Knowledge Shelf — Gallery of visual knowledge">
+  <title>GALLERY — ห้องจัดแสดงความคิด</title>
+  <link rel="icon" type="image/webp" href="assets/icons/shelfkeeper-librarian.webp">
+  <link rel="stylesheet" href="assets/css/gallery.css">
+  <link rel="stylesheet" href="assets/css/library-dock.css">
+  <script src="assets/js/gallery.js" defer></script>
+</head>
+<body class="gallery-page">
+  <a class="skip-link" href="#main-content">ข้ามไปยังแกลอรี่</a>
+
+  <nav class="site-nav" aria-label="เมนูห้องสมุด">
+    <a href="index.html"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="7" cy="14" r="4"></circle><circle cx="17" cy="14" r="4"></circle><path d="M11 14h2M3 13l1-5M21 13l-1-5"></path></svg>หนังสืออ่าน</a>
+    <a href="audio-library.html"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"></path><rect x="3" y="13" width="4" height="7" rx="2"></rect><rect x="17" y="13" width="4" height="7" rx="2"></rect></svg>หนังสือเสียง</a>
+    <a href="gallery.html" aria-current="page"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="1"></rect><path d="m6 16 4-4 3 3 4-6 2 3"></path><circle cx="8" cy="8" r="1"></circle></svg>แกลอรี่</a>
+    <a href="app-library.html"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="1"></rect><path d="M3 9h18M7 6.5h.01M10 6.5h.01M7 13h4v4H7zM14 13h3M14 16h3"></path></svg>App</a>
+  </nav>
+
+  <header class="gallery-header">
+    <a class="gallery-brand" href="index.html" aria-label="The Knowledge Shelf หน้าแรก"><span class="brand-mark" aria-hidden="true"></span><span>LIBRARY / VISUAL NOTES</span></a>
+    <div class="page-id"><strong>GALLERY</strong><span>แกลอรี่</span></div>
+  </header>
+
+  <main id="main-content">
+    <section class="gallery-hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow">Curated visual knowledge</p>
+        <h1 id="hero-title">GALLERY<span>ห้องจัดแสดงความคิด</span></h1>
+        <p>สำรวจองค์ความรู้ด้านเทคโนโลยีผ่านภาพ—คัดสรรให้ดูง่าย เปิดอ่านได้เต็มรายละเอียด และกลับมาค้นพบสิ่งใหม่ได้เสมอ</p>
+      </div>
+      <div class="hero-art"><img src="assets/gallery/gallery-hero.webp" alt="ห้องแกลอรี่จัดแสดงผลงานภาพบนผนังเหนือม้านั่ง" width="1280" height="559"></div>
+    </section>
+
+    <section class="gallery-catalog" id="catalog" aria-labelledby="catalog-title">
+      <div class="catalog-head">
+        <div><p class="catalog-kicker">The visual collection</p><h2 id="catalog-title">นิทรรศการล่าสุด <span>{{ITEM_COUNT}} ผลงานที่คัดสรร</span></h2></div>
+      </div>
+      <div class="toolbar" aria-label="เครื่องมือแกลอรี่">
+        <div class="filters" role="group" aria-label="กรองตามหมวดหมู่">
+          {{FILTERS}}
+        </div>
+        <div class="tools">
+          <label class="sort-wrap"><span class="sr-only">เรียงลำดับ</span><select id="gallery-sort"><option value="featured">จัดเรียง: แนะนำ</option><option value="newest">ใหม่ที่สุด</option><option value="title">ชื่อ A–Z</option></select></label>
+          <div class="view-toggle" role="group" aria-label="รูปแบบการแสดงผล">
+            <button class="icon-button" id="grid-view" type="button" aria-label="แสดงแบบตาราง" aria-pressed="true"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 3h7v7H3zm11 0h7v7h-7zM3 14h7v7H3zm11 0h7v7h-7z"></path></svg></button>
+            <button class="icon-button" id="list-view" type="button" aria-label="แสดงแบบรายการ" aria-pressed="false"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 4h4v4H3zm6 0h12v4H9zM3 10h4v4H3zm6 0h12v4H9zM3 16h4v4H3zm6 0h12v4H9z"></path></svg></button>
+          </div>
+        </div>
+      </div>
+      <p class="result-line" id="gallery-result" aria-live="polite">แสดง {{ITEM_COUNT}} จาก {{ITEM_COUNT}} ผลงาน</p>
+      <div class="gallery-grid" id="gallery-grid">
+        {{ARTWORKS}}
+      </div>
+      <div class="gallery-empty" id="gallery-empty" hidden>ยังไม่มีผลงานในหมวดหมู่นี้</div>
+    </section>
+    <noscript><p class="noscript-note">ตัวกรองและภาพเต็มต้องใช้ JavaScript แต่ผลงานทั้ง {{ITEM_COUNT}} ชิ้นยังแสดงอยู่ด้านบน</p></noscript>
+  </main>
+
+  <dialog id="gallery-viewer" aria-labelledby="viewer-title">
+    <div class="lightbox">
+      <button class="lightbox-button lightbox-close" type="button" aria-label="ปิดภาพเต็ม">×</button>
+      <button class="lightbox-button lightbox-prev" type="button" aria-label="ภาพก่อนหน้า">‹</button>
+      <figure class="lightbox-figure"><img id="viewer-image" alt=""><figcaption class="lightbox-caption"><strong id="viewer-title"></strong><span id="viewer-meta"></span></figcaption></figure>
+      <button class="lightbox-button lightbox-next" type="button" aria-label="ภาพถัดไป">›</button>
+    </div>
+  </dialog>
+</body>
+</html>

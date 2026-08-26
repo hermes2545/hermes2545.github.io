@@ -1,20 +1,22 @@
-/* Shared sticky collection switcher for Reading, Audio, and App. */
+/* Shared sticky collection switcher for Reading, Audio, App, and Gallery. */
 .reading-page { --dock-accent: #2f6f50; --dock-accent-rgb: 47,111,80; }
 .audio-page { --dock-accent: #0071e3; --dock-accent-rgb: 0,113,227; }
 .app-page { --dock-accent: #00758a; --dock-accent-rgb: 0,117,138; }
+.gallery-page { --dock-accent: #0b6b5c; --dock-accent-rgb: 11,107,92; }
 
 .reading-page .site-nav,
 .audio-page .site-nav,
-.app-page .site-nav {
+.app-page .site-nav,
+.gallery-page .site-nav {
   position: sticky;
   top: 12px;
   z-index: 1000;
-  width: min(650px, calc(100% - 24px));
+  width: min(720px, calc(100% - 24px));
   height: 56px;
   margin: 12px auto 18px;
   padding: 5px;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 4px;
   border: 1px solid rgba(255,255,255,.72);
   border-radius: 19px;
@@ -26,7 +28,8 @@
 }
 .reading-page .site-nav a,
 .audio-page .site-nav a,
-.app-page .site-nav a {
+.app-page .site-nav a,
+.gallery-page .site-nav a {
   position: relative;
   min-width: 0;
   min-height: 44px;
@@ -46,20 +49,23 @@
 }
 .reading-page .site-nav a:hover,
 .audio-page .site-nav a:hover,
-.app-page .site-nav a:hover {
+.app-page .site-nav a:hover,
+.gallery-page .site-nav a:hover {
   color: #17241e;
   background: rgba(255,255,255,.48);
 }
 .reading-page .site-nav a[aria-current="page"],
 .audio-page .site-nav a[aria-current="page"],
-.app-page .site-nav a[aria-current="page"] {
+.app-page .site-nav a[aria-current="page"],
+.gallery-page .site-nav a[aria-current="page"] {
   color: var(--dock-accent);
   background: rgba(255,255,255,.84);
   box-shadow: inset 0 0 0 1px rgba(var(--dock-accent-rgb),.18), 0 4px 14px rgba(var(--dock-accent-rgb),.14);
 }
 .reading-page .site-nav a[aria-current="page"]::after,
 .audio-page .site-nav a[aria-current="page"]::after,
-.app-page .site-nav a[aria-current="page"]::after {
+.app-page .site-nav a[aria-current="page"]::after,
+.gallery-page .site-nav a[aria-current="page"]::after {
   position: absolute;
   bottom: 5px;
   width: 24px;
@@ -70,7 +76,8 @@
 }
 .reading-page .nav-icon,
 .audio-page .nav-icon,
-.app-page .nav-icon {
+.app-page .nav-icon,
+.gallery-page .nav-icon {
   width: 18px;
   height: 18px;
   flex: 0 0 auto;
@@ -79,7 +86,8 @@
 @media (max-width: 650px) {
   .reading-page .site-nav,
   .audio-page .site-nav,
-  .app-page .site-nav {
+  .app-page .site-nav,
+  .gallery-page .site-nav {
     top: 8px;
     width: calc(100% - 16px);
     height: 58px;
@@ -89,22 +97,25 @@
   }
   .reading-page .site-nav a,
   .audio-page .site-nav a,
-  .app-page .site-nav a {
+  .app-page .site-nav a,
+  .gallery-page .site-nav a {
     min-height: 46px;
-    padding: 0 4px;
-    gap: 5px;
-    font-size: 10.5px;
+    padding: 0 3px;
+    gap: 4px;
+    font-size: 9.5px;
   }
   .reading-page .nav-icon,
   .audio-page .nav-icon,
-  .app-page .nav-icon {
-    width: 17px;
-    height: 17px;
+  .app-page .nav-icon,
+  .gallery-page .nav-icon {
+    width: 16px;
+    height: 16px;
   }
 }
 
 @media (prefers-reduced-transparency: reduce) {
   .reading-page .site-nav,
   .audio-page .site-nav,
-  .app-page .site-nav { background: #f5f7f6; }
+  .app-page .site-nav,
+  .gallery-page .site-nav { background: #f5f7f6; }
 }
