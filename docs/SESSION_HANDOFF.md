@@ -57,6 +57,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 
 ### Shared visual behavior
 
+- All three collections load `assets/css/library-dock.css` last and share one centered Sticky Floating Library Dock. Desktop uses a 650×56px three-segment Liquid Glass switcher fixed 12px below the viewport top while scrolling; mobile uses a 374×58px version 8px from the top. Labels and icons remain visible, and the current collection uses green (Reading), Apple Blue (Audio), or Pantip Cyan (App) accents.
 - Responsive shelves rebuild to one real shelf per visual row: 5/4/3/2 books at desktop/tablet/mobile breakpoints.
 - Reading titles and publication dates sit above each cover; audio titles and publication dates sit above each iPod-style player.
 - Reading categories are removed from the title block and rendered as realistic metal plaques aligned to each book on the shelf edge.
@@ -90,7 +91,7 @@ python scripts/build_app_library.py --check
 git diff --check
 ```
 
-Expected verified result at close: **62 tests passed**, all three generated pages current, and no diff-check errors.
+Expected verified result at close: **63 tests passed**, all three generated pages current, and no diff-check errors.
 
 ## Publication workflow
 

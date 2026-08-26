@@ -142,6 +142,31 @@ class HomepageBuildTests(unittest.TestCase):
         self.assertNotIn("garden-sunlight.webp", shared)
         self.assertNotIn("retouched-coffee-header.webp", shared)
 
+    def test_all_collections_load_one_shared_sticky_library_dock_last(self):
+        templates = {
+            "reading": (ROOT / "templates" / "index.template.html").read_text(encoding="utf-8"),
+            "audio": (ROOT / "templates" / "audio-library.template.html").read_text(encoding="utf-8"),
+            "app": (ROOT / "templates" / "app-library.template.html").read_text(encoding="utf-8"),
+        }
+        self.assertIn('<body class="reading-page">', templates["reading"])
+        for name, template in templates.items():
+            self.assertEqual(template.count('href="assets/css/library-dock.css"'), 1, name)
+            self.assertGreater(template.index('href="assets/css/library-dock.css"'), template.rindex('rel="stylesheet"'), name)
+        dock = (ROOT / "assets" / "css" / "library-dock.css").read_text(encoding="utf-8")
+        for marker in (
+            "position: sticky;",
+            "top: 12px;",
+            "width: min(650px, calc(100% - 24px));",
+            "grid-template-columns: repeat(3, minmax(0, 1fr));",
+            "backdrop-filter: blur(24px) saturate(1.65);",
+            ".reading-page { --dock-accent: #2f6f50;",
+            ".audio-page { --dock-accent: #0071e3;",
+            ".app-page { --dock-accent: #00758a;",
+            "@media (max-width: 650px)",
+            "min-height: 46px;",
+        ):
+            self.assertIn(marker, dock)
+
     def test_homepage_escapes_catalog_text(self):
         book = dict(self.books[0])
         book["title"] = '<script>alert("x")</script>'
