@@ -1,0 +1,68 @@
+<!doctype html>
+<!-- Brand reference: Anthropic Claude Code IDE integrations document the Spark icon as the Claude Code indicator. Independent editorial cover; no affiliation implied. https://docs.anthropic.com/en/docs/claude-code/ide-integrations -->
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=600,initial-scale=1">
+<title>Claude Prompt Caching — Book Cover</title>
+<style>
+:root{--cream:#f2e8d8;--paper:#fbf6ec;--espresso:#2f211c;--ink:#1f1815;--terracotta:#c96645;--rust:#9f452f;--sand:#ddc8aa;--sage:#71806b}
+*{box-sizing:border-box}
+html,body{margin:0;width:600px;height:900px;overflow:hidden}
+body{font-family:"Noto Sans Thai","Leelawadee UI",Tahoma,Arial,sans-serif;background:var(--cream);color:var(--ink)}
+.cover{position:relative;width:600px;height:900px;overflow:hidden;background:var(--cream)}
+.cover:before{content:"";position:absolute;inset:18px;border:1px solid rgba(47,33,28,.24);pointer-events:none}
+.cover:after{content:"";position:absolute;left:18px;right:18px;top:18px;height:7px;background:var(--terracotta)}
+.mast{position:absolute;left:42px;right:42px;top:46px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(47,33,28,.28);padding-bottom:15px}
+.series{font-size:11px;font-weight:800;letter-spacing:.19em;color:#5d4940}
+.spark-lockup{display:flex;align-items:center;gap:9px;color:var(--rust)}
+.spark{font-family:"DejaVu Sans",sans-serif;font-size:29px;line-height:1}
+.spark-note{font-size:9px;font-weight:900;letter-spacing:.16em;text-align:right;line-height:1.25}
+.title{position:absolute;left:40px;right:36px;top:116px;margin:0;font-family:Georgia,"Times New Roman",serif;font-weight:700;line-height:.83;letter-spacing:-.055em;color:var(--espresso)}
+.title span{display:block}
+.title .claude{font-size:77px;font-style:italic;font-weight:400;color:var(--terracotta);letter-spacing:-.045em;margin-bottom:13px}
+.title .prompt{font-size:91px}
+.title .caching{font-size:94px}
+.subtitle{position:absolute;left:44px;right:40px;top:355px;margin:0;padding-top:15px;border-top:2px solid var(--espresso);font-size:19px;font-weight:700;line-height:1.38;color:#5a463e}
+.diagram{position:absolute;left:42px;right:42px;top:432px;height:326px}
+.diagram-label{position:absolute;top:0;font-size:10px;font-weight:900;letter-spacing:.16em;color:#6c564d}
+.diagram-label.fixed{left:0}.diagram-label.live{right:0;text-align:right}
+.prefix{position:absolute;left:0;top:29px;width:316px;height:176px}
+.layer{position:absolute;left:0;width:316px;height:55px;border:2px solid var(--espresso);border-radius:3px;background:var(--paper);box-shadow:6px 6px 0 var(--espresso);padding:10px 13px}
+.layer.one{top:0}.layer.two{top:60px;left:13px;background:#efd3bd}.layer.three{top:120px;left:26px;background:var(--terracotta);color:#fff6ec}
+.layer b{display:block;font-size:10px;letter-spacing:.11em}.layer small{display:block;margin-top:6px;font-size:9px;letter-spacing:.05em;opacity:.74}
+.hit{position:absolute;left:354px;top:46px;width:162px;height:92px;background:var(--espresso);color:var(--paper);border-radius:46px 0 0 46px;display:flex;align-items:center;padding-left:27px}
+.hit:before{content:"";position:absolute;left:-34px;top:34px;border-top:12px solid transparent;border-bottom:12px solid transparent;border-right:35px solid var(--espresso)}
+.hit strong{display:block;font-family:Georgia,"Times New Roman",serif;font-size:28px;line-height:.9;color:#f19a76}.hit span{display:block;margin-top:7px;font-size:9px;font-weight:900;letter-spacing:.13em}
+.dynamic{position:absolute;left:102px;right:0;bottom:0;height:103px;border-top:1px solid rgba(47,33,28,.34);padding-top:18px;display:flex;gap:9px;justify-content:flex-end}
+.dynamic:before{content:"DYNAMIC CONVERSATION";position:absolute;left:-102px;top:19px;width:92px;font-size:9px;font-weight:900;line-height:1.35;letter-spacing:.11em;color:#6c564d}
+.bubble{height:56px;border:2px solid var(--espresso);border-radius:18px;padding:10px 12px;background:var(--paper)}
+.bubble.user{width:106px}.bubble.answer{width:147px;background:var(--espresso)}
+.lines{display:grid;gap:6px}.lines i{display:block;height:4px;border-radius:2px;background:var(--sand)}.lines i:nth-child(2){width:74%}.answer .lines i{background:#b97860}.answer .lines i:nth-child(2){width:88%}.answer .lines i:nth-child(3){width:61%}
+.legend{position:absolute;left:43px;right:42px;top:778px;display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-top:1px solid rgba(47,33,28,.30);border-bottom:1px solid rgba(47,33,28,.30);font-size:10px;font-weight:900;letter-spacing:.10em;color:#5d4940}
+.legend span{display:flex;align-items:center;gap:7px}.legend i{width:10px;height:10px;display:inline-block}.legend .p i{background:var(--terracotta)}.legend .d i{background:var(--espresso)}.legend .c i{border-radius:50%;background:var(--sage)}
+.disclosure{position:absolute;left:42px;right:42px;bottom:38px;display:flex;align-items:flex-end;justify-content:space-between;color:#6a554c}
+.disclosure small{font-size:9px;font-weight:700;letter-spacing:.035em;white-space:nowrap}
+.disclosure b{font-family:Georgia,"Times New Roman",serif;font-size:20px;font-weight:400;color:var(--rust)}
+</style>
+</head>
+<body>
+<main class="cover" aria-label="Book cover for Claude Prompt Caching">
+  <header class="mast"><div class="series">PRACTICAL AI SYSTEMS · 2026</div><div class="spark-lockup"><span class="spark" aria-hidden="true">✳</span><span class="spark-note">PROMPT CACHE<br>FIELD GUIDE</span></div></header>
+  <h1 class="title"><span class="claude">Claude</span><span class="prompt">Prompt</span><span class="caching">Caching</span></h1>
+  <p class="subtitle">ลดค่า context และ token ที่ส่งซ้ำ<br>ด้วย prefix ที่เสถียรและ cache hit ที่คาดเดาได้</p>
+  <section class="diagram" aria-label="Stable prompt prefix flows through a cache hit into a dynamic conversation">
+    <div class="diagram-label fixed">STABLE PROMPT PREFIX</div><div class="diagram-label live">REUSE BEFORE<br>RECOMPUTE</div>
+    <div class="prefix">
+      <div class="layer one"><b>01 · SYSTEM</b><small>instructions · tools · policy</small></div>
+      <div class="layer two"><b>02 · CONTEXT</b><small>reference blocks · examples</small></div>
+      <div class="layer three"><b>03 · PREFIX BOUNDARY</b><small>same bytes · same order</small></div>
+    </div>
+    <div class="hit"><div><strong>cache hit</strong><span>PREFIX REUSED</span></div></div>
+    <div class="dynamic"><div class="bubble user"><div class="lines"><i></i><i></i></div></div><div class="bubble answer"><div class="lines"><i></i><i></i><i></i></div></div></div>
+  </section>
+  <div class="legend"><span class="p"><i></i>FIXED PREFIX</span><span class="d"><i></i>NEW TOKENS</span><span class="c"><i></i>LOWER REPEAT COST</span></div>
+  <footer class="disclosure"><small>Independent guide · Not affiliated with Anthropic</small><b>Field Notes 04</b></footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prompt Caching — Compact Interactive Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1c1713; --muted:#746758; --paper:#f6f1e8; --panel:#fffdf8; --paper2:#eee5d6;
+  --espresso:#352117; --espresso2:#24150e; --crema:#c9955f; --crema2:#8a5b31;
+  --green:#39754a; --greenSoft:#e5f0e6; --red:#b74a37; --redSoft:#f6e4de;
+  --line:#ded2bf; --shadow:0 10px 28px -22px rgba(48,29,18,.55);
+  --radius:16px; --sidebar:220px; --font-scale:1;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{
+  font-family:'Sarabun',sans-serif; background:var(--paper); color:var(--ink);
+  line-height:1.58; font-size:calc(15px * var(--font-scale)); overflow-x:hidden;
+}
+button,input{font:inherit}
+button{color:inherit}
+a{color:inherit}
+.app{min-height:100vh;display:grid;grid-template-rows:auto 1fr}
+
+/* Compact header */
+.topbar{
+  min-height:76px; display:flex; align-items:center; justify-content:space-between; gap:18px;
+  padding:13px 24px; color:#f7eddf;
+  background:radial-gradient(700px 180px at 76% -20%,rgba(201,149,95,.35),transparent 70%),linear-gradient(135deg,var(--espresso),var(--espresso2));
+  border-bottom:1px solid rgba(255,255,255,.08); position:sticky; top:0; z-index:50;
+}
+.brand{display:flex;align-items:center;gap:14px;min-width:0}
+.brand-mark{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);font-size:1.25rem;flex:0 0 auto}
+.brand-copy{min-width:0}
+.brand-kicker{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--crema);font-weight:700;margin-bottom:1px}
+.brand h1{font-size:clamp(1.15rem,2vw,1.42rem);line-height:1.15;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand h1 span{color:var(--crema)}
+.top-actions{display:flex;align-items:center;gap:7px;flex:0 0 auto}
+.icon-btn{width:34px;height:34px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);color:#f6ead9;border-radius:10px;cursor:pointer;display:grid;place-items:center;font-weight:700}
+.icon-btn:hover{background:rgba(255,255,255,.12)}
+
+.shell{display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr);min-height:calc(100vh - 76px)}
+.sidebar{background:#efe7da;border-right:1px solid var(--line);padding:15px 12px;position:sticky;top:76px;height:calc(100vh - 76px);overflow:auto}
+.nav-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.14em;color:#9a866d;font-weight:700;padding:5px 10px 7px}
+.nav{display:grid;gap:5px}
+.nav-btn{
+  width:100%;border:0;background:transparent;border-radius:11px;cursor:pointer;text-align:left;
+  padding:9px 10px;display:flex;align-items:center;gap:10px;color:#54483c;font-weight:600;font-size:.9rem;
+}
+.nav-btn:hover{background:rgba(255,255,255,.56)}
+.nav-btn.active{background:var(--espresso);color:#fff;box-shadow:var(--shadow)}
+.nav-ico{width:27px;height:27px;border-radius:8px;display:grid;place-items:center;background:rgba(255,255,255,.55);font-size:.92rem;flex:0 0 auto}
+.nav-btn.active .nav-ico{background:rgba(255,255,255,.12)}
+.sidebar-note{margin-top:14px;padding:11px 10px;border-top:1px solid var(--line);font-size:.72rem;color:#897865;line-height:1.45}
+
+.main{padding:18px 22px 24px;min-width:0}
+.content{max-width:1120px;margin:0 auto}
+.panel{display:none;animation:fade .18s ease}
+.panel.active{display:block}
+@keyframes fade{from{opacity:.55;transform:translateY(3px)}to{opacity:1;transform:none}}
+.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:13px}
+.eyebrow{display:flex;align-items:center;gap:8px;color:var(--crema2);font-size:.74rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.panel h2{font-size:clamp(1.35rem,2.3vw,1.85rem);line-height:1.2;font-weight:800}
+.panel-intro{color:var(--muted);font-size:.94rem;max-width:72ch;margin-top:5px}
+.badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 9px;font-size:.75rem;color:#766655;white-space:nowrap}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.muted{color:var(--muted)}
+.small{font-size:.82rem}
+strong{color:var(--crema2);font-weight:700}
+
+/* Overview */
+.hero-compact{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:14px}
+.hero-copy{padding:20px 22px;background:linear-gradient(135deg,#fffaf1,#f2e9d9)}
+.hero-copy .bigline{font-size:clamp(1.65rem,3.3vw,2.5rem);font-weight:800;line-height:1.16;max-width:16ch}
+.hero-copy .bigline em{font-style:normal;color:var(--crema2)}
+.hero-copy p{margin-top:10px;color:#625548;max-width:62ch}
+.hero-points{margin-top:15px;display:flex;gap:7px;flex-wrap:wrap}
+.pill{background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 9px;font-size:.76rem;color:#665849}
+.metric-wrap{display:grid;grid-template-columns:1fr;gap:9px}
+.metric{padding:13px 15px;display:flex;align-items:center;justify-content:space-between;gap:15px;min-height:72px}
+.metric .m-label{font-size:.76rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.metric .m-value{font-size:1.55rem;line-height:1;font-weight:800}
+.metric.miss .m-value{color:var(--red)}
+.metric.hit .m-value{color:var(--green)}
+.metric.save .m-value{color:var(--crema2)}
+.quick-strip{margin-top:12px;display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.quick{padding:11px 12px;cursor:pointer;transition:.15s ease}
+.quick:hover{transform:translateY(-1px);box-shadow:0 12px 28px -24px rgba(48,29,18,.7)}
+.quick .qi{font-size:1.15rem;margin-bottom:4px}.quick b{display:block;color:var(--ink);font-size:.88rem}.quick span{display:block;color:var(--muted);font-size:.74rem;margin-top:1px}
+
+/* Cache metaphor */
+.metaphor{padding:16px}
+.flow{display:grid;grid-template-columns:1fr 42px 1fr;align-items:stretch;gap:9px}
+.side-card{border-radius:13px;padding:15px;border:1px solid var(--line)}
+.side-card h3{font-size:1rem;margin-bottom:8px}.side-card p{font-size:.88rem;color:#5f5347}
+.flow-arrow{display:grid;place-items:center;font-size:1.3rem;color:var(--crema2)}
+.compare-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.compare-box{border-radius:12px;padding:12px 14px}.compare-box.miss{background:var(--redSoft)}.compare-box.hit{background:var(--greenSoft)}
+.compare-box .label{font-size:.73rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.compare-box.miss .label{color:var(--red)}.compare-box.hit .label{color:var(--green)}
+.compare-box .num{font-size:1.7rem;font-weight:800;line-height:1.05;margin-top:4px}.compare-box p{font-size:.79rem;color:#66594c;margin-top:4px}
+.term-note{margin-top:10px;background:#f3ebde;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:.81rem;color:#66594c}
+
+/* Simulator */
+.demo{padding:16px 17px}
+.slider-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}.slider-head b{font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;color:var(--crema2)}
+.calls-val{font-weight:800;font-size:1rem}
+.slider-row{display:flex;align-items:center;gap:13px}
+input[type=range]{-webkit-appearance:none;appearance:none;height:7px;border-radius:9px;flex:1;background:linear-gradient(90deg,var(--crema),var(--crema2));outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:23px;height:23px;border-radius:50%;background:#fff;border:3px solid var(--crema2);cursor:pointer;box-shadow:0 2px 7px rgba(0,0,0,.18)}
+.sim-grid{display:grid;grid-template-columns:1fr 1fr .72fr;gap:10px;margin-top:14px}
+.sim-card{border-radius:13px;padding:13px;text-align:center;min-height:138px;display:flex;flex-direction:column;justify-content:center}
+.sim-card.no{background:var(--redSoft)}.sim-card.yes{background:var(--greenSoft)}.sim-card.save{background:var(--espresso);color:#f8eddf}
+.sim-card .name{font-size:.77rem;font-weight:700;margin-bottom:7px}.sim-card.no .name{color:var(--red)}.sim-card.yes .name{color:var(--green)}.sim-card.save .name{color:var(--crema)}
+.price{font-size:1.85rem;font-weight:800;line-height:1.05}.sim-card.no .price{color:var(--red)}.sim-card.yes .price{color:var(--green)}
+.unit{font-size:.76rem;font-weight:500;color:#746758}.sim-card.save .unit{color:#c8ad8f}
+.mini-bars{height:42px;display:flex;align-items:flex-end;justify-content:center;gap:2px;margin:7px 0}.coin{width:7px;border-radius:2px 2px 0 0;transition:height .25s ease}.no .coin{background:var(--red)}.yes .coin{background:var(--green)}
+.save-number{font-size:2.2rem;font-weight:800;color:#fff;line-height:1}.save-caption{font-size:.76rem;color:#ccb392;margin-top:6px}
+
+/* Architecture */
+.arch-grid{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:12px}
+.stack{padding:14px}
+.layer{border-radius:11px;padding:10px 12px;margin-bottom:7px;border:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.layer:last-child{margin-bottom:0}.dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}.layer .txt{min-width:0}.layer .txt strong{display:block;color:var(--ink);font-size:.9rem}.layer .txt span{display:block;color:var(--muted);font-size:.75rem;margin-top:1px}.layer .tag{margin-left:auto;border-radius:999px;padding:3px 7px;font-size:.66rem;font-weight:800;white-space:nowrap}
+.static{background:var(--greenSoft)}.static .dot{background:var(--green)}.static .tag{background:var(--green);color:#fff}.mid{background:#fff}.mid .dot{background:var(--crema)}.mid .tag{background:var(--crema);color:#fff}.mid2{background:#fff}.mid2 .dot{background:var(--crema2)}.mid2 .tag{background:var(--crema2);color:#fff}.dyn{background:var(--redSoft)}.dyn .dot{background:var(--red)}.dyn .tag{background:var(--red);color:#fff}
+.principle{padding:17px;background:linear-gradient(150deg,var(--espresso),#4a2d1d);color:#f7ecde;display:flex;flex-direction:column;justify-content:center}.principle .caption{color:var(--crema);font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.principle h3{font-size:1.08rem;line-height:1.25;margin:5px 0 11px}.rule-line{display:flex;gap:9px;align-items:flex-start;margin:7px 0;font-size:.83rem;color:#e4d3bd}.rule-line b{color:#fff}.rule-icon{width:25px;height:25px;border-radius:8px;background:rgba(255,255,255,.1);display:grid;place-items:center;flex:0 0 auto}
+
+/* Rules */
+.rule-shell{display:grid;grid-template-columns:92px minmax(0,1fr);gap:11px}
+.rule-tabs{display:grid;gap:6px;align-content:start}
+.rule-tab{border:1px solid var(--line);background:#fff;border-radius:11px;padding:8px 6px;cursor:pointer;font-weight:800;font-size:.78rem;color:#705f4d}.rule-tab span{display:block;font-size:1rem;line-height:1;margin-bottom:3px}.rule-tab.active{background:var(--espresso);color:#fff;border-color:var(--espresso)}
+.rule-card{padding:17px;min-height:305px}.rule-pane{display:none}.rule-pane.active{display:block}.rule-title{font-size:1.08rem;font-weight:800;line-height:1.3;margin-bottom:8px}.rule-desc{font-size:.91rem;color:#5d5044}
+.rule-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:13px}.info{border-radius:12px;padding:11px 12px;font-size:.82rem}.analogy{background:#f5eee2;border:1px solid var(--line)}.takeaway{background:var(--greenSoft);border:1px solid #c7ddca}.info .info-label{font-weight:800;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}.analogy .info-label{color:var(--crema2)}.takeaway .info-label{color:var(--green)}
+
+/* Summary */
+.tldr-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tldr{padding:13px 14px;display:flex;gap:10px;align-items:flex-start}.tldr .ic{width:33px;height:33px;border-radius:10px;background:#f1e9dc;display:grid;place-items:center;flex:0 0 auto}.tldr h3{font-size:.91rem;line-height:1.3}.tldr p{font-size:.77rem;color:var(--muted);margin-top:3px}.summary-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:11px;padding:11px 13px;background:#efe6d8;border:1px solid var(--line);border-radius:13px;font-size:.81rem}.summary-foot button{border:0;background:var(--espresso);color:#fff;border-radius:10px;padding:7px 11px;cursor:pointer;font-weight:700;white-space:nowrap}
+
+/* Glossary drawer */
+.drawer-backdrop{position:fixed;inset:0;background:rgba(26,16,10,.33);opacity:0;pointer-events:none;transition:.18s ease;z-index:80}
+.drawer{position:fixed;top:0;right:0;width:min(390px,92vw);height:100vh;background:#fffdf8;border-left:1px solid var(--line);box-shadow:-20px 0 60px -35px rgba(40,25,15,.65);transform:translateX(102%);transition:.2s ease;z-index:90;padding:18px;overflow:auto}
+.drawer.open{transform:none}.drawer-backdrop.open{opacity:1;pointer-events:auto}.drawer-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.drawer h2{font-size:1.16rem}.close-btn{border:1px solid var(--line);background:#f3ecdf;border-radius:9px;width:32px;height:32px;cursor:pointer}.glossary-list{display:grid;gap:7px}.term{border:1px solid var(--line);border-radius:11px;padding:9px 11px}.term dt{font-weight:800;color:var(--crema2);font-size:.85rem}.term dd{font-size:.78rem;color:var(--muted);margin-top:2px}
+.source{margin-top:14px;border-top:1px solid var(--line);padding-top:11px;font-size:.72rem;color:#8a7864}.source a{color:var(--crema2)}
+
+.mobile-tabs{display:none}
+
+@media(max-width:900px){
+  :root{--sidebar:190px}
+  .hero-compact{grid-template-columns:1fr}.metric-wrap{grid-template-columns:repeat(3,1fr)}.metric{min-height:66px;display:block}.metric .m-value{margin-top:5px}
+  .quick-strip{grid-template-columns:1fr 1fr}.arch-grid{grid-template-columns:1fr}.principle{min-height:0}.sim-grid{grid-template-columns:1fr 1fr}.sim-card.save{grid-column:1/-1;min-height:94px}
+}
+@media(max-width:680px){
+  .topbar{padding:10px 12px;min-height:66px}.brand-mark{width:38px;height:38px}.brand-kicker{display:none}.brand h1{font-size:1.05rem}.shell{display:block;min-height:calc(100vh - 66px)}.sidebar{display:none}.main{padding:10px 11px 18px}.mobile-tabs{display:flex;position:sticky;top:66px;z-index:40;overflow-x:auto;gap:5px;padding:7px 10px;background:rgba(246,241,232,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);scrollbar-width:none}.mobile-tabs::-webkit-scrollbar{display:none}.mobile-tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 9px;white-space:nowrap;cursor:pointer;font-size:.75rem;font-weight:700;color:#6a5a49}.mobile-tab.active{background:var(--espresso);border-color:var(--espresso);color:#fff}.panel-head{margin-bottom:10px}.panel-head .badge{display:none}.panel h2{font-size:1.3rem}.panel-intro{font-size:.84rem}.hero-copy{padding:15px}.hero-copy .bigline{font-size:1.7rem}.metric-wrap{grid-template-columns:repeat(3,1fr);gap:6px}.metric{padding:10px;min-height:62px}.metric .m-value{font-size:1.3rem}.metric .m-label{font-size:.63rem}.quick-strip{grid-template-columns:1fr 1fr;gap:7px}.quick{padding:9px}.flow{grid-template-columns:1fr}.flow-arrow{transform:rotate(90deg);height:22px}.compare-row{grid-template-columns:1fr 1fr}.sim-grid{grid-template-columns:1fr 1fr;gap:7px}.sim-card{min-height:116px}.sim-card.save{grid-column:1/-1;min-height:84px}.price{font-size:1.55rem}.rule-shell{grid-template-columns:1fr}.rule-tabs{display:flex;overflow-x:auto;gap:5px;padding-bottom:3px}.rule-tab{min-width:50px;padding:7px}.rule-card{min-height:0;padding:14px}.rule-info-grid{grid-template-columns:1fr}.tldr-grid{grid-template-columns:1fr}.summary-foot{align-items:flex-start}.top-actions .icon-btn:first-child,.top-actions .icon-btn:nth-child(2){display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">☕</div>
+      <div class="brand-copy">
+        <div class="brand-kicker">Interactive Knowledge Guide</div>
+        <h1>Prompt Caching <span>อธิบายแบบบ้านๆ</span></h1>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="fontDown" title="ลดขนาดตัวอักษร">A−</button>
+      <button class="icon-btn" id="fontUp" title="เพิ่มขนาดตัวอักษร">A+</button>
+      <button class="icon-btn" id="openGlossary" title="Glossary">📖</button>
+    </div>
+  </header>
+
+  <div class="mobile-tabs" aria-label="เมนูมือถือ">
+    <button class="mobile-tab active" data-panel="overview">ภาพรวม</button>
+    <button class="mobile-tab" data-panel="caching">Caching</button>
+    <button class="mobile-tab" data-panel="cost">Cost</button>
+    <button class="mobile-tab" data-panel="architecture">Structure</button>
+    <button class="mobile-tab" data-panel="rules">7 Rules</button>
+    <button class="mobile-tab" data-panel="summary">Summary</button>
+  </div>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="nav-label">Contents</div>
+      <nav class="nav">
+        <button class="nav-btn active" data-panel="overview"><span class="nav-ico">⌂</span> ภาพรวม</button>
+        <button class="nav-btn" data-panel="caching"><span class="nav-ico">☕</span> Caching คืออะไร</button>
+        <button class="nav-btn" data-panel="cost"><span class="nav-ico">💰</span> Cost Simulator</button>
+        <button class="nav-btn" data-panel="architecture"><span class="nav-ico">🧱</span> Cache Structure</button>
+        <button class="nav-btn" data-panel="rules"><span class="nav-ico">📋</span> กฎ 7 ข้อ</button>
+        <button class="nav-btn" data-panel="summary"><span class="nav-ico">✅</span> สรุป</button>
+      </nav>
+      <div class="sidebar-note">เรียบเรียงจากบทความของ Thariq Shihipar (ทีม Anthropic) เพื่ออธิบายแนวคิด Prompt Caching ให้เข้าใจง่าย</div>
+    </aside>
+
+    <main class="main">
+      <div class="content">
+
+        <!-- OVERVIEW -->
+        <section class="panel active" id="overview">
+          <div class="panel-head">
+            <div><div class="eyebrow">Overview</div><h2>เข้าใจ Prompt Caching ในไม่กี่นาที</h2><p class="panel-intro">แทนที่จะให้ AI อ่านข้อมูลเดิมใหม่ทุกครั้ง ระบบสามารถจำส่วนเดิมไว้และใช้ซ้ำ ทำให้ต้นทุนของส่วนที่ cache ได้ลดลงอย่างมาก</p></div>
+            <span class="badge">ไม่ต้องมีพื้นฐานโค้ด</span>
+          </div>
+          <div class="hero-compact">
+            <article class="card hero-copy">
+              <div class="bigline">ความลับของ AI ที่ทำให้จ่าย <em>แค่เศษเดียว</em></div>
+              <p>ลองนึกถึงร้านกาแฟ: ลูกค้าประจำสั่งเมนูเดิมทุกเช้า ถ้าเตรียมส่วนเดิมไว้แล้ว ก็ไม่จำเป็นต้องเริ่มใหม่ทั้งหมดทุกครั้ง — นี่คือแนวคิดของ <strong>Prompt Caching</strong></p>
+              <div class="hero-points"><span class="pill">☕ ร้านกาแฟ</span><span class="pill">🧠 จำส่วนเดิม</span><span class="pill">⚡ อ่านเร็วขึ้น</span><span class="pill">💸 ลดค่า token</span></div>
+            </article>
+            <div class="metric-wrap">
+              <article class="card metric miss"><div><div class="m-label">Cache Miss</div><div class="small muted">อ่านใหม่เต็ม</div></div><div class="m-value">100%</div></article>
+              <article class="card metric hit"><div><div class="m-label">Cache Read</div><div class="small muted">ส่วนเดิมที่จำได้</div></div><div class="m-value">≈10%</div></article>
+              <article class="card metric save"><div><div class="m-label">Potential Saving</div><div class="small muted">ตัวอย่างเพื่อให้เห็นภาพ</div></div><div class="m-value">สูง</div></article>
+            </div>
+          </div>
+          <div class="quick-strip">
+            <article class="card quick" data-go="caching"><div class="qi">☕</div><b>Caching คืออะไร</b><span>เริ่มจากร้านกาแฟ</span></article>
+            <article class="card quick" data-go="cost"><div class="qi">💰</div><b>ลองคำนวณต้นทุน</b><span>เลื่อนจำนวน AI calls</span></article>
+            <article class="card quick" data-go="architecture"><div class="qi">🧱</div><b>เรียง Context ยังไง</b><span>Static → Dynamic</span></article>
+            <article class="card quick" data-go="rules"><div class="qi">📋</div><b>กฎทอง 7 ข้อ</b><span>เลือกอ่านทีละข้อ</span></article>
+          </div>
+        </section>
+
+        <!-- CACHING -->
+        <section class="panel" id="caching">
+          <div class="panel-head"><div><div class="eyebrow">☕ Simple Metaphor</div><h2>Caching คือ “ของที่เตรียมไว้แล้ว เอามาใช้ซ้ำ”</h2><p class="panel-intro">ทุกครั้งที่ส่งข้อความไป AI ต้องอ่าน prompt ซึ่งประกอบด้วยคำสั่ง ข้อมูล และบทสนทนาก่อนหน้า ยิ่งอ่านใหม่มากก็ยิ่งใช้ token มาก</p></div><span class="badge">Cache hit vs miss</span></div>
+          <article class="card metaphor">
+            <div class="flow">
+              <div class="side-card"><h3>☕ ร้านกาแฟ</h3><p><strong>ลูกค้าใหม่:</strong> บดเมล็ด ต้มน้ำ ตั้งเครื่องใหม่ทั้งหมด</p><p style="margin-top:7px"><strong>ลูกค้าประจำ:</strong> ส่วนเดิมเตรียมไว้แล้ว จึงทำงานซ้ำให้น้อยลง</p></div>
+              <div class="flow-arrow">→</div>
+              <div class="side-card"><h3>🤖 AI Prompt</h3><p><strong>Cache miss:</strong> AI ต้องอ่าน context ส่วนเดิมใหม่</p><p style="margin-top:7px"><strong>Cache hit:</strong> ส่วนเดิมตรงกัน ระบบนำสิ่งที่ cache ไว้มาใช้ต่อ</p></div>
+            </div>
+            <div class="compare-row">
+              <div class="compare-box miss"><div class="label">ไม่มี Cache / Miss</div><div class="num">100%</div><p>คิดแบบง่าย: จ่ายเต็มสำหรับส่วนที่ต้องอ่านใหม่</p></div>
+              <div class="compare-box hit"><div class="label">มี Cache / Hit</div><div class="num">≈10%</div><p>ตัวอย่างจากต้นฉบับ: cache read คิดเพียงเศษหนึ่งของ input ปกติ</p></div>
+            </div>
+            <div class="term-note">💡 <strong>Prompt</strong> = ทุกอย่างที่ส่งให้ AI อ่าน • <strong>Token</strong> = หน่วยนับข้อความ • <strong>Cache hit</strong> = ส่วนเดิมตรงกันและใช้ cache ได้ • <strong>Cache miss</strong> = ต้องอ่านใหม่</div>
+          </article>
+        </section>
+
+        <!-- COST -->
+        <section class="panel" id="cost">
+          <div class="panel-head"><div><div class="eyebrow">💰 Interactive Demo</div><h2>ส่วนต่างจะมากขึ้นเมื่อเรียก AI ซ้ำหลายรอบ</h2><p class="panel-intro">เลื่อนจำนวนครั้งเพื่อดูตัวอย่างเชิงภาพ โดยสมมติรอบแรก 100 บาท และรอบที่ cache ได้คิด 10 บาท</p></div><span class="badge">Interactive</span></div>
+          <article class="card demo">
+            <div class="slider-head"><b>จำนวนครั้งที่เรียก AI</b><span class="calls-val" id="callsVal">20 ครั้ง</span></div>
+            <div class="slider-row"><input type="range" id="callSlider" min="1" max="100" value="20" aria-label="จำนวนครั้งที่เรียก AI"></div>
+            <div class="sim-grid">
+              <div class="sim-card no"><div class="name">❌ ไม่มี Cache</div><div class="mini-bars" id="coinsNo"></div><div class="price"><span id="priceNo">2,000</span><span class="unit"> บาท</span></div></div>
+              <div class="sim-card yes"><div class="name">✅ มี Cache</div><div class="mini-bars" id="coinsYes"></div><div class="price"><span id="priceYes">290</span><span class="unit"> บาท</span></div></div>
+              <div class="sim-card save"><div class="name">ประหยัดโดยประมาณ</div><div class="save-number" id="savePct">86%</div><div class="save-caption">ยิ่ง reuse context เดิมมาก ความต่างยิ่งชัด</div></div>
+            </div>
+            <div class="term-note">* เป็นตัวเลขสมมติเพื่ออธิบายแนวคิด ไม่ใช่ใบเสนอราคา API จริง</div>
+          </article>
+        </section>
+
+        <!-- ARCHITECTURE -->
+        <section class="panel" id="architecture">
+          <div class="panel-head"><div><div class="eyebrow">🧱 Context Order</div><h2>วางของที่ “ไม่เปลี่ยน” ไว้ก่อน ของที่เปลี่ยนบ่อยไว้ท้าย</h2><p class="panel-intro">Cache ใช้ต่อได้เมื่อ prefix เดิมตรงกัน ดังนั้นสิ่งคงที่ควรอยู่ด้านบนและสิ่ง dynamic ควรอยู่ด้านล่าง</p></div><span class="badge">Static → Dynamic</span></div>
+          <div class="arch-grid">
+            <article class="card stack">
+              <div class="layer static"><span class="dot"></span><div class="txt"><strong>คำสั่งตั้งต้น + เครื่องมือ</strong><span>“นายเป็นใคร ทำงานยังไง” — ไม่ควรเปลี่ยนบ่อย</span></div><span class="tag">GLOBAL</span></div>
+              <div class="layer mid"><span class="dot"></span><div class="txt"><strong>กฎของโปรเจกต์ (CLAUDE.md)</strong><span>กติกาเฉพาะงานนี้</span></div><span class="tag">PROJECT</span></div>
+              <div class="layer mid2"><span class="dot"></span><div class="txt"><strong>ข้อมูลของรอบงานนี้</strong><span>บริบทเฉพาะ session</span></div><span class="tag">SESSION</span></div>
+              <div class="layer dyn"><span class="dot"></span><div class="txt"><strong>บทสนทนาที่กำลังคุยกัน</strong><span>เปลี่ยนทุกข้อความ จึงมีส่วนใหม่ให้ AI อ่าน</span></div><span class="tag">DYNAMIC</span></div>
+            </article>
+            <aside class="card principle">
+              <div class="caption">หลักจำง่ายที่สุด</div><h3>อย่าให้ของที่เปลี่ยนบ่อยไปตัด cache ตั้งแต่ต้นทาง</h3>
+              <div class="rule-line"><div class="rule-icon">↑</div><div><b>ด้านบน:</b> ข้อมูลคงที่และ reusable</div></div>
+              <div class="rule-line"><div class="rule-icon">↓</div><div><b>ด้านล่าง:</b> ข้อมูล session และบทสนทนาใหม่</div></div>
+              <div class="rule-line"><div class="rule-icon">⚠</div><div>ถ้า prefix เปลี่ยนกลางทาง ส่วนหลังจากนั้นอาจใช้ cache ต่อไม่ได้</div></div>
+            </aside>
+          </div>
+        </section>
+
+        <!-- RULES -->
+        <section class="panel" id="rules">
+          <div class="panel-head"><div><div class="eyebrow">📋 Seven Rules</div><h2>กฎทอง 7 ข้อ — เลือกอ่านทีละข้อ</h2><p class="panel-intro">แทนการวาง accordion ยาวลงมา กดหมายเลขเพื่อเปลี่ยนเนื้อหาใน card เดิม</p></div><span class="badge">Compact selector</span></div>
+          <div class="rule-shell">
+            <div class="rule-tabs" role="tablist">
+              <button class="rule-tab active" data-rule="1"><span>1</span>Static</button>
+              <button class="rule-tab" data-rule="2"><span>2</span>Update</button>
+              <button class="rule-tab" data-rule="3"><span>3</span>Model</button>
+              <button class="rule-tab" data-rule="4"><span>4</span>Tools</button>
+              <button class="rule-tab" data-rule="5"><span>5</span>Mode</button>
+              <button class="rule-tab" data-rule="6"><span>6</span>Lazy</button>
+              <button class="rule-tab" data-rule="7"><span>7</span>Compact</button>
+            </div>
+            <article class="card rule-card">
+              <div class="rule-pane active" data-rule-pane="1"><div class="rule-title">1. วางของที่ไม่เปลี่ยนไว้ก่อน ของที่เปลี่ยนไว้ทีหลัง</div><p class="rule-desc">เรียงข้อมูลให้ส่วนที่ “เหมือนเดิมทุกครั้ง” อยู่ข้างบน ส่วนที่ “เปลี่ยนบ่อย” อยู่ข้างล่าง</p><div class="rule-info-grid"><div class="info analogy"><div class="info-label">☕ เปรียบเหมือน</div>จัดตู้เย็น — ของแห้งที่อยู่ได้นานไว้ชั้นบน ของสดที่ใช้แล้วหมดไว้ชั้นล่าง หยิบง่ายไม่ต้องรื้อทั้งตู้</div><div class="info takeaway"><div class="info-label">⚠ ระวัง</div>อย่าใส่ “เวลาปัจจุบัน” ที่เปลี่ยนทุกวินาทีไว้ในคำสั่งตั้งต้น เพราะอาจทำให้ prefix เปลี่ยนทุกครั้ง</div></div></div>
+              <div class="rule-pane" data-rule-pane="2"><div class="rule-title">2. มีอะไรใหม่ ให้ส่งข้อความบอก อย่าแก้คำสั่งตั้งต้น</div><p class="rule-desc">อยากอัปเดตข้อมูล เช่น เวลาตอนนี้หรือไฟล์ที่เพิ่งแก้ ให้พิมพ์บอกในข้อความถัดไปแทนการเปลี่ยน system prompt</p><div class="rule-info-grid"><div class="info analogy"><div class="info-label">☕ เปรียบเหมือน</div>แทนที่จะพิมพ์เมนูร้านใหม่ทั้งแผ่นเพราะราคาเปลี่ยนเล็กน้อย แค่ติดป้ายอัปเดตเพิ่มก็พอ</div><div class="info takeaway"><div class="info-label">✓ ผลลัพธ์</div>คำสั่งตั้งต้นยังเหมือนเดิม → cache ส่วนเดิมยังมีโอกาสใช้ต่อได้</div></div></div>
+              <div class="rule-pane" data-rule-pane="3"><div class="rule-title">3. อย่าสลับ “รุ่น AI” กลางคัน</div><p class="rule-desc">ความจำ cache ของแต่ละ model แยกกัน การสลับรุ่นระหว่าง session อาจทำให้ต้องสร้าง cache ใหม่</p><div class="rule-info-grid"><div class="info analogy"><div class="info-label">☕ เปรียบเหมือน</div>เล่าเรื่องให้เพื่อนคนหนึ่งฟังมานาน แล้วเปลี่ยนไปคุยกับอีกคนที่ไม่รู้บริบท — ต้องเล่าใหม่อีกครั้ง</div><div class="info takeaway"><div class="info-label">✓ ทางออก</div>ถ้าจำเป็นต้องใช้คนละรุ่น ให้แยกไปทำงานใน subagent แทนการเปลี่ยน model ของบทสนทนาหลัก</div></div></div>
+              <div class="rule-pane" data-rule-pane="4"><div class="rule-title">4. อย่าเพิ่ม-ลด “เครื่องมือ” กลางคัน</div><p class="rule-desc">รายการ tool เป็นส่วนหนึ่งของข้อมูลที่โมเดลเห็น ถ้าชุดเครื่องมือเปลี่ยน prefix ก็เปลี่ยนตาม</p><div class="rule-info-grid"><div class="info analogy"><div class="info-label">☕ เปรียบเหมือน</div>กล่องเครื่องมือช่างที่จัดเหมือนเดิมทุกวัน ย่อมหยิบใช้ต่อเนื่องกว่ากล่องที่เปลี่ยนของเข้าออกตลอด</div><div class="info takeaway"><div class="info-label">✓ ทางออก</div>เก็บชุดเครื่องมือให้คงที่ แล้วควบคุมพฤติกรรมด้วย mode หรือโหลดรายละเอียดเท่าที่จำเป็น</div></div></div>
+              <div class="rule-pane" data-rule-pane="5"><div class="rule-title">5. อยากเปลี่ยน “โหมด” ให้ใช้สวิตช์ ไม่ใช่ถอดเครื่องมือ</div><p class="rule-desc">เช่น Plan mode ที่ให้ดูได้แต่ห้ามแก้ไฟล์ ควรเปลี่ยนสถานะด้วยคำสั่งหรือสวิตช์ โดยไม่แก้ชุด tools</p><div class="rule-info-grid"><div class="info analogy"><div class="info-label">☕ เปรียบเหมือน</div>รถยนต์มีโหมดประหยัด — กดปุ่มเปลี่ยนโหมด ไม่ใช่ถอดเครื่องยนต์ออก</div><div class="info takeaway"><div class="info-label">✓ หลักการ</div>เปลี่ยน behavior โดยรักษาโครงสร้าง prompt/tool schema ให้คงที่เท่าที่ทำได้</div></div></div>
+              <div class="rule-pane" data-rule-pane="6"><div class="rule-title">6. มีเครื่องมือเยอะ ให้ “ซ่อนรายละเอียด” ไว้ก่อน</div><p class="rule-desc">ถ้ามี tools จำนวนมาก ไม่จำเป็นต้องส่งรายละเอียดทั้งหมดทุกครั้ง ส่งรายชื่อก่อนแล้วค่อยโหลดรายละเอียดเฉพาะตัวที่ต้องใช้</p><div class="rule-info-grid"><div class="info analogy"><div class="info-label">☕ เปรียบเหมือน</div>เมนูร้านอาหารโชว์ชื่อเมนูก่อน ลูกค้าสนใจจานไหนค่อยเปิดรายละเอียดของจานนั้น</div><div class="info takeaway"><div class="info-label">✓ ผลลัพธ์</div>รายการหลักคงที่กว่า และลด context ที่ไม่จำเป็นในแต่ละรอบ</div></div></div>
+              <div class="rule-pane" data-rule-pane="7"><div class="rule-title">7. คุยยาวเกินไป ให้ “ย่อความ” ต่อจากของเดิม</div><p class="rule-desc">เมื่อ context ยาวมากจนต้อง compaction ให้สรุปต่อจากของเดิมโดยรักษาส่วนก่อนหน้าให้สอดคล้อง แทนการเปิด session ใหม่แบบตัดขาด</p><div class="rule-info-grid"><div class="info analogy"><div class="info-label">☕ เปรียบเหมือน</div>ประชุม 3 ชั่วโมงแล้วเขียนสรุปต่อท้ายบันทึกเดิม ไม่ใช่เรียกทุกคนกลับมาเล่าใหม่ตั้งแต่ต้น</div><div class="info takeaway"><div class="info-label">✓ หลักการ</div>งานแยกย่อยหรือการย่อความควรอ้างอิงของเดิมให้ตรง เพื่อให้ continuity ดีที่สุด</div></div></div>
+            </article>
+          </div>
+        </section>
+
+        <!-- SUMMARY -->
+        <section class="panel" id="summary">
+          <div class="panel-head"><div><div class="eyebrow">✅ TL;DR</div><h2>จำแค่ 4 ข้อนี้ก็พอ</h2><p class="panel-intro">หลักสำคัญทั้งหมดของหน้าเว็บย่อเหลือ 4 card สำหรับทบทวนเร็ว</p></div><span class="badge">Quick reference</span></div>
+          <div class="tldr-grid">
+            <article class="card tldr"><div class="ic">🧱</div><div><h3>ของไม่เปลี่ยนไว้บน ของเปลี่ยนไว้ล่าง</h3><p>ส่วนคงที่อยู่ต้น prompt เพื่อให้ prefix เดิม reusable ได้มากที่สุด</p></div></article>
+            <article class="card tldr"><div class="ic">💬</div><div><h3>อัปเดตผ่านข้อความถัดไป</h3><p>มีข้อมูลใหม่ให้ append แทนการแก้ system prompt เดิมบ่อยๆ</p></div></article>
+            <article class="card tldr"><div class="ic">🔒</div><div><h3>อย่าสลับ Model / Tools โดยไม่จำเป็น</h3><p>รักษาโครงสร้าง context หลักให้คงที่ตลอด session</p></div></article>
+            <article class="card tldr"><div class="ic">📎</div><div><h3>งานแยกย่อยต้องต่อจากของเดิม</h3><p>compaction หรือ subtask ควรรักษา continuity กับ context เดิม</p></div></article>
+          </div>
+          <div class="summary-foot"><span>ศัพท์เทคนิคทั้งหมดถูกย้ายออกจากหน้าหลักเพื่อให้หน้า compact มากขึ้น</span><button id="openGlossary2">📖 เปิด Glossary</button></div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+<aside class="drawer" id="glossaryDrawer" aria-hidden="true">
+  <div class="drawer-head"><h2>📖 Glossary ฉบับเร็ว</h2><button class="close-btn" id="closeGlossary">✕</button></div>
+  <dl class="glossary-list">
+    <div class="term"><dt>Prompt (พรอมต์)</dt><dd>ทุกอย่างที่เราส่งให้ AI อ่าน = คำสั่ง + ข้อมูล + บทสนทนา</dd></div>
+    <div class="term"><dt>Token (โทเคน)</dt><dd>หน่วยนับข้อความ ยิ่งมากก็ยิ่งมี input ให้ประมวลผลมาก</dd></div>
+    <div class="term"><dt>Caching (แคชชิ่ง)</dt><dd>การจำส่วนที่เคยประมวลผลแล้วเพื่อนำกลับมาใช้ซ้ำ</dd></div>
+    <div class="term"><dt>Cache hit / miss</dt><dd>Hit = ส่วนเดิมตรงและใช้ cache ได้ • Miss = ต้องอ่านหรือสร้าง cache ใหม่</dd></div>
+    <div class="term"><dt>System prompt</dt><dd>คำสั่งตั้งต้นที่บอก AI ว่าเป็นใคร มีบทบาทและกฎการทำงานอย่างไร</dd></div>
+    <div class="term"><dt>Session</dt><dd>การคุยต่อเนื่องกันหนึ่งรอบ ตั้งแต่เริ่มจนจบ</dd></div>
+    <div class="term"><dt>Agent</dt><dd>AI ที่ทำงานเองได้หลายขั้นตอน เช่น Claude Code</dd></div>
+  </dl>
+  <div class="source">เรียบเรียงเพื่ออธิบายให้เข้าใจง่าย จาก “Lessons from Building Claude Code: Prompt Caching Is Everything” โดย Thariq Shihipar (Anthropic)<br><br>อ้างอิง: <a href="https://vibecodingthailand.com/blog/claude-code-prompt-caching-lessons" target="_blank" rel="noopener">vibecodingthailand.com</a></div>
+</aside>
+
+<script>
+const allNav=[...document.querySelectorAll('[data-panel]')];
+const panels=[...document.querySelectorAll('.panel')];
+function showPanel(id){
+  panels.forEach(p=>p.classList.toggle('active',p.id===id));
+  allNav.forEach(b=>b.classList.toggle('active',b.dataset.panel===id));
+  window.scrollTo({top:0,behavior:'instant'});
+  try{history.replaceState(null,'','#'+id)}catch(e){}
+}
+allNav.forEach(b=>b.addEventListener('click',()=>showPanel(b.dataset.panel)));
+document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',()=>showPanel(el.dataset.go)));
+
+const initial=location.hash.replace('#','');
+if(panels.some(p=>p.id===initial)) showPanel(initial);
+
+// rule selector
+const ruleTabs=[...document.querySelectorAll('.rule-tab')];
+const rulePanes=[...document.querySelectorAll('.rule-pane')];
+ruleTabs.forEach(t=>t.addEventListener('click',()=>{
+  const r=t.dataset.rule;
+  ruleTabs.forEach(x=>x.classList.toggle('active',x===t));
+  rulePanes.forEach(p=>p.classList.toggle('active',p.dataset.rulePane===r));
+}));
+
+// Cost simulator
+const slider=document.getElementById('callSlider');
+const callsVal=document.getElementById('callsVal');
+const priceNo=document.getElementById('priceNo');
+const priceYes=document.getElementById('priceYes');
+const savePct=document.getElementById('savePct');
+const coinsNo=document.getElementById('coinsNo');
+const coinsYes=document.getElementById('coinsYes');
+function buildCoins(container,count,maxH){
+  container.innerHTML='';
+  const n=Math.min(count,22);
+  for(let i=0;i<n;i++){
+    const c=document.createElement('div'); c.className='coin'; c.style.height=Math.max(5,maxH)+'px'; container.appendChild(c);
+  }
+}
+function updateCost(){
+  const calls=+slider.value;
+  callsVal.textContent=calls+' ครั้ง';
+  const costNo=calls*100;
+  const costYes=100+(calls-1)*10;
+  priceNo.textContent=costNo.toLocaleString();
+  priceYes.textContent=costYes.toLocaleString();
+  const pct=Math.round((1-costYes/costNo)*100);
+  savePct.textContent=pct+'%';
+  buildCoins(coinsNo,calls,38);
+  buildCoins(coinsYes,calls,Math.max(7,38*costYes/costNo));
+}
+slider.addEventListener('input',updateCost); updateCost();
+
+// Glossary drawer
+const drawer=document.getElementById('glossaryDrawer');
+const backdrop=document.getElementById('drawerBackdrop');
+function openDrawer(){drawer.classList.add('open');backdrop.classList.add('open');drawer.setAttribute('aria-hidden','false')}
+function closeDrawer(){drawer.classList.remove('open');backdrop.classList.remove('open');drawer.setAttribute('aria-hidden','true')}
+document.getElementById('openGlossary').addEventListener('click',openDrawer);
+document.getElementById('openGlossary2').addEventListener('click',openDrawer);
+document.getElementById('closeGlossary').addEventListener('click',closeDrawer);
+backdrop.addEventListener('click',closeDrawer);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
+
+// Font controls
+let scale=1;
+function applyScale(){document.documentElement.style.setProperty('--font-scale',scale.toFixed(2))}
+document.getElementById('fontDown').addEventListener('click',()=>{scale=Math.max(.88,scale-.06);applyScale()});
+document.getElementById('fontUp').addEventListener('click',()=>{scale=Math.min(1.18,scale+.06);applyScale()});
+</script>
+</body>
+</html>

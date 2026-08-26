@@ -218,5 +218,16 @@
     "summary": "ออกแบบ Monitor, Triage และ Operator profiles ให้ตรวจ Scheduled tasks, Execution/Delivery health และซ่อมระบบอย่างมีขอบเขตพร้อม Verification",
     "accent": "#E85D3F",
     "published_at": "2026-08-18T00:39:55+07:00"
+  },
+  {
+    "id": "claude-prompt-caching",
+    "title": "Claude Prompt Caching — อธิบายแบบบ้านๆ พร้อม Cost Simulator และกฎ 7 ข้อ",
+    "short_title": "Claude Prompt Caching",
+    "href": "claude-prompt-caching.html",
+    "cover": "assets/covers/custom/claude-prompt-caching.webp",
+    "category": "Claude Code",
+    "summary": "คู่มือ Interactive อธิบาย Prompt Caching ผ่านอุปมาร้านกาแฟ การจัด Static/Dynamic context, Cost Simulator, โครงสร้าง Cache และกฎปฏิบัติ 7 ข้อสำหรับ Claude Code",
+    "accent": "#D97757",
+    "published_at": "2026-06-21T00:00:00+07:00"
   }
 ]

@@ -1,7 +1,10 @@
+import hashlib
 import json
 import unittest
 from pathlib import Path
 from urllib.parse import unquote, urlparse
+
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "data" / "books.json"
@@ -35,7 +38,7 @@ class CatalogTests(unittest.TestCase):
     def test_required_fields_and_unique_ids_and_links(self):
         required = {"id", "title", "short_title", "href", "cover", "category", "summary", "accent", "published_at"}
         self.assertTrue(self.books)
-        self.assertEqual(len(self.books), 20)
+        self.assertEqual(len(self.books), 21)
         self.assertEqual(len({book["id"] for book in self.books}), len(self.books))
         self.assertEqual(len({book["href"] for book in self.books}), len(self.books))
         for book in self.books:
@@ -45,7 +48,7 @@ class CatalogTests(unittest.TestCase):
             self.assertRegex(book["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
 
     def test_every_reading_book_uses_an_approved_custom_cover(self):
-        self.assertEqual(len(self.books), 20)
+        self.assertEqual(len(self.books), 21)
         for book in self.books:
             self.assertEqual(book["cover"], f'assets/covers/custom/{book["id"]}.webp')
             self.assertEqual(Path(book["cover"]).suffix, ".webp")
@@ -91,6 +94,7 @@ class CatalogTests(unittest.TestCase):
             "hermes-concepts-for-everyone": "เข้าใจ Hermes Agent สำหรับคนทั่วไป",
             "agent-reach-comparison": "Agent Reach หรือดึง Transcript ตรง",
             "vault-ai-safety": "คุม AI ไม่ให้พลาดด้วย VAULT",
+            "claude-prompt-caching": "Claude Prompt Caching",
         }
         actual = {book["id"]: book["short_title"] for book in self.books}
         self.assertEqual(actual, expected)
@@ -159,6 +163,33 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(book["cover"], "assets/covers/custom/hermes-trustworthy-autonomy.webp")
         self.assertEqual(book["published_at"], "2026-08-24T12:43:56+07:00")
         self.assertTrue((ROOT / "templates" / "hermes-trustworthy-autonomy-cover.template.html").is_file())
+
+    def test_claude_prompt_caching_guide_is_catalogued_with_branded_cover(self):
+        matches = [book for book in self.books if book["id"] == "claude-prompt-caching"]
+        self.assertEqual(len(matches), 1)
+        book = matches[0]
+        self.assertEqual(book["short_title"], "Claude Prompt Caching")
+        self.assertEqual(book["href"], "claude-prompt-caching.html")
+        self.assertEqual(book["cover"], "assets/covers/custom/claude-prompt-caching.webp")
+        self.assertEqual(book["published_at"], "2026-06-21T00:00:00+07:00")
+        self.assertEqual(book["category"], "Claude Code")
+        source = ROOT / book["href"]
+        self.assertTrue(source.is_file())
+        self.assertEqual(
+            hashlib.sha256(source.read_bytes()).hexdigest(),
+            "c7e6cbda30a8a9931176549df1388ecb1e006fdce9e31a541eae5b959cfe3e7a",
+        )
+        cover = ROOT / book["cover"]
+        self.assertTrue(cover.is_file())
+        with Image.open(cover) as image:
+            self.assertEqual(image.format, "WEBP")
+            self.assertEqual(image.size, (600, 900))
+            self.assertEqual(image.mode, "RGB")
+            self.assertEqual(len(image.getexif()), 0)
+        design = (ROOT / "templates" / "claude-prompt-caching-cover.template.html").read_text(encoding="utf-8")
+        self.assertIn("✳", design)
+        self.assertIn("Claude Prompt Caching", design)
+        self.assertIn("Independent guide · Not affiliated with Anthropic", design)
 
     def test_imported_repository_guides_preserve_provenance(self):
         registry = json.loads((ROOT / "data" / "imported-sources.json").read_text(encoding="utf-8"))
