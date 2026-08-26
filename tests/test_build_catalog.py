@@ -87,7 +87,9 @@ class HomepageBuildTests(unittest.TestCase):
 
     def test_reading_room_uses_bright_garden_glass_and_text_only_book_metadata(self):
         template = (ROOT / "templates" / "index.template.html").read_text(encoding="utf-8")
-        stylesheet = (ROOT / "assets" / "css" / "library.css").read_text(encoding="utf-8")
+        stylesheet_path = ROOT / "assets" / "css" / "reading-library.css"
+        self.assertTrue(stylesheet_path.is_file())
+        stylesheet = stylesheet_path.read_text(encoding="utf-8")
         garden = ROOT / "assets" / "reading-room" / "garden-sunlight.webp"
         header = ROOT / "assets" / "reading-room" / "retouched-coffee-header.webp"
         old_latte = ROOT / "assets" / "reading-room" / "latte-art-leaf.webp"
@@ -118,13 +120,27 @@ class HomepageBuildTests(unittest.TestCase):
         self.assertIn("backdrop-filter: none;", stylesheet)
 
     def test_reading_panels_share_one_width_and_garden_keeps_natural_color(self):
-        stylesheet = (ROOT / "assets" / "css" / "library.css").read_text(encoding="utf-8")
+        stylesheet_path = ROOT / "assets" / "css" / "reading-library.css"
+        self.assertTrue(stylesheet_path.is_file())
+        stylesheet = stylesheet_path.read_text(encoding="utf-8")
         self.assertIn("--reading-panel-width: min(1180px, calc(100% - 1rem));", stylesheet)
         self.assertIn(".site-nav {\n  width: var(--reading-panel-width);", stylesheet)
         self.assertIn('background: #dce6d5 url("../reading-room/retouched-coffee-header.webp") center / cover no-repeat;', stylesheet)
         self.assertIn("background: url(\"../reading-room/garden-sunlight.webp\") center 39% / cover no-repeat;", stylesheet)
         self.assertIn("filter: none;", stylesheet)
         self.assertIn("body::after { content: none; }", stylesheet)
+
+    def test_coffee_theme_is_loaded_only_by_the_reading_collection(self):
+        reading = (ROOT / "templates" / "index.template.html").read_text(encoding="utf-8")
+        audio = (ROOT / "templates" / "audio-library.template.html").read_text(encoding="utf-8")
+        app = (ROOT / "templates" / "app-library.template.html").read_text(encoding="utf-8")
+        shared = (ROOT / "assets" / "css" / "library.css").read_text(encoding="utf-8")
+        self.assertIn('href="assets/css/reading-library.css"', reading)
+        self.assertNotIn("reading-library.css", audio)
+        self.assertNotIn("reading-library.css", app)
+        self.assertNotIn("Coffee and Books — bright garden glass reading room", shared)
+        self.assertNotIn("garden-sunlight.webp", shared)
+        self.assertNotIn("retouched-coffee-header.webp", shared)
 
     def test_homepage_escapes_catalog_text(self):
         book = dict(self.books[0])

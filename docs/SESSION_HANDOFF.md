@@ -19,6 +19,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 - 20 standalone HTML guides indexed from `data/books.json`.
 - The Reading storefront title is **Coffee and Books**. Its environment uses a bright sunlit outdoor garden photograph containing only trees, foliage, grass, and natural daylight, plus heavy translucent iOS-inspired glass walls and shelves and one seamless user-approved 1044×237 retouched header image. The header removes baked UI on the left while preserving the original cup, latte art, table, garden, and lighting on the right; the site logo and title remain semantic HTML.
 - The Navigation bar, Title banner, Reading/Search panel, and Bookshelf panel share one responsive width: 1180px maximum on desktop and the same 4px side gutters on mobile. The garden wallpaper uses the photograph's natural color with no brightness/saturation/contrast filter and no color-wash overlay. The retouched header image uses `cover`, so no blank cream strip appears when the banner widens.
+- Coffee and Books styles live only in `assets/css/reading-library.css`, loaded only by the Reading template. Shared `assets/css/library.css` is restored byte-for-byte to the pre-Coffee `ca74827` baseline so the App and Audio collections cannot inherit the Reading wallpaper, glass panels, geometry, or header treatment.
 - Book titles and publish dates above each cover are intentionally text-only: no label panel, border, shadow, or metadata backdrop. Readability comes from dark typography and restrained text shadow while the book covers remain dominant.
 - `VAULT_AI_Safety_Interactive_Guide_TH.html` is the newest guide, explaining how to verify AI outputs, choose deterministic/AI/hybrid workflows, place human approval gates, and keep inspectable evidence; it uses the selected Cobalt Ice 600×900 custom WebP cover.
 - The imported `hermes-memory` and `hermes-guardian` repositories retain their original source commits under dedicated subdirectories.
@@ -73,7 +74,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 - App generator: `scripts/build_app_library.py`
 - Custom reading-cover design sources: `templates/reading-cover-designs.template.html`, `templates/mega-prompt-business-book-cover.template.html`, and `templates/reading-cover-assets/`
 - Legacy Facebook-cover generator: `scripts/build_facebook_covers.py` (retained but not used by the active catalog)
-- Shared template/styles: `templates/`, `assets/css/`, `assets/js/`
+- Shared template/styles: `templates/`, `assets/css/library.css`, `assets/js/`; Reading-only environment styles: `assets/css/reading-library.css`
 - Tests: `tests/`
 
 ## Verification commands
@@ -86,7 +87,7 @@ python scripts/build_app_library.py --check
 git diff --check
 ```
 
-Expected verified result at close: **59 tests passed**, all three generated pages current, and no diff-check errors.
+Expected verified result at close: **60 tests passed**, all three generated pages current, and no diff-check errors.
 
 ## Publication workflow
 
