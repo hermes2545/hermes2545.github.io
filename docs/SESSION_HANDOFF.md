@@ -17,6 +17,9 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 ### Reading collection
 
 - 20 standalone HTML guides indexed from `data/books.json`.
+- The Reading storefront title is **Coffee and Books**. Its environment uses a bright sunlit outdoor garden photograph containing only trees, foliage, grass, and natural daylight, plus heavy translucent iOS-inspired glass walls and shelves and one seamless user-approved 1044×237 retouched header image. The header removes baked UI on the left while preserving the original cup, latte art, table, garden, and lighting on the right; the site logo and title remain semantic HTML.
+- The Navigation bar, Title banner, Reading/Search panel, and Bookshelf panel share one responsive width: 1180px maximum on desktop and the same 4px side gutters on mobile. The garden wallpaper uses the photograph's natural color with no brightness/saturation/contrast filter and no color-wash overlay. The retouched header image uses `cover`, so no blank cream strip appears when the banner widens.
+- Book titles and publish dates above each cover are intentionally text-only: no label panel, border, shadow, or metadata backdrop. Readability comes from dark typography and restrained text shadow while the book covers remain dominant.
 - `VAULT_AI_Safety_Interactive_Guide_TH.html` is the newest guide, explaining how to verify AI outputs, choose deterministic/AI/hybrid workflows, place human approval gates, and keep inspectable evidence; it uses the selected Cobalt Ice 600×900 custom WebP cover.
 - The imported `hermes-memory` and `hermes-guardian` repositories retain their original source commits under dedicated subdirectories.
 - All 20 shelf-facing short titles use Thai-first labels while retaining necessary product and technical terms.
@@ -34,7 +37,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 - Audio titles no longer show the redundant `AUDIO BOOK` kicker.
 - Each item and the playlist button open YouTube in a new tab.
 - The Audio room uses a light premium technology-retail theme inspired by Apple Fifth Avenue's architectural materials: a luminous glass-cube mark, circular skylights, pale stone/off-white terrazzo surfaces, stainless-steel details, translucent dark navigation, and maple display tables. Apple Blue is reserved for interactive controls.
-- The Audio collection header is titled **The Audio Shelf** while the Reading collection retains **The Knowledge Shelf**.
+- The Audio collection header is titled **The Audio Shelf** while the Reading collection is titled **Coffee and Books**.
 
 ### App collection
 
@@ -83,7 +86,7 @@ python scripts/build_app_library.py --check
 git diff --check
 ```
 
-Expected verified result at close: **57 tests passed**, all three generated pages current, and no diff-check errors.
+Expected verified result at close: **59 tests passed**, all three generated pages current, and no diff-check errors.
 
 ## Publication workflow
 

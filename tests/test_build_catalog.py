@@ -78,12 +78,53 @@ class HomepageBuildTests(unittest.TestCase):
             self.assertIn(marker, self.html)
 
     def test_new_brand_navigation_icons_and_library_favicon(self):
-        self.assertIn("The Knowledge Shelf", self.html)
+        self.assertIn("Coffee and Books", self.html)
         self.assertIn("Curated Guides, Ideas &amp; Audio", self.html)
         self.assertIn('href="assets/icons/shelfkeeper-librarian.webp"', self.html)
         self.assertIn('src="assets/icons/shelfkeeper-librarian.webp"', self.html)
         self.assertEqual(self.html.count('class="nav-icon"'), 3)
         self.assertIn('href="app-library.html"', self.html)
+
+    def test_reading_room_uses_bright_garden_glass_and_text_only_book_metadata(self):
+        template = (ROOT / "templates" / "index.template.html").read_text(encoding="utf-8")
+        stylesheet = (ROOT / "assets" / "css" / "library.css").read_text(encoding="utf-8")
+        garden = ROOT / "assets" / "reading-room" / "garden-sunlight.webp"
+        header = ROOT / "assets" / "reading-room" / "retouched-coffee-header.webp"
+        old_latte = ROOT / "assets" / "reading-room" / "latte-art-leaf.webp"
+        attribution = ROOT / "docs" / "reports" / "READING_ROOM_IMAGE_ATTRIBUTION.md"
+        self.assertIn("<h1>Coffee and Books</h1>", template)
+        self.assertNotIn('class="latte-title-art"', template)
+        self.assertNotIn('src="assets/reading-room/latte-art-leaf.webp"', template)
+        self.assertNotIn('class="collection-seal"', template)
+        self.assertTrue(garden.is_file())
+        self.assertTrue(header.is_file())
+        self.assertFalse(old_latte.exists())
+        self.assertGreater(garden.stat().st_size, 100000)
+        self.assertGreater(header.stat().st_size, 100000)
+        for asset in (garden, header):
+            data = asset.read_bytes()
+            self.assertEqual(data[:4], b"RIFF")
+            self.assertEqual(data[8:12], b"WEBP")
+        self.assertTrue(attribution.is_file())
+        self.assertIn("Ran Ding", attribution.read_text(encoding="utf-8"))
+        self.assertIn("User-supplied approved header", attribution.read_text(encoding="utf-8"))
+        self.assertIn('url("../reading-room/garden-sunlight.webp")', stylesheet)
+        self.assertIn('url("../reading-room/retouched-coffee-header.webp")', stylesheet)
+        self.assertIn("backdrop-filter: blur(34px)", stylesheet)
+        self.assertIn(".book-meta {", stylesheet)
+        self.assertIn("background: transparent;", stylesheet)
+        self.assertIn("border: 0;", stylesheet)
+        self.assertIn("box-shadow: none;", stylesheet)
+        self.assertIn("backdrop-filter: none;", stylesheet)
+
+    def test_reading_panels_share_one_width_and_garden_keeps_natural_color(self):
+        stylesheet = (ROOT / "assets" / "css" / "library.css").read_text(encoding="utf-8")
+        self.assertIn("--reading-panel-width: min(1180px, calc(100% - 1rem));", stylesheet)
+        self.assertIn(".site-nav {\n  width: var(--reading-panel-width);", stylesheet)
+        self.assertIn('background: #dce6d5 url("../reading-room/retouched-coffee-header.webp") center / cover no-repeat;', stylesheet)
+        self.assertIn("background: url(\"../reading-room/garden-sunlight.webp\") center 39% / cover no-repeat;", stylesheet)
+        self.assertIn("filter: none;", stylesheet)
+        self.assertIn("body::after { content: none; }", stylesheet)
 
     def test_homepage_escapes_catalog_text(self):
         book = dict(self.books[0])
