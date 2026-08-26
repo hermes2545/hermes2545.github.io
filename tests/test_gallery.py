@@ -143,6 +143,46 @@ class GalleryTests(unittest.TestCase):
         ):
             self.assertIn(marker, script)
 
+    def test_lightbox_supports_button_zoom_keyboard_zoom_and_pointer_pan(self):
+        for marker in (
+            'id="zoom-out"',
+            'id="zoom-reset"',
+            'id="zoom-in"',
+            'id="zoom-level"',
+            'aria-label="ซูมออก"',
+            'aria-label="รีเซ็ตการซูม"',
+            'aria-label="ซูมเข้า"',
+        ):
+            self.assertIn(marker, self.page)
+
+        script = (ROOT / "assets" / "js" / "gallery.js").read_text(encoding="utf-8")
+        for marker in (
+            "const MIN_ZOOM = 1",
+            "const MAX_ZOOM = 4",
+            "const ZOOM_STEP = 0.25",
+            "function setZoom(",
+            "function resetViewport()",
+            "function clampPan()",
+            'addEventListener("pointerdown"',
+            'addEventListener("pointermove"',
+            'addEventListener("pointerup"',
+            'event.key === "+" || event.key === "="',
+            'event.key === "-"',
+            'event.key === "0"',
+            "setPointerCapture",
+        ):
+            self.assertIn(marker, script)
+
+        stylesheet = (ROOT / "assets" / "css" / "gallery.css").read_text(encoding="utf-8")
+        for marker in (
+            ".zoom-toolbar",
+            "cursor: grab;",
+            "cursor: grabbing;",
+            "touch-action: none;",
+            "transform-origin: center;",
+        ):
+            self.assertIn(marker, stylesheet)
+
     def test_all_four_templates_have_four_way_navigation(self):
         templates = (
             "index.template.html",
