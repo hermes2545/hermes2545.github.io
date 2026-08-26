@@ -16,23 +16,49 @@ class GalleryTests(unittest.TestCase):
         self.items = load_gallery(CATALOG)
         self.page = render_gallery(self.items)
 
-    def test_catalog_has_eight_unique_minimal_records(self):
+    def test_catalog_has_ten_unique_minimal_records(self):
         required = {
             "id", "title", "category", "format", "published_at",
             "image", "alt", "featured_order",
         }
-        self.assertEqual(len(self.items), 8)
-        self.assertEqual(len({item["id"] for item in self.items}), 8)
+        self.assertEqual(len(self.items), 10)
+        self.assertEqual(len({item["id"] for item in self.items}), 10)
         self.assertEqual({item["category"] for item in self.items}, {"AI", "Data", "Security", "Development"})
-        self.assertEqual({item["featured_order"] for item in self.items}, set(range(1, 9)))
+        self.assertEqual({item["featured_order"] for item in self.items}, set(range(1, 11)))
         for item in self.items:
             self.assertEqual(set(item), required, item)
             self.assertRegex(item["published_at"], r"^\d{4}-\d{2}-\d{2}$")
             self.assertTrue(item["alt"].strip())
-            self.assertRegex(item["image"], r"^assets/gallery/artworks/[a-z0-9-]+\.png$")
+            self.assertRegex(item["image"], r"^assets/gallery/artworks/[a-z0-9-]+\.(?:png|webp)$")
 
-    def test_catalog_images_are_the_eight_local_original_pngs(self):
+    def test_user_supplied_gallery_images_are_first_and_local(self):
+        expected = (
+            (
+                "hermes-home-assistant",
+                "Hermes x Home Assistant",
+                "Development",
+                "A4",
+                "assets/gallery/artworks/09-hermes-home-assistant.webp",
+            ),
+            (
+                "ai-agent-web-access-barriers",
+                "ทำไม AI Agent ถึงเข้าเว็บนี้ไม่ได้?",
+                "Security",
+                "16:9",
+                "assets/gallery/artworks/10-ai-agent-web-access-barriers.webp",
+            ),
+        )
+        for item, values in zip(self.items[:2], expected):
+            self.assertEqual(
+                (item["id"], item["title"], item["category"], item["format"], item["image"]),
+                values,
+            )
+            self.assertEqual(item["published_at"], "2026-08-26")
+
+    def test_catalog_images_are_ten_local_gallery_assets(self):
         expected_sizes = {
+            "09-hermes-home-assistant.webp": (906, 1280),
+            "10-ai-agent-web-access-barriers.webp": (1280, 720),
             "01-how-ai-agents-work-16x9.png": (1600, 900),
             "02-rag-architecture-4x3.png": (1200, 900),
             "03-cloud-vs-on-premise-square.png": (1080, 1080),
@@ -47,7 +73,8 @@ class GalleryTests(unittest.TestCase):
             image_path = ROOT / item["image"]
             self.assertTrue(image_path.is_file(), image_path)
             with Image.open(image_path) as image:
-                self.assertEqual(image.format, "PNG")
+                expected_format = "WEBP" if image_path.suffix == ".webp" else "PNG"
+                self.assertEqual(image.format, expected_format)
                 self.assertEqual(image.mode, "RGB")
                 self.assertEqual(image.size, expected_sizes[image_path.name])
                 self.assertEqual(len(image.getexif()), 0)
@@ -64,7 +91,7 @@ class GalleryTests(unittest.TestCase):
         self.assertNotIn("/home/", self.page)
 
     def test_page_renders_accessible_controls_and_all_artworks(self):
-        self.assertEqual(self.page.count('class="art-card"'), 8)
+        self.assertEqual(self.page.count('class="art-card"'), len(self.items))
         for item in self.items:
             self.assertEqual(self.page.count(f'src="{item["image"]}"'), 1)
             self.assertIn(html.escape(item["title"]), self.page)

@@ -57,7 +57,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with f
 
 ### Gallery collection
 
-- 8 original project infographic PNGs are indexed from `data/gallery.json` and generated into `gallery.html`.
+- 10 artworks are indexed from `data/gallery.json` and generated into `gallery.html`: two user/project-owner supplied EXIF-free WebPs appear first, followed by eight original project infographic PNGs.
 - The hero is a user/project-owner supplied image converted locally to an EXIF-free 1280×559 RGB WebP at `assets/gallery/gallery-hero.webp`; public-safe attribution is recorded in `docs/reports/GALLERY_IMAGE_ATTRIBUTION.md`.
 - The page supports category filtering, Featured/Newest/Title sorting, grid/list views, and a modal lightbox with previous/next controls, arrow keys, Escape, and focus restoration.
 - The responsive artwork grid uses 4 columns on desktop, 2 on tablet, and 1 on mobile. All runtime assets are local.
@@ -71,7 +71,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with f
 - Reading category plaques are interactive filters; clicking a plaque filters to that category and clicking the active category again restores all books.
 - Book covers rest 3–4px above the shelf lip, leaving enough clearance for the 12px hover lift without overlapping the shelf.
 - Navigation includes reading-glasses and headphones icons.
-- Navigation includes Reading, Audio, App, and Gallery destinations.
+- Navigation order is Reading, Audio, Gallery, then App on every collection page.
 - `assets/icons/shelfkeeper-librarian.webp` is the shared Reading/Audio header icon and favicon for all four collection pages; the App storefront header keeps the Pantip logo.
 - Search uses `assets/js/library.js`; the separate reading-category filter row is intentionally removed because categories are shown on shelf plaques.
 
@@ -101,7 +101,7 @@ python scripts/build_gallery.py --check
 git diff --check
 ```
 
-Expected verified result at close: **74 tests passed**, all four generated pages current, and no diff-check errors.
+Expected verified result at close: **75 tests passed**, all four generated pages current, and no diff-check errors.
 
 ## Publication workflow
 
@@ -121,7 +121,7 @@ Expected verified result at close: **74 tests passed**, all four generated pages
 
 ## Next recommended step
 
-Run browser QA for the locally implemented Gallery at desktop and 390px mobile, then request explicit approval before any commit or public push.
+The Gallery implementation and the two user-supplied additions are locally verified and committed; request explicit approval before public push.
 
 ## Published artifact
 

@@ -15,6 +15,8 @@ TEMPLATE_PATH = ROOT / "templates" / "gallery.template.html"
 OUTPUT_PATH = ROOT / "gallery.html"
 
 IMAGE_SIZES = {
+    "09-hermes-home-assistant.webp": (906, 1280),
+    "10-ai-agent-web-access-barriers.webp": (1280, 720),
     "01-how-ai-agents-work-16x9.png": (1600, 900),
     "02-rag-architecture-4x3.png": (1200, 900),
     "03-cloud-vs-on-premise-square.png": (1080, 1080),

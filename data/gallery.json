@@ -1,5 +1,25 @@
 [
   {
+    "id": "hermes-home-assistant",
+    "title": "Hermes x Home Assistant",
+    "category": "Development",
+    "format": "A4",
+    "published_at": "2026-08-26",
+    "image": "assets/gallery/artworks/09-hermes-home-assistant.webp",
+    "alt": "อินโฟกราฟิก Hermes x Home Assistant อธิบายการเชื่อมต่อ API ความสามารถ Automation และแนวทางรักษาความปลอดภัย",
+    "featured_order": 1
+  },
+  {
+    "id": "ai-agent-web-access-barriers",
+    "title": "ทำไม AI Agent ถึงเข้าเว็บนี้ไม่ได้?",
+    "category": "Security",
+    "format": "16:9",
+    "published_at": "2026-08-26",
+    "image": "assets/gallery/artworks/10-ai-agent-web-access-barriers.webp",
+    "alt": "อินโฟกราฟิกอธิบายอุปสรรคที่ AI Agent และ Headless Browser พบเมื่อเข้าเว็บไซต์ พร้อมแนวทางเข้าถึงข้อมูลอย่างรับผิดชอบ",
+    "featured_order": 2
+  },
+  {
     "id": "how-ai-agents-work",
     "title": "How AI Agents Work",
     "category": "AI",
@@ -7,7 +27,7 @@
     "published_at": "2026-08-20",
     "image": "assets/gallery/artworks/01-how-ai-agents-work-16x9.png",
     "alt": "อินโฟกราฟิก How AI Agents Work แสดงวงจร Goal, Plan, Tools และ Check",
-    "featured_order": 1
+    "featured_order": 3
   },
   {
     "id": "rag-architecture",
@@ -17,7 +37,7 @@
     "published_at": "2026-08-18",
     "image": "assets/gallery/artworks/02-rag-architecture-4x3.png",
     "alt": "อินโฟกราฟิก RAG Architecture แสดงขั้นตอน Index และ Answer",
-    "featured_order": 2
+    "featured_order": 4
   },
   {
     "id": "cloud-vs-on-premise",
@@ -27,7 +47,7 @@
     "published_at": "2026-08-16",
     "image": "assets/gallery/artworks/03-cloud-vs-on-premise-square.png",
     "alt": "อินโฟกราฟิกเปรียบเทียบ Cloud กับ On-Premise",
-    "featured_order": 3
+    "featured_order": 5
   },
   {
     "id": "system-design-overview",
@@ -37,7 +57,7 @@
     "published_at": "2026-08-14",
     "image": "assets/gallery/artworks/04-system-design-overview-16x9.png",
     "alt": "อินโฟกราฟิก System Design Overview แสดง request path และ operational plane",
-    "featured_order": 4
+    "featured_order": 6
   },
   {
     "id": "cybersecurity-checklist",
@@ -47,7 +67,7 @@
     "published_at": "2026-08-12",
     "image": "assets/gallery/artworks/05-cybersecurity-checklist-square.png",
     "alt": "อินโฟกราฟิก Cybersecurity Checklist แบ่งหัวข้อ Identity, Patching, Secrets และ Backup",
-    "featured_order": 5
+    "featured_order": 7
   },
   {
     "id": "git-workflow",
@@ -57,7 +77,7 @@
     "published_at": "2026-08-10",
     "image": "assets/gallery/artworks/06-git-workflow-4x3.png",
     "alt": "อินโฟกราฟิก Git Workflow แสดงเส้นทาง commit, branch, review และ merge",
-    "featured_order": 6
+    "featured_order": 8
   },
   {
     "id": "evolution-of-ai",
@@ -67,7 +87,7 @@
     "published_at": "2026-08-08",
     "image": "assets/gallery/artworks/07-evolution-of-ai-tall-poster.png",
     "alt": "โปสเตอร์แนวตั้ง Evolution of AI จาก Rules สู่ Agents",
-    "featured_order": 7
+    "featured_order": 9
   },
   {
     "id": "linux-command-cheat-sheet",
@@ -77,6 +97,6 @@
     "published_at": "2026-08-06",
     "image": "assets/gallery/artworks/08-linux-command-cheat-sheet-a4.png",
     "alt": "โปสเตอร์ Linux Command Cheat Sheet รวมคำสั่งพื้นฐานแบบหมวดหมู่",
-    "featured_order": 8
+    "featured_order": 10
   }
 ]
