@@ -197,6 +197,10 @@ class AppLibraryTests(unittest.TestCase):
         self.assertIn("to { left: 0; transform: translate(-100%, -50%); }", stylesheet)
         self.assertIn('const ledColors = ["#ff3b30", "#20b548", "#ffd20a", "#2b6cff"]', script)
         self.assertIn('marquee.addEventListener("animationiteration"', script)
+        self.assertIn("@media (prefers-reduced-motion: reduce)", stylesheet)
+        self.assertIn(".app-page .app-marquee-message", stylesheet)
+        self.assertIn("animation-duration: 28s !important", stylesheet)
+        self.assertIn("animation-iteration-count: infinite !important", stylesheet)
 
     def test_app_page_is_semantic_searchable_and_generated(self):
         required = [

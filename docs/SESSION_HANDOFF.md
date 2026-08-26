@@ -51,6 +51,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with t
 - Pac-Man, Battle Tank, and Lode Runner carry local 360×220 WebP stickers made from source-derived runtime imagery and original-game visual research; Bakery retains its paper utility label.
 - The App room uses a light Pantip Plaza 1990s software-floor visual language: pale retail wall, perforated metal display board, LED signage, Windows 95-style search panel, and metal shelf edges.
 - The App header is branded **พันธุ์ทิพย์พลาซ่า** and uses the user-supplied Pantip Plaza logo at the upper-left instead of the former `3½` badge. Its long Thai LED shop message scrolls continuously from right to left at a restrained 28-second pace and changes red → green → yellow → blue on each completed loop.
+- The App LED is functional storefront signage, not decorative motion. `app-library.css` explicitly preserves its 28-second infinite animation even when the browser reports `prefers-reduced-motion: reduce`; this narrowly overrides the shared decorative-animation reduction without changing other pages.
 
 ### Shared visual behavior
 

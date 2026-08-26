@@ -359,3 +359,13 @@
   .label-mark { width: 1.9rem; }
   .diskette-label strong { max-width: calc(100% - 1.8rem); font-size: .66rem; }
 }
+
+/* The storefront LED is functional signage and must keep moving even when
+   the shared accessibility stylesheet reduces decorative animations. */
+@media (prefers-reduced-motion: reduce) {
+  .app-page .app-marquee-message {
+    animation-duration: 28s !important;
+    animation-iteration-count: infinite !important;
+    animation-play-state: running !important;
+  }
+}
