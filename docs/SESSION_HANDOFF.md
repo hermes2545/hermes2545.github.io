@@ -61,6 +61,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with f
 - The hero is a user/project-owner supplied image converted locally to an EXIF-free 1280×559 RGB WebP at `assets/gallery/gallery-hero.webp`; public-safe attribution is recorded in `docs/reports/GALLERY_IMAGE_ATTRIBUTION.md`.
 - The page supports category filtering, Featured/Newest/Title sorting, grid/list views, and a modal lightbox with previous/next controls, arrow keys, Escape, and focus restoration.
 - The Gallery lightbox supports 100–400% zoom with −/+/reset controls, keyboard `+`/`-`/`0`, and clamped pointer panning for mouse, touch, and pen. Changing images and closing the viewer reset the viewport to 100%.
+- The image now pans inside a dedicated `.lightbox-media` viewport while the caption stays outside that viewport; this keeps the image geometrically centered and makes all four image edges reachable at maximum zoom.
 - The responsive artwork grid uses 4 columns on desktop, 2 on tablet, and 1 on mobile. All runtime assets are local.
 
 ### Shared visual behavior
@@ -102,7 +103,7 @@ python scripts/build_gallery.py --check
 git diff --check
 ```
 
-Expected verified result at close: **76 tests passed**, all four generated pages current, and no diff-check errors.
+Expected verified result at close: **77 tests passed**, all four generated pages current, and no diff-check errors.
 
 ## Publication workflow
 

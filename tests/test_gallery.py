@@ -183,6 +183,21 @@ class GalleryTests(unittest.TestCase):
         ):
             self.assertIn(marker, stylesheet)
 
+    def test_lightbox_separates_the_pan_viewport_from_the_caption(self):
+        self.assertIn('<div class="lightbox-media"><img id="viewer-image" alt=""></div>', self.page)
+        self.assertIn('<figcaption class="lightbox-caption">', self.page)
+        self.assertNotIn('<figure class="lightbox-figure"><img id="viewer-image"', self.page)
+
+        script = (ROOT / "assets" / "js" / "gallery.js").read_text(encoding="utf-8")
+        self.assertIn('const viewerFrame = dialog.querySelector(".lightbox-media")', script)
+        self.assertIn("viewerImage.offsetWidth * zoom - viewerFrame.clientWidth", script)
+        self.assertIn("viewerImage.offsetHeight * zoom - viewerFrame.clientHeight", script)
+
+        stylesheet = (ROOT / "assets" / "css" / "gallery.css").read_text(encoding="utf-8")
+        self.assertIn(".lightbox-media {", stylesheet)
+        self.assertIn(".lightbox-figure {", stylesheet)
+        self.assertIn("grid-template-rows: minmax(0, 1fr) auto;", stylesheet)
+
     def test_all_four_templates_have_four_way_navigation(self):
         templates = (
             "index.template.html",

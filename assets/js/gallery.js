@@ -13,7 +13,7 @@
   const viewerImage = document.querySelector("#viewer-image");
   const viewerTitle = document.querySelector("#viewer-title");
   const viewerMeta = document.querySelector("#viewer-meta");
-  const viewerFrame = dialog.querySelector(".lightbox-figure");
+  const viewerFrame = dialog.querySelector(".lightbox-media");
   const zoomOut = document.querySelector("#zoom-out");
   const zoomReset = document.querySelector("#zoom-reset");
   const zoomIn = document.querySelector("#zoom-in");

@@ -102,11 +102,12 @@ svg { fill: currentColor; }
 .lightbox-close { grid-area: 1 / 3; justify-self: end; }
 .lightbox-prev { grid-area: 2 / 1; }
 .lightbox-next { grid-area: 2 / 3; }
-.lightbox-figure { width: 100%; height: 100%; margin: 0; display: grid; grid-area: 2 / 2; place-items: center; overflow: hidden; }
-.lightbox-figure.can-pan { cursor: grab; touch-action: none; }
-.lightbox-figure.dragging { cursor: grabbing; }
-.lightbox-figure img { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 20px 70px #000; transform-origin: center; user-select: none; -webkit-user-drag: none; will-change: transform; }
-.lightbox-caption { padding-top: 14px; display: flex; grid-area: 3 / 2; justify-content: space-between; gap: 20px; color: #c5d4d9; font-size: 13px; }
+.lightbox-figure { width: 100%; height: 100%; min-height: 0; margin: 0; display: grid; grid-area: 2 / 2 / 4 / 3; grid-template-rows: minmax(0, 1fr) auto; }
+.lightbox-media { min-width: 0; min-height: 0; display: grid; place-items: center; overflow: hidden; }
+.lightbox-media.can-pan { cursor: grab; touch-action: none; }
+.lightbox-media.dragging { cursor: grabbing; }
+.lightbox-media img { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 20px 70px #000; transform-origin: center; user-select: none; -webkit-user-drag: none; will-change: transform; }
+.lightbox-caption { padding-top: 14px; display: flex; justify-content: space-between; gap: 20px; color: #c5d4d9; font-size: 13px; }
 .lightbox-caption strong { color: #fff; font: 400 20px var(--serif); }
 
 @media (max-width: 1100px) {
