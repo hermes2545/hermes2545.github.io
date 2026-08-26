@@ -16,15 +16,15 @@ class GalleryTests(unittest.TestCase):
         self.items = load_gallery(CATALOG)
         self.page = render_gallery(self.items)
 
-    def test_catalog_has_ten_unique_minimal_records(self):
+    def test_catalog_has_only_two_user_supplied_records(self):
         required = {
             "id", "title", "category", "format", "published_at",
             "image", "alt", "featured_order",
         }
-        self.assertEqual(len(self.items), 10)
-        self.assertEqual(len({item["id"] for item in self.items}), 10)
-        self.assertEqual({item["category"] for item in self.items}, {"AI", "Data", "Security", "Development"})
-        self.assertEqual({item["featured_order"] for item in self.items}, set(range(1, 11)))
+        self.assertEqual(len(self.items), 2)
+        self.assertEqual({item["id"] for item in self.items}, {"hermes-home-assistant", "ai-agent-web-access-barriers"})
+        self.assertEqual({item["category"] for item in self.items}, {"Security", "Development"})
+        self.assertEqual({item["featured_order"] for item in self.items}, {1, 2})
         for item in self.items:
             self.assertEqual(set(item), required, item)
             self.assertRegex(item["published_at"], r"^\d{4}-\d{2}-\d{2}$")
@@ -55,29 +55,32 @@ class GalleryTests(unittest.TestCase):
             )
             self.assertEqual(item["published_at"], "2026-08-26")
 
-    def test_catalog_images_are_ten_local_gallery_assets(self):
+    def test_catalog_images_are_two_user_supplied_webps_and_examples_are_absent(self):
         expected_sizes = {
             "09-hermes-home-assistant.webp": (906, 1280),
             "10-ai-agent-web-access-barriers.webp": (1280, 720),
-            "01-how-ai-agents-work-16x9.png": (1600, 900),
-            "02-rag-architecture-4x3.png": (1200, 900),
-            "03-cloud-vs-on-premise-square.png": (1080, 1080),
-            "04-system-design-overview-16x9.png": (1600, 900),
-            "05-cybersecurity-checklist-square.png": (1080, 1080),
-            "06-git-workflow-4x3.png": (1200, 900),
-            "07-evolution-of-ai-tall-poster.png": (900, 1600),
-            "08-linux-command-cheat-sheet-a4.png": (1240, 1754),
         }
         self.assertEqual({Path(item["image"]).name for item in self.items}, set(expected_sizes))
         for item in self.items:
             image_path = ROOT / item["image"]
             self.assertTrue(image_path.is_file(), image_path)
             with Image.open(image_path) as image:
-                expected_format = "WEBP" if image_path.suffix == ".webp" else "PNG"
-                self.assertEqual(image.format, expected_format)
+                self.assertEqual(image.format, "WEBP")
                 self.assertEqual(image.mode, "RGB")
                 self.assertEqual(image.size, expected_sizes[image_path.name])
                 self.assertEqual(len(image.getexif()), 0)
+        retired = (
+            "01-how-ai-agents-work-16x9.png",
+            "02-rag-architecture-4x3.png",
+            "03-cloud-vs-on-premise-square.png",
+            "04-system-design-overview-16x9.png",
+            "05-cybersecurity-checklist-square.png",
+            "06-git-workflow-4x3.png",
+            "07-evolution-of-ai-tall-poster.png",
+            "08-linux-command-cheat-sheet-a4.png",
+        )
+        for filename in retired:
+            self.assertFalse((ROOT / "assets" / "gallery" / "artworks" / filename).exists(), filename)
 
     def test_user_supplied_hero_is_public_exif_free_webp(self):
         hero = ROOT / "assets" / "gallery" / "gallery-hero.webp"
@@ -228,7 +231,7 @@ class GalleryTests(unittest.TestCase):
         self.assertTrue(report.is_file())
         text = report.read_text(encoding="utf-8")
         self.assertIn("user/project-owner supplied", text)
-        self.assertIn("original project assets", text)
+        self.assertNotIn("original project assets", text)
         self.assertNotIn("/home/", text)
         self.assertNotIn(".hermes/", text)
 
