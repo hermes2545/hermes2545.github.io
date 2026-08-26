@@ -65,6 +65,35 @@ class AudioLibraryTests(unittest.TestCase):
         self.assertIn('publish on 24/08/2026', self.page)
         self.assertIn('25:42', self.page)
 
+    def test_audio_progressive_disclosure_starts_at_ten_and_supports_year_archive(self):
+        template = (ROOT / "templates" / "audio-library.template.html").read_text(encoding="utf-8")
+        script = (ROOT / "assets" / "js" / "library.js").read_text(encoding="utf-8")
+        stylesheet = (ROOT / "assets" / "css" / "audio-library.css").read_text(encoding="utf-8")
+        for marker in (
+            'id="audio-show-more"',
+            'id="audio-show-all"',
+            'id="audio-collapse"',
+            'id="audio-year-toggle"',
+            'id="audio-year-filters"',
+            'aria-controls="audio-year-filters"',
+        ):
+            self.assertIn(marker, template)
+        for marker in (
+            "const AUDIO_INITIAL_LIMIT = 10",
+            "const AUDIO_BATCH_SIZE = 10",
+            "audioVisibleLimit += AUDIO_BATCH_SIZE",
+            "audioVisibleLimit = cards.length",
+            "audioVisibleLimit = AUDIO_INITIAL_LIMIT",
+            "function buildAudioYearFilters()",
+            "card.querySelector(\"time[datetime]\")",
+            "Boolean(query) || matchesAudioDisclosure(card, index)",
+        ):
+            self.assertIn(marker, script)
+        self.assertIn(".audio-disclosure-controls", stylesheet)
+        self.assertIn(".audio-year-filters", stylesheet)
+        self.assertEqual(self.page.count('class="book-card audio-card"'), 48)
+        self.assertNotIn('class="book-card audio-card" hidden', self.page)
+
     def test_audio_covers_show_full_four_by_three_thumbnail_over_play_panel(self):
         self.assertEqual(self.page.count('class="audio-thumbnail-frame"'), 48)
         self.assertEqual(self.page.count('class="audio-play-panel"'), 48)

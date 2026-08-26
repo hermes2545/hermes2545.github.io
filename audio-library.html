@@ -57,6 +57,16 @@
       <p class="result-status" id="result-status" aria-live="polite">แสดงหนังสือเสียงทั้ง 48 รายการ</p>
     </section>
 
+    <section class="audio-disclosure-controls" aria-label="ควบคุมจำนวนรายการหนังสือเสียง" data-total="48" hidden>
+      <div class="audio-disclosure-actions">
+        <button id="audio-show-more" type="button">แสดงเพิ่มอีก 10 รายการ</button>
+        <button id="audio-show-all" type="button">แสดงทั้งหมด 48 รายการ</button>
+        <button id="audio-collapse" type="button" hidden>ย่อกลับเหลือรายการล่าสุด</button>
+        <button id="audio-year-toggle" type="button" aria-expanded="false" aria-controls="audio-year-filters">ดูคลังตามปี</button>
+      </div>
+      <div class="audio-year-filters" id="audio-year-filters" aria-label="เลือกปีที่เผยแพร่" hidden></div>
+    </section>
+
     <section class="bookshelf-room audio-bookshelf" aria-label="ชั้นหนังสือเสียง The Knowledge Shelf">
       <section class="shelf" aria-label="ชั้นหนังสือเสียงที่ 1">
   <div class="book-grid">

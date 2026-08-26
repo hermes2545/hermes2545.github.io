@@ -10,6 +10,18 @@
   const isAudio = document.body.classList.contains("audio-page");
   const itemName = isAudio ? "หนังสือเสียง" : "หนังสือ";
   const itemUnit = isAudio ? "รายการ" : "เล่ม";
+  const audioControls = document.querySelector(".audio-disclosure-controls");
+  const audioShowMore = document.querySelector("#audio-show-more");
+  const audioShowAll = document.querySelector("#audio-show-all");
+  const audioCollapse = document.querySelector("#audio-collapse");
+  const audioYearToggle = document.querySelector("#audio-year-toggle");
+  const audioYearFilters = document.querySelector("#audio-year-filters");
+  const AUDIO_INITIAL_LIMIT = 10;
+  const AUDIO_BATCH_SIZE = 10;
+  let audioVisibleLimit = AUDIO_INITIAL_LIMIT;
+  let activeAudioYear = "";
+  let audioArchiveOpen = false;
+  let previousAudioQuery = "";
   let activeCategory = "";
   let currentColumns = 0;
   let resizeTimer;
@@ -74,14 +86,67 @@
     updateCatalog();
   }
 
+  function audioYearForCard(card) {
+    const time = card.querySelector("time[datetime]");
+    return time ? time.getAttribute("datetime").slice(0, 4) : "";
+  }
+
+  function matchesAudioDisclosure(card, index) {
+    if (activeAudioYear) return audioYearForCard(card) === activeAudioYear;
+    return index < audioVisibleLimit;
+  }
+
+  function buildAudioYearFilters() {
+    if (!isAudio || !audioYearFilters) return;
+    const counts = new Map();
+    cards.forEach((card) => {
+      const year = audioYearForCard(card);
+      if (year) counts.set(year, (counts.get(year) || 0) + 1);
+    });
+
+    const latest = document.createElement("button");
+    latest.type = "button";
+    latest.dataset.audioYear = "";
+    latest.setAttribute("aria-pressed", "true");
+    latest.textContent = "รายการล่าสุด";
+    audioYearFilters.appendChild(latest);
+
+    [...counts].sort(([a], [b]) => b.localeCompare(a)).forEach(([year, count]) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.audioYear = year;
+      button.setAttribute("aria-pressed", "false");
+      button.textContent = `${year} · ${count} รายการ`;
+      audioYearFilters.appendChild(button);
+    });
+  }
+
+  function updateAudioControls(query, visible) {
+    if (!isAudio || !audioControls) return;
+    const searching = Boolean(query);
+    const browsingYear = Boolean(activeAudioYear);
+    audioShowMore.hidden = searching || browsingYear || audioVisibleLimit >= cards.length;
+    audioShowAll.hidden = searching || browsingYear || audioVisibleLimit >= cards.length;
+    audioCollapse.hidden = searching || browsingYear || audioVisibleLimit <= AUDIO_INITIAL_LIMIT;
+    audioYearToggle.hidden = searching;
+    audioYearToggle.setAttribute("aria-expanded", String(audioArchiveOpen && !searching));
+    audioYearFilters.hidden = !audioArchiveOpen || searching;
+    const remaining = Math.max(0, cards.length - visible);
+    audioShowMore.textContent = `แสดงเพิ่มอีก ${Math.min(AUDIO_BATCH_SIZE, remaining)} รายการ`;
+    [...audioYearFilters.querySelectorAll("button[data-audio-year]")].forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.audioYear === activeAudioYear));
+    });
+  }
+
   function updateCatalog() {
     const query = normalize(search.value);
     let visible = 0;
 
-    cards.forEach((card) => {
+    cards.forEach((card, index) => {
       const matchesCategory = !activeCategory || card.dataset.category === activeCategory;
       const matchesQuery = !query || normalize(card.dataset.search).includes(query);
-      card.hidden = !(matchesCategory && matchesQuery);
+      const matchesDisclosure = !isAudio || Boolean(query) || matchesAudioDisclosure(card, index);
+      card.hidden = !(matchesCategory && matchesQuery && matchesDisclosure);
       if (!card.hidden) visible += 1;
     });
 
@@ -103,12 +168,28 @@
     });
 
     empty.hidden = visible !== 0;
-    status.textContent = visible === cards.length
-      ? `แสดง${itemName}ทั้ง ${visible} ${itemUnit}`
-      : `พบ${itemName} ${visible} ${itemUnit} จากทั้งหมด ${cards.length} ${itemUnit}`;
+    if (isAudio && !query && !activeAudioYear) {
+      status.textContent = `กำลังแสดง${itemName} ${visible} ${itemUnit} จากทั้งหมด ${cards.length} ${itemUnit}`;
+    } else if (isAudio && !query && activeAudioYear) {
+      status.textContent = `แสดง${itemName}ปี ${activeAudioYear} ทั้ง ${visible} ${itemUnit}`;
+    } else {
+      status.textContent = visible === cards.length
+        ? `แสดง${itemName}ทั้ง ${visible} ${itemUnit}`
+        : `พบ${itemName} ${visible} ${itemUnit} จากทั้งหมด ${cards.length} ${itemUnit}`;
+    }
+    updateAudioControls(query, visible);
   }
 
-  search.addEventListener("input", updateCatalog);
+  search.addEventListener("input", () => {
+    const query = normalize(search.value);
+    if (isAudio && query) activeAudioYear = "";
+    if (isAudio && !query && previousAudioQuery) {
+      audioVisibleLimit = AUDIO_INITIAL_LIMIT;
+      activeAudioYear = "";
+    }
+    previousAudioQuery = query;
+    updateCatalog();
+  });
 
   room.addEventListener("click", (event) => {
     const plaque = event.target.closest(".shelf-category-plaque[data-category-filter]");
@@ -117,6 +198,35 @@
     activeCategory = activeCategory === selected ? "" : selected;
     updateCatalog();
   });
+
+  if (isAudio && audioControls) {
+    audioShowMore.addEventListener("click", () => {
+      audioVisibleLimit += AUDIO_BATCH_SIZE;
+      updateCatalog();
+    });
+    audioShowAll.addEventListener("click", () => {
+      audioVisibleLimit = cards.length;
+      updateCatalog();
+    });
+    audioCollapse.addEventListener("click", () => {
+      audioVisibleLimit = AUDIO_INITIAL_LIMIT;
+      activeAudioYear = "";
+      updateCatalog();
+      audioControls.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+    audioYearToggle.addEventListener("click", () => {
+      audioArchiveOpen = !audioArchiveOpen;
+      audioYearToggle.textContent = audioArchiveOpen ? "ซ่อนคลังตามปี" : "ดูคลังตามปี";
+      updateCatalog();
+    });
+    audioYearFilters.addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-audio-year]");
+      if (!button) return;
+      activeAudioYear = button.dataset.audioYear;
+      audioVisibleLimit = activeAudioYear ? cards.length : AUDIO_INITIAL_LIMIT;
+      updateCatalog();
+    });
+  }
 
 
   window.addEventListener("resize", () => {
@@ -132,9 +242,18 @@
     if (event.key === "Escape" && document.activeElement === search) {
       search.value = "";
       search.blur();
+      if (isAudio) {
+        audioVisibleLimit = AUDIO_INITIAL_LIMIT;
+        activeAudioYear = "";
+        previousAudioQuery = "";
+      }
       updateCatalog();
     }
   });
 
+  if (isAudio && audioControls) {
+    buildAudioYearFilters();
+    audioControls.hidden = false;
+  }
   layoutShelves();
 })();
