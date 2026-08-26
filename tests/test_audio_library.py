@@ -101,6 +101,25 @@ class AudioLibraryTests(unittest.TestCase):
         self.assertIn("<h1>The Audio Shelf</h1>", template)
         self.assertNotIn("<h1>The Knowledge Shelf</h1>", template)
 
+    def test_audio_room_uses_selected_fifth_avenue_wallpaper_and_liquid_glass_shelves(self):
+        stylesheet = (ROOT / "assets" / "css" / "audio-library.css").read_text(encoding="utf-8")
+        wallpaper = ROOT / "assets" / "audio-room" / "apple-fifth-avenue-retail-floor.webp"
+        attribution = ROOT / "docs" / "reports" / "AUDIO_ROOM_IMAGE_ATTRIBUTION.md"
+        self.assertTrue(wallpaper.is_file())
+        self.assertGreater(wallpaper.stat().st_size, 250000)
+        data = wallpaper.read_bytes()
+        self.assertEqual(data[:4], b"RIFF")
+        self.assertEqual(data[8:12], b"WEBP")
+        self.assertTrue(attribution.is_file())
+        attribution_text = attribution.read_text(encoding="utf-8")
+        self.assertIn("Seasider53", attribution_text)
+        self.assertIn("CC BY 4.0", attribution_text)
+        self.assertIn('url("../audio-room/apple-fifth-avenue-retail-floor.webp")', stylesheet)
+        self.assertIn(".audio-bookshelf {", stylesheet)
+        self.assertIn("backdrop-filter: blur(30px) saturate(1.35)", stylesheet)
+        self.assertIn(".audio-bookshelf .shelf-plank", stylesheet)
+        self.assertIn("backdrop-filter: blur(24px) saturate(1.4)", stylesheet)
+
     def test_duration_is_in_the_lower_panel_above_play(self):
         cards = self.page.split('<article class="book-card audio-card"')[1:]
         self.assertEqual(len(cards), 48)
