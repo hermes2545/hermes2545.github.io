@@ -127,7 +127,7 @@ Expected verified result at close: **85 tests passed**, all four generated pages
 
 ## Next recommended step
 
-No implementation task is pending. The current approved publication contains Agent Reach Reading/Audio plus the Tumngern App; final remote/deployment evidence is recorded at session close. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
+No implementation task is pending. Agent Reach Reading/Audio and the Tumngern App are published and production-verified. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
 
 ## Latest close checkpoint — 2026-08-27
 
@@ -150,6 +150,10 @@ No implementation task is pending. The current approved publication contains Age
 - Standing approval is active for qualifying original Gallery image uploads: preserve visible content, run all gates, then commit, push both Library remotes, publish, and production-verify automatically. All other collections and operations remain approval-gated.
 - Current approved local verification passed **85 tests** with Reading 24, Audio 50, App 6, and Gallery 5; all generators are current and `git diff --check` passes.
 - Current pre-share scan covered 33 changed/new files: no credential, private key, private local path, Drive ID, or image EXIF/ICC was found. Tumngern retains one owner-published contact Email from its Public upstream; this intentional public contact is documented in `docs/reports/APP_IMPORT_SOURCE_AUDIT.md`.
+- Content publication commit: `9ad661fed5a9a4f33c1127cdebcdcdc3465206cf` (`Publish Agent Reach and Tumngern additions`). Local, public `origin/main`, and private `backup/main` matched at this commit before the close-document update.
+- GitHub Pages deployment `33070600654` completed successfully for the content commit.
+- Production contains Reading 24, Audio 50, App 6, and Gallery 5. Agent Reach is first/newest in Reading and Audio; Tumngern shows `publish on 30/07/2026` in the App Shelf.
+- Nine sampled Production artifacts—including Agent Reach HTML/covers and Tumngern launcher/runtime/manifest/bundle/splash—matched Local byte-for-byte. Production Tumngern mobile loaded all runtime resources with HTTP 200, no runtime exceptions, empty initial storage, and no horizontal overflow.
 - No Library QA server, Studio browser, headless browser, or render process remains running.
 - The only untracked working-tree path is local private `.hermes/`; never stage or push it.
 
