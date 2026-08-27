@@ -16,17 +16,17 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with f
 
 ### Reading collection
 
-- 22 standalone HTML guides indexed from `data/books.json`.
+- 23 standalone HTML guides indexed from `data/books.json`.
 - The Reading storefront title is **Coffee and Books**. Its environment uses a bright sunlit outdoor garden photograph containing only trees, foliage, grass, and natural daylight, plus heavy translucent iOS-inspired glass walls and shelves and one seamless user-approved 1044×237 retouched header image. The header removes baked UI on the left while preserving the original cup, latte art, table, garden, and lighting on the right; the site logo and title remain semantic HTML.
 - The Navigation bar, Title banner, Reading/Search panel, and Bookshelf panel share one responsive width: 1180px maximum on desktop and the same 4px side gutters on mobile. The garden wallpaper uses the photograph's natural color with no brightness/saturation/contrast filter and no color-wash overlay. The retouched header image uses `cover`, so no blank cream strip appears when the banner widens.
 - Coffee and Books styles live only in `assets/css/reading-library.css`, loaded only by the Reading template. Shared `assets/css/library.css` is restored byte-for-byte to the pre-Coffee `ca74827` baseline so the App and Audio collections cannot inherit the Reading wallpaper, glass panels, geometry, or header treatment.
 - Book titles and publish dates above each cover are intentionally text-only: no label panel, border, shadow, or metadata backdrop. Readability comes from dark typography and restrained text shadow while the book covers remain dominant.
-- `grok-bot-vs-claude-code-vs-codex.html` is the newest guide, comparing persistent AI teammates with spawned agents across identity, state, environments, collaboration, automation, approvals, and use cases.
+- `Hermes_Agent_Advance_Computer_Use_Guide_TH.html` is the newest local guide: a byte-preserved, user-supplied 13-panel Practical Guide covering installation, platform prerequisites, background-first control, Verify–Escalate ladder, typed browser, existing-profile attachment, permission modes, examples, troubleshooting, production checklists, commands, and sources.
 - The imported `hermes-memory` and `hermes-guardian` repositories retain their original source commits under dedicated subdirectories.
 - Shelf-facing titles remain Thai-first except the user-specified English titles **Claude Prompt Caching** and **Grok Bot vs Claude Code vs Codex**, while necessary product and technical terms are retained.
 - Newest publication appears at the upper-left, then flows right and downward.
 - Every guide opens in a new browser tab.
-- All 22 reading books use individually designed 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork.
+- All 23 reading books use individually designed or owner-approved 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork. The newest Computer Use guide uses the owner-supplied final cover without redesign.
 - Reproducible cover designs live under `templates/`, including `grok-bot-vs-claude-codex-cover.template.html`, `claude-prompt-caching-cover.template.html`, `vault-ai-safety-cover.template.html`, `agent-reach-comparison-cover.template.html`, and `hermes-concepts-for-everyone-cover.template.html`; legacy Facebook assets remain archived but unused.
 - **Claude Prompt Caching** is a byte-preserved user-supplied interactive guide dated 21 June 2026. Its cover uses the officially documented Claude Code Spark cue in an independent editorial context with a visible non-affiliation notice.
 - **Grok Bot vs Claude Code vs Codex** is an 11-view standalone comparison with 13 official sources and embedded transparent Grok/Claude/Codex logo assets. Its editorial cover distinguishes a persistent teammate from temporary spawned workers and carries a visible non-affiliation notice.
@@ -106,7 +106,7 @@ python scripts/build_gallery.py --check
 git diff --check
 ```
 
-Expected verified result at close: **81 tests passed**, all four generated pages current, and no diff-check errors.
+Expected verified result at close: **82 tests passed**, all four generated pages current, and no diff-check errors.
 
 ## Publication workflow
 
@@ -126,7 +126,7 @@ Expected verified result at close: **81 tests passed**, all four generated pages
 
 ## Next recommended step
 
-No implementation task is pending. **Grok Bot: จุดที่ควรระวัง** is published and production-verified. Future qualifying original Gallery image uploads should be committed and published automatically after full quality gates; all other collections and operations retain normal approval requirements.
+The Reading guide **คู่มือ Hermes Agent Advance Computer Use** is complete and verified locally but remains uncommitted and unpublished. It is not covered by the Gallery automatic-publication exception; obtain explicit approval before commit/push. Future qualifying original Gallery image uploads remain auto-publishable after full quality gates.
 
 ## Latest close checkpoint — 2026-08-27
 
@@ -139,6 +139,8 @@ No implementation task is pending. **Grok Bot: จุดที่ควรระ
 - Audio production contains 49 entries; `VQdCzVNhTmI` is playlist/catalog position 1 at `https://hermes2545.github.io/audio-library.html`.
 - Latest Gallery content/policy commit: `129a98113e537223a61dc01b44465172e808505e` (`Add Grok Bot Gallery safety infographic`). Public and private remote HEADs matched at this commit; GitHub Pages deployment `33056751785` succeeded.
 - Latest published full verification: **81 tests passed**; Reading 22, Audio 49, App 5, Gallery 5; all generators current and project knowledge valid.
+- Local pending Reading state: 23 books with **คู่มือ Hermes Agent Advance Computer Use** first/newest at 27/08/2026. Full verification passed with **82 tests**; all generators current, project knowledge valid, inline JavaScript syntax valid, desktop/mobile visuals passed, interactive CDP checks passed, and no diff-check errors.
+- The new manual has 13 panels, 13 matching navigation items, 15 HTTPS references, zero conversational `ค่ะ` tokens, no local absolute paths, and SHA-256 `d66393c8cb363376c8fc88754c3918de5978b1183a4bf5db3771d667f343f8f1`, matching the supplied HTML exactly. Its final owner-supplied cover is an EXIF-free 600×900 RGB WebP. Pre-share, official-link, JavaScript, interaction, and visual verification passed.
 - Production Gallery contains 5 artworks, including **Grok Bot: จุดที่ควรระวัง** dated 27/08/2026. Desktop and 390px mobile previews passed with no clipping, overlap, or horizontal overflow; Production catalog/title/date read-back passed and the artwork hash matched Local exactly.
 - Pre-share scan of all twelve changed/new files passed with no credentials, PII, private paths, or Drive IDs. The published artwork is a single-frame 1024×1280 RGB WebP with no EXIF.
 - Standing approval is active for qualifying original Gallery image uploads: preserve visible content, run all gates, then commit, push both Library remotes, publish, and production-verify automatically. All other collections and operations remain approval-gated.

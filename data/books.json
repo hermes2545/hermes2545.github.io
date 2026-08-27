@@ -240,5 +240,16 @@
     "summary": "คู่มือเปรียบเทียบ Grok Bot แบบ persistent AI teammate กับ Claude Code และ Codex subagents ในด้าน identity, state, environment, collaboration, automation, approvals และ use cases พร้อมตารางสถาปัตยกรรมและแหล่งอ้างอิงทางการ 13 รายการ",
     "accent": "#635BCE",
     "published_at": "2026-08-27T13:33:44+07:00"
+  },
+  {
+    "id": "hermes-agent-advance-computer-use",
+    "title": "คู่มือ Hermes Agent Advance Computer Use",
+    "short_title": "คู่มือ Hermes Agent Advance Computer Use",
+    "href": "Hermes_Agent_Advance_Computer_Use_Guide_TH.html",
+    "cover": "assets/covers/custom/hermes-agent-advance-computer-use.webp",
+    "category": "Hermes Guide",
+    "summary": "คู่มือเชิงลึกสำหรับใช้ Computer Use กับ Hermes Agent บน Windows, macOS และ Linux ตั้งแต่ติดตั้ง สิทธิ์ ระบบ background-first, Verify–Escalate ladder, Existing Profile, Permission Modes และการแก้ปัญหา",
+    "accent": "#08A6BC",
+    "published_at": "2026-08-27T16:34:23+07:00"
   }
 ]

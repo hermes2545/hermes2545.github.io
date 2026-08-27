@@ -38,7 +38,7 @@ class CatalogTests(unittest.TestCase):
     def test_required_fields_and_unique_ids_and_links(self):
         required = {"id", "title", "short_title", "href", "cover", "category", "summary", "accent", "published_at"}
         self.assertTrue(self.books)
-        self.assertEqual(len(self.books), 22)
+        self.assertEqual(len(self.books), 23)
         self.assertEqual(len({book["id"] for book in self.books}), len(self.books))
         self.assertEqual(len({book["href"] for book in self.books}), len(self.books))
         for book in self.books:
@@ -48,7 +48,7 @@ class CatalogTests(unittest.TestCase):
             self.assertRegex(book["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
 
     def test_every_reading_book_uses_an_approved_custom_cover(self):
-        self.assertEqual(len(self.books), 22)
+        self.assertEqual(len(self.books), 23)
         for book in self.books:
             self.assertEqual(book["cover"], f'assets/covers/custom/{book["id"]}.webp')
             self.assertEqual(Path(book["cover"]).suffix, ".webp")
@@ -96,6 +96,7 @@ class CatalogTests(unittest.TestCase):
             "vault-ai-safety": "คุม AI ไม่ให้พลาดด้วย VAULT",
             "claude-prompt-caching": "Claude Prompt Caching",
             "grok-bot-vs-claude-codex": "Grok Bot vs Claude Code vs Codex",
+            "hermes-agent-advance-computer-use": "คู่มือ Hermes Agent Advance Computer Use",
         }
         actual = {book["id"]: book["short_title"] for book in self.books}
         self.assertEqual(actual, expected)
@@ -232,6 +233,53 @@ class CatalogTests(unittest.TestCase):
                 self.assertEqual(image.getchannel("A").getextrema(), (0, 255))
                 self.assertEqual(len(image.getexif()), 0)
             self.assertIn(f"reading-cover-assets/{brand}-transparent.png", design)
+
+    def test_hermes_agent_advance_computer_use_manual_is_catalogued(self):
+        matches = [book for book in self.books if book["id"] == "hermes-agent-advance-computer-use"]
+        self.assertEqual(len(matches), 1)
+        book = matches[0]
+        self.assertEqual(book["title"], "คู่มือ Hermes Agent Advance Computer Use")
+        self.assertEqual(book["short_title"], "คู่มือ Hermes Agent Advance Computer Use")
+        self.assertEqual(book["href"], "Hermes_Agent_Advance_Computer_Use_Guide_TH.html")
+        self.assertEqual(book["cover"], "assets/covers/custom/hermes-agent-advance-computer-use.webp")
+        self.assertEqual(book["category"], "Hermes Guide")
+        self.assertEqual(book["published_at"], "2026-08-27T16:34:23+07:00")
+
+        source = ROOT / book["href"]
+        self.assertTrue(source.is_file())
+        source_text = source.read_text(encoding="utf-8")
+        self.assertEqual(
+            hashlib.sha256(source.read_bytes()).hexdigest(),
+            "d66393c8cb363376c8fc88754c3918de5978b1183a4bf5db3771d667f343f8f1",
+        )
+        self.assertEqual(source_text.count('<article class="panel'), 13)
+        self.assertEqual(source_text.count('class="nav-btn'), 13)
+        self.assertIn('id="sources"', source_text)
+        for marker in (
+            "hermes computer-use doctor",
+            "computer_use.grant_existing_profile",
+            "background-first",
+            "Session 0",
+            "UIPI",
+            "Xvfb :99",
+            "localStorage",
+            "copy-btn",
+            "@media print",
+            "data-tabs",
+            "searchResults",
+        ):
+            self.assertIn(marker, source_text)
+        self.assertNotIn("ค่ะ", source_text)
+
+        markdown_source = ROOT / "docs" / "guides" / "HERMES_AGENT_ADVANCE_COMPUTER_USE_TH.md"
+        self.assertTrue(markdown_source.is_file())
+        cover = ROOT / book["cover"]
+        self.assertTrue(cover.is_file())
+        with Image.open(cover) as image:
+            self.assertEqual(image.format, "WEBP")
+            self.assertEqual(image.size, (600, 900))
+            self.assertEqual(image.mode, "RGB")
+            self.assertEqual(len(image.getexif()), 0)
 
     def test_imported_repository_guides_preserve_provenance(self):
         registry = json.loads((ROOT / "data" / "imported-sources.json").read_text(encoding="utf-8"))

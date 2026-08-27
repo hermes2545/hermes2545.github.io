@@ -40,6 +40,7 @@ tags: [library, index]
 - [Hermes Profile Backup and Restore Public Guide](../guides/HERMES_PROFILE_BACKUP_RESTORE_PUBLIC_GUIDE.md)
 - [Hermes Agent Concepts for Everyone — Thai Guide](../guides/HERMES_AGENT_CONCEPTS_FOR_EVERYONE_TH.md)
 - [VAULT — คู่มือออกแบบระบบ AI ที่ตรวจสอบได้และควบคุมความเสี่ยง](../guides/VAULT_AI_SAFETY_GUIDE_TH.md)
+- [คู่มือ Hermes Agent Advance Computer Use](../guides/HERMES_AGENT_ADVANCE_COMPUTER_USE_TH.md)
 
 ## Reports
 

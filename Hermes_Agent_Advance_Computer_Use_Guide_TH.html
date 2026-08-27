@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="th" data-theme="light" data-font="md">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Hermes Computer Use — Practical Guide</title>
+<style>
+:root{
+  --bg:#f3f6fb; --surface:#ffffff; --surface-2:#f7f9fc; --surface-3:#eef3f9;
+  --text:#172033; --muted:#647089; --border:#dbe3ef; --shadow:0 12px 36px rgba(24,38,64,.09);
+  --blue:#2f6fed; --blue-2:#e9f0ff; --cyan:#0b91a7; --cyan-2:#e8f8fb;
+  --green:#158766; --green-2:#e9f8f2; --amber:#b87100; --amber-2:#fff5df;
+  --red:#c23c4b; --red-2:#fff0f2; --violet:#7357d9; --violet-2:#f0edff;
+  --code:#101827; --code-text:#dfe8f7; --sidebar:284px; --radius:18px;
+  --base:15px; --line:1.7;
+}
+html[data-theme="dark"]{
+  --bg:#0d1420; --surface:#141d2b; --surface-2:#182333; --surface-3:#202d40;
+  --text:#edf3fc; --muted:#9eacc2; --border:#2c3a4e; --shadow:0 18px 48px rgba(0,0,0,.28);
+  --blue:#78a5ff; --blue-2:#182b4f; --cyan:#62cad7; --cyan-2:#15323a;
+  --green:#62cda7; --green-2:#15372d; --amber:#f3ba55; --amber-2:#3c2d14;
+  --red:#ff8794; --red-2:#402129; --violet:#a995ff; --violet-2:#29214b;
+  --code:#09101a; --code-text:#dfe8f7;
+}
+html[data-font="sm"]{--base:13.5px}
+html[data-font="md"]{--base:15px}
+html[data-font="lg"]{--base:17px}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Inter,"Noto Sans Thai","Leelawadee UI","Segoe UI",Tahoma,sans-serif;font-size:var(--base)}
+body{overflow:hidden}
+button,input,select{font:inherit}
+button{cursor:pointer}
+a{color:var(--blue)}
+.app{height:100vh;display:grid;grid-template-columns:var(--sidebar) 1fr;transition:grid-template-columns .22s ease}
+.app.nav-collapsed{--sidebar:78px}
+.sidebar{
+  background:linear-gradient(180deg,var(--surface) 0%,color-mix(in srgb,var(--surface) 92%,var(--blue-2)) 100%);
+  border-right:1px solid var(--border);height:100vh;display:flex;flex-direction:column;min-width:0;z-index:20
+}
+.brand{height:82px;display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--border)}
+.logo{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--blue),var(--violet));box-shadow:0 8px 20px rgba(47,111,237,.23);color:#fff;font-weight:800;letter-spacing:-.04em}
+.brand-text{min-width:0}
+.brand-title{font-weight:800;font-size:15px;white-space:nowrap}
+.brand-sub{font-size:11.5px;color:var(--muted);margin-top:2px;white-space:nowrap}
+.nav-collapsed .brand-text,.nav-collapsed .nav-label,.nav-collapsed .nav-group-title,.nav-collapsed .sidebar-note{display:none}
+.nav-collapsed .brand{justify-content:center;padding-inline:10px}
+.sidebar-scroll{overflow:auto;padding:14px 10px 18px}
+.nav-group{margin-bottom:14px}
+.nav-group-title{font-size:10.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800;padding:6px 10px}
+.nav-btn{
+  width:100%;border:0;background:transparent;color:var(--muted);display:flex;align-items:center;gap:11px;
+  padding:9px 10px;border-radius:11px;text-align:left;transition:.16s ease;margin:2px 0
+}
+.nav-btn:hover{background:var(--surface-3);color:var(--text)}
+.nav-btn.active{background:var(--blue-2);color:var(--blue);font-weight:750}
+.nav-icon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--surface-2);border:1px solid var(--border);font-size:14px;flex:0 0 auto}
+.nav-btn.active .nav-icon{background:var(--surface);border-color:color-mix(in srgb,var(--blue) 30%,var(--border))}
+.nav-label{min-width:0}
+.nav-label strong{display:block;font-size:12.6px;color:inherit}
+.nav-label span{display:block;font-size:10.8px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-bottom{margin-top:auto;padding:10px;border-top:1px solid var(--border)}
+.sidebar-note{font-size:10.8px;color:var(--muted);line-height:1.45;padding:6px 8px}
+.main{height:100vh;min-width:0;display:grid;grid-template-rows:68px 1fr}
+.topbar{
+  background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;padding:0 20px;z-index:10
+}
+.icon-btn{
+  width:38px;height:38px;border-radius:11px;border:1px solid var(--border);background:var(--surface);color:var(--text);
+  display:grid;place-items:center;transition:.16s ease
+}
+.icon-btn:hover{border-color:color-mix(in srgb,var(--blue) 45%,var(--border));transform:translateY(-1px)}
+.crumb{min-width:0}
+.crumb small{display:block;color:var(--muted);font-size:10.8px}
+.crumb strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top-spacer{flex:1}
+.search{position:relative;width:min(320px,32vw)}
+.search input{width:100%;height:38px;border-radius:11px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);padding:0 12px 0 34px;outline:none}
+.search input:focus{border-color:var(--blue);box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 15%,transparent)}
+.search:before{content:"⌕";position:absolute;left:12px;top:7px;color:var(--muted);font-size:18px}
+.font-controls{display:flex;border:1px solid var(--border);border-radius:11px;overflow:hidden;background:var(--surface)}
+.font-controls button{border:0;background:transparent;color:var(--muted);height:36px;min-width:34px}
+.font-controls button.active{background:var(--blue-2);color:var(--blue);font-weight:800}
+.mobile-section{display:none}
+.workspace{min-height:0;padding:18px 20px 20px;position:relative}
+.panel{
+  display:none;height:100%;max-width:1500px;margin:0 auto;background:var(--surface);border:1px solid var(--border);border-radius:22px;
+  box-shadow:var(--shadow);overflow:hidden
+}
+.panel.active{display:grid;grid-template-rows:auto 1fr auto}
+.panel-head{
+  padding:22px 26px 18px;border-bottom:1px solid var(--border);background:
+  radial-gradient(circle at 95% 0%, color-mix(in srgb,var(--blue-2) 75%,transparent) 0, transparent 34%),
+  linear-gradient(180deg,var(--surface),var(--surface-2));
+}
+.eyebrow{display:flex;align-items:center;gap:8px;color:var(--blue);font-size:11px;font-weight:850;text-transform:uppercase;letter-spacing:.09em}
+.eyebrow-dot{width:8px;height:8px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 4px var(--blue-2)}
+.panel-title{font-size:clamp(25px,2.4vw,39px);line-height:1.16;letter-spacing:-.035em;margin:8px 0 8px}
+.panel-lead{max-width:900px;color:var(--muted);font-size:1.02em;line-height:1.65;margin:0}
+.head-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.tag{font-size:10.8px;padding:5px 9px;border-radius:999px;background:var(--surface);border:1px solid var(--border);color:var(--muted);font-weight:700}
+.panel-body{min-height:0;overflow:auto;padding:24px 26px 36px;scrollbar-gutter:stable}
+.panel-foot{height:58px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:var(--surface-2)}
+.pager{display:flex;gap:8px}
+.pager button{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:10px;padding:8px 11px}
+.pager button:hover{border-color:var(--blue);color:var(--blue)}
+.page-count{font-size:11.5px;color:var(--muted)}
+.grid{display:grid;gap:14px}
+.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{border:1px solid var(--border);background:var(--surface-2);border-radius:16px;padding:16px;min-width:0}
+.card.white{background:var(--surface)}
+.card h3,.card h4{margin:0 0 8px;letter-spacing:-.015em}
+.card h3{font-size:15px}.card h4{font-size:13px}
+.card p{margin:0;color:var(--muted);line-height:1.62}
+.metric{padding:17px;border-radius:17px;border:1px solid var(--border);background:var(--surface)}
+.metric .kicker{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:800}
+.metric .value{font-size:19px;font-weight:850;margin-top:5px}
+.metric .desc{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.5}
+.tint-blue{background:var(--blue-2)!important}.tint-green{background:var(--green-2)!important}.tint-amber{background:var(--amber-2)!important}.tint-red{background:var(--red-2)!important}.tint-violet{background:var(--violet-2)!important}.tint-cyan{background:var(--cyan-2)!important}
+.section-title{display:flex;align-items:center;gap:10px;margin:26px 0 12px;font-size:18px;letter-spacing:-.02em}
+.section-title:first-child{margin-top:0}
+.section-title .num{width:28px;height:28px;border-radius:9px;background:var(--blue-2);color:var(--blue);display:grid;place-items:center;font-size:11px;font-weight:900}
+.prose{color:var(--muted);line-height:var(--line)}
+.prose strong{color:var(--text)}
+ul.clean,ol.clean{margin:8px 0 0;padding-left:20px;color:var(--muted);line-height:1.7}
+ul.clean li,ol.clean li{margin:5px 0}
+.callout{border-left:4px solid var(--blue);background:var(--blue-2);border-radius:0 14px 14px 0;padding:13px 15px;margin:14px 0;color:var(--text);line-height:1.62}
+.callout.warn{border-left-color:var(--amber);background:var(--amber-2)}
+.callout.danger{border-left-color:var(--red);background:var(--red-2)}
+.callout.good{border-left-color:var(--green);background:var(--green-2)}
+.callout.violet{border-left-color:var(--violet);background:var(--violet-2)}
+.callout small{display:block;color:var(--muted);margin-top:4px}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:stretch;margin:14px 0}
+.flow-step{position:relative;border:1px solid var(--border);background:var(--surface-2);padding:14px 12px;border-radius:14px;min-width:0}
+.flow-step:not(:last-child):after{content:"→";position:absolute;right:-14px;top:50%;transform:translateY(-50%);z-index:2;color:var(--muted);font-weight:900}
+.flow-step .n{font-size:10px;color:var(--blue);font-weight:900;text-transform:uppercase}
+.flow-step strong{display:block;margin:4px 0;font-size:13px}
+.flow-step span{display:block;color:var(--muted);font-size:11px;line-height:1.45}
+.codebox{border:1px solid #29364a;background:var(--code);border-radius:14px;overflow:hidden;margin:11px 0}
+.codehead{height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 10px 0 13px;background:#111d2d;border-bottom:1px solid #27364b;color:#93a4bd;font-size:10.5px}
+.codehead button{border:1px solid #33445d;background:#172438;color:#dfe8f7;border-radius:8px;padding:4px 8px;font-size:10.5px}
+pre{margin:0;padding:14px 15px;overflow:auto;color:var(--code-text);font:12px/1.65 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;white-space:pre}
+.code-inline{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--surface-3);border:1px solid var(--border);border-radius:6px;padding:1px 5px;color:var(--text);font-size:.92em}
+.table-wrap{overflow:auto;border:1px solid var(--border);border-radius:14px}
+table{width:100%;border-collapse:collapse;min-width:620px;background:var(--surface)}
+th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5}
+th{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--surface-2)}
+td{font-size:12.2px;color:var(--muted)}
+tr:last-child td{border-bottom:0} td strong{color:var(--text)}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border-radius:7px;font-size:10.5px;font-weight:800}
+.badge.good{background:var(--green-2);color:var(--green)}.badge.warn{background:var(--amber-2);color:var(--amber)}.badge.bad{background:var(--red-2);color:var(--red)}.badge.info{background:var(--blue-2);color:var(--blue)}
+.tabs{display:flex;gap:6px;padding:5px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2);width:max-content;max-width:100%;overflow:auto;margin-bottom:14px}
+.tab-btn{border:0;background:transparent;color:var(--muted);padding:7px 12px;border-radius:8px;font-weight:750;font-size:11.5px}
+.tab-btn.active{background:var(--surface);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+.checklist{display:grid;gap:7px}
+.check{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border:1px solid var(--border);background:var(--surface);border-radius:11px;color:var(--muted);line-height:1.45}
+.check input{margin-top:3px;accent-color:var(--green)}
+.arch{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;align-items:center}
+.arch .node{padding:16px 10px;border:1px solid var(--border);background:var(--surface-2);border-radius:14px;text-align:center;font-size:12px;font-weight:800}
+.arch .arrow{text-align:center;color:var(--muted);font-weight:900}
+.kbd{display:inline-block;padding:1px 6px;border:1px solid var(--border);border-bottom-width:2px;border-radius:6px;background:var(--surface);font:10.5px ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--text)}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.legend span{font-size:10.5px;color:var(--muted);padding:4px 7px;border:1px solid var(--border);border-radius:999px}
+.search-results{position:absolute;top:54px;right:174px;width:min(430px,calc(100vw - 40px));background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:7px;z-index:50;display:none;max-height:330px;overflow:auto}
+.search-results.show{display:block}
+.search-hit{border:0;background:transparent;color:var(--text);width:100%;text-align:left;border-radius:10px;padding:9px 10px}
+.search-hit:hover{background:var(--surface-2)}
+.search-hit strong{display:block;font-size:12px}.search-hit span{font-size:10.5px;color:var(--muted)}
+.hero-quote{font-size:18px;line-height:1.55;font-weight:750;letter-spacing:-.02em;padding:18px;border-radius:16px;background:linear-gradient(135deg,var(--blue-2),var(--violet-2));border:1px solid var(--border)}
+.source-list{display:grid;gap:7px}
+.source-item{padding:10px 12px;border:1px solid var(--border);border-radius:11px;background:var(--surface-2);font-size:11.5px;line-height:1.5}
+.source-item b{color:var(--text)}
+.hidden-by-search{display:none!important}
+@media (max-width:1100px){
+  :root{--sidebar:246px}
+  .grid.four{grid-template-columns:repeat(2,1fr)}
+  .grid.three{grid-template-columns:repeat(2,1fr)}
+  .flow{grid-template-columns:1fr 1fr}
+  .flow-step:not(:last-child):after{display:none}
+  .arch{grid-template-columns:1fr}
+  .arch .arrow{transform:rotate(90deg)}
+}
+@media (max-width:780px){
+  body{overflow:auto}
+  .app{display:block;height:auto;min-height:100vh}
+  .sidebar{position:fixed;left:0;top:0;width:min(86vw,300px);transform:translateX(-101%);box-shadow:var(--shadow);transition:.2s ease}
+  .app.mobile-nav .sidebar{transform:translateX(0)}
+  .main{height:100vh;grid-template-rows:62px 1fr}
+  .topbar{padding:0 10px}
+  .search{display:none}
+  .font-controls{display:none}
+  .mobile-section{display:block;min-width:0;max-width:42vw;height:36px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:10px;padding:0 8px}
+  .crumb{display:none}
+  .workspace{padding:10px;height:calc(100vh - 62px)}
+  .panel{border-radius:16px}
+  .panel-head{padding:18px 17px 14px}
+  .panel-title{font-size:26px}
+  .panel-body{padding:17px}
+  .grid.two,.grid.three,.grid.four{grid-template-columns:1fr}
+  .flow{grid-template-columns:1fr}
+  .panel-foot{padding:0 10px}
+  .top-spacer{display:none}
+  .theme-label{display:none}
+}
+@media print{
+  body{overflow:visible;background:#fff}.app{display:block;height:auto}.sidebar,.topbar,.panel-foot{display:none!important}
+  .main,.workspace{height:auto;display:block;padding:0}.panel{display:block!important;height:auto;box-shadow:none;border:0;page-break-after:always}
+  .panel-body{overflow:visible}.codehead button{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="logo">H</div>
+      <div class="brand-text">
+        <div class="brand-title">Hermes Computer Use</div>
+        <div class="brand-sub">Practical Guide · Background Desktop Control</div>
+      </div>
+    </div>
+    <div class="sidebar-scroll">
+      <div class="nav-group">
+        <div class="nav-group-title">Start here</div>
+        <button class="nav-btn active" data-target="overview"><span class="nav-icon">◈</span><span class="nav-label"><strong>ภาพรวม</strong><span>เข้าใจ Computer Use ใน 5 นาที</span></span></button>
+        <button class="nav-btn" data-target="mental"><span class="nav-icon">◎</span><span class="nav-label"><strong>สถาปัตยกรรม</strong><span>ทำงานอย่างไร · background-first</span></span></button>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">Setup</div>
+        <button class="nav-btn" data-target="install"><span class="nav-icon">↓</span><span class="nav-label"><strong>ติดตั้งและเปิดใช้</strong><span>Hermes · toolset · cua-driver</span></span></button>
+        <button class="nav-btn" data-target="os"><span class="nav-icon">⌘</span><span class="nav-label"><strong>ตั้งค่าตาม OS</strong><span>macOS · Windows · Linux</span></span></button>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">Core workflow</div>
+        <button class="nav-btn" data-target="workflow"><span class="nav-icon">↻</span><span class="nav-label"><strong>Capture → Verify</strong><span>workflow มาตรฐาน 4 ขั้น</span></span></button>
+        <button class="nav-btn" data-target="escalate"><span class="nav-icon">⇧</span><span class="nav-label"><strong>Escalation Ladder</strong><span>element → pixel → page → foreground</span></span></button>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">Browser & Security</div>
+        <button class="nav-btn" data-target="browser"><span class="nav-icon">▣</span><span class="nav-label"><strong>Browser จริง</strong><span>typed browser · existing profile</span></span></button>
+        <button class="nav-btn" data-target="security"><span class="nav-icon">◇</span><span class="nav-label"><strong>Permission Modes</strong><span>standard · bounded · unrestricted</span></span></button>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">Operate</div>
+        <button class="nav-btn" data-target="examples"><span class="nav-icon">✦</span><span class="nav-label"><strong>ตัวอย่างใช้งาน</strong><span>Mail · browser · screenshot</span></span></button>
+        <button class="nav-btn" data-target="trouble"><span class="nav-icon">!</span><span class="nav-label"><strong>Troubleshooting</strong><span>doctor · ปัญหายอดนิยม</span></span></button>
+        <button class="nav-btn" data-target="production"><span class="nav-icon">✓</span><span class="nav-label"><strong>Production Ready</strong><span>checklist · architecture levels</span></span></button>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">Reference</div>
+        <button class="nav-btn" data-target="commands"><span class="nav-icon">&gt;_</span><span class="nav-label"><strong>Command Library</strong><span>คำสั่งพร้อม Copy</span></span></button>
+        <button class="nav-btn" data-target="sources"><span class="nav-icon">§</span><span class="nav-label"><strong>แหล่งอ้างอิง</strong><span>Hermes · Cua · research note</span></span></button>
+      </div>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="sidebar-note">ออกแบบแบบ task-oriented + progressive disclosure เพื่ออ่านเป็นตอน ไม่ต้องไล่ scroll ทั้งเอกสาร</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="navToggle" title="ย่อ/เปิดเมนู">☰</button>
+      <div class="crumb"><small>Hermes / Computer Use</small><strong id="crumbTitle">ภาพรวม</strong></div>
+      <select class="mobile-section" id="mobileSection" aria-label="เลือกหัวข้อ">
+        <option value="overview">ภาพรวม</option><option value="mental">สถาปัตยกรรม</option><option value="install">ติดตั้งและเปิดใช้</option><option value="os">ตั้งค่าตาม OS</option><option value="workflow">Capture → Verify</option><option value="escalate">Escalation Ladder</option><option value="browser">Browser จริง</option><option value="security">Permission Modes</option><option value="examples">ตัวอย่างใช้งาน</option><option value="trouble">Troubleshooting</option><option value="production">Production Ready</option><option value="commands">Command Library</option><option value="sources">แหล่งอ้างอิง</option>
+      </select>
+      <div class="top-spacer"></div>
+      <div class="search"><input id="searchInput" type="search" placeholder="ค้นหาหัวข้อ เช่น Session 0, Xvfb…"></div>
+      <div class="font-controls" title="ขนาดตัวอักษร">
+        <button data-font="sm">A−</button><button class="active" data-font="md">A</button><button data-font="lg">A+</button>
+      </div>
+      <button class="icon-btn" id="themeToggle" title="Dark / Light mode">☾</button>
+    </header>
+
+    <div class="search-results" id="searchResults"></div>
+
+    <section class="workspace">
+
+      <!-- 1 OVERVIEW -->
+      <article class="panel active" id="overview" data-title="ภาพรวม">
+        <div class="panel-head">
+          <div class="eyebrow"><span class="eyebrow-dot"></span>Start here · 5 min</div>
+          <h1 class="panel-title">เข้าใจ Hermes Computer Use<br>ก่อนแตะคำสั่งแรก</h1>
+          <p class="panel-lead">Hermes ใช้ <b>computer_use</b> ควบคุมแอปจริงบนเดสก์ท็อปผ่าน <b>cua-driver</b> โดยออกแบบให้ทำงานแบบ background-first — ไม่ย้ายเมาส์จริง ไม่แย่งโฟกัส และไม่ดึงหน้าต่างขึ้นหน้าเป็นค่าเริ่มต้น</p>
+          <div class="head-tags"><span class="tag">Windows · macOS · Linux</span><span class="tag">Background-first</span><span class="tag">Accessibility + Screenshot</span><span class="tag">Tool-capable models</span></div>
+        </div>
+        <div class="panel-body">
+          <div class="grid four">
+            <div class="metric tint-blue"><div class="kicker">Core toolset</div><div class="value">computer_use</div><div class="desc">ชั้น abstraction ที่ Hermes เรียกใช้เพื่อคุยกับ desktop backend</div></div>
+            <div class="metric tint-violet"><div class="kicker">Backend</div><div class="value">cua-driver</div><div class="desc">คุยกับ accessibility และ input stack ของระบบปฏิบัติการ</div></div>
+            <div class="metric tint-green"><div class="kicker">Default behavior</div><div class="value">Background-first</div><div class="desc">ไม่ warp cursor · ไม่ขโมย focus · foreground เฉพาะเมื่อจำเป็น</div></div>
+            <div class="metric tint-amber"><div class="kicker">Golden rule</div><div class="value">Verify first</div><div class="desc">ทุก mutation ต้องตรวจผล ไม่คลิกซ้ำแบบเดา</div></div>
+          </div>
+
+          <h2 class="section-title"><span class="num">1</span>Computer Use ทำอะไรได้</h2>
+          <div class="grid three">
+            <div class="card"><h3>มองเห็น</h3><p>จับภาพหน้าจอ/หน้าต่าง และอ่าน accessibility tree เพื่อรู้ว่า element ไหนคลิกได้</p></div>
+            <div class="card"><h3>ลงมือทำ</h3><p>คลิก พิมพ์ เลื่อน ลาก และกดคีย์กับ native app หรือ browser ที่เปิดจริงบนเครื่อง</p></div>
+            <div class="card"><h3>ทำต่อเนื่อง</h3><p>อ่าน verdict ของ driver แล้วเลือก retry / pixel / browser page / foreground อย่างมีเหตุผล</p></div>
+          </div>
+
+          <h2 class="section-title"><span class="num">2</span>เมื่อไรควรใช้ — เมื่อไรไม่ควรใช้</h2>
+          <div class="grid two">
+            <div class="card tint-green">
+              <h3>✓ ใช้ Computer Use</h3>
+              <ul class="clean">
+                <li>Mail, Finder, Explorer, Notes, Settings, desktop app</li>
+                <li>browser profile จริงที่ล็อกอินอยู่</li>
+                <li>native dialog, permission UI, GUI ที่ browser automation ไปไม่ถึง</li>
+              </ul>
+            </div>
+            <div class="card tint-amber">
+              <h3>→ ใช้เครื่องมือเฉพาะทางก่อน</h3>
+              <ul class="clean">
+                <li>เว็บล้วน → <span class="code-inline">browser_*</span></li>
+                <li>แก้ไฟล์ → <span class="code-inline">read_file / write_file / patch</span></li>
+                <li>shell command → <span class="code-inline">terminal</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="hero-quote" style="margin-top:16px">“Hermes Computer Use เก่งตรงที่ช่วยทำงานบนคอมจริงของเรา โดยไม่แย่งคอมเราไปทั้งเครื่อง”</div>
+        </div>
+        <div class="panel-foot"><span class="page-count">01 / 13 · Start here</span><div class="pager"><button data-next="mental">ถัดไป: สถาปัตยกรรม →</button></div></div>
+      </article>
+
+      <!-- 2 MENTAL MODEL -->
+      <article class="panel" id="mental" data-title="สถาปัตยกรรม">
+        <div class="panel-head">
+          <div class="eyebrow"><span class="eyebrow-dot"></span>Mental model</div>
+          <h1 class="panel-title">สถาปัตยกรรมและแนวคิด<br>“No-Foreground Contract”</h1>
+          <p class="panel-lead">การเข้าใจเส้นทาง input สำคัญกว่าจำคำสั่ง เพราะเมื่อ action ไม่สำเร็จ เราจะรู้ว่าควร escalate ไปทางไหน แทนการคลิกซ้ำหรือบังคับ foreground ทันที</p>
+          <div class="head-tags"><span class="tag">Accessibility tree</span><span class="tag">Screenshot</span><span class="tag">Action policy</span></div>
+        </div>
+        <div class="panel-body">
+          <h2 class="section-title"><span class="num">1</span>เส้นทางการทำงาน</h2>
+          <div class="arch">
+            <div class="node">ผู้ใช้</div><div class="arrow">→</div><div class="node">Hermes Agent</div><div class="arrow">→</div><div class="node">computer_use</div>
+          </div>
+          <div class="arch" style="margin-top:8px;grid-template-columns:1fr 40px 1fr">
+            <div class="node">cua-driver</div><div class="arrow">→</div><div class="node">OS Accessibility + Input Stack</div>
+          </div>
+
+          <h2 class="section-title"><span class="num">2</span>กลไกระดับ OS</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>OS</th><th>Accessibility tree</th><th>เส้นทาง Input โดยย่อ</th><th>จุดที่ต้องจำ</th></tr></thead>
+              <tbody>
+                <tr><td><strong>macOS</strong></td><td>AX</td><td>SkyLight / CoreGraphics แบบ pid-scoped</td><td>ไม่ warp cursor; TCC permissions สำคัญ</td></tr>
+                <tr><td><strong>Windows</strong></td><td>UI Automation (UIA)</td><td>SendInput + PostMessage ตาม target</td><td>ระวัง Session 0 และ UIPI</td></tr>
+                <tr><td><strong>Linux</strong></td><td>AT-SPI</td><td>X11: XTest/XSendEvent · Wayland: virtual keyboard/AT-SPI</td><td>X11 background mature กว่า Wayland</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 class="section-title"><span class="num">3</span>Best-effort background แปลว่าอะไร</h2>
+          <div class="grid three">
+            <div class="card tint-blue"><h3>Background ก่อน</h3><p>พยายามส่ง action ถึง target โดยไม่เอาหน้าต่างขึ้นหน้า ไม่ย้ายเมาส์ และไม่ขโมย keyboard focus</p></div>
+            <div class="card tint-amber"><h3>ไม่ใช่ 100%</h3><p>บางแอปหรือบาง surface รับ input เฉพาะ foreground จึงต้องดู verdict จาก driver ก่อนตัดสินใจ</p></div>
+            <div class="card tint-green"><h3>Foreground เป็น fallback</h3><p>ยกระดับเฉพาะ action ที่จำเป็น ไม่ควรตั้งสมมติฐานว่าแอปใด “ต้อง foreground” ตั้งแต่แรก</p></div>
+          </div>
+
+          <div class="callout violet"><strong>กรอบคิดที่ถูก:</strong> ภาพหน้าจอ + accessibility tree + action policy ทำงานร่วมกัน จึงไม่ใช่ระบบ “มองภาพแล้วคลิกพิกัด” อย่างเดียว</div>
+        </div>
+        <div class="panel-foot"><div class="pager"><button data-prev="overview">← ภาพรวม</button></div><span class="page-count">02 / 13</span><div class="pager"><button data-next="install">ติดตั้ง →</button></div></div>
+      </article>
+
+      <!-- 3 INSTALL -->
+      <article class="panel" id="install" data-title="ติดตั้งและเปิดใช้">
+        <div class="panel-head">
+          <div class="eyebrow"><span class="eyebrow-dot"></span>Setup · Step-by-step</div>
+          <h1 class="panel-title">ติดตั้ง Hermes → เปิด toolset → ตรวจ driver</h1>
+          <p class="panel-lead">installer รุ่นที่อ้างอิงในเอกสารจะ pre-install <b>cua-driver</b> แบบ best-effort ให้ด้วย เว้นแต่จะข้าม Computer Use โดยตั้งใจ หลังเปิด toolset อาจต้องเริ่ม session ใหม่หรือ <span class="code-inline">/reset</span></p>
+        </div>
+        <div class="panel-body">
+          <div class="flow">
+            <div class="flow-step"><span class="n">Step 1</span><strong>Install Hermes</strong><span>mac/Linux/WSL หรือ Windows native</span></div>
+            <div class="flow-step"><span class="n">Step 2</span><strong>Enable toolset</strong><span>เปิด computer_use</span></div>
+            <div class="flow-step"><span class="n">Step 3</span><strong>Check status</strong><span>ดูว่า cua-driver พร้อม</span></div>
+            <div class="flow-step"><span class="n">Step 4</span><strong>Run doctor</strong><span>ตรวจ prereq/permission</span></div>
+            <div class="flow-step"><span class="n">Step 5</span><strong>New session</strong><span>เริ่ม session ใหม่ถ้าจำเป็น</span></div>
+          </div>
+
+          <h2 class="section-title"><span class="num">1</span>ติดตั้ง Hermes</h2>
+          <div class="grid two">
+            <div>
+              <div class="codebox"><div class="codehead"><span>macOS / Linux / WSL2</span><button class="copy-btn">Copy</button></div><pre><code>curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash</code></pre></div>
+            </div>
+            <div>
+              <div class="codebox"><div class="codehead"><span>Windows native · PowerShell</span><button class="copy-btn">Copy</button></div><pre><code>iex (irm https://hermes-agent.nousresearch.com/install.ps1)</code></pre></div>
+            </div>
+          </div>
+
+          <h2 class="section-title"><span class="num">2</span>เปิด Computer Use</h2>
+          <div class="grid three">
+            <div class="card"><h3>Interactive</h3><div class="codebox"><div class="codehead"><span>CLI</span><button class="copy-btn">Copy</button></div><pre><code>hermes tools</code></pre></div><p>แล้วเลือก <b>Computer Use</b></p></div>
+            <div class="card"><h3>Enable โดยตรง</h3><div class="codebox"><div class="codehead"><span>CLI</span><button class="copy-btn">Copy</button></div><pre><code>hermes tools enable computer_use</code></pre></div></div>
+            <div class="card"><h3>เฉพาะ session นี้</h3><div class="codebox"><div class="codehead"><span>CLI</span><button class="copy-btn">Copy</button></div><pre><code>hermes -t computer_use chat</code></pre></div></div>
+          </div>
+
+          <h2 class="section-title"><span class="num">3</span>ตรวจ backend</h2>
+          <div class="codebox"><div class="codehead"><span>ตรวจสถานะ / repair / health report</span><button class="copy-btn">Copy</button></div><pre><code>hermes computer-use status
+hermes computer-use install
+hermes computer-use doctor</code></pre></div>
+          <div class="callout good"><strong>ถ้าต้องการบังคับอัปเกรด driver:</strong> <span class="code-inline">hermes computer-use install --upgrade</span></div>
+          <div class="callout"><strong>Hermes Desktop:</strong> Desktop app ใช้ agent core เดียวกับ CLI / gateway / config / sessions / skills / memory และเปิดจาก CLI ได้ด้วย <span class="code-inline">hermes desktop</span></div>
+        </div>
+        <div class="panel-foot"><div class="pager"><button data-prev="mental">← สถาปัตยกรรม</button></div><span class="page-count">03 / 13</span><div class="pager"><button data-next="os">ตั้งค่าตาม OS →</button></div></div>
+      </article>
+
+      <!-- 4 OS -->
+      <article class="panel" id="os" data-title="ตั้งค่าตาม OS">
+        <div class="panel-head">
+          <div class="eyebrow"><span class="eyebrow-dot"></span>OS runbook</div>
+          <h1 class="panel-title">Prerequisite ไม่เหมือนกันในแต่ละ OS</h1>
+          <p class="panel-lead">macOS ติดที่ permission/TCC, Windows ติดที่ interactive session และ integrity boundary, Linux ติดที่ display server และความต่างของ X11 กับ Wayland</p>
+        </div>
+        <div class="panel-body">
+          <div class="tabs" data-tabs="os-tabs">
+            <button class="tab-btn active" data-tab="mac">macOS</button>
+            <button class="tab-btn" data-tab="win">Windows</button>
+            <button class="tab-btn" data-tab="linux">Linux</button>
+          </div>
+
+          <div class="tab-pane active" data-pane="mac">
+            <div class="grid two">
+              <div class="card tint-blue">
+                <h3>ต้องมีสิทธิ์ 2 อย่าง</h3>
+                <ul class="clean"><li><strong>Accessibility</strong></li><li><strong>Screen Recording</strong></li></ul>
+                <p style="margin-top:8px">Grant ให้ identity ที่ <span class="code-inline">hermes computer-use doctor</span> ระบุ; standard mode มักเป็น <b>CuaDriver.app</b></p>
+              </div>
+              <div>
+                <div class="codebox"><div class="codehead"><span>macOS permissions</span><button class="copy-btn">Copy</button></div><pre><code>hermes computer-use permissions status
+hermes computer-use permissions grant</code></pre></div>
+              </div>
+            </div>
+            <div class="callout warn"><strong>อย่าเปิดแอปแบบบังคับ foreground</strong> เช่นใช้ <span class="code-inline">open -a ...</span> หากโจทย์ต้องการ background control จริง เพราะขัดกับ no-foreground contract</div>
+            <div class="card"><h3>จุดที่อาจ degraded</h3><p>SwiftUI บาง surface, game/canvas, หรือหน้าต่างบน Space อื่น อาจอ่าน AX หรือ routed input ได้ไม่ครบ → ใช้ fallback หรือ foreground เฉพาะ action</p></div>
+          </div>
+
+          <div class="tab-pane" data-pane="win">
+            <div class="grid three">
+              <div class="card tint-red"><h3>1 · Session 0 ผ่าน SSH</h3><p>OpenSSH บน Windows อาจอยู่ Session 0 ซึ่งไม่มี interactive desktop → <span class="code-inline">list_windows</span> ว่าง, screenshot/click ไม่เห็นหน้าต่างของ user</p></div>
+              <div class="card tint-amber"><h3>2 · Administrator windows</h3><p>Hermes ที่รัน medium integrity คุมหน้าต่าง elevated ไม่ได้ตามปกติ เพราะ UIPI บล็อก input</p></div>
+              <div class="card tint-blue"><h3>3 · Native vs WSL2</h3><p>ถ้าจะคุมแอป Windows จริง ให้ใช้ native Windows ตรงกว่า WSL2 เพราะ app/profile อยู่ฝั่ง Windows</p></div>
+            </div>
+            <div class="codebox"><div class="codehead"><span>ถ้าจำเป็นต้องคุม Windows ผ่าน SSH · รันจาก interactive session</span><button class="copy-btn">Copy</button></div><pre><code>cua-driver autostart enable
+cua-driver autostart kick
+cua-driver status</code></pre></div>
+            <div class="callout good"><strong>แนวทางง่ายสุด:</strong> ถ้าจะคุม Windows desktop จริง ให้รัน Hermes ใน interactive Windows session ก่อน; ถ้าต้อง SSH ค่อยใช้ Cua daemon ใน session interactive</div>
+          </div>
+
+          <div class="tab-pane" data-pane="linux">
+            <div class="grid two">
+              <div class="card"><h3>Display prerequisite</h3><ul class="clean"><li>X11 → ต้องมี <span class="code-inline">DISPLAY</span></li><li>Wayland → <span class="code-inline">XDG_SESSION_TYPE=wayland</span></li><li>Wayland ต้องมี XWayland bridge สำหรับ capture</li><li>AT-SPI ต้องพร้อม</li></ul></div>
+              <div class="card"><h3>Headless Linux</h3><div class="codebox"><div class="codehead"><span>Xvfb example</span><button class="copy-btn">Copy</button></div><pre><code>Xvfb :99 -screen 0 1920x1080x24</code></pre></div></div>
+            </div>
+            <div class="grid two">
+              <div class="card tint-green"><h3>X11</h3><p>background path สมบูรณ์กว่า ทั้ง capture, pixel action และ window-addressed input → เหมาะกับ GUI automation ที่ต้องการความนิ่ง</p></div>
+              <div class="card tint-amber"><h3>Wayland</h3><p>ปลอดภัยกว่าแต่จำกัด synthetic input โดยเฉพาะ raw keyboard shortcuts; element/action ผ่าน accessibility ยังใช้งานได้ดีในหลายกรณี</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-foot"><div class="pager"><button data-prev="install">← ติดตั้ง</button></div><span class="page-count">04 / 13</span><div class="pager"><button data-next="workflow">Workflow →</button></div></div>
+      </article>
+
+      <!-- 5 WORKFLOW -->
+      <article class="panel" id="workflow" data-title="Capture → Verify">
+        <div class="panel-head">
+          <div class="eyebrow"><span class="eyebrow-dot"></span>Core workflow</div>
+          <h1 class="panel-title">Capture → Element Action → Verify → Read Verdict</h1>
+          <p class="panel-lead">นี่คือ workflow ที่ควรฝึกจนเป็นนิสัย: ดู state ปัจจุบันก่อน, เลือก element index แทน coordinate, verify หลัง mutation และอ่าน verdict ก่อนทำ action ถัดไป</p>
+        </div>
+        <div class="panel-body">
+          <div class="flow" style="grid-template-columns:repeat(4,1fr)">
+            <div class="flow-step tint-blue"><span class="n">Step 1</span><strong>Capture</strong><span>เริ่มด้วย mode="som"</span></div>
+            <div class="flow-step tint-violet"><span class="n">Step 2</span><strong>Element first</strong><span>คลิกด้วย index ก่อนพิกัด</span></div>
+            <div class="flow-step tint-green"><span class="n">Step 3</span><strong>Verify</strong><span>capture ใหม่ / capture_after</span></div>
+            <div class="flow-step tint-amber"><span class="n">Step 4</span><strong>Verdict</strong><span>confirmed / unverifiable / noop</span></div>
+          </div>
+
+          <h2 class="section-title"><span class="num">1</span>Capture ก่อนเสมอ</h2>
+          <div class="codebox"><div class="codehead"><span>Python-like tool call</span><button class="copy-btn">Copy</button></div><pre><code>computer_use(action="capture", mode="som", app="Chrome")</code></pre></div>
+          <div class="grid three">
+            <div class="card tint-blue"><h3>som</h3><p>โหมดหลัก: screenshot + overlay หมายเลข element + accessibility tree index</p></div>
+            <div class="card"><h3>vision</h3><p>ภาพล้วน เหมาะเมื่อ overlay บังสิ่งที่ต้องดู</p></div>
+            <div class="card"><h3>ax</h3><p>tree อย่างเดียว เหมาะกับ text-only model หรืออยากลดการพึ่งภาพ</p></div>
+          </div>
+
+          <h2 class="section-title"><span class="num">2</span>Element index ก่อน coordinate</h2>
+          <div class="grid two">
+            <div><div class="codebox"><div class="codehead"><span>Preferred</span><button class="copy-btn">Copy</button></div><pre><code>computer_use(action="click", element=14)</code></pre></div></div>
+            <div class="card tint-green"><h3>ทำไมเสถียรกว่า</h3><p>ลดโอกาสคลิกพลาด และ driver สามารถผูก action กับ accessibility path เพื่อช่วยยืนยันผลได้ดีกว่า</p></div>
+          </div>
+
+          <h2 class="section-title"><span class="num">3</span>Verify หลัง action</h2>
+          <div class="codebox"><div class="codehead"><span>Capture after mutation</span><button class="copy-btn">Copy</button></div><pre><code>computer_use(action="click", element=14, capture_after=True)</code></pre></div>
+
+          <h2 class="section-title"><span class="num">4</span>อ่าน verdict ก่อน retry</h2>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Verdict / Code</th><th>ความหมาย</th><th>ควรทำต่อ</th></tr></thead>
+            <tbody>
+              <tr><td><span class="badge good">effect: confirmed</span></td><td>driver ยืนยันผลได้แล้ว</td><td>ทำ step ถัดไป</td></tr>
+              <tr><td><span class="badge warn">effect: unverifiable</span></td><td>ส่ง input แล้ว แต่ผลยังยืนยันไม่ได้</td><td>capture/check state ใหม่ก่อนสรุป</td></tr>
+              <tr><td><span class="badge bad">effect: suspected_noop</span></td><td>น่าจะไม่เกิดผล</td><td>ดู recommendation; อาจไป pixel</td></tr>
+              <tr><td><span class="badge info">background_unavailable</span></td><td>background path ใช้กับ action/target นี้ไม่ได้</td><td>พิจารณา rung ที่ driver แนะนำ</td></tr>
+            </tbody>
+          </table></div>
+          <div class="callout danger"><strong>สิ่งที่ไม่ควรทำ:</strong> คลิกซ้ำ ๆ โดยไม่ capture ใหม่ เพราะ element index ผูกกับ snapshot ล่าสุดและอาจ stale ได้</div>
+        </div>
+        <div class="panel-foot"><div class="pager"><button data-prev="os">← OS setup</button></div><span class="page-count">05 / 13</span><div class="pager"><button data-next="escalate">Escalation →</button></div></div>
+      </article>
+
+      <!-- 6 ESCALATE -->
+      <article class="panel" id="escalate" data-title="Escalation Ladder">
+        <div class="panel-head">
+          <div class="eyebrow"><span class="eyebrow-dot"></span>Verify → Escalate</div>
+          <h1 class="panel-title">อย่าเดา — ไต่ระดับตามสัญญาณจาก driver</h1>
+          <p class="panel-lead">หลักจำง่ายที่สุดคือ <b>background-first · escalate only when signaled · verify after mutation</b> โดย foreground เป็นทางเลือกท้าย ๆ เฉพาะ action ที่จำเป็น</p>
+        </div>
+        <div class="panel-body">
+          <div class="flow">
+            <div class="flow-step tint-green"><span class="n">Rung 1</span><strong>Element</strong><span>background + accessibility</span></div>
+            <div class="flow-step tint-blue"><span class="n">Rung 2</span><strong>Re-capture</strong><span>เมื่อ unverifiable</span></div>
+            <div class="flow-step tint-violet"><span class="n">Rung 3</span><strong>Pixel / coordinate</strong><span>เมื่อ driver แนะนำ px</span></div>
+            <div class="flow-step tint-cyan"><span class="n">Rung 4</span><strong>Browser page</strong><span>typed cua_browser_*</span></div>
+            <div class="flow-step tint-amber"><span class="n">Rung 5</span><strong>Foreground</strong><span>เฉพาะ action นั้น</span></div>
+          </div>
+
+          <div class="grid two">
+            <div>
+              <h2 class="section-title"><span class="num">1</span>Element first</h2>
+              <div class="codebox"><div class="codehead"><span>Rung 1</span><button class="copy-btn">Copy</button></div><pre><code>computer_use(action="click", element=7)</code></pre></div>
+            </div>
+            <div>
+              <h2 class="section-title"><span class="num">3</span>Coordinate fallback</h2>
+              <div class="codebox"><div class="codehead"><span>Rung 3</span><button class="copy-btn">Copy</button></div><pre><code>computer_use(action="click", coordinate=[x, y])</code></pre></div>
+            </div>
+          </div>
+
+          <h2 class="section-title"><span class="num">2</span>ถ้า unverifiable</h2>
+          <div class="callout"><strong>Capture ใหม่ก่อน</strong> ดู state ล่าสุดและอย่า retry action เดิมอัตโนมัติ เพราะ input อาจถูกส่งไปแล้วแต่ยังยืนยันไม่ได้</div>
+
+          <h2 class="section-title"><span class="num">4</span>ถ้า driver แนะนำ “page”</h2>
+          <div class="card tint-cyan"><h3>ใช้ typed browser rung ก่อน foreground</h3><p>เมื่อ target เป็น browser page content และ binding exact พิสูจน์ได้ ให้ใช้ action ตระกูล <span class="code-inline">cua_browser_*</span> เพื่อทำ mutation กับ semantic page ref ที่ผูกกับ DOM/page state โดยตรง</p></div>
+
+          <h2 class="section-title"><span class="num">5</span>Foreground เฉพาะ action</h2>
+          <div class="codebox"><div class="codehead"><span>Last resort for that action</span><button class="copy-btn">Copy</button></div><pre><code>computer_use(action="click", element=7, delivery_mode="foreground")</code></pre></div>
+
+          <div class="callout good"><strong>Cheat sheet:</strong> confirmed → ไปต่อ · unverifiable → capture ใหม่ · suspected_noop → พิจารณา px · page → typed browser · background unavailable → foreground เฉพาะเมื่อจำเป็น</div>
+        </div>
+        <div class="panel-foot"><div class="pager"><button data-prev="workflow">← Workflow</button></div><span class="page-count">06 / 13</span><div class="pager"><button data-next="browser">Browser จริง →</button></div></div>
+      </article>
+
+      <!-- 7 BROWSER -->
+      <article class="panel" id="browser" data-title="Browser จริง">
+        <div class="panel-head">
+          <div class="eyebrow"><span class="eyebrow-dot"></span>Browser bridge</div>
+          <h1 class="panel-title">Browser จริง, Typed Page Rung และ Profile ที่ล็อกอินอยู่</h1>
+          <p class="panel-lead">Computer Use ใช้ browser จริงของผู้ใช้ได้ แต่ต้องแยกให้ชัดระหว่าง <b>page content</b> กับ <b>browser chrome / native dialog</b> และ existing profile ต้อง opt-in แบบ explicit</p>
+        </div>
+        <div class="panel-body">
+          <h2 class="section-title"><span class="num">1</span>เลือกเครื่องมือให้ถูก</h2>
+          <div class="grid three">
+            <div class="card tint-green"><h3>เว็บล้วน + ไม่ต้องใช้ profile จริง</h3><p>เริ่มด้วย <span class="code-inline">browser_*</span> เพราะเสถียรกว่าและไม่ชนข้อจำกัด desktop OS</p></div>
+            <div class="card tint-blue"><h3>ต้องใช้ browser ที่เปิดจริง</h3><p>ใช้ <span class="code-inline">computer_use</span> เพื่อเข้าถึงหน้าต่าง/profile ที่ผู้ใช้ใช้อยู่</p></div>
+            <div class="card tint-violet"><h3>Page content ที่ driver แนะนำ</h3><p>สลับไป typed <span class="code-inline">cua_browser_*</span> เพื่อใช้ semantic page refs</p></div>
+          </div>
+
+          <h2 class="section-title"><span class="num">2</span>Typed browser rung — ขั้นตอนที่ต้องแม่น</h2>
+          <ol class="clean">
+            <li>bind browser state ด้วย <span class="code-inline">(pid, window_id)</span> ให้ได้ exact</li>
+            <li>ตรวจ <span class="code-inline">binding_quality="exact"</span> และ <span class="code-inline">mutation_allowed=true</span></li>
+            <li>เอา <span class="code-inline">tab_id</span></li>
+            <li>ขอ snapshot ใหม่</li>
+            <li>ใช้ ref ล่าสุดเท่านั้น</li>
+            <li>หลังทุก mutation ต้อง refresh state ใหม่</li>
+          </ol>
+          <div class="callout warn"><strong>ยังต้องใช้ native path</strong> สำหรับ browser chrome, permission UI, native dialog และ OS prompt</div>
+
+          <h2 class="section-title"><span class="num">3</span>Existing profile ที่ล็อกอินอยู่</h2>
+          <div class="grid two">
+            <div>
+              <div class="codebox"><div class="codehead"><span>Explicit opt-in</span><button class="copy-btn">Copy</button></div><pre><code>hermes config set computer_use.grant_existing_profile true</code></pre></div>
+            </div>
+            <div>
+              <div class="codebox"><div class="codehead"><span>Conceptual YAML</span><button class="copy-btn">Copy</button></div><pre><code>computer_use:
+  grant_existing_profile: true</code></pre></div>
+            </div>
+          </div>
+          <div class="callout danger"><strong>Default = fail closed.</strong> การเปิด YOLO ไม่ได้แทน explicit existing-profile grant เพราะ profile จริงอาจเปิดทางเข้าถึง cookie / storage / live pages ได้</div>
+        </div>
+        <div class="panel-foot"><div class="pager"><button data-prev="escalate">← Escalation</button></div><span class="page-count">07 / 13</span><div class="pager"><button data-next="security">Permission modes →</button></div></div>
+      </article>
+
+      <!-- 8 SECURITY -->
+      <article class="panel" id="security" data-title="Permission Modes">
+        <div class="panel-head">
+          <div class="eyebrow"><span class="eyebrow-dot"></span>Security boundary</div>
+          <h1 class="panel-title">Standard · Bounded · Unrestricted</h1>
+          <p class="panel-lead">เลือก permission mode ตามระดับความเสี่ยงและความอัตโนมัติ ไม่ใช่ตามความสะดวกอย่างเดียว โดย bounded เหมาะกับงาน unattended ที่ต้องการขอบเขตชัดที่สุด</p>
+        </div>
+        <div class="panel-body">
+          <div class="grid three">
+            <div class="card tint-green"><span class="badge good">Recommended start</span><h3 style="margin-top:10px">standard</h3><p>งานทั่วไป อนุญาต routine action ส่วนใหญ่ แต่ boundary สำคัญยังต้อง grant ตอน launch</p></div>
+            <div class="card tint-blue"><span class="badge info">Automation</span><h3 style="margin-top:10px">bounded</h3><p>เหมาะกับ cron / unattended / recurring automation ต้องมี capability manifest และนอก scope จะ fail closed</p></div>
+            <div class="card tint-red"><span class="badge bad">High risk</span><h3 style="margin-top:10px">unrestricted</h3><p>สำหรับ sandbox/VM/disposable environment ที่ยอมรับความเสี่ยงเต็ม หลัง acknowledge ความเสี่ยง</p></div>
+          </div>
+
+          <h2 class="section-title"><span class="num">1</span>ตั้งค่า bounded mode</h2>
+          <div class="codebox"><div class="codehead"><span>Hermes CLI</span><button class="copy-btn">Copy</button></div><pre><code>hermes config set computer_use.permission_mode bounded
+hermes config set computer_use.capability_manifest ~/.hermes/cua-manifest.yaml</code></pre></div>
+          <div class="codebox"><div class="codehead"><span>Conceptual YAML</span><button class="copy-btn">Copy</button></div><pre><code>computer_use:
+  permission_mode: bounded
+  capability_manifest: ~/.hermes/cua-manifest.yaml</code></pre></div>
+
+          <h2 class="section-title"><span class="num">2</span>Baseline สำหรับผู้ใช้ทั่วไป</h2>
+          <div class="codebox"><div class="codehead"><span>Standard + existing profile off</span><button class="copy-btn">Copy</button></div><pre><code>hermes config set computer_use.permission_mode standard
+hermes config set computer_use.grant_existing_profile false</code></pre></div>
+
+          <div class="callout danger"><strong>Unrestricted ไม่ได้ป้องกัน prompt injection หรือ unintended model actions.</strong> ใช้กับเครื่องหลักหรือ browser profile สำคัญก็ต่อเมื่อยอมรับความเสี่ยงนั้นจริง ๆ</div>
+        </div>
+        <div class="panel-foot"><div class="pager"><button data-prev="browser">← Browser</button></div><span class="page-count">08 / 13</span><div class="pager"><button data-next="examples">ตัวอย่าง →</button></div></div>
+      </article>
+
+      <!-- 9 EXAMPLES -->
+      <article class="panel" id="examples" data-title="ตัวอย่างใช้งาน">
+        <div class="panel-head">
+          <div class="eyebrow"><span class="eyebrow-dot"></span>Practical patterns</div>
+          <h1 class="panel-title">ตัวอย่างที่เห็นภาพการใช้งานจริง</h1>
+          <p class="panel-lead">ตัวอย่างด้านล่างไม่ได้เน้นจำ syntax แต่เน้น “pattern” ที่นำไปใช้กับ Mail, Outlook, Notes, Finder/Explorer, browser และ desktop app อื่น ๆ ได้</p>
+        </div>
+        <div class="panel-body">
+          <div class="grid three">
+            <div class="card tint-blue">
+              <h3>Mail / Outlook search</h3>
+              <ol class="clean"><li>capture แอป</li><li>click ช่องค้นหา</li><li>type คำค้น</li><li>key: return</li><li>คลิกผลลัพธ์</li><li>อ่านและสรุป</li></ol>
+            </div>
+            <div class="card tint-violet">
+              <h3>Browser ที่ล็อกอินอยู่</h3>
+              <ol class="clean"><li>เว็บล้วน → browser_*</li><li>ต้องใช้ profile จริง → computer_use</li><li>page content → cua_browser_* เมื่อ driver แนะนำ</li><li>native dialog → กลับ native path</li></ol>
+            </div>
+            <div class="card tint-green">
+              <h3>ส่ง screenshot ให้ผู้ใช้</h3>
+              <p>Computer Use สามารถมี screenshot file ส่งกลับผ่านช่องทางอย่าง Telegram / Discord / Desktop เมื่อผู้ใช้ร้องขอ</p>
+            </div>
+          </div>
+
+          <h2 class="section-title"><span class="num">1</span>ตัวอย่าง prompt pattern ที่เหมาะ</h2>
+          <div class="grid two">
+            <div class="card">
+              <h3>ค้นหาใน native app</h3>
+              <p>“เปิด Mail ที่ใช้อยู่ ค้นหาคำว่า invoice 2026 แล้วสรุปอีเมลล่าสุด 3 ฉบับ โดยทำแบบ background ถ้าได้”</p>
+            </div>
+            <div class="card">
+              <h3>ขอหลักฐานหลัง action</h3>
+              <p>“หลังทำเสร็จ capture หน้าจออีกครั้งเพื่อยืนยันผล และถ้า action unverifiable อย่าคลิกซ้ำจนกว่าจะตรวจ state ใหม่”</p>
+            </div>
+          </div>
+
+          <h2 class="section-title"><span class="num">2</span>OS ความต่างแบบใช้งานจริง</h2>
+          <div class="table-wrap"><table>
+            <thead><tr><th>หัวข้อ</th><th>macOS</th><th>Windows</th><th>Linux</th></tr></thead>
+            <tbody>
+              <tr><td><strong>สิทธิ์เริ่มต้น</strong></td><td>Accessibility + Screen Recording</td><td>ไม่มี permission แบบเดียวกับ macOS</td><td>display server + AT-SPI</td></tr>
+              <tr><td><strong>ปัญหายอดฮิต</strong></td><td>TCC, Space, custom canvas</td><td>Session 0, UIPI, admin windows</td><td>X11/Wayland, headless/Xvfb</td></tr>
+              <tr><td><strong>Background maturity</strong></td><td>ดีมาก</td><td>ดีมาก แต่ติด session/integrity boundary</td><td>X11 ดี; Wayland จำกัดมากขึ้น</td></tr>
+              <tr><td><strong>Unattended</strong></td><td>ได้เมื่อจัด permission/manifest ดี</td><td>ได้ แต่ต้องมี interactive desktop</td><td>เหมาะ โดยเฉพาะ X11/VM/local desktop</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+        <div class="panel-foot"><div class="pager"><button data-prev="security">← Security</button></div><span class="page-count">09 / 13</span><div class="pager"><button data-next="trouble">Troubleshooting →</button></div></div>
+      </article>
+
+      <!-- 10 TROUBLE -->
+      <article class="panel" id="trouble" data-title="Troubleshooting">
+        <div class="panel-head">
+          <div class="eyebrow"><span class="eyebrow-dot"></span>First triage</div>
+          <h1 class="panel-title">เริ่มด้วย doctor ก่อนแกะปัญหาเอง</h1>
+          <p class="panel-lead"><span class="code-inline">hermes computer-use doctor</span> คือ first triage stop ที่เอกสารแนะนำชัดที่สุด จากนั้นค่อยแยกตาม OS และ verdict ที่ได้รับ</p>
+        </div>
+        <div class="panel-body">
+          <div class="codebox"><div class="codehead"><span>Run first</span><button class="copy-btn">Copy</button></div><pre><code>hermes computer-use doctor</code></pre></div>
+          <div class="grid three">
+            <div class="metric tint-green"><div class="kicker">Exit code 0</div><div class="value">OK</div><div class="desc">health check ผ่าน</div></div>
+            <div class="metric tint-amber"><div class="kicker">Exit code 1</div><div class="value">Degraded / Failed</div><div class="desc">มี prerequisite หรือ capability บางส่วนมีปัญหา</div></div>
+            <div class="metric tint-red"><div class="kicker">Exit code 2</div><div class="value">Driver missing</div><div class="desc">หา cua-driver ไม่เจอหรือเรียกไม่ได้</div></div>
+          </div>
+
+          <h2 class="section-title"><span class="num">1</span>Useful flags</h2>
+          <div class="codebox"><div class="codehead"><span>Targeted diagnostics</span><button class="copy-btn">Copy</button></div><pre><code>hermes computer-use doctor --json
+hermes computer-use doctor --include tcc_accessibility
+hermes computer-use doctor --skip bundle_identity</code></pre></div>
+
+          <h2 class="section-title"><span class="num">2</span>อาการ → เช็คอะไร</h2>
+          <div class="table-wrap"><table>
+            <thead><tr><th>อาการ</th><th>สาเหตุที่ควรเช็คก่อน</th><th>การแก้ตามเอกสาร</th></tr></thead>
+            <tbody>
+              <tr><td><strong>macOS: capture ได้แต่ click เพี้ยน</strong></td><td>Accessibility / Screen Recording / identity ที่ grant</td><td>รัน permissions status + doctor</td></tr>
+              <tr><td><strong>Windows: SSH แล้วหา window ไม่เจอ</strong></td><td>Session 0</td><td>ใช้ interactive session หรือ Cua autostart daemon</td></tr>
+              <tr><td><strong>Windows: เห็น window แต่คลิกไม่เกิด</strong></td><td>window รัน Administrator / UIPI</td><td>Hermes ต้องรัน context ที่มีสิทธิ์สูงพอ</td></tr>
+              <tr><td><strong>Linux headless: capture/action ไม่ได้</strong></td><td>ไม่มี display server</td><td>ตั้ง DISPLAY / Wayland env หรือใช้ Xvfb</td></tr>
+              <tr><td><strong>Wayland: shortcut/raw key ไม่เข้า</strong></td><td>synthetic input ถูกจำกัด</td><td>ใช้ AT-SPI ก่อน; foreground เฉพาะ action ถ้าจำเป็น</td></tr>
+              <tr><td><strong>element หาย / stale</strong></td><td>snapshot เก่า</td><td>capture ใหม่ก่อน</td></tr>
+            </tbody>
+          </table></div>
+
+          <div class="callout"><strong>Background click ไม่เกิดผล?</strong> ดู verdict → capture ใหม่ถ้า unverifiable → ลอง coordinate เมื่อ driver แนะนำ → foreground เฉพาะเมื่อมีสัญญาณว่าจำเป็น</div>
+        </div>
+        <div class="panel-foot"><div class="pager"><button data-prev="examples">← ตัวอย่าง</button></div><span class="page-count">10 / 13</span><div class="pager"><button data-next="production">Production →</button></div></div>
+      </article>
+
+      <!-- 11 PRODUCTION -->
+      <article class="panel" id="production" data-title="Production Ready">
+        <div class="panel-head">
+          <div class="eyebrow"><span class="eyebrow-dot"></span>Production readiness</div>
+          <h1 class="panel-title">ก่อนเอาไปใช้จริง: Checklist + ระดับสถาปัตยกรรม</h1>
+          <p class="panel-lead">Production readiness ไม่ใช่แค่ “driver รันได้” แต่ต้องชัดทั้ง permission, desktop session, scope, existing-profile grant และระดับความเสี่ยงของ automation</p>
+        </div>
+        <div class="panel-body">
+          <div class="tabs" data-tabs="check-tabs">
+            <button class="tab-btn active" data-tab="check-common">Common</button>
+            <button class="tab-btn" data-tab="check-mac">macOS</button>
+            <button class="tab-btn" data-tab="check-win">Windows</button>
+            <button class="tab-btn" data-tab="check-linux">Linux</button>
+          </div>
+          <div class="tab-pane active" data-pane="check-common">
+            <div class="checklist">
+              <label class="check"><input type="checkbox">Hermes ติดตั้งแล้ว</label>
+              <label class="check"><input type="checkbox"><span><span class="code-inline">computer_use</span> toolset เปิดแล้ว</span></label>
+              <label class="check"><input type="checkbox"><span><span class="code-inline">hermes computer-use status</span> ผ่าน</span></label>
+              <label class="check"><input type="checkbox"><span><span class="code-inline">hermes computer-use doctor</span> ผ่าน</span></label>
+              <label class="check"><input type="checkbox">permission/prerequisite ของ OS ครบ</label>
+              <label class="check"><input type="checkbox">เลือก standard / bounded / unrestricted อย่างตั้งใจ</label>
+              <label class="check"><input type="checkbox">ถ้าจะใช้ browser profile จริง เปิด grant_existing_profile แบบตั้งใจ</label>
+            </div>
+          </div>
+          <div class="tab-pane" data-pane="check-mac"><div class="checklist">
+            <label class="check"><input type="checkbox">Accessibility granted</label><label class="check"><input type="checkbox">Screen Recording granted</label><label class="check"><input type="checkbox">identity ที่ grant ตรงกับ doctor</label><label class="check"><input type="checkbox">เข้าใจว่า app บางแบบอาจ foreground เฉพาะ action</label>
+          </div></div>
+          <div class="tab-pane" data-pane="check-win"><div class="checklist">
+            <label class="check"><input type="checkbox">ติดตั้ง Hermes native</label><label class="check"><input type="checkbox">ใช้งานจาก interactive session ไม่ใช่ Session 0</label><label class="check"><input type="checkbox">ถ้าใช้ SSH ตั้ง Cua daemon แล้ว</label><label class="check"><input type="checkbox">ไม่คุมหน้าต่าง Administrator จาก Hermes ปกติ</label>
+          </div></div>
+          <div class="tab-pane" data-pane="check-linux"><div class="checklist">
+            <label class="check"><input type="checkbox">มี DISPLAY หรือ XDG_SESSION_TYPE=wayland</label><label class="check"><input type="checkbox">AT-SPI พร้อม</label><label class="check"><input type="checkbox">Wayland: เข้าใจข้อจำกัด raw keyboard</label><label class="check"><input type="checkbox">Headless: มี Xvfb หรือ equivalent</label>
+          </div></div>
+
+          <h2 class="section-title"><span class="num">2</span>3 ระดับการใช้งานจริง</h2>
+          <div class="grid three">
+            <div class="card tint-green"><span class="badge good">Level A</span><h3 style="margin-top:10px">Personal</h3><p>ใช้ standard · อนุมัติ action ตามปกติ · คุมแอปจริงบนเครื่องตัวเอง</p></div>
+            <div class="card tint-blue"><span class="badge info">Level B</span><h3 style="margin-top:10px">Controlled automation</h3><p>ใช้ bounded + capability manifest · ระบุ app/origin/file scope ชัด · เหมาะกับ cron/recurring automation</p></div>
+            <div class="card tint-red"><span class="badge bad">Level C</span><h3 style="margin-top:10px">Sandbox / VM</h3><p>ค่อยพิจารณา unrestricted · ใช้ disposable environment · อย่าใช้กับเครื่องหลักหากไม่ยอมรับความเสี่ยงเต็ม</p></div>
+          </div>
+
+          <h2 class="section-title"><span class="num">3</span>3 หลักสำหรับสอนทีม</h2>
+          <div class="grid three">
+            <div class="card"><h3>Capture first</h3><p>อย่าทำ mutation ก่อนรู้ state ล่าสุด</p></div>
+            <div class="card"><h3>Element, not coordinate</h3><p>ใช้ accessibility element เป็นเส้นทางหลัก</p></div>
+            <div class="card"><h3>Verify → escalate</h3><p>อ่านผลและขยับ rung อย่างมีเหตุผล ไม่เดา</p></div>
+          </div>
+        </div>
+        <div class="panel-foot"><div class="pager"><button data-prev="trouble">← Troubleshooting</button></div><span class="page-count">11 / 13</span><div class="pager"><button data-next="commands">Commands →</button></div></div>
+      </article>
+
+      <!-- 12 COMMANDS -->
+      <article class="panel" id="commands" data-title="Command Library">
+        <div class="panel-head">
+          <div class="eyebrow"><span class="eyebrow-dot"></span>Copy-ready reference</div>
+          <h1 class="panel-title">Command Library</h1>
+          <p class="panel-lead">รวมคำสั่งสำคัญไว้จุดเดียว พร้อม Copy โดยไม่ต้องย้อนหาในบทต่าง ๆ</p>
+        </div>
+        <div class="panel-body">
+          <div class="grid two">
+            <div>
+              <h2 class="section-title"><span class="num">1</span>Install</h2>
+              <div class="codebox"><div class="codehead"><span>macOS / Linux / WSL2</span><button class="copy-btn">Copy</button></div><pre><code>curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash</code></pre></div>
+              <div class="codebox"><div class="codehead"><span>Windows</span><button class="copy-btn">Copy</button></div><pre><code>iex (irm https://hermes-agent.nousresearch.com/install.ps1)</code></pre></div>
+
+              <h2 class="section-title"><span class="num">2</span>Enable toolset</h2>
+              <div class="codebox"><div class="codehead"><span>Hermes tools</span><button class="copy-btn">Copy</button></div><pre><code>hermes tools
+hermes tools enable computer_use
+hermes -t computer_use chat</code></pre></div>
+
+              <h2 class="section-title"><span class="num">3</span>Status / doctor</h2>
+              <div class="codebox"><div class="codehead"><span>Health</span><button class="copy-btn">Copy</button></div><pre><code>hermes computer-use status
+hermes computer-use doctor
+hermes computer-use doctor --json</code></pre></div>
+            </div>
+            <div>
+              <h2 class="section-title"><span class="num">4</span>macOS permissions</h2>
+              <div class="codebox"><div class="codehead"><span>Permissions</span><button class="copy-btn">Copy</button></div><pre><code>hermes computer-use permissions status
+hermes computer-use permissions grant</code></pre></div>
+
+              <h2 class="section-title"><span class="num">5</span>Driver upgrade</h2>
+              <div class="codebox"><div class="codehead"><span>Upgrade</span><button class="copy-btn">Copy</button></div><pre><code>hermes computer-use install --upgrade</code></pre></div>
+
+              <h2 class="section-title"><span class="num">6</span>Linux headless</h2>
+              <div class="codebox"><div class="codehead"><span>Xvfb</span><button class="copy-btn">Copy</button></div><pre><code>Xvfb :99 -screen 0 1920x1080x24</code></pre></div>
+
+              <h2 class="section-title"><span class="num">7</span>Windows SSH daemon</h2>
+              <div class="codebox"><div class="codehead"><span>Cua side</span><button class="copy-btn">Copy</button></div><pre><code>cua-driver autostart enable
+cua-driver autostart kick
+cua-driver status</code></pre></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-foot"><div class="pager"><button data-prev="production">← Production</button></div><span class="page-count">12 / 13</span><div class="pager"><button data-next="sources">Sources →</button></div></div>
+      </article>
+
+      <!-- 13 SOURCES -->
+      <article class="panel" id="sources" data-title="แหล่งอ้างอิง">
+        <div class="panel-head">
+          <div class="eyebrow"><span class="eyebrow-dot"></span>Grounding</div>
+          <h1 class="panel-title">แหล่งอ้างอิงของเอกสารต้นฉบับ</h1>
+          <p class="panel-lead">คู่มือนี้จัดโครงสร้างใหม่จาก deep research ที่อ้างอิง official Hermes docs, official Cua docs, bundled skills และการตรวจคำสั่ง CLI ใน environment ที่ใช้วิจัย</p>
+        </div>
+        <div class="panel-body">
+          <div class="callout good"><strong>Research intent:</strong> practical + grounded — เน้น workflow และข้อจำกัดที่ใช้จริง มากกว่าสรุปจากความจำ</div>
+          <div class="source-list">
+            <div class="source-item"><b>[1] Hermes Agent docs — Computer Use</b><br><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/computer-use" target="_blank" rel="noopener">hermes-agent.nousresearch.com/docs/user-guide/features/computer-use</a></div>
+            <div class="source-item"><b>[2] Hermes bundled skill — computer-use</b><br><span class="code-inline">skills/autonomous-ai-agents/computer-use/SKILL.md</span></div>
+            <div class="source-item"><b>[3] Hermes docs — Tools / Tools Reference / CLI</b><br><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/tools" target="_blank" rel="noopener">Tools & Toolsets</a> · <a href="https://hermes-agent.nousresearch.com/docs/reference/tools-reference" target="_blank" rel="noopener">Built-in Tools Reference</a> · <a href="https://hermes-agent.nousresearch.com/docs/reference/cli-commands" target="_blank" rel="noopener">CLI</a></div>
+            <div class="source-item"><b>[4] Cua docs — No-Foreground Contract</b><br><a href="https://cua.ai/docs/concepts/the-no-foreground-contract.md" target="_blank" rel="noopener">cua.ai/docs/concepts/the-no-foreground-contract.md</a></div>
+            <div class="source-item"><b>[5] Hermes Installation</b> · <a href="https://hermes-agent.nousresearch.com/docs/getting-started/installation" target="_blank" rel="noopener">Installation docs</a></div>
+            <div class="source-item"><b>[6] Hermes Desktop</b> · <a href="https://hermes-agent.nousresearch.com/docs/user-guide/desktop" target="_blank" rel="noopener">Desktop docs</a></div>
+            <div class="source-item"><b>[7] Hermes Windows Native</b> · <a href="https://hermes-agent.nousresearch.com/docs/user-guide/windows-native" target="_blank" rel="noopener">Windows native guide</a></div>
+            <div class="source-item"><b>[8–10] Cua skill pack — Windows / macOS / Linux deep dives</b><br><span class="code-inline">libs/cua-driver/rust/Skills/cua-driver/*.md</span></div>
+            <div class="source-item"><b>[11] Cua — Drive a Windows app over SSH</b> · <a href="https://cua.ai/docs/how-to-guides/driver/windows-ssh.md" target="_blank" rel="noopener">Windows SSH guide</a></div>
+            <div class="source-item"><b>[12] Hermes Windows WSL2</b> · <a href="https://hermes-agent.nousresearch.com/docs/user-guide/windows-wsl-quickstart" target="_blank" rel="noopener">WSL2 quickstart</a></div>
+            <div class="source-item"><b>[13] Cua permission modes</b> · <a href="https://cua.ai/docs/reference/cua-driver/permission-modes.md" target="_blank" rel="noopener">Permission modes</a></div>
+          </div>
+
+          <h2 class="section-title"><span class="num">✓</span>UX/UI principles ที่ใช้กับคู่มือนี้</h2>
+          <div class="grid four">
+            <div class="card"><h3>Task-oriented IA</h3><p>จัดตาม “งานที่ต้องทำ” แทนบทความยาวตามลำดับเลข</p></div>
+            <div class="card"><h3>Progressive disclosure</h3><p>เปิดดูเฉพาะ module ที่ต้องใช้ ไม่โหลดความรู้ทั้งหมดใส่สายตาพร้อมกัน</p></div>
+            <div class="card"><h3>Action proximity</h3><p>ปุ่ม Copy อยู่ติด code block และ troubleshooting อยู่ใกล้อาการ</p></div>
+            <div class="card"><h3>Stateful reading</h3><p>จำ theme, font size, section และ checklist ใน browser session</p></div>
+          </div>
+        </div>
+        <div class="panel-foot"><div class="pager"><button data-prev="commands">← Commands</button></div><span class="page-count">13 / 13 · End</span><div class="pager"><button data-next="overview">กลับหน้าแรก ↺</button></div></div>
+      </article>
+
+    </section>
+  </main>
+</div>
+
+<script>
+const app = document.getElementById('app');
+const panels = [...document.querySelectorAll('.panel')];
+const navBtns = [...document.querySelectorAll('.nav-btn')];
+const crumbTitle = document.getElementById('crumbTitle');
+const mobileSection = document.getElementById('mobileSection');
+const navToggle = document.getElementById('navToggle');
+const themeToggle = document.getElementById('themeToggle');
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+
+function showPanel(id, updateHash=true){
+  const panel = document.getElementById(id) || document.getElementById('overview');
+  panels.forEach(p => p.classList.toggle('active', p===panel));
+  navBtns.forEach(b => b.classList.toggle('active', b.dataset.target===panel.id));
+  crumbTitle.textContent = panel.dataset.title || panel.id;
+  mobileSection.value = panel.id;
+  const body = panel.querySelector('.panel-body'); if(body) body.scrollTop = 0;
+  if(updateHash) history.replaceState(null,'','#'+panel.id);
+  localStorage.setItem('hermes-guide-section', panel.id);
+  app.classList.remove('mobile-nav');
+}
+navBtns.forEach(b => b.addEventListener('click',()=>showPanel(b.dataset.target)));
+document.querySelectorAll('[data-next],[data-prev]').forEach(b => b.addEventListener('click',()=>showPanel(b.dataset.next || b.dataset.prev)));
+mobileSection.addEventListener('change', e=>showPanel(e.target.value));
+
+navToggle.addEventListener('click',()=>{
+  if(matchMedia('(max-width:780px)').matches) app.classList.toggle('mobile-nav');
+  else app.classList.toggle('nav-collapsed');
+});
+
+function setTheme(theme){
+  document.documentElement.dataset.theme = theme;
+  themeToggle.textContent = theme==='dark' ? '☀' : '☾';
+  localStorage.setItem('hermes-guide-theme', theme);
+}
+themeToggle.addEventListener('click',()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark'));
+
+document.querySelectorAll('[data-font]').forEach(b=>b.addEventListener('click',()=>{
+  const size=b.dataset.font; document.documentElement.dataset.font=size;
+  document.querySelectorAll('[data-font]').forEach(x=>x.classList.toggle('active',x===b));
+  localStorage.setItem('hermes-guide-font',size);
+}));
+
+document.querySelectorAll('.copy-btn').forEach(btn=>btn.addEventListener('click', async ()=>{
+  const code=btn.closest('.codebox').querySelector('code').innerText;
+  try{await navigator.clipboard.writeText(code); const old=btn.textContent; btn.textContent='Copied ✓'; setTimeout(()=>btn.textContent=old,1200)}
+  catch{const t=document.createElement('textarea');t.value=code;document.body.append(t);t.select();document.execCommand('copy');t.remove();btn.textContent='Copied ✓';setTimeout(()=>btn.textContent='Copy',1200)}
+}));
+
+document.querySelectorAll('[data-tabs]').forEach(group=>{
+  group.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{
+    const container=group.parentElement;
+    group.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b===btn));
+    container.querySelectorAll('.tab-pane').forEach(p=>p.classList.toggle('active',p.dataset.pane===btn.dataset.tab));
+  }));
+});
+
+document.querySelectorAll('.check input').forEach((cb,i)=>{
+  const key='hermes-check-'+i; cb.checked=localStorage.getItem(key)==='1';
+  cb.addEventListener('change',()=>localStorage.setItem(key,cb.checked?'1':'0'));
+});
+
+const searchIndex = panels.map(p=>({
+  id:p.id,title:p.dataset.title,
+  text:(p.dataset.title+' '+p.innerText).toLowerCase()
+}));
+function renderSearch(q){
+  q=q.trim().toLowerCase();
+  if(!q){searchResults.classList.remove('show');return}
+  const hits=searchIndex.filter(x=>x.text.includes(q)).slice(0,8);
+  searchResults.innerHTML = hits.length ? hits.map(x=>`<button class="search-hit" data-id="${x.id}"><strong>${x.title}</strong><span>พบคำว่า “${q}” ในหัวข้อนี้</span></button>`).join('') : `<div class="search-hit"><strong>ไม่พบคำค้น</strong><span>ลองคำเช่น Windows, Session 0, profile, Xvfb</span></div>`;
+  searchResults.classList.add('show');
+  searchResults.querySelectorAll('[data-id]').forEach(b=>b.addEventListener('click',()=>{showPanel(b.dataset.id);searchResults.classList.remove('show');searchInput.value=''}));
+}
+searchInput.addEventListener('input',e=>renderSearch(e.target.value));
+document.addEventListener('click',e=>{if(!searchResults.contains(e.target) && e.target!==searchInput)searchResults.classList.remove('show')});
+
+const savedTheme=localStorage.getItem('hermes-guide-theme');
+if(savedTheme) setTheme(savedTheme);
+else if(matchMedia('(prefers-color-scheme:dark)').matches) setTheme('dark');
+
+const savedFont=localStorage.getItem('hermes-guide-font')||'md';
+document.documentElement.dataset.font=savedFont;
+document.querySelectorAll('[data-font]').forEach(b=>b.classList.toggle('active',b.dataset.font===savedFont));
+
+const initial = location.hash.slice(1) || localStorage.getItem('hermes-guide-section') || 'overview';
+showPanel(document.getElementById(initial)?initial:'overview', false);
+
+window.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='k'){e.preventDefault();searchInput.focus()}
+  if(e.key==='Escape'){app.classList.remove('mobile-nav');searchResults.classList.remove('show')}
+});
+</script>
+</body>
+</html>
