@@ -16,31 +16,32 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with f
 
 ### Reading collection
 
-- 21 standalone HTML guides indexed from `data/books.json`.
+- 22 standalone HTML guides indexed from `data/books.json`.
 - The Reading storefront title is **Coffee and Books**. Its environment uses a bright sunlit outdoor garden photograph containing only trees, foliage, grass, and natural daylight, plus heavy translucent iOS-inspired glass walls and shelves and one seamless user-approved 1044×237 retouched header image. The header removes baked UI on the left while preserving the original cup, latte art, table, garden, and lighting on the right; the site logo and title remain semantic HTML.
 - The Navigation bar, Title banner, Reading/Search panel, and Bookshelf panel share one responsive width: 1180px maximum on desktop and the same 4px side gutters on mobile. The garden wallpaper uses the photograph's natural color with no brightness/saturation/contrast filter and no color-wash overlay. The retouched header image uses `cover`, so no blank cream strip appears when the banner widens.
 - Coffee and Books styles live only in `assets/css/reading-library.css`, loaded only by the Reading template. Shared `assets/css/library.css` is restored byte-for-byte to the pre-Coffee `ca74827` baseline so the App and Audio collections cannot inherit the Reading wallpaper, glass panels, geometry, or header treatment.
 - Book titles and publish dates above each cover are intentionally text-only: no label panel, border, shadow, or metadata backdrop. Readability comes from dark typography and restrained text shadow while the book covers remain dominant.
-- `VAULT_AI_Safety_Interactive_Guide_TH.html` is the newest guide, explaining how to verify AI outputs, choose deterministic/AI/hybrid workflows, place human approval gates, and keep inspectable evidence; it uses the selected Cobalt Ice 600×900 custom WebP cover.
+- `grok-bot-vs-claude-code-vs-codex.html` is the newest guide, comparing persistent AI teammates with spawned agents across identity, state, environments, collaboration, automation, approvals, and use cases.
 - The imported `hermes-memory` and `hermes-guardian` repositories retain their original source commits under dedicated subdirectories.
-- Shelf-facing titles remain Thai-first except the user-specified English title **Claude Prompt Caching**, while necessary product and technical terms are retained.
+- Shelf-facing titles remain Thai-first except the user-specified English titles **Claude Prompt Caching** and **Grok Bot vs Claude Code vs Codex**, while necessary product and technical terms are retained.
 - Newest publication appears at the upper-left, then flows right and downward.
 - Every guide opens in a new browser tab.
-- All 21 reading books use individually designed 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork.
-- Reproducible cover designs live under `templates/`, including `claude-prompt-caching-cover.template.html`, `vault-ai-safety-cover.template.html`, `agent-reach-comparison-cover.template.html`, and `hermes-concepts-for-everyone-cover.template.html`; legacy Facebook assets remain archived but unused.
+- All 22 reading books use individually designed 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork.
+- Reproducible cover designs live under `templates/`, including `grok-bot-vs-claude-codex-cover.template.html`, `claude-prompt-caching-cover.template.html`, `vault-ai-safety-cover.template.html`, `agent-reach-comparison-cover.template.html`, and `hermes-concepts-for-everyone-cover.template.html`; legacy Facebook assets remain archived but unused.
 - **Claude Prompt Caching** is a byte-preserved user-supplied interactive guide dated 21 June 2026. Its cover uses the officially documented Claude Code Spark cue in an independent editorial context with a visible non-affiliation notice.
+- **Grok Bot vs Claude Code vs Codex** is an 11-view standalone comparison with 13 official sources and embedded transparent Grok/Claude/Codex logo assets. Its editorial cover distinguishes a persistent teammate from temporary spawned workers and carries a visible non-affiliation notice.
 
 ### Audio collection
 
-- 48 YouTube entries indexed from `data/audio-books.json`; the newest is **คุม AI ไม่ให้พลาด: กรอบ VAULT สำหรับระบบที่ตรวจสอบได้และควบคุมความเสี่ยง** (`lL2eb4GeoAU`). The original Hermes podcast `KtHYNnLM_Dk` remains Unlisted and is not referenced by the active catalog.
+- 49 YouTube entries indexed from `data/audio-books.json`; the newest is **Grok Bot vs Claude Code & Codex: AI Teammate ถาวรต่างจาก Spawn Agents อย่างไร** (`VQdCzVNhTmI`). It is Public, Not made for kids, 20:23, uses the approved Tricolor Segment Bars video and custom thumbnail, and is verified in the exact `tech (Ai)` playlist. The original Hermes podcast `KtHYNnLM_Dk` remains Unlisted and is not referenced by the active catalog.
 - Newest publication appears at the upper-left.
 - Local thumbnail assets are stored under `assets/audio-covers/`.
 - Each audio item uses a large iPod-style device at the existing book footprint: a full 4:3 thumbnail screen above a click wheel, with duration at the upper-right of the lower control panel and a PLAY label below.
 - Audio titles no longer show the redundant `AUDIO BOOK` kicker.
 - Each item and the playlist button open YouTube in a new tab.
 - The Audio room uses a light premium technology-retail theme inspired by Apple Fifth Avenue's architectural materials: a luminous glass-cube mark, circular skylights, pale stone/off-white terrazzo surfaces, stainless-steel details, translucent dark navigation, and maple display tables. Apple Blue is reserved for interactive controls.
-- The Audio room now uses the selected **Option 3** photograph of the Apple Fifth Avenue retail floor as a local 1600×1200 wallpaper. Navigation, header, search/tools, the full bookshelf wall, and shelf planks use Audio-scoped iOS-style Liquid Glass surfaces (30px room blur, 24px shelf blur); all 48 iPods remain foreground content. Attribution and CC BY 4.0 terms are recorded in `docs/reports/AUDIO_ROOM_IMAGE_ATTRIBUTION.md`.
-- Audio uses progressive disclosure to keep the initial page short: JavaScript starts with the newest 10 entries, loads 10 more per click, can reveal all 48, and can collapse back to 10. A lightweight year archive is generated from existing `time[datetime]` values (currently 2026 and 2025) without changing catalog schema. Search always checks all 48 entries and clearing a query resets the newest-10 view; No-JS users still receive all 48 server-rendered cards.
+- The Audio room now uses the selected **Option 3** photograph of the Apple Fifth Avenue retail floor as a local 1600×1200 wallpaper. Navigation, header, search/tools, the full bookshelf wall, and shelf planks use Audio-scoped iOS-style Liquid Glass surfaces (30px room blur, 24px shelf blur); all 49 iPods remain foreground content. Attribution and CC BY 4.0 terms are recorded in `docs/reports/AUDIO_ROOM_IMAGE_ATTRIBUTION.md`.
+- Audio uses progressive disclosure to keep the initial page short: JavaScript starts with the newest 10 entries, loads 10 more per click, can reveal all 49, and can collapse back to 10. A lightweight year archive is generated from existing `time[datetime]` values (currently 2026 and 2025) without changing catalog schema. Search always checks all 49 entries and clearing a query resets the newest-10 view; No-JS users still receive all 49 server-rendered cards.
 - The Audio collection header is titled **The Audio Shelf** while the Reading collection is titled **Coffee and Books**.
 
 ### App collection
@@ -105,7 +106,7 @@ python scripts/build_gallery.py --check
 git diff --check
 ```
 
-Expected verified result at close: **79 tests passed**, all four generated pages current, and no diff-check errors.
+Expected verified result at close: **81 tests passed**, all four generated pages current, and no diff-check errors.
 
 ## Publication workflow
 

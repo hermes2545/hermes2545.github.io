@@ -38,7 +38,7 @@ class CatalogTests(unittest.TestCase):
     def test_required_fields_and_unique_ids_and_links(self):
         required = {"id", "title", "short_title", "href", "cover", "category", "summary", "accent", "published_at"}
         self.assertTrue(self.books)
-        self.assertEqual(len(self.books), 21)
+        self.assertEqual(len(self.books), 22)
         self.assertEqual(len({book["id"] for book in self.books}), len(self.books))
         self.assertEqual(len({book["href"] for book in self.books}), len(self.books))
         for book in self.books:
@@ -48,7 +48,7 @@ class CatalogTests(unittest.TestCase):
             self.assertRegex(book["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
 
     def test_every_reading_book_uses_an_approved_custom_cover(self):
-        self.assertEqual(len(self.books), 21)
+        self.assertEqual(len(self.books), 22)
         for book in self.books:
             self.assertEqual(book["cover"], f'assets/covers/custom/{book["id"]}.webp')
             self.assertEqual(Path(book["cover"]).suffix, ".webp")
@@ -95,6 +95,7 @@ class CatalogTests(unittest.TestCase):
             "agent-reach-comparison": "Agent Reach หรือดึง Transcript ตรง",
             "vault-ai-safety": "คุม AI ไม่ให้พลาดด้วย VAULT",
             "claude-prompt-caching": "Claude Prompt Caching",
+            "grok-bot-vs-claude-codex": "Grok Bot vs Claude Code vs Codex",
         }
         actual = {book["id"]: book["short_title"] for book in self.books}
         self.assertEqual(actual, expected)
@@ -190,6 +191,47 @@ class CatalogTests(unittest.TestCase):
         self.assertIn("✳", design)
         self.assertIn("Claude Prompt Caching", design)
         self.assertIn("Independent guide · Not affiliated with Anthropic", design)
+
+    def test_grok_bot_vs_claude_codex_guide_is_catalogued_with_transparent_brand_assets(self):
+        matches = [book for book in self.books if book["id"] == "grok-bot-vs-claude-codex"]
+        self.assertEqual(len(matches), 1)
+        book = matches[0]
+        self.assertEqual(book["short_title"], "Grok Bot vs Claude Code vs Codex")
+        self.assertEqual(book["href"], "grok-bot-vs-claude-code-vs-codex.html")
+        self.assertEqual(book["cover"], "assets/covers/custom/grok-bot-vs-claude-codex.webp")
+        self.assertEqual(book["category"], "AI Agent Architecture")
+        self.assertEqual(book["published_at"], "2026-08-27T13:33:44+07:00")
+        source = ROOT / book["href"]
+        self.assertTrue(source.is_file())
+        source_text = source.read_text(encoding="utf-8")
+        self.assertEqual(
+            hashlib.sha256(source.read_bytes()).hexdigest(),
+            "9148d20a809867224563fd325d7dfe3e3120e28c05903e4220c324c30dc5dbaf",
+        )
+        self.assertEqual(source_text.count('class="view'), 11)
+        self.assertEqual(source_text.count("data:image/png;base64,"), 3)
+        self.assertEqual(source_text.count('class="sources"'), 1)
+        self.assertNotIn("ค่ะ", source_text)
+        self.assertNotIn("หนูมองว่า", source_text)
+        cover = ROOT / book["cover"]
+        self.assertTrue(cover.is_file())
+        with Image.open(cover) as image:
+            self.assertEqual(image.format, "WEBP")
+            self.assertEqual(image.size, (600, 900))
+            self.assertEqual(image.mode, "RGB")
+            self.assertEqual(len(image.getexif()), 0)
+        design = (ROOT / "templates" / "grok-bot-vs-claude-codex-cover.template.html").read_text(encoding="utf-8")
+        self.assertIn("Independent comparison · Not affiliated with xAI, Anthropic, or OpenAI", design)
+        for brand in ("grok", "claude", "codex"):
+            logo = ROOT / "templates" / "reading-cover-assets" / f"{brand}-transparent.png"
+            self.assertTrue(logo.is_file(), logo)
+            with Image.open(logo) as image:
+                self.assertEqual(image.format, "PNG")
+                self.assertEqual(image.mode, "RGBA")
+                self.assertEqual(image.size, (1600, 1600))
+                self.assertEqual(image.getchannel("A").getextrema(), (0, 255))
+                self.assertEqual(len(image.getexif()), 0)
+            self.assertIn(f"reading-cover-assets/{brand}-transparent.png", design)
 
     def test_imported_repository_guides_preserve_provenance(self):
         registry = json.loads((ROOT / "data" / "imported-sources.json").read_text(encoding="utf-8"))

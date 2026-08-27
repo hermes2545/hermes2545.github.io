@@ -229,5 +229,16 @@
     "summary": "คู่มือ Interactive อธิบาย Prompt Caching ผ่านอุปมาร้านกาแฟ การจัด Static/Dynamic context, Cost Simulator, โครงสร้าง Cache และกฎปฏิบัติ 7 ข้อสำหรับ Claude Code",
     "accent": "#D97757",
     "published_at": "2026-06-21T00:00:00+07:00"
+  },
+  {
+    "id": "grok-bot-vs-claude-codex",
+    "title": "Grok Bot vs Claude Code vs Codex — AI Teammate ถาวรต่างจาก Spawned Agents อย่างไร",
+    "short_title": "Grok Bot vs Claude Code vs Codex",
+    "href": "grok-bot-vs-claude-code-vs-codex.html",
+    "cover": "assets/covers/custom/grok-bot-vs-claude-codex.webp",
+    "category": "AI Agent Architecture",
+    "summary": "คู่มือเปรียบเทียบ Grok Bot แบบ persistent AI teammate กับ Claude Code และ Codex subagents ในด้าน identity, state, environment, collaboration, automation, approvals และ use cases พร้อมตารางสถาปัตยกรรมและแหล่งอ้างอิงทางการ 13 รายการ",
+    "accent": "#635BCE",
+    "published_at": "2026-08-27T13:33:44+07:00"
   }
 ]
