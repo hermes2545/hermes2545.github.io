@@ -60,7 +60,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with f
 
 ### Gallery collection
 
-- 5 user/project-owner supplied EXIF-free WebP artworks are indexed from `data/gallery.json` and generated into `gallery.html`. The newest local addition by featured order is **Grok Bot: จุดที่ควรระวัง**, dated 27 August 2026 and catalogued as Security/4:5; it remains local pending publication approval. The eight original prototype PNG examples were removed from the public catalog and assets at the user's request; their private design sources remain under `.hermes/` only.
+- 5 user/project-owner supplied EXIF-free WebP artworks are indexed from `data/gallery.json` and generated into `gallery.html`. The newest published addition by featured order is **Grok Bot: จุดที่ควรระวัง**, dated 27 August 2026 and catalogued as Security/4:5. The eight original prototype PNG examples were removed from the public catalog and assets at the user's request; their private design sources remain under `.hermes/` only.
 - The hero is a user/project-owner supplied image converted locally to an EXIF-free 1280×559 RGB WebP at `assets/gallery/gallery-hero.webp`; public-safe attribution is recorded in `docs/reports/GALLERY_IMAGE_ATTRIBUTION.md`.
 - The page supports category filtering, Featured/Newest/Title sorting, grid/list views, and a modal lightbox with previous/next controls, arrow keys, Escape, and focus restoration.
 - The Gallery lightbox supports 100–400% zoom with −/+/reset controls, keyboard `+`/`-`/`0`, and clamped pointer panning for mouse, touch, and pen. Changing images and closing the viewer reset the viewport to 100%.
@@ -126,7 +126,7 @@ Expected verified result at close: **81 tests passed**, all four generated pages
 
 ## Next recommended step
 
-The Gallery addition **Grok Bot: จุดที่ควรระวัง** is complete and verified locally but remains uncommitted and unpublished. Begin the next session by checking Git/remote state; do not push it without explicit approval.
+No implementation task is pending. **Grok Bot: จุดที่ควรระวัง** is published and production-verified. Future qualifying original Gallery image uploads should be committed and published automatically after full quality gates; all other collections and operations retain normal approval requirements.
 
 ## Latest close checkpoint — 2026-08-27
 
@@ -137,10 +137,10 @@ The Gallery addition **Grok Bot: จุดที่ควรระวัง** is
 - The newest guide has 11 interactive views, 13 official sources, three embedded transparent logos, a 600×900 custom cover, and verified desktop/mobile navigation, search, theme, drawer, and overflow behavior.
 - YouTube podcast `VQdCzVNhTmI` is Public, Not made for kids, 20:23, published on **manny calavara**, uses the approved Tricolor Segment Bars video and approved title/description, and is verified in the exact `tech (Ai)` playlist.
 - Audio production contains 49 entries; `VQdCzVNhTmI` is playlist/catalog position 1 at `https://hermes2545.github.io/audio-library.html`.
-- Latest published full verification: **81 tests passed**; Reading 22, Audio 49, App 5, Gallery 4; all generators current and project knowledge valid.
-- Production Gallery contains **Hermes Agent v0.20 (Herald Release)** dated 04/08/2026 and **Grok Bot: จุดที่ต้องระวังและข้อจำกัด** dated 27/08/2026. Desktop and 390px mobile DOM verification passed with four loaded catalog images and no horizontal overflow; the Grok artwork hash matched Local.
-- Local pending Gallery state: 5 artworks, including **Grok Bot: จุดที่ควรระวัง** dated 27/08/2026. Desktop and 390px mobile previews passed with no clipping, overlap, or horizontal overflow. Full close verification passed with **81 tests**, all four generators current, project knowledge valid, JavaScript syntax valid, and no diff-check errors.
-- Pre-share scan of all twelve changed/new files passed with no credentials, PII, private paths, or Drive IDs. The pending artwork is a single-frame 1024×1280 RGB WebP with no EXIF.
+- Latest Gallery content/policy commit: `129a98113e537223a61dc01b44465172e808505e` (`Add Grok Bot Gallery safety infographic`). Public and private remote HEADs matched at this commit; GitHub Pages deployment `33056751785` succeeded.
+- Latest published full verification: **81 tests passed**; Reading 22, Audio 49, App 5, Gallery 5; all generators current and project knowledge valid.
+- Production Gallery contains 5 artworks, including **Grok Bot: จุดที่ควรระวัง** dated 27/08/2026. Desktop and 390px mobile previews passed with no clipping, overlap, or horizontal overflow; Production catalog/title/date read-back passed and the artwork hash matched Local exactly.
+- Pre-share scan of all twelve changed/new files passed with no credentials, PII, private paths, or Drive IDs. The published artwork is a single-frame 1024×1280 RGB WebP with no EXIF.
 - Standing approval is active for qualifying original Gallery image uploads: preserve visible content, run all gates, then commit, push both Library remotes, publish, and production-verify automatically. All other collections and operations remain approval-gated.
 - No Library QA server, Studio browser, headless browser, or render process remains running.
 - The only untracked working-tree path is local private `.hermes/`; never stage or push it.
