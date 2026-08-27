@@ -126,20 +126,20 @@ Expected verified result at close: **81 tests passed**, all four generated pages
 
 ## Next recommended step
 
-The Gallery additions **Hermes Agent v0.20 (Herald Release)** and **Grok Bot: จุดที่ต้องระวังและข้อจำกัด** are complete and verified locally but remain uncommitted and unpublished. Begin the next session by checking Git/remote state; do not push them without explicit approval. Do not recreate or republish the completed Grok/Claude/Codex book or podcast unless explicitly asked.
+No implementation task is pending. The Gallery additions **Hermes Agent v0.20 (Herald Release)** and **Grok Bot: จุดที่ต้องระวังและข้อจำกัด** are published and production-verified. Begin the next session by checking Git/remote state. Do not recreate or republish completed artifacts unless explicitly asked.
 
 ## Latest close checkpoint — 2026-08-27
 
-- Production commit: `41c150d922dbb7ce901cfd265409033c1ffab9a8` (`Add Grok agent comparison book and podcast`).
-- Local `main`, public `origin/main`, and private `backup/main` are identical at that commit.
-- GitHub Pages deployment run `33048745008` completed successfully.
+- Gallery content commit: `68448291cfb5db7eda3f373e19612f1eed5cc7aa` (`Add two Gallery infographics`).
+- Local `main`, public `origin/main`, and private `backup/main` matched at that content commit before this close-document update.
+- GitHub Pages deployment run `33055457583` completed successfully.
 - Reading production contains 22 books; the newest is **Grok Bot vs Claude Code vs Codex** at `https://hermes2545.github.io/grok-bot-vs-claude-code-vs-codex.html`.
 - The newest guide has 11 interactive views, 13 official sources, three embedded transparent logos, a 600×900 custom cover, and verified desktop/mobile navigation, search, theme, drawer, and overflow behavior.
 - YouTube podcast `VQdCzVNhTmI` is Public, Not made for kids, 20:23, published on **manny calavara**, uses the approved Tricolor Segment Bars video and approved title/description, and is verified in the exact `tech (Ai)` playlist.
 - Audio production contains 49 entries; `VQdCzVNhTmI` is playlist/catalog position 1 at `https://hermes2545.github.io/audio-library.html`.
-- Latest published full verification: **81 tests passed**; Reading 22, Audio 49, App 5, Gallery 2; all generators current, project knowledge valid, production hashes matched Local, and Production runtime errors were 0.
-- Local pending Gallery state: 4 artworks, including **Hermes Agent v0.20 (Herald Release)** dated 04/08/2026 and **Grok Bot: จุดที่ต้องระวังและข้อจำกัด** dated 27/08/2026; desktop and 390px mobile previews passed. Full close verification passed with **81 tests**, all four generators current, project knowledge valid, JavaScript syntax valid, and no diff-check errors.
-- Pre-share scan of all ten changed/new files passed with no credentials, PII, private paths, or Drive IDs. The two pending artwork files are single-frame RGB WebPs with no EXIF: 905×1280 and 1024×1280 respectively.
+- Latest published full verification: **81 tests passed**; Reading 22, Audio 49, App 5, Gallery 4; all generators current and project knowledge valid.
+- Production Gallery contains **Hermes Agent v0.20 (Herald Release)** dated 04/08/2026 and **Grok Bot: จุดที่ต้องระวังและข้อจำกัด** dated 27/08/2026. Desktop and 390px mobile DOM verification passed with four loaded catalog images and no horizontal overflow; the Grok artwork hash matched Local.
+- Pre-share scan of all ten changed/new files passed with no credentials, PII, private paths, or Drive IDs. The two published artwork files are single-frame RGB WebPs with no EXIF: 905×1280 and 1024×1280 respectively.
 - No Library QA server, Studio browser, headless browser, or render process remains running.
 - The only untracked working-tree path is local private `.hermes/`; never stage or push it.
 
