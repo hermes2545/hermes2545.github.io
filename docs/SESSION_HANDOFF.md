@@ -126,7 +126,7 @@ Expected verified result at close: **82 tests passed**, all four generated pages
 
 ## Next recommended step
 
-An updated, byte-preserved replacement for **คู่มือ Hermes Agent Advance Computer Use** is complete and verified locally but remains uncommitted and unpublished. Reading updates require explicit push approval. Future Reading/Audio/App publications remain approval-gated; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
+No implementation task is pending. The updated, byte-preserved replacement for **คู่มือ Hermes Agent Advance Computer Use** is published and production-verified. Future Reading/Audio/App publications remain approval-gated; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
 
 ## Latest close checkpoint — 2026-08-27
 
@@ -141,8 +141,9 @@ An updated, byte-preserved replacement for **คู่มือ Hermes Agent Adv
 - Latest published full verification: **82 tests passed**; Reading 23, Audio 49, App 5, Gallery 5; all generators current and project knowledge valid.
 - Reading publication commit: `4b6f48054d3555ab6a9ae96b7de4260c3ebcc96f` (`Add Hermes advanced computer use guide`). Public and private remote HEADs matched; GitHub Pages deployment `33061438459` succeeded.
 - Production Reading contains 23 books with **คู่มือ Hermes Agent Advance Computer Use** first/newest at 27/08/2026. Full verification passed with **82 tests**; all generators current, project knowledge valid, inline JavaScript syntax valid, desktop/mobile visuals passed, interactive CDP checks passed, and no diff-check errors.
-- The new manual has 13 panels, 13 matching navigation items, 15 HTTPS references, zero conversational `ค่ะ` tokens, no local absolute paths, and SHA-256 `d66393c8cb363376c8fc88754c3918de5978b1183a4bf5db3771d667f343f8f1`, matching both the supplied HTML and Production exactly. Its final owner-supplied cover is an EXIF-free 600×900 RGB WebP whose Production hash also matched Local. Pre-share, official-link, JavaScript, interaction, visual, and Production DOM verification passed.
-- Local pending replacement SHA-256: `1ff59d838fc50843f964c71ab3757051b2eeabd5f0701fc515794ac00ddf9581`. It preserves 13 panels/13 navigation items, adds one embedded JPEG Hermes Agent logo with accessible label, keeps the stable URL/title/date/cover/catalog record unchanged, and passed local JavaScript, Search/Tabs/Theme/Font, mobile navigation/Escape, desktop/mobile visual, and overflow verification.
+- Original publication SHA-256 `d66393c8cb363376c8fc88754c3918de5978b1183a4bf5db3771d667f343f8f1` was production-verified before the owner-supplied branding replacement below.
+- Branding update commit: `52cd987cff707fe2d562d301286d2457b65cb382` (`Update Hermes Computer Use guide branding`). Public/private remote HEADs matched; GitHub Pages deployment `33062292220` succeeded.
+- Current Production SHA-256: `1ff59d838fc50843f964c71ab3757051b2eeabd5f0701fc515794ac00ddf9581`, matching the supplied update and Local exactly. It preserves 13 panels/13 navigation items, adds one embedded EXIF-free 160×160 JPEG Hermes Agent logo with accessible label, keeps the stable URL/title/date/cover/catalog record unchanged, and passed JavaScript, Search/Tabs/Theme/Font, mobile navigation/Escape, desktop/mobile visual, Production DOM, and overflow verification.
 - Production Gallery contains 5 artworks, including **Grok Bot: จุดที่ควรระวัง** dated 27/08/2026. Desktop and 390px mobile previews passed with no clipping, overlap, or horizontal overflow; Production catalog/title/date read-back passed and the artwork hash matched Local exactly.
 - Pre-share scan of all twelve changed/new files passed with no credentials, PII, private paths, or Drive IDs. The published artwork is a single-frame 1024×1280 RGB WebP with no EXIF.
 - Standing approval is active for qualifying original Gallery image uploads: preserve visible content, run all gates, then commit, push both Library remotes, publish, and production-verify automatically. All other collections and operations remain approval-gated.
