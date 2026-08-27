@@ -108,5 +108,27 @@
       "accent": "#6750A4",
       "ink": "#21005D"
     }
+  },
+  {
+    "id": "tumngern",
+    "title": "ตุ่มเงิน — แอปฝึกออมเงินทีละด่าน",
+    "short_title": "ตุ่มเงิน",
+    "href": "app/tumngern.html",
+    "category": "Personal Finance",
+    "summary": "แอปฝึกออมเงินผ่านภาพตุ่มน้ำ บันทึกรายรับรายจ่าย วางเงินสำรองฉุกเฉิน และทดลองแผนเกษียณ โดยเก็บข้อมูลหลักในเครื่องและมีระบบซิงก์แบบเลือกใช้",
+    "published_at": "2026-07-30T00:00:00+07:00",
+    "source_repository": "https://github.com/p2544/tumngern",
+    "source_commit": "fa43333cf0e73a2d2812e326644f0b9c960852da",
+    "source_sha256": "fff943118e976ff86536bfcb54824cceb246200a35f43b2fe839231aa305fbf8",
+    "import_mode": "path-adjusted-derivative",
+    "sticker": "assets/app-stickers/tumngern.webp",
+    "label": {
+      "kicker": "SAVING JOURNEY",
+      "mark": "฿",
+      "version": "PWA · v0.1.86",
+      "primary": "#FDF6EC",
+      "accent": "#B5502E",
+      "ink": "#3A2418"
+    }
   }
 ]

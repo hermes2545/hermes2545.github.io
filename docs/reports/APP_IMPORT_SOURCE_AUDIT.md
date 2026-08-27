@@ -4,11 +4,12 @@ type: report
 status: active
 visibility: public
 created: 2026-08-25
-updated: 2026-08-25
+updated: 2026-08-27
 sources:
   - https://github.com/p2544/battle-tank
   - https://github.com/p2544/bakery-center
   - https://github.com/p2544/loderunner
+  - https://github.com/p2544/tumngern
 tags: [library, app, import, provenance, privacy]
 ---
 
@@ -16,12 +17,14 @@ tags: [library, app, import, provenance, privacy]
 
 ## Scope
 
-ตรวจ Source และ Runtime สำหรับ App Collection ใหม่สามรายการก่อน Public push:
+ตรวจ Source และ Runtime สำหรับ App Collection ก่อน Public push:
 
 - Battle Tank
 - Bakery Center
 - Lode Runner
 - Pac-Man
+- PDF Password Remover
+- ตุ่มเงิน
 
 Metadata และ Commit ที่ใช้จริงอยู่ใน `data/apps.json` ซึ่งเป็น Source of truth; รายงานนี้อธิบายผลตรวจและเหตุผลการนำเข้าโดยไม่สร้าง Inventory ซ้ำ
 
@@ -57,17 +60,26 @@ Metadata และ Commit ที่ใช้จริงอยู่ใน `data
 - รักษา `index.htm` และ `pacman.js` ตาม Source commit; เก็บ GPL-3.0 `COPYING`, PII-free `UPSTREAM.md`, Font license และ Runtime icon/font ที่จำเป็น
 - ไม่ใช้ Backend หรือ External runtime service; Canvas รองรับ Keyboard และ Touch ตาม Source
 
+### ตุ่มเงิน
+
+- Source เป็น Multi-file React/PWA runtime จาก commit `fa43333cf0e73a2d2812e326644f0b9c960852da`; วันเผยแพร่ใน Catalog ใช้วันที่ที่เจ้าของกำหนด 30 กรกฎาคม 2026
+- เก็บ runtime bundle, CSS, ภาพ, icons, manifest, service worker และ Workbox ที่จำเป็นไว้ใต้ `app/tumngern/`; ตัด `.git`, README และภาพประกอบ README ที่ไม่จำเป็นต่อ runtime
+- เนื่องจาก upstream build ตรึง path `/tumngern/` จึงนำเข้าเป็น `path-adjusted-derivative`: เปลี่ยนเฉพาะ deployment base เป็น `/app/tumngern/` และอัปเดต Workbox revision ของไฟล์ที่เปลี่ยน
+- `app/tumngern.html` เป็น stable launcher ที่ส่งต่อไปยัง PWA runtime; Browser QA ยืนยัน launcher redirect, manifest, JavaScript, CSS, splash, icon และ service worker assets ตอบ 200
+- ข้อมูลหลักใช้ Browser storage และไม่มี network request อัตโนมัติบน splash/onboarding; ระบบ Sync เป็นทางเลือกที่ผู้ใช้ต้องตั้ง server และยืนยันเอง
+- Runtime แสดงคำเตือนว่า Sync payload ยังไม่เข้ารหัสแบบ end-to-end และไม่เปิดใช้งาน Sync โดยปริยาย
+
 
 ## Privacy and metadata scan
 
 - ไม่พบ API key, token, password, private key, OAuth credential, Telegram token, local absolute path หรือ private service ID ใน Public App runtime
-- ไม่พบ Email address ใน Text/HTML/JavaScript ที่นำเข้า
+- ตุ่มเงินมี Email ติดต่อผู้สร้างหนึ่งรายการในหน้า About; เป็นข้อมูลติดต่อที่เจ้าของเผยแพร่ไว้แล้วใน Public upstream และคงไว้ตามคำสั่งนำเข้า
 - ภาพ Runtime จำนวน 74 ไฟล์ไม่มี EXIF metadata
 - Raw binary scan พบ Email-like byte sequence ใน GIF หนึ่งไฟล์ แต่การตรวจ GIF metadata พบเฉพาะ Animation control data และไม่มี Comment/Author field จึงจัดเป็น Compressed-binary false positive
 
 ## License note
 
-GitHub License API ไม่พบ License file ที่ประกาศชัดเจนใน Source repositories ทั้งสาม ณ Commit ที่นำเข้า และ Lode Runner ระบุผู้สร้าง/แหล่ง Source ดั้งเดิมใน Runtime comments อยู่แล้ว การนำเข้าครั้งนี้ทำตามคำสั่งตรงของเจ้าของโครงการและรักษา Attribution เดิม แต่ควรถือสถานะ License ว่า **not declared in source** จนกว่าจะมี License file อย่างเป็นทางการ
+GitHub License API ไม่พบ License file ที่ประกาศชัดเจนใน Battle Tank, Bakery Center, Lode Runner และ Tumngern ณ Commit ที่นำเข้า; Lode Runner ระบุผู้สร้าง/แหล่ง Source ดั้งเดิมใน Runtime comments และ Tumngern เก็บ license headers ของ bundled dependencies ไว้ การนำเข้าครั้งนี้ทำตามคำสั่งตรงของเจ้าของโครงการและรักษา Attribution เดิม แต่ควรถือสถานะ License ของ Source ที่ไม่ประกาศว่า **not declared in source** จนกว่าจะมี License file อย่างเป็นทางการ
 
 - Battle Tank มี Embedded MP3 metadata ระบุ “Gamemaster Audio”; ต้องยืนยันสิทธิ์เสียงหรือเปลี่ยน/ตัดเสียงก่อน Public push หากไม่มีหลักฐานสิทธิ์
 - Lode Runner upstream, game source, sprites, audio และ level data ไม่มี Redistribution license ที่ตรวจพบ แม้ CreateJS vendor files จะมี MIT headers; Public push ต้องอาศัยการยืนยันฐานสิทธิ์จากผู้ใช้
@@ -76,6 +88,6 @@ GitHub License API ไม่พบ License file ที่ประกาศช�
 ## Decision
 
 - Local preparation: approved by current user instruction
-- Public push: not yet approved
+- Public push: approved by the current user instruction for the scoped Agent Reach and Tumngern additions
 - Imported scope: runtime-only, source-provenance recorded, no destructive change to source repositories
 - Withdrawn scope: Galaga, RL Battle City, and New Rally-X are no longer present in the active catalog or public runtime tree

@@ -4,7 +4,7 @@ type: meta
 status: active
 visibility: public
 created: 2026-08-23
-updated: 2026-08-26
+updated: 2026-08-27
 sources: [docs/SESSION_HANDOFF.md]
 tags: [library, changelog]
 ---
@@ -87,4 +87,7 @@ tags: [library, changelog]
 - Added **คู่มือ Hermes Agent Advance Computer Use** as the newest of 23 Reading entries dated 27 August 2026. The final user-supplied HTML is preserved byte-for-byte as a 13-panel Practical Guide with Sidebar/Topbar navigation, search, tabs, theme/font state, copy controls, mobile navigation, checklists, print mode, and sources; its SHA-256 is locked by test. Replaced the preliminary cover with the final owner-supplied artwork, normalized only to an EXIF-free 600×900 RGB WebP. Desktop/mobile visuals, interactive CDP checks, official link checks, and full project gates passed; changes remain local pending Reading publication approval.
 - Published **คู่มือ Hermes Agent Advance Computer Use** in commit `4b6f480`; public and private remote HEADs matched, GitHub Pages deployment `33061438459` succeeded, Production Reading contained 23 books with the new guide first, and live HTML/cover hashes matched Local exactly. Production mobile DOM confirmed 13 panels, 13 navigation items, Overview active, and no horizontal overflow.
 - Prepared a byte-preserved replacement for **คู่มือ Hermes Agent Advance Computer Use** using the owner's updated HTML (`1ff59d8…`), which embeds the Hermes Agent logo and refines sidebar branding while retaining the stable public URL, 13-panel navigation, catalog metadata, date, cover, and Reading position. Regression, JavaScript, interaction, desktop/mobile visual, and privacy checks passed locally; the published version remains unchanged pending explicit Reading push approval.
-- Published the updated **คู่มือ Hermes Agent Advance Computer Use** branding in commit `52cd987`; public and private remote HEADs matched, GitHub Pages deployment `33062292220` succeeded, Production SHA-256 matched `1ff59d8…`, and live mobile DOM confirmed the embedded Hermes Agent logo, 13 panels, 13 navigation items, Overview active, and no horizontal overflow.
+- Published the updated **คู่มือ Hermes Agent Advance Computer Use** branding in commit `52cd987`; public/private remote HEADs matched, GitHub Pages deployment `33062292220` succeeded, Production SHA-256 matched `1ff59d8…`, and live mobile DOM confirmed the embedded Hermes Agent logo, 13 panels, 13 navigation items, Overview active, and no horizontal overflow.
+- Published the YouTube podcast **Agent Reach: มอบดวงตาให้ AI ทะลวง Social Platform** (`UtzEjC9G3Dg`) with the approved Target Water Ripple visualization. Verified Public 1080p30, custom thumbnail, Not made for kids, clean copyright checks, exact `tech (Ai)` playlist membership at position 1, and public metadata read-back; added it as the 50th Audio Shelf entry.
+- Added the owner-supplied **Agent Reach คู่มือฉบับไทย** as the 24th Reading entry. Preserved the 170,001-byte HTML byte-for-byte at SHA-256 `e3c92f5e…`, normalized the supplied portrait artwork only to an EXIF-free 600×900 RGB WebP, and verified 10 responsive sections/navigation items plus desktop/mobile behavior.
+- Added **ตุ่มเงิน** from `p2544/tumngern` commit `fa43333` as the sixth App entry with the owner-requested date 30 July 2026. Imported the runtime under `app/tumngern/` as a path-adjusted derivative, retained source provenance, fixed all PWA/splash base paths, and verified splash/onboarding at 1440px and 390px with all assets returning 200 and no runtime exceptions.

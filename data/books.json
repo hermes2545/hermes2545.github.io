@@ -1,5 +1,16 @@
 [
   {
+    "id": "agent-reach-thai-guide",
+    "title": "Agent Reach คู่มือฉบับไทย — ให้ AI Agent มองเห็นทั้งอินเทอร์เน็ต",
+    "short_title": "Agent Reach คู่มือฉบับไทย",
+    "href": "AgentReach_Thai_Guide.html",
+    "cover": "assets/covers/custom/agent-reach-thai-guide.webp",
+    "category": "AI Research Tools",
+    "summary": "คู่มือภาษาไทยสำหรับติดตั้ง ตรวจสุขภาพ และใช้งาน Agent Reach เพื่อให้ AI Agent เข้าถึงข้อมูลจากเว็บ โซเชียล วิดีโอ พอดแคสต์ ฟอรัม และแพลตฟอร์มออนไลน์อย่างเป็นระบบ",
+    "accent": "#FF3B30",
+    "published_at": "2026-08-27T18:45:37+07:00"
+  },
+  {
     "id": "vault-ai-safety",
     "title": "VAULT: คู่มือคุม AI ไม่ให้พลาด — ตรวจสอบได้ ควบคุมความเสี่ยง และมีมนุษย์กำกับ",
     "short_title": "คุม AI ไม่ให้พลาดด้วย VAULT",

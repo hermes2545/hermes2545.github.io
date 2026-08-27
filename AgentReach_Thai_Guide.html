@@ -1,0 +1,1926 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Reach คู่มือฉบับไทย</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=swap">
+
+<style>
+/* ============ M3 TOKENS ============ */
+:root{
+  --p:#00658e; --on-p:#ffffff; --p-c:#c6e7ff; --on-p-c:#001e2e;
+  --s-c:#d3e5f5; --on-s-c:#0d1d29;
+  --t:#7a5900; --t-c:#ffdf9a; --on-t-c:#261a00;
+  --err:#ba1a1a; --err-c:#ffdad6; --on-err-c:#410002;
+  --ok:#216a4c; --ok-c:#a8f2cc; --on-ok-c:#00210f;
+  --surf:#f6f9fc; --on-surf:#171c1f; --on-surf-var:#41484d;
+  --sc-lowest:#ffffff; --sc-low:#f0f4f8; --sc:#eaeff3; --sc-high:#e4e9ee; --sc-highest:#dee4e9;
+  --outline:#6f797e; --outline-var:#c0c8cd;
+  --inv-surf:#2c3134; --inv-on:#edf1f5; --inv-p:#86cfff;
+  --shadow:0deg 0% 0%;
+  --code-bg:#0f1a20; --code-fg:#dce9f0;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --p:#86cfff; --on-p:#00344d; --p-c:#004c6c; --on-p-c:#c6e7ff;
+    --s-c:#354a59; --on-s-c:#d3e5f5;
+    --t:#f5bd48; --t-c:#5c4300; --on-t-c:#ffdf9a;
+    --err:#ffb4ab; --err-c:#93000a; --on-err-c:#ffdad6;
+    --ok:#7adbaa; --ok-c:#005236; --on-ok-c:#a8f2cc;
+    --surf:#0e1417; --on-surf:#dee3e7; --on-surf-var:#bfc8ce;
+    --sc-lowest:#090e11; --sc-low:#161c20; --sc:#1a2126; --sc-high:#252b30; --sc-highest:#30363b;
+    --outline:#89939a; --outline-var:#41484d;
+    --inv-surf:#dee3e7; --inv-on:#2c3134; --inv-p:#00658e;
+    --code-bg:#060b0e; --code-fg:#cfe0ea;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --p:#86cfff; --on-p:#00344d; --p-c:#004c6c; --on-p-c:#c6e7ff;
+  --s-c:#354a59; --on-s-c:#d3e5f5;
+  --t:#f5bd48; --t-c:#5c4300; --on-t-c:#ffdf9a;
+  --err:#ffb4ab; --err-c:#93000a; --on-err-c:#ffdad6;
+  --ok:#7adbaa; --ok-c:#005236; --on-ok-c:#a8f2cc;
+  --surf:#0e1417; --on-surf:#dee3e7; --on-surf-var:#bfc8ce;
+  --sc-lowest:#090e11; --sc-low:#161c20; --sc:#1a2126; --sc-high:#252b30; --sc-highest:#30363b;
+  --outline:#89939a; --outline-var:#41484d;
+  --inv-surf:#dee3e7; --inv-on:#2c3134; --inv-p:#00658e;
+  --code-bg:#060b0e; --code-fg:#cfe0ea;
+  color-scheme:dark;
+}
+
+/* ============ BASE ============ */
+*{box-sizing:border-box}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+html[data-fs="0"]{font-size:14px}
+html[data-fs="1"]{font-size:16px}
+html[data-fs="2"]{font-size:18px}
+html[data-fs="3"]{font-size:20.5px}
+body{
+  margin:0; background:var(--surf); color:var(--on-surf);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:1rem; line-height:1.72; font-weight:400;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,.disp,.label,.nav-item,.tab,.chip,.btn{
+  font-family:"Bai Jamjuree","Sarabun",sans-serif; text-wrap:balance;
+}
+h1,h2,h3,h4{margin:0; line-height:1.3; font-weight:600}
+p{margin:0}
+a{color:var(--p); text-underline-offset:3px}
+code,kbd,pre,.mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+:focus-visible{outline:3px solid var(--p); outline-offset:2px; border-radius:6px}
+.ico{font-family:"Material Symbols Rounded"; font-weight:normal; font-style:normal;
+  font-size:1.4rem; line-height:1; letter-spacing:normal; text-transform:none;
+  width:1em; height:1em; display:inline-flex; align-items:center; justify-content:center;
+  visibility:hidden;
+  white-space:nowrap; word-wrap:normal; direction:ltr; -webkit-font-feature-settings:'liga';
+  -webkit-font-smoothing:antialiased; flex:none;}
+html.fonts-ready .ico{visibility:visible}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* ============ APP SHELL ============ */
+.shell{display:flex; min-height:100vh}
+.topbar{
+  position:sticky; top:0; z-index:40;
+  display:flex; align-items:center; gap:.5rem;
+  padding:.6rem .9rem; min-height:64px;
+  background:var(--sc); color:var(--on-surf);
+  border-bottom:1px solid var(--outline-var);
+}
+.topbar .brand{display:flex; align-items:center; gap:.6rem; min-width:0; flex:1}
+.brand-mark{
+  width:38px;height:38px;border-radius:12px;flex:none;
+  background:var(--p-c); color:var(--on-p-c);
+  display:grid;place-items:center;
+}
+.brand-mark .ico{font-size:1.35rem}
+.brand-txt{min-width:0}
+.brand-txt b{display:block;font-family:"Bai Jamjuree",sans-serif;font-weight:600;font-size:1.02rem;line-height:1.25;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-txt span{display:block;font-size:.72rem;color:var(--on-surf-var);line-height:1.3;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.iconbtn{
+  width:44px;height:44px;border-radius:999px;border:0;flex:none;
+  background:transparent;color:var(--on-surf-var);cursor:pointer;
+  display:grid;place-items:center;transition:background .15s,color .15s;
+}
+.iconbtn:hover{background:color-mix(in srgb,var(--on-surf) 9%,transparent);color:var(--on-surf)}
+.iconbtn[aria-pressed="true"]{background:var(--s-c);color:var(--on-s-c)}
+.fsgroup{display:flex;align-items:center;gap:2px;background:var(--sc-high);border-radius:999px;padding:2px}
+.fsgroup .iconbtn{width:38px;height:38px}
+.iconbtn:disabled{opacity:.35;cursor:default}
+.iconbtn:disabled:hover{background:transparent}
+.fsgroup .fslabel{font-family:"Bai Jamjuree",sans-serif;font-size:.78rem;font-weight:600;
+  color:var(--on-surf-var);min-width:2.4rem;text-align:center;font-variant-numeric:tabular-nums}
+
+/* nav */
+.nav{
+  flex:none; width:268px; padding:1rem .75rem 3rem;
+  background:var(--sc-low); border-right:1px solid var(--outline-var);
+  position:sticky; top:0; align-self:flex-start; height:100vh; overflow-y:auto;
+}
+.nav-title{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--on-surf-var);padding:.5rem .9rem 0.4rem;font-family:"Bai Jamjuree",sans-serif}
+.nav-item{
+  display:flex;align-items:center;gap:.85rem;width:100%;
+  padding:.62rem .9rem;margin-bottom:2px;border:0;border-radius:999px;
+  background:transparent;color:var(--on-surf-var);cursor:pointer;
+  font-size:.92rem;font-weight:500;text-align:left;line-height:1.35;
+  transition:background .15s,color .15s;
+}
+.nav-item:hover{background:color-mix(in srgb,var(--on-surf) 8%,transparent)}
+.nav-item[aria-current="true"]{background:var(--s-c);color:var(--on-s-c);font-weight:600}
+.nav-item[aria-current="true"] .ico{color:var(--p)}
+.nav-num{margin-left:auto;font-size:.72rem;opacity:.55;font-variant-numeric:tabular-nums}
+
+.main{flex:1; min-width:0; display:flex; flex-direction:column}
+.content{padding:1.6rem clamp(1rem,4vw,2.6rem) 5rem; max-width:1120px; width:100%}
+.sec{display:none; animation:fade .32s ease}
+.sec.on{display:block}
+html[data-all="1"] .sec{display:block; margin-bottom:3.5rem}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.sec{animation:none} *{transition:none!important}}
+
+/* mobile nav */
+.scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:45}
+.scrim.on{display:block}
+@media(max-width:1000px){
+  .nav{position:fixed;left:0;top:0;z-index:50;transform:translateX(-104%);transition:transform .25s ease;
+    box-shadow:0 8px 24px -6px hsl(var(--shadow)/.35);width:280px}
+  .nav.on{transform:none}
+  .shell{display:block}
+}
+@media(min-width:1001px){ .menubtn{display:none} .shell{display:flex} }
+@media(max-width:560px){
+  .topbar{gap:.15rem;padding:.5rem .5rem}
+  .iconbtn{width:40px;height:40px}
+  .fsgroup .iconbtn{width:34px;height:34px}
+  .fsgroup .fslabel{min-width:2.1rem;font-size:.72rem}
+  .brand-txt span{display:none}
+  .brand-mark{width:34px;height:34px;border-radius:10px}
+}
+@media(max-width:400px){ .brand-txt{display:none} }
+
+/* ============ TYPO BLOCKS ============ */
+.eyebrow{display:inline-flex;align-items:center;gap:.4rem;font-family:"Bai Jamjuree",sans-serif;
+  font-size:.74rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--p)}
+.sec > h2{font-size:clamp(1.6rem,3.6vw,2.15rem);font-weight:700;letter-spacing:-.01em;margin:.35rem 0 .5rem}
+.lede{font-size:1.05rem;color:var(--on-surf-var);max-width:62ch;line-height:1.75}
+.h3{font-size:1.18rem;font-weight:600;margin:0 0 .2rem}
+.stack{display:flex;flex-direction:column;gap:1.1rem}
+.sec .stack > p{max-width:74ch}
+.stack-lg{display:flex;flex-direction:column;gap:2rem}
+.divider{height:1px;background:var(--outline-var);border:0;margin:0}
+
+/* ============ CARDS ============ */
+.card{background:var(--sc-lowest);border:1px solid var(--outline-var);border-radius:16px;padding:1.15rem 1.2rem}
+.card.filled{background:var(--sc);border-color:transparent}
+.card-h{display:flex;align-items:flex-start;gap:.8rem;margin-bottom:.6rem}
+.card-h .ico{color:var(--p);margin-top:.1rem}
+.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.grid-2{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+
+/* chips & badges */
+.chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.chip{display:inline-flex;align-items:center;gap:.35rem;padding:.28rem .7rem;border-radius:999px;
+  font-size:.78rem;font-weight:600;background:var(--sc-high);color:var(--on-surf-var);
+  border:1px solid var(--outline-var);line-height:1.4}
+.chip .ico{font-size:1rem}
+.chip.ok{background:var(--ok-c);color:var(--on-ok-c);border-color:transparent}
+.chip.warn{background:var(--t-c);color:var(--on-t-c);border-color:transparent}
+.chip.err{background:var(--err-c);color:var(--on-err-c);border-color:transparent}
+.chip.pri{background:var(--p-c);color:var(--on-p-c);border-color:transparent}
+
+/* ============ CODE + COPY ============ */
+.cmd{background:var(--code-bg);border-radius:12px;overflow:hidden;border:1px solid var(--outline-var)}
+.cmd-head{display:flex;align-items:center;gap:.5rem;padding:.45rem .5rem .45rem .85rem;
+  background:color-mix(in srgb,var(--code-fg) 8%,var(--code-bg))}
+.cmd-title{font-family:"Bai Jamjuree",sans-serif;font-size:.78rem;font-weight:600;color:var(--code-fg);
+  opacity:.85;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cmd pre{margin:0;padding:.85rem 1rem;overflow-x:auto;color:var(--code-fg);
+  font-size:.86rem;line-height:1.75;white-space:pre;-webkit-overflow-scrolling:touch}
+.copy{display:inline-flex;align-items:center;gap:.35rem;border:0;cursor:pointer;flex:none;
+  background:color-mix(in srgb,var(--code-fg) 14%,transparent);color:var(--code-fg);
+  font-family:"Bai Jamjuree",sans-serif;font-size:.78rem;font-weight:600;
+  padding:.35rem .75rem;border-radius:999px;transition:background .15s}
+.copy:hover{background:color-mix(in srgb,var(--code-fg) 26%,transparent)}
+.copy.done{background:var(--ok-c);color:var(--on-ok-c)}
+.copy .ico{font-size:1.05rem}
+.cmd-note{padding:.55rem .95rem;font-size:.82rem;color:var(--code-fg);opacity:.7;
+  border-top:1px solid color-mix(in srgb,var(--code-fg) 12%,transparent);line-height:1.6}
+code.inl{background:var(--sc-high);border:1px solid var(--outline-var);border-radius:6px;
+  padding:.08em .4em;font-size:.86em;word-break:break-word}
+
+/* ============ CALLOUTS ============ */
+.note{display:flex;gap:.8rem;padding:.95rem 1.1rem;border-radius:14px;line-height:1.7;font-size:.95rem}
+.note .ico{flex:none;margin-top:.15rem}
+.note b{font-family:"Bai Jamjuree",sans-serif;font-weight:600}
+.note.info{background:var(--p-c);color:var(--on-p-c)}
+.note.warn{background:var(--t-c);color:var(--on-t-c)}
+.note.danger{background:var(--err-c);color:var(--on-err-c)}
+.note.good{background:var(--ok-c);color:var(--on-ok-c)}
+
+/* ============ TABLE ============ */
+.tw{overflow-x:auto;border:1px solid var(--outline-var);border-radius:14px;background:var(--sc-lowest)}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:.9rem}
+th,td{text-align:left;padding:.7rem .9rem;border-bottom:1px solid var(--outline-var);vertical-align:top;line-height:1.6}
+th{font-family:"Bai Jamjuree",sans-serif;font-weight:600;font-size:.8rem;letter-spacing:.03em;
+  text-transform:uppercase;color:var(--on-surf-var);background:var(--sc);white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+td code{font-size:.84em}
+
+/* ============ LISTS ============ */
+ul.tick,ul.plain{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.5rem}
+ul.tick li{display:block;position:relative;padding-left:1.85rem;line-height:1.7}
+ul.tick li::before{content:"";font-family:"Material Symbols Rounded";color:var(--ok);
+  font-size:1.15rem;line-height:1;position:absolute;left:0;top:.28em;width:1.15rem;
+  display:inline-block;text-align:center}
+ul.tick.x li::before{color:var(--err)}
+ul.tick.dot li::before{color:var(--p)}
+html.fonts-ready ul.tick li::before{content:"check_circle"}
+html.fonts-ready ul.tick.x li::before{content:"cancel"}
+html.fonts-ready ul.tick.dot li::before{content:"chevron_right"}
+ol.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:1rem}
+ol.steps>li{counter-increment:s;display:grid;grid-template-columns:auto 1fr;gap:.9rem;align-items:start}
+ol.steps>li::before{content:counter(s);width:30px;height:30px;border-radius:999px;
+  background:var(--p);color:var(--on-p);display:grid;place-items:center;
+  font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:.88rem;line-height:1}
+ol.steps>li>div{min-width:0;display:flex;flex-direction:column;gap:.55rem}
+
+/* ============ DIAGRAM ============ */
+.layers{display:flex;flex-direction:column;gap:.4rem;margin:.2rem 0}
+.layer{border-radius:14px;padding:.85rem 1.05rem;border:1px solid var(--outline-var);background:var(--sc-lowest)}
+.layer .lname{display:flex;align-items:center;gap:.55rem;font-family:"Bai Jamjuree",sans-serif;
+  font-weight:600;font-size:.95rem;margin-bottom:.35rem}
+.layer .lname .ico{font-size:1.2rem;color:var(--p)}
+.layer.hero{background:var(--p-c);color:var(--on-p-c);border-color:transparent}
+.layer.hero .lname .ico{color:var(--on-p-c)}
+.layer small{font-size:.85rem;color:var(--on-surf-var);line-height:1.6;display:block}
+.layer.hero small{color:var(--on-p-c);opacity:.85}
+.arrowdown{display:grid;place-items:center;color:var(--outline);height:18px}
+.arrowdown .ico{font-size:1.2rem}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem}
+.flow .ico{font-size:1.05rem;color:var(--outline)}
+
+/* platform cards */
+.pcard{background:var(--sc-lowest);border:1px solid var(--outline-var);border-radius:16px;
+  padding:1rem 1.05rem;display:flex;flex-direction:column;gap:.65rem}
+.pcard-h{display:flex;align-items:center;gap:.7rem}
+.pico{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;flex:none;
+  background:var(--s-c);color:var(--on-s-c)}
+.pico .ico{font-size:1.3rem}
+.pcard h4{font-size:1.02rem}
+.pcard .sub{font-size:.75rem;color:var(--on-surf-var);font-family:"JetBrains Mono",monospace}
+.kv{font-size:.9rem;line-height:1.65}
+.kv b{font-family:"Bai Jamjuree",sans-serif;font-weight:600;font-size:.78rem;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--on-surf-var);display:block;margin-bottom:.1rem}
+
+/* tabs */
+.tabs{display:flex;gap:.35rem;overflow-x:auto;padding-bottom:.3rem;border-bottom:1px solid var(--outline-var);margin-bottom:1.1rem}
+.tab{border:0;background:transparent;cursor:pointer;padding:.55rem .95rem;border-radius:999px;
+  font-size:.9rem;font-weight:600;color:var(--on-surf-var);white-space:nowrap;transition:.15s}
+.tab:hover{background:color-mix(in srgb,var(--on-surf) 8%,transparent)}
+.tab[aria-selected="true"]{background:var(--p-c);color:var(--on-p-c)}
+.tabpanel{display:none}
+.tabpanel.on{display:block}
+
+/* details */
+details{border:1px solid var(--outline-var);border-radius:14px;background:var(--sc-lowest);overflow:hidden}
+details+details{margin-top:.6rem}
+summary{cursor:pointer;padding:.85rem 1.05rem;font-family:"Bai Jamjuree",sans-serif;font-weight:600;
+  font-size:.98rem;display:flex;align-items:center;gap:.6rem;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"";font-family:"Material Symbols Rounded";margin-left:auto;
+  color:var(--on-surf-var);transition:transform .2s}
+html.fonts-ready summary::after{content:"expand_more"}
+details[open] summary::after{transform:rotate(180deg)}
+details .body{padding:0 1.05rem 1.05rem;display:flex;flex-direction:column;gap:.8rem}
+
+.footer{padding:2rem clamp(1rem,4vw,2.6rem) 4rem;color:var(--on-surf-var);font-size:.85rem;
+  border-top:1px solid var(--outline-var);line-height:1.8}
+.footer a{color:var(--p)}
+</style>
+
+</head>
+<body>
+<div class="shell">
+<nav class="nav" id="nav" aria-label="สารบัญคู่มือ">
+  <div class="nav-title">สารบัญ</div>
+  <button class="nav-item" data-go="overview" aria-current="true"><span class="ico">visibility</span>ภาพรวม<span class="nav-num">01</span></button>
+  <button class="nav-item" data-go="start"><span class="ico">rocket_launch</span>เริ่มต้นใช้งาน<span class="nav-num">02</span></button>
+  <button class="nav-item" data-go="platforms"><span class="ico">hub</span>แพลตฟอร์มที่รองรับ<span class="nav-num">03</span></button>
+  <button class="nav-item" data-go="commands"><span class="ico">terminal</span>คำสั่งแยกตามหมวด<span class="nav-num">04</span></button>
+  <button class="nav-item" data-go="features"><span class="ico">extension</span>ติดตั้งฟีเจอร์แยก<span class="nav-num">05</span></button>
+  <button class="nav-item" data-go="config"><span class="ico">key</span>ตั้งค่า &amp; Cookie<span class="nav-num">06</span></button>
+  <button class="nav-item" data-go="cli"><span class="ico">list_alt</span>คำสั่ง CLI ทั้งหมด<span class="nav-num">07</span></button>
+  <button class="nav-item" data-go="safety"><span class="ico">shield</span>ข้อควรระวัง<span class="nav-num">08</span></button>
+  <button class="nav-item" data-go="trouble"><span class="ico">build</span>แก้ปัญหา<span class="nav-num">09</span></button>
+  <button class="nav-item" data-go="ai"><span class="ico">smart_toy</span>สำหรับ AI อ่าน<span class="nav-num">10</span></button>
+</nav>
+<div class="scrim" id="scrim"></div>
+
+<div class="main">
+  <header class="topbar">
+    <button class="iconbtn menubtn" id="menubtn" aria-label="เปิดสารบัญ"><span class="ico">menu</span></button>
+    <div class="brand">
+      <div class="brand-mark"><span class="ico">visibility</span></div>
+      <div class="brand-txt">
+        <b>Agent Reach</b>
+        <span>คู่มือฉบับไทย · v1.5.0 · 15 แพลตฟอร์ม</span>
+      </div>
+    </div>
+    <div class="fsgroup" role="group" aria-label="ขนาดตัวอักษร">
+      <button class="iconbtn" id="fsdown" aria-label="ลดขนาดตัวอักษร"><span class="ico">text_decrease</span></button>
+      <span class="fslabel" id="fslabel">100%</span>
+      <button class="iconbtn" id="fsup" aria-label="เพิ่มขนาดตัวอักษร"><span class="ico">text_increase</span></button>
+    </div>
+    <button class="iconbtn" id="allbtn" aria-pressed="false" aria-label="แสดงทุกหัวข้อพร้อมกัน" title="แสดงทุกหัวข้อพร้อมกัน"><span class="ico">unfold_more</span></button>
+    <button class="iconbtn" id="themebtn" aria-label="สลับโหมดสว่าง/มืด" title="สลับโหมดสว่าง/มืด"><span class="ico" id="themeico">dark_mode</span></button>
+  </header>
+
+  <div class="content" id="content">
+
+<!-- ================= 01 OVERVIEW ================= -->
+<section class="sec on" id="overview">
+  <span class="eyebrow"><span class="ico" style="font-size:1rem">visibility</span>บทที่ 01 — ภาพรวม</span>
+  <h2>Agent Reach คืออะไร</h2>
+  <p class="lede">Agent Reach คือ <b>“ชั้นความสามารถ” (capability layer)</b> ที่ติดตั้งให้ AI Agent ของคุณอ่านและค้นหาข้อมูลจากอินเทอร์เน็ตได้จริง — ทั้ง Twitter, Reddit, YouTube, GitHub, Facebook, Instagram, 小红书 และอื่น ๆ รวม 15 แพลตฟอร์ม โดยไม่ต้องเสียค่า API</p>
+
+  <div class="stack-lg" style="margin-top:1.6rem">
+
+    <div class="stack">
+      <h3 class="h3">ปัญหาที่มันแก้</h3>
+      <p style="color:var(--on-surf-var)">AI Agent เขียนโค้ด แก้เอกสาร จัดการโปรเจกต์ได้ดี แต่พอสั่งให้ “ไปหาข้อมูลในเน็ต” มักจะทำไม่ได้ เพราะแต่ละแพลตฟอร์มมีกำแพงคนละแบบ:</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>สิ่งที่คุณอยากให้ Agent ทำ</th><th>ปัญหาเดิม</th></tr></thead>
+          <tbody>
+            <tr><td>สรุปคลิป YouTube นี้ให้หน่อย</td><td>ดึง subtitle ไม่ได้</td></tr>
+            <tr><td>ดูว่าคนบน Twitter พูดถึงสินค้านี้ยังไง</td><td>Twitter API ต้องจ่ายเงิน</td></tr>
+            <tr><td>ไปดู Reddit ว่ามีใครเจอ bug เดียวกันไหม</td><td>โดน 403 บล็อก IP เซิร์ฟเวอร์</td></tr>
+            <tr><td>ดูรีวิวสินค้าบน 小红书 / Instagram</td><td>ต้องล็อกอินถึงจะเปิดได้</td></tr>
+            <tr><td>อ่านหน้าเว็บนี้ให้หน่อย</td><td>ได้ HTML tag กลับมาเป็นพรืด อ่านไม่รู้เรื่อง</td></tr>
+            <tr><td>สรุปวิดีโอ Bilibili</td><td>yt-dlp โดนระบบกันบอทของ B站 บล็อกหมด (412)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="color:var(--on-surf-var)">ทุกอย่างนี้ “ทำได้” แต่ต้องไปหาเครื่องมือ ติดตั้ง ตั้งค่า ทีละแพลตฟอร์มเอง Agent Reach ย่อทั้งหมดเหลือ <b>ประโยคเดียว</b></p>
+    </div>
+
+    <div class="stack">
+      <h3 class="h3">มันทำงานยังไง — สถาปัตยกรรม 4 ชั้น</h3>
+      <div class="layers">
+        <div class="layer">
+          <div class="lname"><span class="ico">smart_toy</span>ชั้นที่ 1 — AI Agent ของคุณ</div>
+          <small>Hermes Agent · Claude Code · OpenClaw · Cursor · Windsurf — Agent ตัวไหนก็ได้ที่รันคำสั่ง shell เป็น</small>
+        </div>
+        <div class="arrowdown"><span class="ico">keyboard_double_arrow_down</span></div>
+        <div class="layer hero">
+          <div class="lname"><span class="ico">visibility</span>ชั้นที่ 2 — Agent Reach (ชั้นความสามารถ)</div>
+          <small><b>เลือก</b> เครื่องมือที่เสถียรที่สุดตอนนี้ · <b>ติดตั้ง</b> ให้ · <b>ตรวจสุขภาพ</b> ด้วย <code style="font-family:JetBrains Mono,monospace">doctor</code> · <b>route</b> ไปช่องทางสำรองอัตโนมัติเมื่อช่องทางหลักพัง — <u>ไม่ได้เป็นตัวอ่านข้อมูลเอง</u></small>
+        </div>
+        <div class="arrowdown"><span class="ico">keyboard_double_arrow_down</span></div>
+        <div class="layer">
+          <div class="lname"><span class="ico">handyman</span>ชั้นที่ 3 — เครื่องมือต้นทาง (upstream)</div>
+          <div class="chips" style="margin-top:.35rem">
+            <span class="chip">opencli</span><span class="chip">twitter-cli</span><span class="chip">bili-cli</span>
+            <span class="chip">rdt-cli</span><span class="chip">yt-dlp</span><span class="chip">gh CLI</span>
+            <span class="chip">Jina Reader</span><span class="chip">mcporter + Exa</span><span class="chip">feedparser</span>
+            <span class="chip">xiaohongshu-mcp</span><span class="chip">mcp-server-linkedin</span>
+          </div>
+        </div>
+        <div class="arrowdown"><span class="ico">keyboard_double_arrow_down</span></div>
+        <div class="layer">
+          <div class="lname"><span class="ico">public</span>ชั้นที่ 4 — 15 แพลตฟอร์มปลายทาง</div>
+          <small>Agent เรียกเครื่องมือต้นทางโดยตรง ไม่มีชั้นห่อ (wrapper) มาคั่น — เร็วกว่า และพังยากกว่า</small>
+        </div>
+      </div>
+      <div class="note info">
+        <span class="ico">lightbulb</span>
+        <div><b>ประโยคสำคัญที่ต้องเข้าใจ:</b> Agent Reach เป็น “คนจัดหา + หมอตรวจสุขภาพ + นายท่าจัดคิว” ไม่ใช่ “คนอ่านข้อมูล” เวลาใช้งานจริง Agent จะเรียกคำสั่งอย่าง <code class="inl" style="background:rgba(0,0,0,.12);border-color:transparent">opencli reddit search</code> ตรง ๆ ไม่ได้ผ่าน Agent Reach</div>
+      </div>
+    </div>
+
+    <div class="stack">
+      <h3 class="h3">ก่อนใช้ ควรรู้ 5 ข้อนี้</h3>
+      <div class="grid">
+        <div class="card"><div class="card-h"><span class="ico">payments</span><div><h4>ฟรีทั้งหมด</h4></div></div>
+          <p style="font-size:.94rem;color:var(--on-surf-var)">เครื่องมือทุกตัว open source, API ทุกตัวฟรี สิ่งเดียวที่อาจเสียเงินคือ proxy สำหรับเซิร์ฟเวอร์ (~$1/เดือน) — <b>เครื่องส่วนตัวไม่ต้องใช้</b></p></div>
+        <div class="card"><div class="card-h"><span class="ico">lock</span><div><h4>ข้อมูลอยู่กับคุณ</h4></div></div>
+          <p style="font-size:.94rem;color:var(--on-surf-var)">Cookie / Token เก็บที่เครื่องคุณเท่านั้น ใน <code class="inl">~/.agent-reach/config.yaml</code> สิทธิ์ไฟล์ 600 ไม่มีการอัปโหลดออกนอกเครื่อง</p></div>
+        <div class="card"><div class="card-h"><span class="ico">alt_route</span><div><h4>เปลี่ยนช่องทางให้เอง</h4></div></div>
+          <p style="font-size:.94rem;color:var(--on-surf-var)">ทุกแพลตฟอร์มมี “ตัวหลัก + ตัวสำรอง” เรียงลำดับไว้ ถ้าตัวหลักโดนบล็อก ระบบสลับให้เอง (ตัวอย่างจริง มิ.ย. 2026: yt-dlp โดน B站 บล็อก → สลับไป bili-cli ผู้ใช้ไม่ต้องทำอะไร)</p></div>
+        <div class="card"><div class="card-h"><span class="ico">devices</span><div><h4>ใช้ได้กับ Agent ทุกตัว</h4></div></div>
+          <p style="font-size:.94rem;color:var(--on-surf-var)">Hermes Agent, Claude Code, OpenClaw, Cursor, Windsurf — ขอแค่รันคำสั่ง shell ได้</p></div>
+        <div class="card"><div class="card-h"><span class="ico">stethoscope</span><div><h4>มีหมอในตัว</h4></div></div>
+          <p style="font-size:.94rem;color:var(--on-surf-var)">คำสั่งเดียว <code class="inl">agent-reach doctor</code> บอกครบว่าช่องไหนใช้ได้ ช่องไหนพัง และแก้ยังไง</p></div>
+      </div>
+    </div>
+
+    <div class="stack">
+      <h3 class="h3">ข้อมูลโปรเจกต์</h3>
+      <div class="tw">
+        <table>
+          <tbody>
+            <tr><th>ชื่อ / ผู้พัฒนา</th><td>Agent Reach โดย Panniantong</td></tr>
+            <tr><th>Repository</th><td><a href="https://github.com/Panniantong/Agent-Reach">github.com/Panniantong/Agent-Reach</a> (มิเรอร์: <a href="https://atomgit.com/qq_51337814/Agent-Reach">AtomGit</a>)</td></tr>
+            <tr><th>เวอร์ชัน</th><td>1.5.0</td></tr>
+            <tr><th>สัญญาอนุญาต</th><td>MIT</td></tr>
+            <tr><th>ภาษา / ข้อกำหนด</th><td>Python 3.10+ (บาง backend ต้องมี Node.js, gh CLI, ffmpeg)</td></tr>
+            <tr><th>จำนวนช่องทาง</th><td>15 แพลตฟอร์ม · ใช้ได้ทันทีโดยไม่ต้องตั้งค่า 6–7 ช่อง</td></tr>
+            <tr><th>ภาษาเอกสารต้นทาง</th><td>จีน (มี README อังกฤษ / ญี่ปุ่น / เกาหลี)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= 02 START ================= -->
+<section class="sec" id="start">
+  <span class="eyebrow"><span class="ico" style="font-size:1rem">rocket_launch</span>บทที่ 02 — เริ่มต้นใช้งาน</span>
+  <h2>ติดตั้งใน 3 ขั้น</h2>
+  <p class="lede">คุณไม่ต้องพิมพ์คำสั่งติดตั้งเอง — วิธีมาตรฐานคือ <b>ส่งลิงก์คู่มือติดตั้งให้ AI Agent แล้วให้มันทำเอง</b></p>
+
+  <div class="stack-lg" style="margin-top:1.6rem">
+
+    <ol class="steps">
+      <li><div>
+        <h4 class="h3">คัดลอกประโยคนี้ไปวางในแชตกับ Agent</h4>
+        <div class="cmd">
+          <div class="cmd-head"><span class="cmd-title">คำสั่งติดตั้ง (ภาษาไทย)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>ช่วยติดตั้ง Agent Reach ให้หน่อย โดยอ่านและทำตามคู่มือนี้:
+https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/install.md
+
+ข้อกำหนด:
+- ให้ตรวจสอบ (check-only) ก่อน แล้วสรุปให้ฉันดูว่าจะติดตั้งอะไรบ้าง
+- ห้ามใช้ sudo และห้ามสร้างไฟล์ใน workspace ของโปรเจกต์
+- รอฉันอนุมัติก่อนค่อยรันโหมด --system</pre>
+          <div class="cmd-note">ต้นฉบับภาษาจีนคือ 帮我安装 Agent Reach：&lt;URL&gt; — ใช้ประโยคไทยด้านบนได้ผลเหมือนกัน เพราะ Agent อ่านคู่มือปลายทางเป็นภาษาอังกฤษอยู่แล้ว</div>
+        </div>
+      </div></li>
+      <li><div>
+        <h4 class="h3">Agent จะถามว่าอยากได้ช่องทางไหนเพิ่ม</h4>
+        <p style="color:var(--on-surf-var);font-size:.95rem">ค่าเริ่มต้นจะเปิดเฉพาะช่องที่ไม่ต้องล็อกอิน (เว็บ, YouTube, GitHub, RSS, Exa, V2EX และ B站 แบบพื้นฐาน) ส่วนช่องที่ต้องล็อกอิน — Twitter, Reddit, Facebook, Instagram, 小红书 — จะขึ้นเป็นเมนูให้เลือก <b>เลือกเฉพาะที่ใช้จริง</b> (ดูบทที่ 05)</p>
+      </div></li>
+      <li><div>
+        <h4 class="h3">ตรวจผลด้วย doctor</h4>
+        <div class="cmd">
+          <div class="cmd-head"><span class="cmd-title">ตรวจสถานะทุกช่องทาง</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>agent-reach doctor</pre>
+          <div class="cmd-note">เติม --json ถ้าอยากได้ผลแบบเครื่องอ่าน (จะเห็นฟิลด์ active_backend ของแต่ละช่อง)</div>
+        </div>
+      </div></li>
+    </ol>
+
+    <div class="note good">
+      <span class="ico">verified_user</span>
+      <div><b>ปลอดภัยโดยค่าเริ่มต้น:</b> <code class="inl" style="background:rgba(0,0,0,.1);border-color:transparent">agent-reach install</code> เฉย ๆ จะ <b>ตรวจอย่างเดียว ไม่แก้ระบบ</b> ต้องใส่ <code class="inl" style="background:rgba(0,0,0,.1);border-color:transparent">--system</code> อย่างชัดเจนเท่านั้นถึงจะติดตั้งของลงเครื่อง</div>
+    </div>
+
+    <div class="stack">
+      <h3 class="h3">โหมดการติดตั้ง 4 แบบ</h3>
+      <div class="tw"><table>
+        <thead><tr><th>โหมด</th><th>คำสั่ง</th><th>ใช้เมื่อไหร่</th></tr></thead>
+        <tbody>
+          <tr><td>ตรวจอย่างเดียว <span class="chip ok" style="margin-left:.3rem">ค่าเริ่มต้น</span></td><td><code>agent-reach install --env=auto</code></td><td>ทุกสถานการณ์ — แค่ตรวจและบอกว่าขาดอะไร</td></tr>
+          <tr><td>พรีวิว</td><td><code>agent-reach install --env=auto --dry-run</code></td><td>อยากเห็นก่อนว่าถ้าติดตั้งจริงจะทำอะไรบ้าง</td></tr>
+          <tr><td>ติดตั้งจริง</td><td><code>agent-reach install --env=auto --system</code></td><td>เมื่อคุณอนุญาตให้แก้ไขเครื่องแล้ว</td></tr>
+          <tr><td>ติดตั้งเฉพาะช่อง</td><td><code>agent-reach install --env=auto --system --channels=twitter,reddit</code></td><td>เลือกเฉพาะแพลตฟอร์มที่ต้องการ</td></tr>
+        </tbody>
+      </table></div>
+      <p style="font-size:.9rem;color:var(--on-surf-var)"><code class="inl">--env</code> รับค่า <code class="inl">local</code> / <code class="inl">server</code> / <code class="inl">auto</code> · <code class="inl">--safe</code> มีผลเท่ากับค่าเริ่มต้น (มีไว้เพื่อความเข้ากันได้)</p>
+    </div>
+
+    <div class="stack">
+      <h3 class="h3">ตั้งค่าเฉพาะตาม Agent ที่คุณใช้</h3>
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" aria-selected="true" data-tab="t-hermes">Hermes Agent</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="t-cc">Claude Code</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="t-oc">OpenClaw</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="t-other">Cursor / Windsurf / อื่น ๆ</button>
+      </div>
+
+      <div class="tabpanel on" id="t-hermes">
+        <div class="stack">
+          <div class="note info"><span class="ico">info</span><div>Agent Reach ยังไม่รู้จัก Hermes โดยตรง มันจะเขียน skill ลงโฟลเดอร์กลาง <code class="inl" style="background:rgba(0,0,0,.1);border-color:transparent">~/.agents/skills/agent-reach</code> — เราแค่ชี้ให้ Hermes มาอ่านที่นั่น</div></div>
+          <div class="cmd">
+            <div class="cmd-head"><span class="cmd-title">1) ติดตั้ง skill ลงโฟลเดอร์กลาง</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+            <pre>agent-reach skill --install
+ls ~/.agents/skills/agent-reach</pre>
+          </div>
+          <div class="cmd">
+            <div class="cmd-head"><span class="cmd-title">2) วิธี ก — คัดลอกเข้าโฟลเดอร์ skill ของ Hermes (ตรงไปตรงมาที่สุด)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+            <pre>mkdir -p ~/.hermes/skills
+cp -r ~/.agents/skills/agent-reach ~/.hermes/skills/agent-reach
+ls ~/.hermes/skills/agent-reach</pre>
+            <div class="cmd-note">ต้องคัดลอกทั้งโฟลเดอร์ ไม่ใช่แค่ SKILL.md เพราะมีโฟลเดอร์ references/ ที่เก็บคำสั่งละเอียดของแต่ละแพลตฟอร์ม</div>
+          </div>
+          <div class="cmd">
+            <div class="cmd-head"><span class="cmd-title">2) วิธี ข — ให้ Hermes อ่านจากโฟลเดอร์กลางแทน (ไม่ต้องคัดลอกซ้ำเวลาอัปเดต)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+            <pre># แก้ ~/.hermes/config.yaml
+skills:
+  external_dirs:
+    - ~/.agents/skills</pre>
+          </div>
+          <div class="cmd">
+            <div class="cmd-head"><span class="cmd-title">3) ตรวจว่า Hermes เห็น skill แล้ว</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+            <pre>hermes skills list | grep -i reach</pre>
+          </div>
+          <ul class="tick dot">
+            <li>Hermes ต้องเปิดสิทธิ์ <b>terminal / execute_code</b> ไว้ ไม่งั้นจะรัน <code class="inl">agent-reach</code>, <code class="inl">opencli</code>, <code class="inl">yt-dlp</code> ไม่ได้เลย</li>
+            <li>ถ้าคุณรัน Hermes บน WSL2 ให้ติดตั้งฝั่ง Linux ทั้งหมด และจำไว้ว่า backend ที่ต้องใช้ Chrome (OpenCLI) ต้องมี Chrome ที่ Hermes เข้าถึงได้จริง</li>
+            <li>ถ้า Hermes รันบนเซิร์ฟเวอร์ที่ไม่มีหน้าจอ ให้ข้าม OpenCLI แล้วใช้เส้นทาง Cookie-Editor แทน (บทที่ 06)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tabpanel" id="t-cc">
+        <div class="stack">
+          <p style="color:var(--on-surf-var);font-size:.95rem">Claude Code ถูกรองรับโดยตรง — Agent Reach จะเขียน skill ลง <code class="inl">~/.claude/skills/agent-reach</code> ให้อัตโนมัติเมื่อรันด้วย <code class="inl">--system</code></p>
+          <div class="cmd">
+            <div class="cmd-head"><span class="cmd-title">วางในหน้าต่าง Claude Code</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+            <pre>ช่วยติดตั้ง Agent Reach ให้หน่อย ทำตามคู่มือนี้:
+https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/install.md
+ตรวจ (check-only) ก่อน แล้วสรุปให้ฉันอนุมัติก่อนติดตั้งจริง</pre>
+          </div>
+          <div class="cmd">
+            <div class="cmd-head"><span class="cmd-title">ติดตั้ง / รีเฟรช skill ด้วยมือ</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+            <pre>agent-reach skill --install
+ls ~/.claude/skills/agent-reach</pre>
+            <div class="cmd-note">ไฟล์ skill เขียนโดย install --system หรือ skill --install เท่านั้น · doctor ไม่แตะไฟล์ skill</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabpanel" id="t-oc">
+        <div class="stack">
+          <div class="note warn"><span class="ico">warning</span><div><b>OpenClaw ต้องเปิดสิทธิ์ exec ก่อนติดตั้ง</b> ถ้ายังใช้โปรไฟล์ <code class="inl" style="background:rgba(0,0,0,.1);border-color:transparent">messaging</code> ตามค่าเริ่มต้น Agent จะรันคำสั่งไม่ได้เลย</div></div>
+          <div class="cmd">
+            <div class="cmd-head"><span class="cmd-title">เปิดสิทธิ์ exec แล้วรีสตาร์ต</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+            <pre>openclaw config set tools.profile "coding"
+openclaw gateway restart</pre>
+            <div class="cmd-note">หรือแก้ ~/.openclaw/openclaw.json ให้เป็น "tools": { "profile": "coding" } แล้วเปิดบทสนทนาใหม่</div>
+          </div>
+          <p style="color:var(--on-surf-var);font-size:.95rem">skill จะถูกเขียนลง <code class="inl">~/.openclaw/skills/agent-reach</code> · OpenClaw ยังตั้ง cron ให้ตรวจสุขภาพรายวันได้ (ดูบทที่ 07 คำสั่ง <code class="inl">watch</code>)</p>
+        </div>
+      </div>
+
+      <div class="tabpanel" id="t-other">
+        <div class="stack">
+          <p style="color:var(--on-surf-var);font-size:.95rem">Agent ตัวไหนก็ใช้ได้ ขอแค่รันคำสั่ง shell เป็น Agent Reach จะเขียน skill ลงโฟลเดอร์กลาง <code class="inl">~/.agents/skills/agent-reach</code> (OpenCode ใช้ <code class="inl">~/.config/opencode/skills</code>)</p>
+          <div class="cmd">
+            <div class="cmd-head"><span class="cmd-title">ติดตั้งด้วยมือ (pipx — แนะนำ)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+            <pre>pipx install https://github.com/Panniantong/agent-reach/archive/main.zip
+agent-reach install --env=auto
+agent-reach doctor</pre>
+          </div>
+          <div class="cmd">
+            <div class="cmd-head"><span class="cmd-title">ถ้าเจอ PEP 668 externally-managed-environment (Homebrew Python / Ubuntu ใหม่)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+            <pre>python3 -m venv ~/.agent-reach-venv
+source ~/.agent-reach-venv/bin/activate
+pip install https://github.com/Panniantong/agent-reach/archive/main.zip
+agent-reach install --env=auto</pre>
+          </div>
+          <div class="cmd">
+            <div class="cmd-head"><span class="cmd-title">Windows PowerShell (ถ้า python3 เปิด Microsoft Store)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+            <pre>py -3 -m venv $env:USERPROFILE\.agent-reach-venv
+$env:USERPROFILE\.agent-reach-venv\Scripts\Activate.ps1
+python -m pip install https://github.com/Panniantong/agent-reach/archive/main.zip
+agent-reach install --env=auto</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stack">
+      <h3 class="h3">อัปเดตในภายหลัง</h3>
+      <div class="cmd">
+        <div class="cmd-head"><span class="cmd-title">ประโยคสั่งอัปเดต (วางให้ Agent)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+        <pre>ช่วยอัปเดต Agent Reach ให้หน่อย ทำตามคู่มือนี้:
+https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/update.md</pre>
+      </div>
+      <div class="cmd">
+        <div class="cmd-head"><span class="cmd-title">หรือทำเองทีละขั้น</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+        <pre>agent-reach check-update
+pip install --upgrade https://github.com/Panniantong/agent-reach/archive/main.zip
+agent-reach version
+agent-reach doctor</pre>
+        <div class="cmd-note">ถ้าติดตั้งด้วย pipx ให้ใช้ pipx install --force https://github.com/Panniantong/agent-reach/archive/main.zip แทน</div>
+      </div>
+      <div class="note warn"><span class="ico">do_not_disturb_on</span><div><b>อย่าถอนเครื่องมือเก่าทิ้ง</b> backend ที่ถูกปลดระวาง (เช่น yt-dlp สำหรับ B站, xhs-cli) ยังทำหน้าที่เป็นตัวสำรองอยู่ ระบบจะ route หลบให้เอง</div></div>
+      <div class="note danger"><span class="ico">warning</span><div><b>ห้ามติดตั้งจาก PyPI ชื่อเดียวกัน</b> — แพ็กเกจ <code class="inl" style="background:rgba(0,0,0,.1);border-color:transparent">pip install agent-reach</code> ไม่ใช่โปรเจกต์นี้ ให้ติดตั้งจาก URL GitHub ตามด้านบนเสมอ</div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= 03 PLATFORMS ================= -->
+<section class="sec" id="platforms">
+  <span class="eyebrow"><span class="ico" style="font-size:1rem">hub</span>บทที่ 03 — แพลตฟอร์ม</span>
+  <h2>15 แพลตฟอร์มที่รองรับ</h2>
+  <p class="lede">แต่ละการ์ดบอกว่า <b>ใช้ได้ทันทีอะไรบ้าง</b> · <b>ต้องตั้งค่าถึงจะปลดล็อกอะไร</b> · และ <b>ใช้เครื่องมือตัวไหนอยู่</b> ถ้าไม่รู้ว่าจะตั้งค่ายังไง ไม่ต้องเปิดคู่มือ — บอก Agent ว่า “ช่วยตั้งค่า XXX ให้หน่อย” ได้เลย</p>
+
+  <div class="chips" style="margin:1.2rem 0 1.4rem">
+    <span class="chip ok"><span class="ico">bolt</span>ใช้ได้ทันที ไม่ต้องตั้งค่า</span>
+    <span class="chip warn"><span class="ico">key</span>ต้องตั้งค่า/ล็อกอินก่อน</span>
+    <span class="chip err"><span class="ico">block</span>ไม่มีทางลัด ต้องล็อกอินเท่านั้น</span>
+  </div>
+
+  <div class="grid">
+
+    <article class="pcard">
+      <div class="pcard-h"><div class="pico"><span class="ico">public</span></div>
+        <div><h4>เว็บทั่วไป</h4><div class="sub">Jina Reader</div></div></div>
+      <span class="chip ok" style="align-self:flex-start"><span class="ico">bolt</span>ใช้ได้ทันที</span>
+      <div class="kv"><b>ทำอะไรได้</b>อ่านหน้าเว็บอะไรก็ได้ แปลงเป็นข้อความ/Markdown สะอาด ไม่มี HTML tag ปนมา</div>
+      <div class="kv"><b>ตั้งค่า</b>ไม่ต้อง</div>
+    </article>
+
+    <article class="pcard">
+      <div class="pcard-h"><div class="pico"><span class="ico">smart_display</span></div>
+        <div><h4>YouTube</h4><div class="sub">yt-dlp</div></div></div>
+      <span class="chip ok" style="align-self:flex-start"><span class="ico">bolt</span>ใช้ได้ทันที</span>
+      <div class="kv"><b>ทำอะไรได้</b>ดึง subtitle (ทั้งที่อัปโหลดเองและ auto), ข้อมูลวิดีโอ (metadata), ค้นหาวิดีโอ, ดึงคอมเมนต์แบบ best-effort</div>
+      <div class="kv"><b>ถ้าไม่มี subtitle</b>ตกไปใช้ <code class="inl">agent-reach transcribe</code> ถอดเสียงด้วย Whisper</div>
+    </article>
+
+    <article class="pcard">
+      <div class="pcard-h"><div class="pico"><span class="ico">rss_feed</span></div>
+        <div><h4>RSS / Atom</h4><div class="sub">feedparser</div></div></div>
+      <span class="chip ok" style="align-self:flex-start"><span class="ico">bolt</span>ใช้ได้ทันที</span>
+      <div class="kv"><b>ทำอะไรได้</b>อ่าน feed ของบล็อก ข่าว พอดแคสต์ ได้ทุกเจ้าที่ปล่อย RSS/Atom</div>
+      <div class="kv"><b>ตั้งค่า</b>ไม่ต้อง</div>
+    </article>
+
+    <article class="pcard">
+      <div class="pcard-h"><div class="pico"><span class="ico">travel_explore</span></div>
+        <div><h4>ค้นหาทั้งเว็บ</h4><div class="sub">Exa ผ่าน mcporter</div></div></div>
+      <span class="chip ok" style="align-self:flex-start"><span class="ico">bolt</span>ตั้งค่าอัตโนมัติ ไม่ต้องใช้ Key</span>
+      <div class="kv"><b>ทำอะไรได้</b>ค้นหาเชิงความหมาย (semantic search) ทั่วทั้งเว็บ เก่งเรื่องเอกสารเทคนิคและตัวอย่างโค้ดภาษาอังกฤษ</div>
+      <div class="kv"><b>หมายเหตุ</b><code class="inl">get_code_context_exa</code> ถูกยกเลิกแล้ว ใช้ <code class="inl">web_search_exa</code> แทนทุกกรณี</div>
+    </article>
+
+    <article class="pcard">
+      <div class="pcard-h"><div class="pico"><span class="ico">code</span></div>
+        <div><h4>GitHub</h4><div class="sub">gh CLI</div></div></div>
+      <span class="chip ok" style="align-self:flex-start"><span class="ico">bolt</span>อ่าน repo สาธารณะได้ทันที</span>
+      <div class="kv"><b>ปลดล็อกเพิ่มเมื่อล็อกอิน</b>repo ส่วนตัว, เปิด Issue/PR, fork, ดู Actions/CI log, Release, เรียก API</div>
+      <div class="kv"><b>ตั้งค่า</b>บอก Agent “ช่วยล็อกอิน GitHub ให้หน่อย” หรือรัน <code class="inl">gh auth login</code></div>
+    </article>
+
+    <article class="pcard">
+      <div class="pcard-h"><div class="pico"><span class="ico">tag</span></div>
+        <div><h4>Twitter / X</h4><div class="sub">twitter-cli ▸ OpenCLI ▸ bird</div></div></div>
+      <span class="chip warn" style="align-self:flex-start"><span class="ico">key</span>ต้องมี Cookie</span>
+      <div class="kv"><b>ทำอะไรได้</b>อ่านทวีตเดี่ยว + reply, ไทม์ไลน์หน้าแรก, ทวีตของผู้ใช้, โปรไฟล์, อ่าน X Article (บทความยาว)</div>
+      <div class="kv"><b>ปลดล็อกเพิ่ม</b>ค้นหาทวีต (คำสั่งนี้ไม่เสถียร Twitter เปลี่ยน GraphQL บ่อย)</div>
+      <div class="kv"><b>ตั้งค่า</b>ส่ง Cookie ที่ export จาก Cookie-Editor ให้ Agent → บทที่ 06</div>
+    </article>
+
+    <article class="pcard">
+      <div class="pcard-h"><div class="pico"><span class="ico">live_tv</span></div>
+        <div><h4>Bilibili (B站)</h4><div class="sub">bili-cli ▸ OpenCLI ▸ Search API</div></div></div>
+      <span class="chip ok" style="align-self:flex-start"><span class="ico">bolt</span>ค้นหา + ดูรายละเอียดได้ทันที</span>
+      <div class="kv"><b>ทำอะไรได้ทันที</b>ค้นหาวิดีโอ, ดูรายละเอียด (ชื่อ/UP主/ยอดวิว), วิดีโอฮิต, อันดับ, ดาวน์โหลดเสียงเป็น WAV</div>
+      <div class="kv"><b>ปลดล็อกเพิ่ม</b>ดึง subtitle พร้อม timestamp (ต้องมี OpenCLI + Chrome)</div>
+      <div class="note danger" style="padding:.6rem .8rem;font-size:.86rem"><span class="ico" style="font-size:1.1rem">block</span><div><b>ห้ามใช้ yt-dlp กับ B站</b> โดนระบบกันบอทตอบ 412 ทุกกรณี (ทดสอบแล้วทั้งเวอร์ชันล่าสุด/proxy/Cookie)</div></div>
+    </article>
+
+    <article class="pcard">
+      <div class="pcard-h"><div class="pico"><span class="ico">forum</span></div>
+        <div><h4>Reddit</h4><div class="sub">OpenCLI ▸ rdt-cli</div></div></div>
+      <span class="chip err" style="align-self:flex-start"><span class="ico">block</span>ไม่มีทางลัด ต้องล็อกอิน</span>
+      <div class="kv"><b>ทำอะไรได้ (หลังตั้งค่า)</b>ค้นหาโพสต์, อ่านโพสต์เต็ม + คอมเมนต์, ไล่ดู subreddit, hot, popular, /r/all, ข้อมูล subreddit</div>
+      <div class="kv"><b>ทำไมต้องล็อกอิน</b>endpoint <code class="inl">.json</code> แบบไม่ล็อกอินโดนปิด (403) และ API ทางการต้องผ่านการอนุมัติด้วยคน ซึ่งตั้งแต่ พ.ย. 2025 แทบไม่อนุมัติให้โปรเจกต์ส่วนบุคคล</div>
+      <div class="kv"><b>ตั้งค่า</b>เดสก์ท็อป → OpenCLI (แค่ล็อกอิน reddit.com ใน Chrome) · เซิร์ฟเวอร์ → rdt-cli + Cookie</div>
+    </article>
+
+    <article class="pcard">
+      <div class="pcard-h"><div class="pico"><span class="ico">groups</span></div>
+        <div><h4>Facebook</h4><div class="sub">OpenCLI</div></div></div>
+      <span class="chip err" style="align-self:flex-start"><span class="ico">block</span>เดสก์ท็อปเท่านั้น</span>
+      <div class="kv"><b>ทำอะไรได้</b>ค้นหา, ดูโปรไฟล์/เพจ, News Feed ของบัญชีตัวเอง, รายชื่อกลุ่มที่คุณเห็นได้</div>
+      <div class="kv"><b>ข้อจำกัด</b>กลุ่มอ่านได้แค่ “รายชื่อกลุ่ม + ความเคลื่อนไหวล่าสุดที่บัญชีคุณเห็น” ไม่รับประกันการดึงโพสต์/คอมเมนต์ในกลุ่มใดก็ได้</div>
+      <div class="kv"><b>ตั้งค่า</b>ติดตั้ง OpenCLI + ส่วนขยาย Chrome แล้วล็อกอิน facebook.com ในเบราว์เซอร์</div>
+    </article>
+
+    <article class="pcard">
+      <div class="pcard-h"><div class="pico"><span class="ico">photo_camera</span></div>
+        <div><h4>Instagram</h4><div class="sub">OpenCLI</div></div></div>
+      <span class="chip err" style="align-self:flex-start"><span class="ico">block</span>เดสก์ท็อปเท่านั้น</span>
+      <div class="kv"><b>ทำอะไรได้</b>ค้นหา<u>ผู้ใช้</u>, ดู Profile, โพสต์ล่าสุดของผู้ใช้, Explore, รายการที่บันทึกไว้</div>
+      <div class="kv"><b>ข้อจำกัด</b><code class="inl">instagram search</code> คือค้นหา “ผู้ใช้” ไม่ใช่ค้นหาโพสต์ด้วยคีย์เวิร์ดทั้งระบบ ถ้าอยากอ่านโพสต์ต้องรู้ username ก่อน</div>
+    </article>
+
+    <article class="pcard">
+      <div class="pcard-h"><div class="pico"><span class="ico">menu_book</span></div>
+        <div><h4>小红书 (XiaoHongShu)</h4><div class="sub">OpenCLI ▸ xiaohongshu-mcp ▸ xhs-cli</div></div></div>
+      <span class="chip err" style="align-self:flex-start"><span class="ico">block</span>ต้องล็อกอิน</span>
+      <div class="kv"><b>ทำอะไรได้</b>ค้นหาโน้ต, อ่านเนื้อหา + ยอด engagement, คอมเมนต์ (รวมคอมเมนต์ย่อย), feed แนะนำ, โน้ตสาธารณะของผู้ใช้</div>
+      <div class="kv"><b>ข้อควรระวังสำคัญ</b>ต้องใช้ URL เต็มที่มี <code class="inl">xsec_token</code> จากผลค้นหา — ใช้ note_id เปล่า ๆ อ่านไม่ได้</div>
+      <div class="kv"><b>ขอบเขต</b>Agent Reach <b>ไม่ล็อกอินแทนคุณ</b> และ <b>ไม่อ่าน Cookie เบราว์เซอร์</b> ของ 小红书 — OpenCLI ใช้ได้เฉพาะ session Chrome ที่คุณเปิดไว้เองเท่านั้น</div>
+    </article>
+
+    <article class="pcard">
+      <div class="pcard-h"><div class="pico"><span class="ico">work</span></div>
+        <div><h4>LinkedIn</h4><div class="sub">mcp-server-linkedin ▸ Jina Reader</div></div></div>
+      <span class="chip warn" style="align-self:flex-start"><span class="ico">key</span>อ่านหน้าสาธารณะได้ทันที</span>
+      <div class="kv"><b>ทำอะไรได้ทันที</b>อ่านหน้า public ผ่าน Jina Reader</div>
+      <div class="kv"><b>ปลดล็อกเพิ่ม</b>Profile ละเอียด, ค้นหาคน, หน้าบริษัท, ค้นหาตำแหน่งงาน</div>
+      <div class="kv"><b>ตั้งค่า</b>ติดตั้ง <code class="inl">uv</code> → ผูก MCP ผ่าน mcporter → ล็อกอินครั้งแรกด้วยเบราว์เซอร์</div>
+    </article>
+
+    <article class="pcard">
+      <div class="pcard-h"><div class="pico"><span class="ico">computer</span></div>
+        <div><h4>V2EX</h4><div class="sub">Public JSON API</div></div></div>
+      <span class="chip ok" style="align-self:flex-start"><span class="ico">bolt</span>ใช้ได้ทันที</span>
+      <div class="kv"><b>ทำอะไรได้</b>กระทู้ฮิต, กระทู้ตาม node (python, tech, jobs, qna…), รายละเอียดกระทู้ + ตอบกลับ, ข้อมูลผู้ใช้</div>
+      <div class="kv"><b>ตั้งค่า</b>ไม่ต้อง — ไม่ใช้ auth ไม่ใช้ proxy ไม่ใช้ API Key</div>
+    </article>
+
+    <article class="pcard">
+      <div class="pcard-h"><div class="pico"><span class="ico">trending_up</span></div>
+        <div><h4>雪球 (Xueqiu)</h4><div class="sub">OpenCLI / Cookie</div></div></div>
+      <span class="chip warn" style="align-self:flex-start"><span class="ico">key</span>ต้องมี Cookie</span>
+      <div class="kv"><b>ทำอะไรได้</b>ราคาหุ้นเรียลไทม์, ค้นหาหุ้น, กระทู้ฮิต, อันดับหุ้นฮิต</div>
+      <div class="kv"><b>ข้อควรระวัง</b>ราคาอาจดีเลย์ และ <b>ไม่ใช่คำแนะนำการลงทุน</b> · HTTP 400 มักแปลว่า Cookie หมดอายุ ไม่ได้แปลว่าไม่มีหุ้นตัวนั้น</div>
+    </article>
+
+    <article class="pcard">
+      <div class="pcard-h"><div class="pico"><span class="ico">podcasts</span></div>
+        <div><h4>小宇宙 Podcast</h4><div class="sub">Whisper ผ่าน Groq</div></div></div>
+      <span class="chip warn" style="align-self:flex-start"><span class="ico">key</span>ต้องมี Groq API Key (ฟรี)</span>
+      <div class="kv"><b>ทำอะไรได้</b>ถอดเสียงพอดแคสต์ทั้งตอนเป็นข้อความ (Whisper large-v3) ออกมาเป็นไฟล์ Markdown</div>
+      <div class="kv"><b>โควตาฟรี</b>ประมาณ 2 ชั่วโมงเสียงต่อชั่วโมง เกินแล้วรอ 15 นาทีจะคืนให้เอง · ไม่แยกเสียงผู้พูด · ตอนที่ยาวเกิน 2 ชม. ควรแบ่งทำ</div>
+    </article>
+
+  </div>
+
+  <div class="stack" style="margin-top:2rem">
+    <h3 class="h3">ตารางสรุปการเลือกเครื่องมือ (ตัวหลัก ▸ ตัวสำรอง)</h3>
+    <div class="tw"><table>
+      <thead><tr><th>งาน</th><th>ตัวหลัก</th><th>ตัวสำรอง</th><th>ทำไมเลือกแบบนี้</th></tr></thead>
+      <tbody>
+        <tr><td>อ่านเว็บ</td><td>Jina Reader</td><td>—</td><td>ฟรี ไม่ต้องใช้ API Key</td></tr>
+        <tr><td>อ่าน Twitter</td><td>twitter-cli</td><td>OpenCLI</td><td>ทดสอบแล้วค้นหาเสถียรกว่า · OpenCLI ใช้ session เบราว์เซอร์เป็นตัวรอง</td></tr>
+        <tr><td>Reddit</td><td>OpenCLI (เดสก์ท็อป)</td><td>rdt-cli</td><td>ทางเข้าแบบไม่ล็อกอินโดนปิดหมด เหลือแต่เส้นทางล็อกอิน</td></tr>
+        <tr><td>Facebook</td><td>OpenCLI (เดสก์ท็อป)</td><td>—</td><td>สิทธิ์ Graph API / Groups API รัดกุมขึ้นมาก</td></tr>
+        <tr><td>Instagram</td><td>OpenCLI (เดสก์ท็อป)</td><td>Graph API ทางการ</td><td>เครื่องมือกลุ่ม instaloader ไม่เสถียร</td></tr>
+        <tr><td>YouTube subtitle + ค้นหา</td><td>yt-dlp</td><td>OpenCLI → transcribe</td><td>154K ดาว ยังดีที่สุดสำหรับ YouTube (แต่ห้ามใช้กับ B站)</td></tr>
+        <tr><td>B站</td><td>bili-cli</td><td>OpenCLI ▸ Search API</td><td>yt-dlp โดน 412 ตายสนิท · bili-cli ค้น/อ่านได้โดยไม่ต้องล็อกอิน</td></tr>
+        <tr><td>ค้นหาทั้งเว็บ</td><td>Exa ผ่าน mcporter</td><td>—</td><td>ค้นเชิงความหมาย เชื่อมผ่าน MCP ไม่ต้องใช้ Key</td></tr>
+        <tr><td>GitHub</td><td>gh CLI</td><td>—</td><td>เครื่องมือทางการ ครบทั้ง API หลังยืนยันตัวตน</td></tr>
+        <tr><td>RSS</td><td>feedparser</td><td>—</td><td>มาตรฐานของ Python</td></tr>
+        <tr><td>小红书</td><td>OpenCLI (เดสก์ท็อป)</td><td>xiaohongshu-mcp ▸ xhs-cli</td><td>OpenCLI ใช้ session เดิมของผู้ใช้เท่านั้น ที่เหลือใช้ Cookie-Editor</td></tr>
+        <tr><td>LinkedIn</td><td>mcp-server-linkedin</td><td>Jina Reader</td><td>MCP + browser automation</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note info"><span class="ico">sync_alt</span><div>ตารางนี้คือ “การเลือก ณ ปัจจุบัน” ไม่ใช่ของตายตัว ถ้าเส้นทางไหนพัง ทีมพัฒนาจะสลับไปเส้นทางถัดไป — <code class="inl" style="background:rgba(0,0,0,.1);border-color:transparent">agent-reach doctor</code> จะบอกเสมอว่าตอนนี้วิ่งเส้นทางไหนอยู่</div></div>
+  </div>
+</section>
+
+<!-- ================= 04 COMMANDS ================= -->
+<section class="sec" id="commands">
+  <span class="eyebrow"><span class="ico" style="font-size:1rem">terminal</span>บทที่ 04 — คำสั่ง</span>
+  <h2>คำสั่งแยกตามหมวด</h2>
+  <p class="lede">โดยปกติ <b>คุณไม่ต้องจำคำสั่งพวกนี้</b> — Agent อ่าน SKILL.md แล้วรู้เองว่าต้องเรียกอะไร ส่วนนี้มีไว้เวลาอยากสั่งเองหรืออยากตรวจว่า Agent ทำถูกไหม กดปุ่มคัดลอกได้ทุกกล่อง</p>
+
+  <div class="note warn" style="margin:1.2rem 0 1.4rem"><span class="ico">rule</span><div><b>กฎเหล็กก่อนใช้:</b> แพลตฟอร์มที่มีหลาย backend (小红书 / Reddit / B站 / Twitter / Facebook / Instagram / 雪球) ให้รัน <code class="inl" style="background:rgba(0,0,0,.1);border-color:transparent">agent-reach doctor --json</code> ดูค่า <code class="inl" style="background:rgba(0,0,0,.1);border-color:transparent">active_backend</code> ก่อนเสมอ แล้วค่อยเลือกชุดคำสั่งให้ตรงกัน</div></div>
+
+  <div class="stack">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-tab="c-search">ค้นหา</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="c-web">เว็บ &amp; RSS</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="c-social">โซเชียล</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="c-video">วิดีโอ &amp; พอดแคสต์</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="c-dev">GitHub</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="c-career">LinkedIn</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="c-fin">การเงิน</button>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="tabpanel on" id="c-search">
+      <div class="stack">
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">ค้นหาทั้งเว็บด้วย Exa</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>mcporter call exa.web_search_exa query="คำค้นของคุณ" numResults=5</pre></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">ค้นหาเอกสาร/ตัวอย่างโค้ดเชิงเทคนิค</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>mcporter call exa.web_search_exa query="library name API code example" numResults=5</pre>
+          <div class="cmd-note">Exa เก่งเนื้อหาภาษาอังกฤษและเอกสารเทคนิค · ถ้าต้องการค้นในโค้ดของ repo จริง ๆ ให้ใช้ gh search code แทน</div></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">ค้นหาเนื้อหา Twitter เมื่อ twitter-cli ใช้ไม่ได้</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>mcporter call exa.web_search_exa query="site:x.com คำค้นของคุณ" numResults=5</pre></div>
+      </div>
+    </div>
+
+    <!-- WEB -->
+    <div class="tabpanel" id="c-web">
+      <div class="stack">
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">อ่านหน้าเว็บใดก็ได้ (Jina Reader)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>curl -s "https://r.jina.ai/https://example.com/article"</pre>
+          <div class="cmd-note">แค่เอา URL ที่ต้องการต่อท้าย https://r.jina.ai/ ก็ได้เนื้อหาแบบ Markdown สะอาด</div></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">อ่านเว็บแบบคุมรูปแบบผลลัพธ์ (Web Reader MCP)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>mcporter call web-reader.webReader url="https://example.com"
+mcporter call web-reader.webReader url="https://example.com" retain_images=true
+mcporter call web-reader.webReader url="https://example.com" return_format="text"</pre></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">อ่าน RSS / Atom feed</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>python3 -c "
+import feedparser
+for e in feedparser.parse('FEED_URL').entries[:5]:
+    print(f'{e.title} — {e.link}')
+"</pre></div>
+      </div>
+    </div>
+
+    <!-- SOCIAL -->
+    <div class="tabpanel" id="c-social">
+      <div class="stack">
+
+        <details open><summary><span class="ico" style="color:var(--p)">tag</span>Twitter / X</summary>
+          <div class="body">
+            <div class="note danger" style="font-size:.9rem"><span class="ico">key_off</span><div>Cookie ที่บันทึกด้วย <code class="inl" style="background:rgba(0,0,0,.1);border-color:transparent">agent-reach configure twitter-cookies</code> ใช้ <b>เฉพาะให้ doctor ตรวจว่าใส่ครบไหม</b> เท่านั้น — ก่อนรันคำสั่ง <code class="inl" style="background:rgba(0,0,0,.1);border-color:transparent">twitter</code> จริง ต้องตั้ง env var เองทุกครั้ง</div></div>
+            <div class="cmd"><div class="cmd-head"><span class="cmd-title">ตั้ง env var ก่อนใช้งาน (จำเป็น)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+              <pre>export TWITTER_AUTH_TOKEN="..."
+export TWITTER_CT0="..."
+twitter check</pre></div>
+            <div class="cmd"><div class="cmd-head"><span class="cmd-title">คำสั่งที่เสถียร</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+              <pre>twitter feed -n 20                    # ไทม์ไลน์หน้าแรก เสถียรที่สุด
+twitter tweet URL_OR_ID               # อ่านทวีตเดี่ยว + reply
+twitter article URL_OR_ID             # อ่านบทความยาว / X Article
+twitter user-posts @username -n 20    # ทวีตของผู้ใช้
+twitter user @username                # โปรไฟล์ผู้ใช้</pre></div>
+            <div class="cmd"><div class="cmd-head"><span class="cmd-title">คำสั่งที่อาจไม่เสถียร</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+              <pre>twitter search "คำค้น" -n 10   # Twitter เปลี่ยน GraphQL บ่อย อาจได้ 404
+twitter likes                   # ตั้งแต่ 2024 ดูได้แค่ของตัวเอง</pre></div>
+            <div class="cmd"><div class="cmd-head"><span class="cmd-title">ลำดับการแก้เมื่อ search ล้มเหลว (ทำตามลำดับ หยุดเมื่อสำเร็จ)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+              <pre>twitter search "คำค้น" -n 10
+pipx upgrade twitter-cli && twitter search "คำค้น" -n 10
+opencli twitter search "คำค้น" -f yaml
+twitter feed -n 20     # เลี่ยงไปใช้คำสั่งที่เสถียรแทน</pre></div>
+            <p style="font-size:.9rem;color:var(--on-surf-var)">แนะนำใส่ <code class="inl">--yaml</code> หรือ <code class="inl">--json</code> เพื่อให้ AI อ่านง่ายขึ้น</p>
+          </div>
+        </details>
+
+        <details><summary><span class="ico" style="color:var(--p)">forum</span>Reddit</summary>
+          <div class="body">
+            <div class="cmd"><div class="cmd-head"><span class="cmd-title">Backend A — OpenCLI (เดสก์ท็อป แนะนำ)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+              <pre>opencli reddit search "คำค้น" -f yaml
+opencli reddit read POST_ID -f yaml
+opencli reddit subreddit LocalLLaMA -f yaml
+opencli reddit hot -f yaml
+opencli reddit popular -f yaml
+opencli reddit subreddit-info LocalLLaMA -f yaml</pre>
+              <div class="cmd-note">ต้องเปิด Chrome ค้างไว้ และล็อกอิน reddit.com ในเบราว์เซอร์แล้ว</div></div>
+            <div class="cmd"><div class="cmd-head"><span class="cmd-title">Backend B — rdt-cli (เซิร์ฟเวอร์/ของเดิม)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+              <pre>rdt search "คำค้น" --limit 10
+rdt read POST_ID
+rdt sub python --limit 20
+rdt popular --limit 10
+rdt all --limit 10</pre></div>
+            <div class="cmd"><div class="cmd-head"><span class="cmd-title">ติดตั้ง rdt-cli (ต้องลงจาก GitHub เวอร์ชันตรึงไว้)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+              <pre>pipx install 'git+https://github.com/public-clis/rdt-cli.git@5e4fb3720d5c174e976cd425ccc3b879d52cac66'
+rdt login</pre>
+              <div class="cmd-note">เวอร์ชันบน PyPI ล้าหลัง ต้องลงจาก GitHub · บนเซิร์ฟเวอร์ที่ไม่มีเบราว์เซอร์ ให้ใส่ Cookie เองตามที่ doctor แนะนำ</div></div>
+          </div>
+        </details>
+
+        <details><summary><span class="ico" style="color:var(--p)">menu_book</span>小红书 (XiaoHongShu)</summary>
+          <div class="body">
+            <div class="cmd"><div class="cmd-head"><span class="cmd-title">Backend A — OpenCLI (เดสก์ท็อป แนะนำ)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+              <pre>opencli xiaohongshu search "คำค้น" -f yaml
+opencli xiaohongshu note "NOTE_URL" -f yaml     # ต้องใช้ URL เต็มจากผลค้นหา (มี xsec_token)
+opencli xiaohongshu comments NOTE_ID -f yaml
+opencli xiaohongshu feed -f yaml
+opencli xiaohongshu user USER_ID -f yaml</pre></div>
+            <div class="cmd"><div class="cmd-head"><span class="cmd-title">Backend B — xiaohongshu-mcp (เซิร์ฟเวอร์)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+              <pre>agent-reach configure xhs-cookies
+mcporter call xiaohongshu.check_login_status --timeout 120000
+mcporter call xiaohongshu.search_feeds keyword="คำค้น" --timeout 120000
+mcporter call xiaohongshu.get_feed_detail feed_id="..." xsec_token="..." --timeout 120000</pre>
+              <div class="cmd-note">เรียกครั้งแรกจะดาวน์โหลด headless browser ~150MB ต้องใส่ --timeout 120000 เสมอ</div></div>
+            <div class="cmd"><div class="cmd-head"><span class="cmd-title">Backend C — xhs-cli (ของเดิม หยุดพัฒนา มี.ค. 2026)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+              <pre>xhs search "คำค้น"
+xhs read NOTE_ID_OR_URL
+xhs comments NOTE_ID_OR_URL
+xhs hot
+xhs feed</pre>
+              <div class="cmd-note">คำสั่ง xhs user / user-posts / favorites อาจคืน API error เพราะต้นทางหยุดพัฒนา ผู้ติดตั้งใหม่ควรใช้ Backend A/B</div></div>
+            <div class="note warn" style="font-size:.9rem"><span class="ico">timer</span><div><b>คุมความถี่:</b> ยิงถี่ ๆ (ค้นหลายรอบ หรือไล่คอมเมนต์ลึก) จะโดน CAPTCHA ให้เว้นระยะ 2–3 วินาทีต่อครั้ง · แนะนำใช้แบบอ่านอย่างเดียว การเขียน (โพสต์/คอมเมนต์/ไลก์) อาจติด 406</div></div>
+          </div>
+        </details>
+
+        <details><summary><span class="ico" style="color:var(--p)">groups</span>Facebook &amp; Instagram</summary>
+          <div class="body">
+            <div class="cmd"><div class="cmd-head"><span class="cmd-title">Facebook</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+              <pre>opencli facebook search "คำค้น" -f yaml
+opencli facebook profile zuck -f yaml
+opencli facebook feed --limit 10 -f yaml
+opencli facebook groups --limit 20 -f yaml</pre></div>
+            <div class="cmd"><div class="cmd-head"><span class="cmd-title">Instagram</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+              <pre>opencli instagram search "คำค้น" -f yaml    # ค้นหา "ผู้ใช้" ไม่ใช่ค้นโพสต์
+opencli instagram profile nasa -f yaml
+opencli instagram user nasa --limit 12 -f yaml
+opencli instagram explore --limit 20 -f yaml
+opencli instagram saved --limit 20 -f yaml</pre>
+              <div class="cmd-note">ถ้าเจอ 429 หรือ login required ให้ล็อกอินใหม่ใน Chrome และลดความถี่ลง</div></div>
+          </div>
+        </details>
+
+        <details><summary><span class="ico" style="color:var(--p)">live_tv</span>Bilibili (B站)</summary>
+          <div class="body">
+            <div class="cmd"><div class="cmd-head"><span class="cmd-title">bili-cli — อ่านอย่างเดียว ไม่ต้องล็อกอิน</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+              <pre>bili video BVxxx                  # รายละเอียดวิดีโอ + มี subtitle ไหม
+bili search "คำค้น" --type video -n 5
+bili hot -n 10
+bili rank -n 10
+bili audio BVxxx                  # ดาวน์โหลดเสียงเป็น WAV พร้อมสำหรับ ASR
+                                  # (ถอดข้อความต้องรัน agent-reach transcribe ต่อเอง)</pre></div>
+            <div class="cmd"><div class="cmd-head"><span class="cmd-title">subtitle — ต้องมี OpenCLI + Chrome</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+              <pre>opencli bilibili subtitle BVxxx
+opencli bilibili search "คำค้น" -f yaml
+opencli bilibili video BVxxx -f yaml</pre></div>
+            <div class="cmd"><div class="cmd-head"><span class="cmd-title">ติดตั้ง bili-cli</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+              <pre>pipx install bilibili-cli</pre></div>
+          </div>
+        </details>
+
+        <details><summary><span class="ico" style="color:var(--p)">computer</span>V2EX</summary>
+          <div class="body">
+            <div class="cmd"><div class="cmd-head"><span class="cmd-title">เรียก Public API ตรง ๆ</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+              <pre>curl -s "https://www.v2ex.com/api/topics/hot.json" -H "User-Agent: agent-reach/1.0"
+curl -s "https://www.v2ex.com/api/topics/show.json?node_name=python&page=1" -H "User-Agent: agent-reach/1.0"
+curl -s "https://www.v2ex.com/api/topics/show.json?id=TOPIC_ID" -H "User-Agent: agent-reach/1.0"
+curl -s "https://www.v2ex.com/api/replies/show.json?topic_id=TOPIC_ID&page=1" -H "User-Agent: agent-reach/1.0"
+curl -s "https://www.v2ex.com/api/members/show.json?username=USERNAME" -H "User-Agent: agent-reach/1.0"</pre></div>
+            <div class="cmd"><div class="cmd-head"><span class="cmd-title">เรียกผ่าน Python</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+              <pre>from agent_reach.channels.v2ex import V2EXChannel
+ch = V2EXChannel()
+topics = ch.get_hot_topics(limit=10)
+node_topics = ch.get_node_topics("python", limit=5)
+topic = ch.get_topic(1234567)
+user = ch.get_user("Livid")</pre></div>
+          </div>
+        </details>
+
+      </div>
+    </div>
+
+    <!-- VIDEO -->
+    <div class="tabpanel" id="c-video">
+      <div class="stack">
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">YouTube — ดึง subtitle</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>yt-dlp --write-sub --write-auto-sub --sub-lang "th,en,zh-Hans,zh" --skip-download -o "/tmp/%(id)s" "URL"
+cat /tmp/VIDEO_ID.*.vtt</pre></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">YouTube — metadata / ค้นหา / คอมเมนต์</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>yt-dlp --dump-json "URL"
+yt-dlp --dump-json "ytsearch5:คำค้น"
+yt-dlp --write-comments --skip-download --write-info-json \
+  --extractor-args "youtube:max_comments=20" -o "/tmp/%(id)s" "URL"</pre>
+          <div class="cmd-note">คอมเมนต์อยู่ในฟิลด์ comments ของไฟล์ .info.json · เป็นการอ่านจากหน้าเว็บ ไม่ใช่ YouTube Data API จึงอาจได้ไม่ครบ</div></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">ลำดับการแก้เมื่อ subtitle ล้มเหลว</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre># 1. ลองคำสั่ง yt-dlp ด้านบนก่อน
+# 2. ถ้าเจอ bot check / ไฟล์ subtitle ไม่ถูกสร้าง และมี OpenCLI:
+opencli youtube transcript "URL" -f yaml
+# 3. ถ้า OpenCLI คืน "Caption URL returned empty response" ให้ลองซ้ำได้ไม่เกิน 3 ครั้ง
+# 4. ยังไม่ได้ หรือวิดีโอไม่มี subtitle จริง ๆ:
+agent-reach transcribe "URL"</pre>
+          <div class="cmd-note">เกณฑ์ว่าสำเร็จคือได้เนื้อหาจริงที่ไม่ว่าง ไม่ใช่แค่ exit code 0</div></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">ถอดเสียงด้วย Whisper (สำรองเมื่อไม่มี subtitle)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>agent-reach configure groq-key
+agent-reach transcribe "https://www.youtube.com/watch?v=VIDEO_ID"
+agent-reach transcribe ./local_audio.mp3 -o /tmp/transcript.txt</pre>
+          <div class="cmd-note">รับเฉพาะ URL http(s) สาธารณะ หรือไฟล์เสียงในเครื่อง · โหมด auto ใช้ผู้ให้บริการรายแรกที่ตั้งค่าไว้ (Groq ก่อน แล้วค่อย OpenAI) ล้มเหลวแล้วหยุด ไม่ส่งต่อให้อีกเจ้าโดยอัตโนมัติ</div></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">小宇宙 Podcast — ถอดเสียงทั้งตอน</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>~/.agent-reach/tools/xiaoyuzhou/transcribe.sh --polish "https://www.xiaoyuzhoufm.com/episode/EPISODE_ID"</pre>
+          <div class="cmd-note">--polish ใช้ Llama 3.3 70B บน Groq เติมเครื่องหมายวรรคตอนและแบ่งย่อหน้า (พอดแคสต์ 9 นาที ช้าเพิ่มราว 7 วินาที) · ไฟล์ Markdown ออกที่ /tmp/ · ต้องมี ffmpeg</div></div>
+      </div>
+    </div>
+
+    <!-- DEV -->
+    <div class="tabpanel" id="c-dev">
+      <div class="stack">
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">ยืนยันตัวตน &amp; ค้นหา</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>gh auth login
+gh auth status
+gh search repos "คำค้น" --sort stars --limit 10
+gh search code "คำค้น" --language python</pre></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">Repository</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>gh repo view owner/repo
+gh repo clone owner/repo
+gh repo create my-repo --private
+gh repo fork owner/repo --clone
+gh repo sync owner/repo</pre></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">Issues &amp; Pull Requests</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>gh issue list -R owner/repo --state open
+gh issue view 123 -R owner/repo
+gh issue create -R owner/repo --title "Title" --body "Body"
+gh pr list -R owner/repo --state open
+gh pr view 123 -R owner/repo
+gh pr create -R owner/repo --title "Title" --body "Body"
+gh pr checks 123 --repo owner/repo</pre></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">Actions / Releases / API</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>gh run list --repo owner/repo --limit 10
+gh run view &lt;run-id&gt; --repo owner/repo --log-failed
+gh workflow list --repo owner/repo
+gh release list -R owner/repo
+gh api /user
+gh api repos/owner/repo
+gh issue list --repo owner/repo --json number,title --jq '.[] | "\(.number): \(.title)"'</pre></div>
+      </div>
+    </div>
+
+    <!-- CAREER -->
+    <div class="tabpanel" id="c-career">
+      <div class="stack">
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">ตั้งค่า LinkedIn MCP (แนะนำ stdio)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>mcporter config add linkedin --command uvx --arg mcp-server-linkedin@latest --env UV_HTTP_TIMEOUT=300 --scope home
+uvx mcp-server-linkedin@latest --login</pre>
+          <div class="cmd-note">ต้องติดตั้ง uv ก่อน (มาพร้อม uvx) · ล็อกอินครั้งแรกต้องมีหน้าจอเบราว์เซอร์ ล็อกอินแล้วเก็บ session ไว้ที่ ~/.linkedin-mcp/profile/ · เซิร์ฟเวอร์ไม่มีจอให้รันคำสั่งเดียวกันผ่าน VNC</div></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">คำสั่งใช้งาน</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>mcporter call linkedin.get_person_profile linkedin_username="username" sections="experience,education"
+mcporter call linkedin.search_people keywords="AI engineer" location="Bangkok"
+mcporter call linkedin.get_company_profile company_name="openai" sections="posts,jobs"
+mcporter call linkedin.search_jobs keywords="software engineer" location="Remote" max_pages=2</pre></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">ทางสำรองถ้า MCP ใช้ไม่ได้</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>curl -s "https://r.jina.ai/https://linkedin.com/in/username"</pre></div>
+      </div>
+    </div>
+
+    <!-- FINANCE -->
+    <div class="tabpanel" id="c-fin">
+      <div class="stack">
+        <div class="note warn" style="font-size:.92rem"><span class="ico">gavel</span><div>ราคาที่ได้อาจดีเลย์ และข้อมูลนี้ <b>ไม่ใช่คำแนะนำการลงทุน</b> ผมไม่ใช่ที่ปรึกษาการเงิน โปรดตรวจสอบจากแหล่งทางการก่อนตัดสินใจ</div></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">เช็กสถานะก่อน</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>agent-reach doctor --json</pre>
+          <div class="cmd-note">ดูค่า xueqiu.active_backend ถ้าเป็น null แปลว่า doctor แค่ยังไม่ได้ยืนยันเนื้อหาแบบเรียลไทม์ ไม่ได้แปลว่าไม่มี backend</div></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">雪球 ผ่าน OpenCLI</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>opencli xueqiu whoami -f yaml
+opencli xueqiu search "英伟达" -f yaml
+opencli xueqiu stock NVDA -f yaml
+opencli xueqiu hot -f yaml
+opencli xueqiu hot-stock -f yaml
+opencli xueqiu --help</pre></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">นำเข้า Cookie ของ 雪球 อย่างเดียว</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>agent-reach configure --from-browser chrome --platform xueqiu</pre>
+          <div class="cmd-note">อ่านและบันทึกเฉพาะ xq_a_token ไม่เก็บ Cookie ของแพลตฟอร์มอื่นติดมาด้วย</div></div>
+        <ul class="tick dot">
+          <li>เกณฑ์ว่าสำเร็จ = ได้ชื่อหุ้น รหัส ราคา หรือรายการที่ไม่ว่าง — exit code 0 แต่ฟิลด์ว่างไม่ถือว่าสำเร็จ</li>
+          <li>HTTP 400 = ปัญหา session/Cookie ไม่ใช่ “ไม่มีหุ้นตัวนี้”</li>
+          <li>ถ้า <code class="inl">whoami</code> ผ่านแต่ <code class="inl">stock</code>/<code class="inl">hot</code> พัง ให้รายงานว่าเป็นปัญหา adapter หรือ API ของแพลตฟอร์ม ไม่ใช่ “ยังไม่ได้ล็อกอิน”</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= 05 FEATURES ================= -->
+<section class="sec" id="features">
+  <span class="eyebrow"><span class="ico" style="font-size:1rem">extension</span>บทที่ 05 — ติดตั้งแยกเป็นฟีเจอร์</span>
+  <h2>อยากได้ฟีเจอร์ไหน ติดตั้งเฉพาะอันนั้น</h2>
+  <p class="lede">ไม่จำเป็นต้องติดตั้งทุกช่องทาง แต่ละการ์ดด้านล่างติดตั้งได้อิสระ มีทั้ง <b>คำสั่ง CLI</b> (คัดลอกไปรันเอง) และ <b>ประโยคสั่ง AI</b> (คัดลอกไปวางในแชต ให้ Agent ทำให้)</p>
+
+  <div class="note info" style="margin:1.2rem 0"><span class="ico">token</span><div>ชื่อช่องที่ใส่ใน <code class="inl" style="background:rgba(0,0,0,.1);border-color:transparent">--channels</code> ได้: <code class="inl" style="background:rgba(0,0,0,.1);border-color:transparent">opencli · twitter · xiaoyuzhou · xueqiu · xiaohongshu · reddit · facebook · instagram · bilibili · linkedin · all</code></div></div>
+
+  <div class="stack-lg">
+
+    <!-- OPENCLI -->
+    <div class="card filled">
+      <div class="card-h"><span class="ico">extension</span><div>
+        <h4 style="font-size:1.15rem">OpenCLI — ตัวเดียวปลดล็อก 6 แพลตฟอร์ม</h4>
+        <p style="font-size:.92rem;color:var(--on-surf-var);margin-top:.2rem">แนะนำที่สุดสำหรับคนใช้คอมพิวเตอร์ส่วนตัว ติดตั้งครั้งเดียวได้ Reddit + Facebook + Instagram + subtitle B站 + 小红书 + ตัวสำรอง Twitter</p>
+      </div></div>
+      <div class="chips" style="margin-bottom:.9rem"><span class="chip pri">ต้องมี Chrome</span><span class="chip">เดสก์ท็อปเท่านั้น</span><span class="chip ok">ไม่ต้องกรอกรหัสผ่าน</span></div>
+      <div class="stack">
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">คำสั่ง CLI</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>agent-reach install --system --channels opencli
+opencli doctor</pre></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">ประโยคสั่ง AI</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>ช่วยติดตั้ง OpenCLI ให้ Agent Reach หน่อย (agent-reach install --system --channels opencli)
+เสร็จแล้วบอกฉันด้วยว่าต้องกดติดตั้งส่วนขยาย Chrome ที่ลิงก์ไหน แล้วรัน opencli doctor ยืนยันให้ด้วย</pre></div>
+        <ol class="steps" style="margin-top:.3rem">
+          <li><div><p style="font-size:.95rem">รันคำสั่งติดตั้งด้านบน</p></div></li>
+          <li><div><p style="font-size:.95rem">เปิด <a href="https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk">Chrome Web Store — OpenCLI</a> แล้วกด “เพิ่มใน Chrome” (ขั้นนี้ Agent ทำแทนไม่ได้ เป็นข้อจำกัดความปลอดภัยของ Chrome)</p></div></li>
+          <li><div><p style="font-size:.95rem">ล็อกอินเว็บที่ต้องการใน Chrome ตามปกติ (reddit.com, facebook.com, instagram.com…)</p></div></li>
+          <li><div><p style="font-size:.95rem">รัน <code class="inl">opencli doctor</code> — ถ้าขึ้น <code class="inl">Extension: connected</code> คือสำเร็จ</p></div></li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="grid-2">
+
+      <!-- TWITTER -->
+      <div class="card">
+        <div class="card-h"><span class="ico">tag</span><div><h4>Twitter / X</h4></div></div>
+        <div class="chips" style="margin-bottom:.8rem"><span class="chip warn">ต้องใช้ Cookie</span></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">คำสั่ง CLI</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>agent-reach install --env=auto --system --channels=twitter
+pipx install twitter-cli
+agent-reach configure twitter-cookies</pre></div>
+        <div class="cmd" style="margin-top:.7rem"><div class="cmd-head"><span class="cmd-title">ประโยคสั่ง AI</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>ช่วยตั้งค่า Twitter ใน Agent Reach ให้หน่อย
+บอกฉันทีละขั้นว่าต้อง export cookie จาก Cookie-Editor ยังไง
+แล้วอธิบายด้วยว่าทำไมต้องตั้ง TWITTER_AUTH_TOKEN / TWITTER_CT0 เองก่อนรันคำสั่ง twitter</pre></div>
+        <p style="font-size:.88rem;color:var(--on-surf-var);margin-top:.7rem">ต้องการ twitter-cli v0.8.5 ขึ้นไป · อย่ายิงถี่บน IP ของ VPS/ดาต้าเซ็นเตอร์ โดยเฉพาะคำสั่ง followers/following เสี่ยงโดนแบน</p>
+      </div>
+
+      <!-- REDDIT -->
+      <div class="card">
+        <div class="card-h"><span class="ico">forum</span><div><h4>Reddit</h4></div></div>
+        <div class="chips" style="margin-bottom:.8rem"><span class="chip err">ต้องล็อกอินเท่านั้น</span></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">เดสก์ท็อป (OpenCLI)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>agent-reach install --system --channels opencli,reddit
+opencli reddit hot -f yaml</pre></div>
+        <div class="cmd" style="margin-top:.7rem"><div class="cmd-head"><span class="cmd-title">เซิร์ฟเวอร์ (rdt-cli)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>pipx install 'git+https://github.com/public-clis/rdt-cli.git@5e4fb3720d5c174e976cd425ccc3b879d52cac66'
+rdt login
+agent-reach configure proxy</pre></div>
+        <p style="font-size:.88rem;color:var(--on-surf-var);margin-top:.7rem">จากไทยเข้า Reddit ได้ตามปกติ แต่ถ้ารันบน VPS ที่ IP โดนกัน ให้ตั้ง residential proxy (เช่น webshare.io ~$1/เดือน)</p>
+      </div>
+
+      <!-- FB IG -->
+      <div class="card">
+        <div class="card-h"><span class="ico">groups</span><div><h4>Facebook &amp; Instagram</h4></div></div>
+        <div class="chips" style="margin-bottom:.8rem"><span class="chip err">เดสก์ท็อป + Chrome</span></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">คำสั่ง CLI</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>agent-reach install --env=auto --system --channels=facebook,instagram</pre></div>
+        <div class="cmd" style="margin-top:.7rem"><div class="cmd-head"><span class="cmd-title">ประโยคสั่ง AI</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>ช่วยติดตั้งช่องทาง Facebook กับ Instagram ใน Agent Reach ให้หน่อย
+ใช้ OpenCLI ผ่าน session Chrome ของฉันที่ล็อกอินไว้อยู่แล้ว ไม่ต้องขอรหัสผ่านฉัน</pre></div>
+        <p style="font-size:.88rem;color:var(--on-surf-var);margin-top:.7rem">ไม่เก็บ username/password และไม่ต้องผ่านการอนุมัติ Meta Graph API · เซิร์ฟเวอร์ที่ไม่มีหน้าจอไม่แนะนำ</p>
+      </div>
+
+      <!-- XHS -->
+      <div class="card">
+        <div class="card-h"><span class="ico">menu_book</span><div><h4>小红书 (XiaoHongShu)</h4></div></div>
+        <div class="chips" style="margin-bottom:.8rem"><span class="chip err">ต้องล็อกอิน</span><span class="chip">3 backend</span></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">เดสก์ท็อป (OpenCLI)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>agent-reach install --system --channels opencli,xiaohongshu</pre></div>
+        <div class="cmd" style="margin-top:.7rem"><div class="cmd-head"><span class="cmd-title">เซิร์ฟเวอร์ (xiaohongshu-mcp)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre># 1) ดาวน์โหลด binary จาก releases ไปไว้ที่ ~/.agent-reach/tools/
+#    https://github.com/xpzouying/xiaohongshu-mcp/releases
+# 2) รันครั้งแรก จะดาวน์โหลด headless browser ~150MB รอให้จบ
+# 3) นำเข้า cookie ที่ export จาก Cookie-Editor
+agent-reach configure xhs-cookies
+# 4) ผูกเข้า mcporter
+mcporter config add xiaohongshu http://localhost:18060/mcp --scope home
+mcporter call xiaohongshu.check_login_status --timeout 120000</pre></div>
+        <div class="note danger" style="font-size:.88rem;margin-top:.8rem"><span class="ico">policy</span><div>Agent Reach จะ<b>ไม่ล็อกอินแทนคุณ</b> และ<b>ไม่อ่าน Cookie เบราว์เซอร์</b>ของ 小红书 · <code class="inl" style="background:rgba(0,0,0,.1);border-color:transparent">configure xhs-cookies</code> ไม่ฉีด Cookie เข้า OpenCLI/Chrome · Cookie ที่ไม่ใช่โดเมน xiaohongshu.com จะถูกทิ้ง</div></div>
+      </div>
+
+      <!-- XIAOYUZHOU -->
+      <div class="card">
+        <div class="card-h"><span class="ico">podcasts</span><div><h4>小宇宙 Podcast — ถอดเสียง</h4></div></div>
+        <div class="chips" style="margin-bottom:.8rem"><span class="chip warn">ต้องมี Groq Key (ฟรี)</span><span class="chip">ต้องมี ffmpeg</span></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">คำสั่ง CLI</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>brew install ffmpeg          # macOS · Ubuntu ใช้ sudo apt install ffmpeg
+agent-reach install --env=auto --system --channels=xiaoyuzhou
+agent-reach configure groq-key</pre></div>
+        <div class="cmd" style="margin-top:.7rem"><div class="cmd-head"><span class="cmd-title">ประโยคสั่ง AI</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>ช่วยตั้งค่าการถอดเสียงพอดแคสต์ 小宇宙 ให้หน่อย
+บอกวิธีขอ Groq API Key ฟรีทีละขั้น แล้วทดสอบถอดเสียงตอนนี้ให้ดู: &lt;วาง URL ตอนพอดแคสต์&gt;</pre></div>
+        <p style="font-size:.88rem;color:var(--on-surf-var);margin-top:.7rem">ขอ Key ฟรีที่ <a href="https://console.groq.com">console.groq.com</a> → API Keys → Create API Key (ขึ้นต้นด้วย <code class="inl">gsk_</code>) ไม่ต้องใช้บัตรเครดิต</p>
+      </div>
+
+      <!-- XUEQIU -->
+      <div class="card">
+        <div class="card-h"><span class="ico">trending_up</span><div><h4>雪球 (Xueqiu) — หุ้นจีน</h4></div></div>
+        <div class="chips" style="margin-bottom:.8rem"><span class="chip warn">ต้องใช้ Cookie</span></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">คำสั่ง CLI</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>agent-reach install --env=auto --system --channels=xueqiu
+# ล็อกอิน xueqiu.com ใน Chrome ก่อน แล้วค่อยรัน:
+agent-reach configure --from-browser chrome --platform xueqiu
+agent-reach doctor</pre></div>
+      </div>
+
+      <!-- LINKEDIN -->
+      <div class="card">
+        <div class="card-h"><span class="ico">work</span><div><h4>LinkedIn</h4></div></div>
+        <div class="chips" style="margin-bottom:.8rem"><span class="chip warn">ต้องล็อกอินครั้งแรกผ่านเบราว์เซอร์</span></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">คำสั่ง CLI</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre># ติดตั้ง uv ก่อน: https://docs.astral.sh/uv/getting-started/installation/
+mcporter config add linkedin --command uvx --arg mcp-server-linkedin@latest --env UV_HTTP_TIMEOUT=300 --scope home
+uvx mcp-server-linkedin@latest --login</pre></div>
+      </div>
+
+      <!-- BILIBILI -->
+      <div class="card">
+        <div class="card-h"><span class="ico">live_tv</span><div><h4>Bilibili ฉบับเต็ม</h4></div></div>
+        <div class="chips" style="margin-bottom:.8rem"><span class="chip ok">ค้นหา/อ่านไม่ต้องล็อกอิน</span></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">คำสั่ง CLI</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>agent-reach install --env=auto --system --channels=bilibili
+pipx install bilibili-cli
+bili hot -n 5</pre>
+          <div class="cmd-note">bili login (สแกน QR) ทำเมื่ออยากได้ฟีเจอร์ส่วนตัวอย่างรายการโปรด/ไทม์ไลน์เท่านั้น การอ่านทั่วไปไม่ต้องล็อกอิน</div></div>
+      </div>
+
+      <!-- ALL -->
+      <div class="card">
+        <div class="card-h"><span class="ico">select_all</span><div><h4>ติดตั้งทั้งหมดทีเดียว</h4></div></div>
+        <div class="chips" style="margin-bottom:.8rem"><span class="chip err">ควรใช้เมื่อรู้ว่ากำลังทำอะไรอยู่</span></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">คำสั่ง CLI</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>agent-reach install --env=auto --dry-run --channels=all   # ดูก่อนว่าจะทำอะไร
+agent-reach install --env=auto --system --channels=all</pre></div>
+        <p style="font-size:.88rem;color:var(--on-surf-var);margin-top:.7rem">ควรรัน <code class="inl">--dry-run</code> ดูก่อนทุกครั้ง เพราะจะติดตั้งเครื่องมือหลายตัวและแก้ไขไฟล์ตั้งค่าหลายจุด</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= 06 CONFIG ================= -->
+<section class="sec" id="config">
+  <span class="eyebrow"><span class="ico" style="font-size:1rem">key</span>บทที่ 06 — ตั้งค่า</span>
+  <h2>Cookie, Key และการตั้งค่า</h2>
+  <p class="lede">แพลตฟอร์มที่ต้องล็อกอินใช้วิธีเดียวกันเกือบทั้งหมด: คุณ export Cookie จากเบราว์เซอร์ตัวเอง แล้วส่งให้ Agent — <b>Agent Reach ไม่ล็อกอินแทนคุณ และไม่แอบอ่าน Cookie ของคุณ</b></p>
+
+  <div class="stack-lg" style="margin-top:1.6rem">
+
+    <div class="stack">
+      <h3 class="h3">วิธีที่ 1 — Cookie-Editor (แนะนำ ใช้เวลา 30 วินาทีต่อเว็บ)</h3>
+      <ol class="steps">
+        <li><div><p>ติดตั้งส่วนขยาย <a href="https://chromewebstore.google.com/detail/cookie-editor/hlkenndednhfkekhgcdicdfddnkalmdm">Cookie-Editor</a> (มีทั้ง Chrome, Firefox, Edge)</p></div></li>
+        <li><div><p>เปิดเว็บที่ต้องการ และตรวจว่าล็อกอินอยู่แล้ว</p></div></li>
+        <li><div><p>คลิกไอคอน Cookie-Editor บนแถบเครื่องมือ</p></div></li>
+        <li><div><p>กด <b>Export</b> → <b>Header String</b></p></div></li>
+        <li><div><p>วางค่าที่ได้ให้ Agent แล้วมันจะรันคำสั่ง configure ให้เอง</p></div></li>
+      </ol>
+      <div class="tw"><table>
+        <thead><tr><th>เว็บ</th><th>เปิดที่</th><th>คำสั่งที่ Agent จะรัน</th></tr></thead>
+        <tbody>
+          <tr><td>Twitter / X</td><td>https://x.com</td><td><code>agent-reach configure twitter-cookies</code></td></tr>
+          <tr><td>小红书</td><td>https://www.xiaohongshu.com</td><td><code>agent-reach configure xhs-cookies</code></td></tr>
+          <tr><td>Bilibili</td><td>https://www.bilibili.com</td><td>นำเข้าตามแพลตฟอร์ม</td></tr>
+          <tr><td>雪球</td><td>https://xueqiu.com</td><td><code>agent-reach configure --from-browser chrome --platform xueqiu</code></td></tr>
+        </tbody>
+      </table></div>
+      <p style="font-size:.9rem;color:var(--on-surf-var)">คำสั่ง configure ใช้การพิมพ์แบบซ่อน (hidden prompt) · ถ้าต้องทำแบบอัตโนมัติ ให้ส่งค่าเข้าทาง stdin แล้วเติม <code class="inl">--stdin</code> — <b>อย่าใส่ Cookie เป็น argument ในคำสั่ง</b> เพราะจะไปโผล่ใน process list และ shell history</p>
+    </div>
+
+    <div class="stack">
+      <h3 class="h3">วิธีที่ 2 — ดึงเองจาก DevTools (ไม่ต้องลงส่วนขยาย)</h3>
+      <ol class="steps">
+        <li><div><p>เปิดเว็บใน Chrome และล็อกอินให้เรียบร้อย</p></div></li>
+        <li><div><p>กด <kbd>F12</kbd> → แท็บ <b>Network</b></p></div></li>
+        <li><div><p>รีเฟรชหน้า (<kbd>F5</kbd>) แล้วคลิก request อันไหนก็ได้ในรายการ</p></div></li>
+        <li><div><p>เลื่อนหาส่วน <b>Request Headers</b> → บรรทัดที่ขึ้นต้นด้วย <code class="inl">Cookie:</code></p></div></li>
+        <li><div><p>คัดลอกค่าทั้งหมดหลัง <code class="inl">Cookie: </code> แล้วส่งให้ Agent</p></div></li>
+      </ol>
+    </div>
+
+    <div class="stack">
+      <h3 class="h3">Twitter — จุดที่คนพลาดบ่อยที่สุด</h3>
+      <div class="note danger"><span class="ico">error</span><div>การรัน <code class="inl" style="background:rgba(0,0,0,.1);border-color:transparent">agent-reach configure twitter-cookies</code> <b>ไม่ได้ทำให้คำสั่ง twitter ใช้ได้ทันที</b> ค่านั้นถูกเก็บไว้ให้ <code class="inl" style="background:rgba(0,0,0,.1);border-color:transparent">doctor</code> ตรวจว่ามีครบเท่านั้น — doctor จะไม่รัน <code class="inl" style="background:rgba(0,0,0,.1);border-color:transparent">twitter status</code> และไม่แก้ค่าใน shell ของคุณ</div></div>
+      <div class="cmd"><div class="cmd-head"><span class="cmd-title">ต้องตั้ง env var เองก่อนรัน twitter ทุกครั้ง</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+        <pre>export TWITTER_AUTH_TOKEN="..."
+export TWITTER_CT0="..."
+twitter search "query" -n 10</pre></div>
+    </div>
+
+    <div class="stack">
+      <h3 class="h3">Proxy (สำหรับเซิร์ฟเวอร์ที่ IP โดนกัน)</h3>
+      <div class="cmd"><div class="cmd-head"><span class="cmd-title">ตั้งค่า proxy</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+        <pre>agent-reach configure proxy
+export HTTP_PROXY="http://user:pass@host:port"
+export HTTPS_PROXY="http://user:pass@host:port"</pre>
+        <div class="cmd-note">คำสั่ง configure proxy แค่บันทึกค่าไว้ ไม่ใช่สวิตช์เปิดใช้อัตโนมัติ ยังต้อง export env var เองอยู่ดี</div></div>
+      <p style="font-size:.92rem;color:var(--on-surf-var)"><b>เครื่องส่วนตัวไม่ต้องใช้ proxy</b> จำเป็นเฉพาะตอนรันบนเซิร์ฟเวอร์ที่ IP ดาต้าเซ็นเตอร์โดนแพลตฟอร์มบล็อก (Reddit, Twitter เป็นหลัก) ราคาประมาณ $1/เดือน</p>
+    </div>
+
+    <div class="stack">
+      <h3 class="h3">ไฟล์และตัวแปรสภาพแวดล้อม</h3>
+      <div class="tw"><table>
+        <thead><tr><th>สิ่งที่เก็บ</th><th>ตำแหน่ง</th></tr></thead>
+        <tbody>
+          <tr><td>Config &amp; Token ทั้งหมด</td><td><code>~/.agent-reach/config.yaml</code> (สิทธิ์ 600) และ <code>~/.agent-reach/</code></td></tr>
+          <tr><td>เครื่องมือต้นทางที่โคลนมา</td><td><code>~/.agent-reach/tools/</code></td></tr>
+          <tr><td>ไฟล์ชั่วคราว</td><td><code>/tmp/</code></td></tr>
+          <tr><td>Skill ของ Agent</td><td><code>~/.claude/skills/</code> · <code>~/.openclaw/skills/</code> · <code>~/.config/opencode/skills/</code> · <code>~/.agents/skills/</code> (กลาง)</td></tr>
+          <tr><td>Virtualenv (ถ้าติดตั้งแบบ venv)</td><td><code>~/.agent-reach-venv/</code></td></tr>
+        </tbody>
+      </table></div>
+      <div class="cmd"><div class="cmd-head"><span class="cmd-title">ตัวแปรสภาพแวดล้อมที่รองรับ (ทั้งหมดเป็นตัวเลือก)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+        <pre>EXA_API_KEY=exa-your-key-here         # Exa Search (ฟรี 1000/เดือน)
+GITHUB_TOKEN=ghp_your_token_here      # เพิ่ม rate limit ของ GitHub
+REDDIT_PROXY=http://user:pass@ip:port # proxy สำหรับ Reddit
+GROQ_API_KEY=gsk_your_key_here        # Whisper ถอดเสียง (ฟรี)
+OPENAI_API_KEY=sk-your_key_here       # ตัวสำรองเมื่อ Groq ติด rate limit</pre></div>
+      <div class="note warn"><span class="ico">payments</span><div>โหมด auto ของ <code class="inl" style="background:rgba(0,0,0,.1);border-color:transparent">transcribe</code> จะใช้ผู้ให้บริการรายแรกที่ตั้งค่าไว้เท่านั้น (Groq ก่อน) ถ้าล้มเหลวจะหยุด ไม่ส่งไฟล์ต่อให้อีกเจ้าเอง — ต้องเติม <code class="inl" style="background:rgba(0,0,0,.1);border-color:transparent">--allow-provider-fallback</code> เอง ซึ่ง<b>อาจมีค่าใช้จ่ายฝั่ง OpenAI</b> และหมายความว่าเสียงชุดเดียวกันถูกส่งให้ทั้งสองเจ้า</div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= 07 CLI ================= -->
+<section class="sec" id="cli">
+  <span class="eyebrow"><span class="ico" style="font-size:1rem">list_alt</span>บทที่ 07 — CLI</span>
+  <h2>คำสั่ง agent-reach ทั้งหมด</h2>
+  <p class="lede">คำสั่งของตัว Agent Reach เอง (ไม่ใช่ของเครื่องมือต้นทาง) — จำไว้ว่าตัวมันทำหน้าที่ ติดตั้ง · ตรวจ · ตั้งค่า · route ส่วนการอ่านข้อมูลจริงเป็นหน้าที่ของเครื่องมือต้นทาง</p>
+
+  <div class="stack-lg" style="margin-top:1.6rem">
+    <div class="tw"><table>
+      <thead><tr><th>คำสั่ง</th><th>ทำอะไร</th></tr></thead>
+      <tbody>
+        <tr><td><code>agent-reach setup</code></td><td>ตัวช่วยตั้งค่าแบบโต้ตอบทีละขั้น</td></tr>
+        <tr><td><code>agent-reach install --env=auto</code></td><td>ตรวจ dependency และช่องทาง (ค่าเริ่มต้น: ไม่แก้ระบบ)</td></tr>
+        <tr><td><code>agent-reach install --env=auto --system</code></td><td>ติดตั้ง/ตั้งค่าเครื่องมือภายนอกจริง ๆ</td></tr>
+        <tr><td><code>agent-reach install --dry-run</code></td><td>พรีวิวว่าโหมด --system จะทำอะไรบ้าง</td></tr>
+        <tr><td><code>agent-reach install --channels=&lt;list&gt;</code></td><td>ระบุช่องทางที่ต้องการ (คั่นด้วยจุลภาค หรือ all)</td></tr>
+        <tr><td><code>agent-reach install --proxy=&lt;url&gt;</code></td><td>ระบุ proxy ตอนติดตั้ง</td></tr>
+        <tr><td><code>agent-reach doctor</code></td><td>แสดงสถานะทุกช่องทาง พร้อมวิธีแก้เมื่อพัง</td></tr>
+        <tr><td><code>agent-reach doctor --json</code></td><td>ผลลัพธ์แบบเครื่องอ่าน — มีฟิลด์ <code>active_backend</code> ต่อช่อง</td></tr>
+        <tr><td><code>agent-reach watch</code></td><td>ตรวจสุขภาพ + เช็กเวอร์ชันใหม่แบบเร็ว (เหมาะกับ cron)</td></tr>
+        <tr><td><code>agent-reach check-update</code></td><td>เช็กว่ามีเวอร์ชันใหม่ไหม พร้อม release note</td></tr>
+        <tr><td><code>agent-reach version</code></td><td>แสดงเวอร์ชันปัจจุบัน</td></tr>
+        <tr><td><code>agent-reach configure twitter-cookies</code></td><td>บันทึก Cookie ของ Twitter (พิมพ์แบบซ่อน) — ใช้ให้ doctor ตรวจเท่านั้น</td></tr>
+        <tr><td><code>agent-reach configure xhs-cookies</code></td><td>นำเข้า Cookie โดเมน xiaohongshu.com ที่ผู้ใช้ export มาเอง</td></tr>
+        <tr><td><code>agent-reach configure groq-key</code></td><td>ตั้งค่า Groq API Key สำหรับถอดเสียง</td></tr>
+        <tr><td><code>agent-reach configure openai-key</code></td><td>ตั้งค่า OpenAI Key เป็นตัวสำรองของการถอดเสียง</td></tr>
+        <tr><td><code>agent-reach configure proxy</code></td><td>บันทึกค่า proxy (ไม่ใช่สวิตช์เปิดใช้อัตโนมัติ)</td></tr>
+        <tr><td><code>agent-reach configure --from-browser chrome --platform xueqiu</code></td><td>ดึง Cookie เฉพาะแพลตฟอร์มที่ระบุจากเบราว์เซอร์</td></tr>
+        <tr><td><code>agent-reach transcribe &lt;url|file&gt;</code></td><td>ถอดเสียงเป็นข้อความด้วย Whisper (Groq/OpenAI)</td></tr>
+        <tr><td><code>agent-reach transcribe --provider groq|openai|auto</code></td><td>เลือกผู้ให้บริการถอดเสียง</td></tr>
+        <tr><td><code>agent-reach format xhs</code></td><td>จัดรูปแบบ/ทำความสะอาดผลลัพธ์ JSON ของแพลตฟอร์ม — ต้องระบุชื่อแพลตฟอร์ม และป้อนข้อมูลทาง stdin เช่น <code>cat out.json | agent-reach format xhs</code></td></tr>
+        <tr><td><code>agent-reach skill --install</code></td><td>เขียน SKILL.md + references ลงโฟลเดอร์ skill ของ Agent</td></tr>
+        <tr><td><code>agent-reach skill --uninstall</code></td><td>ลบ skill ออกจากโฟลเดอร์ Agent</td></tr>
+        <tr><td><code>agent-reach uninstall</code></td><td>ลบ <code>~/.agent-reach/</code> (รวม token/cookie) และไฟล์ skill · <b>ค่า MCP ใน mcporter จะไม่ถูกลบ</b> (โปรแกรมพิสูจน์ไม่ได้ว่าใครสร้าง จึงเก็บไว้) ต้องลบเองถ้าไม่ใช้แล้ว</td></tr>
+        <tr><td><code>agent-reach uninstall --dry-run</code></td><td>ดูก่อนว่าจะลบอะไรบ้าง</td></tr>
+        <tr><td><code>agent-reach uninstall --keep-config</code></td><td>ลบเฉพาะ skill เก็บ token ไว้ (ไว้ติดตั้งใหม่)</td></tr>
+        <tr><td><code>agent-reach --version</code></td><td>แสดงเวอร์ชันแบบสั้น</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="stack">
+      <h3 class="h3">อ่านผลลัพธ์ของ doctor</h3>
+      <ul class="tick dot">
+        <li><b>✅</b> ช่องทางนั้นพร้อมใช้ · <b>[!] / ⚠️</b> ใช้ได้บางส่วนหรือขาดการตั้งค่า · <b>[X] / ❌</b> พัง ข้อความจะบอกวิธีแก้แบบเจาะจง</li>
+        <li>ช่องที่มีหลาย backend จะรายงาน “当前后端：…” (backend ที่ใช้อยู่ตอนนี้)</li>
+        <li><code class="inl">active_backend: null</code> <b>ไม่ได้แปลว่าไม่มี backend</b> — แปลว่า doctor จงใจไม่ยิงทดสอบจริง เพื่อเลี่ยงการอ่าน Cookie เบราว์เซอร์หรือเขียนข้อมูลออกไปข้างนอก</li>
+        <li>ไฟล์ skill ถูกเขียนโดย <code class="inl">agent-reach install --system</code> หรือ <code class="inl">agent-reach skill --install</code> เท่านั้น — <code class="inl">doctor</code> ตรวจสถานะช่องทางอย่างเดียว ไม่ยุ่งกับไฟล์ skill</li>
+      </ul>
+    </div>
+
+    <div class="stack">
+      <h3 class="h3">ตั้งให้ตรวจสุขภาพอัตโนมัติทุกวัน</h3>
+      <div class="cmd"><div class="cmd-head"><span class="cmd-title">งานที่ให้ cron/scheduler รัน</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+        <pre>รันคำสั่ง agent-reach watch
+ถ้าผลลัพธ์บอกว่าปกติทั้งหมด ไม่ต้องแจ้งฉัน ให้จบเงียบ ๆ
+ถ้ามีปัญหา (❌ ⚠️) หรือมีเวอร์ชันใหม่ (🆕) ให้ส่งรายงานเต็มมาให้ฉัน พร้อมเสนอวิธีแก้
+ถ้ามีเวอร์ชันใหม่ ให้ถามฉันก่อนว่าจะอัปเกรดไหม</pre>
+        <div class="cmd-note">OpenClaw ตั้งเป็น cron job (รายวัน, sessionTarget: isolated, delivery: announce) ได้ · Hermes / Claude Code ใช้ scheduler ของตัวเอง</div></div>
+    </div>
+
+    <div class="stack">
+      <h3 class="h3">ถอนการติดตั้ง</h3>
+      <div class="cmd"><div class="cmd-head"><span class="cmd-title">ลบให้หมด</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+        <pre>agent-reach uninstall --dry-run    # ดูก่อน
+agent-reach uninstall
+pip uninstall agent-reach          # ลบตัวแพ็กเกจ Python ด้วย
+mcporter config list               # เช็กเองว่ามี entry ค้างไหม (exa / xiaohongshu / linkedin)</pre>
+        <div class="cmd-note">uninstall จะไม่ลบ entry ใน mcporter ให้ เพราะพิสูจน์ไม่ได้ว่า Agent Reach เป็นคนสร้าง ถ้าไม่ใช้แล้วต้องลบเอง</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 08 SAFETY ================= -->
+<section class="sec" id="safety">
+  <span class="eyebrow"><span class="ico" style="font-size:1rem">shield</span>บทที่ 08 — ข้อควรระวัง</span>
+  <h2>ข้อควรระวังและความปลอดภัย</h2>
+  <p class="lede">อ่านส่วนนี้ก่อนใช้งานจริง โดยเฉพาะถ้าคุณกำลังจะเอาบัญชีตัวเองไปผูก</p>
+
+  <div class="stack-lg" style="margin-top:1.6rem">
+
+    <div class="note danger" style="font-size:1rem"><span class="ico" style="font-size:1.6rem">gpp_maybe</span>
+      <div><b style="font-size:1.05rem;display:block;margin-bottom:.3rem">ข้อควรระวังอันดับ 1 — ความเสี่ยงโดนแบนบัญชี</b>
+      แพลตฟอร์มที่ใช้ Cookie ล็อกอิน (Twitter, 小红书, Reddit, Facebook, Instagram, 雪球) <b>มีความเสี่ยงที่แพลตฟอร์มจะตรวจจับได้ว่าไม่ได้เรียกผ่านเบราว์เซอร์จริง แล้วจำกัดหรือแบนบัญชี</b><br><br>
+      <b>ให้ใช้บัญชีรองที่สร้างไว้เฉพาะงานนี้ อย่าใช้บัญชีหลักของคุณ</b> เหตุผลมีสองข้อ:<br>
+      1. <b>เสี่ยงโดนแบน</b> — พฤติกรรมเรียก API ที่ไม่เหมือนคนใช้จริงอาจทำให้บัญชีถูกจำกัด<br>
+      2. <b>เสี่ยงข้อมูลรั่ว</b> — Cookie เท่ากับสิทธิ์ล็อกอินเต็มรูปแบบ ใช้บัญชีรองจะจำกัดความเสียหายได้ถ้าข้อมูลหลุด</div></div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-h"><span class="ico">lock</span><div><h4>สิ่งที่โปรเจกต์ทำเพื่อความปลอดภัย</h4></div></div>
+        <ul class="tick">
+          <li>Cookie/Token เก็บที่เครื่องคุณเท่านั้น ที่ <code class="inl">~/.agent-reach/config.yaml</code> สิทธิ์ 600 ไม่อัปโหลดออกไปไหน</li>
+          <li>ค่าเริ่มต้นไม่แก้ระบบ ต้องใส่ <code class="inl">--system</code> ชัดเจนเท่านั้น</li>
+          <li>มี <code class="inl">--dry-run</code> ให้ดูก่อนทำจริง</li>
+          <li>โค้ดเปิดทั้งหมด (MIT) ตรวจสอบได้ตลอด เครื่องมือที่พึ่งพาก็เป็น open source ทั้งหมด</li>
+          <li>สถาปัตยกรรมถอดเปลี่ยนได้ ไม่ไว้ใจ component ไหน เปลี่ยนไฟล์ channel นั้นได้เลย</li>
+          <li>เขียนไฟล์เฉพาะในโฟลเดอร์เฉพาะของตัวเอง ไม่รกโปรเจกต์คุณ</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-h"><span class="ico">block</span><div><h4>ขอบเขตที่ Agent ห้ามข้าม (ระบุในคู่มือติดตั้ง)</h4></div></div>
+        <ul class="tick x">
+          <li>ห้ามรันคำสั่งด้วย <code class="inl">sudo</code> เว้นแต่คุณอนุญาตชัดเจน</li>
+          <li>ห้ามแก้ไฟล์ระบบนอก <code class="inl">~/.agent-reach/</code></li>
+          <li>ห้ามติดตั้งแพ็กเกจที่ไม่ได้ระบุในคู่มือ</li>
+          <li>ห้ามปิด firewall หรือการตั้งค่าความปลอดภัยใด ๆ</li>
+          <li>ห้ามโคลน repo / สร้างไฟล์ / รันคำสั่งใน workspace ของโปรเจกต์คุณ</li>
+          <li>ถ้าต้องใช้สิทธิ์สูงกว่าปกติ ต้องบอกคุณก่อนและให้คุณตัดสินใจ</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="stack">
+      <h3 class="h3">กับดักทางเทคนิคที่เจอบ่อย</h3>
+      <div class="grid">
+        <div class="card"><div class="card-h"><span class="ico">block</span><div><h4>อย่าใช้ yt-dlp กับ B站</h4></div></div>
+          <p style="font-size:.93rem;color:var(--on-surf-var)">ระบบกันบอทของ Bilibili ตอบ 412 ทุกกรณี ทดสอบแล้วทั้งเวอร์ชันล่าสุด ต่อตรง ผ่าน proxy และใส่ Cookie — yt-dlp ใช้กับ YouTube เท่านั้น ให้ใช้ bili-cli แทน</p></div>
+        <div class="card"><div class="card-h"><span class="ico">vpn_key</span><div><h4>小红书 ต้องมี xsec_token</h4></div></div>
+          <p style="font-size:.93rem;color:var(--on-surf-var)">อ่านโน้ตด้วย note_id เปล่า ๆ ไม่ได้ ต้องค้นหาหรือดึง feed ก่อน แล้วใช้ URL/ID เต็มจากผลลัพธ์นั้น ใช้เหมือนกันทั้ง 3 backend</p></div>
+        <div class="card"><div class="card-h"><span class="ico">speed</span><div><h4>คุมความถี่การเรียก</h4></div></div>
+          <p style="font-size:.93rem;color:var(--on-surf-var)">ยิงถี่บน 小红书 จะเจอ CAPTCHA (เว้น 2–3 วินาที/ครั้ง) · Instagram/Facebook เจอ 429 ให้ล็อกอินใหม่และลดความถี่ · Twitter อย่ายิง followers/following ถี่ ๆ บน IP ดาต้าเซ็นเตอร์</p></div>
+        <div class="card"><div class="card-h"><span class="ico">edit_off</span><div><h4>ใช้แบบอ่านอย่างเดียว</h4></div></div>
+          <p style="font-size:.93rem;color:var(--on-surf-var)">Skill ระบุชัดว่าไม่ใช่เครื่องมือสำหรับโพสต์/คอมเมนต์/กดไลก์ การเขียนบน 小红书 อาจติด 406 เพราะปัญหาลายเซ็น — ใช้อ่านอย่างเดียวปลอดภัยกว่ามาก</p></div>
+        <div class="card"><div class="card-h"><span class="ico">rule</span><div><h4>exit code 0 ไม่ได้แปลว่าสำเร็จ</h4></div></div>
+          <p style="font-size:.93rem;color:var(--on-surf-var)">เกณฑ์ความสำเร็จคือ “ได้เนื้อหาจริงที่ไม่ว่าง” เท่านั้น คำสั่งจบด้วย exit 0 แต่ฟิลด์ว่าง = ยังไม่สำเร็จ ให้ไล่ retry chain ต่อ</p></div>
+        <div class="card"><div class="card-h"><span class="ico">folder_off</span><div><h4>อย่าเขียนไฟล์ลง workspace</h4></div></div>
+          <p style="font-size:.93rem;color:var(--on-surf-var)">ให้ใช้ <code class="inl">/tmp/</code> สำหรับไฟล์ชั่วคราว และ <code class="inl">~/.agent-reach/</code> สำหรับไฟล์ถาวร ไม่งั้นโฟลเดอร์โปรเจกต์คุณจะรกและ Agent อาจรวนในระยะยาว</p></div>
+      </div>
+    </div>
+
+    <div class="stack">
+      <h3 class="h3">ข้อควรระวังด้านกฎหมายและการใช้งาน</h3>
+      <ul class="tick dot">
+        <li>เครื่องมือเหล่านี้เข้าถึงข้อมูลด้วยวิธีที่<b>ไม่ใช่ API ทางการ</b>ของแพลตฟอร์ม ซึ่งอาจขัดกับข้อกำหนดการใช้งาน (ToS) ของเว็บนั้น ๆ คุณเป็นผู้รับความเสี่ยงเอง</li>
+        <li>ข้อมูลที่ดึงมาอาจมีข้อมูลส่วนบุคคลของผู้อื่น — ถ้าจะเก็บ ประมวลผล หรือเผยแพร่ต่อ ควรพิจารณา PDPA/GDPR ด้วย</li>
+        <li>ข้อมูลราคาหุ้นจาก 雪球 อาจดีเลย์ และ<b>ไม่ใช่คำแนะนำการลงทุน</b></li>
+        <li>อย่าเอา Cookie ของบัญชีบริษัท/บัญชีที่มีสิทธิ์ผู้ดูแลไปใส่ ควรใช้บัญชีรองที่จำกัดความเสียหายได้</li>
+        <li>ถ้าเปิดให้ Agent ทำงานอัตโนมัติแบบไม่มีคนดู ควรจำกัดความถี่และจำกัดสิทธิ์ให้แคบที่สุด</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 09 TROUBLESHOOT ================= -->
+<section class="sec" id="trouble">
+  <span class="eyebrow"><span class="ico" style="font-size:1rem">build</span>บทที่ 09 — แก้ปัญหา</span>
+  <h2>อาการที่เจอบ่อยและวิธีแก้</h2>
+  <p class="lede">เริ่มจาก <code class="inl">agent-reach doctor</code> เสมอ — ข้อความที่มันคืนมามักมีวิธีแก้แบบเจาะจงอยู่แล้ว</p>
+
+  <div class="stack" style="margin-top:1.6rem">
+
+    <details open><summary><span class="ico" style="color:var(--err)">error</span>雪球 doctor ขึ้น ⚠️ HTTP Error 400</summary>
+      <div class="body">
+        <p><b>สาเหตุ:</b> API ของ 雪球 ต้องใช้ Cookie ที่ล็อกอินแล้ว เข้าแบบไม่ล็อกอินไม่ได้ (token <code class="inl">xq_a_token</code> ถูกสร้างด้วย JS ฝั่งหน้าเว็บ ดึงด้วย HTTP ล้วนไม่ได้)</p>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">วิธีแก้ — ล็อกอิน xueqiu.com ใน Chrome ก่อน แล้วรัน</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>agent-reach configure --from-browser chrome --platform xueqiu
+agent-reach doctor</pre>
+          <div class="cmd-note">Cookie หมดอายุเมื่อไหร่ก็รันซ้ำอันเดิม</div></div>
+      </div></details>
+
+    <details><summary><span class="ico" style="color:var(--err)">error</span>twitter-cli เชื่อมต่อไม่ได้ / Missing credentials</summary>
+      <div class="body">
+        <p><b>สาเหตุ:</b> ยังไม่ได้ตั้ง env var <code class="inl">TWITTER_AUTH_TOKEN</code> และ <code class="inl">TWITTER_CT0</code> ในโปรเซสที่รันคำสั่ง (ค่าที่ configure ไว้ใช้ให้ doctor ตรวจเท่านั้น) หรือเครือข่ายเข้า x.com ไม่ได้</p>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">ทาง 1 — ตั้ง env var (+ proxy ถ้าจำเป็น)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>export TWITTER_AUTH_TOKEN="..."
+export TWITTER_CT0="..."
+export HTTP_PROXY="http://user:pass@host:port"
+export HTTPS_PROXY="http://user:pass@host:port"
+twitter check
+twitter search "test" -n 1</pre></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">ทาง 2 — ให้ตัว proxy จัดการทราฟฟิกทั้งหมด</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre># macOS — ClashX / Surge เปิด Enhanced Mode
+# Linux — proxychains หรือ tun2socks
+proxychains twitter search "test" -n 1</pre></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">ทาง 3 — เลี่ยงไปใช้ Exa ค้นเนื้อหา Twitter แทน</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>mcporter call exa.web_search_exa query="site:x.com คำค้น" numResults=5</pre></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">ทาง 4 — ตัวสำรอง bird CLI</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>npm install -g @steipete/bird</pre>
+          <div class="cmd-note">Agent Reach ตรวจเจอเครื่องมือที่ติดตั้งแล้วโดยอัตโนมัติ</div></div>
+      </div></details>
+
+    <details><summary><span class="ico" style="color:var(--t)">warning</span>pip ขึ้น externally-managed-environment (PEP 668)</summary>
+      <div class="body">
+        <p><b>สาเหตุ:</b> Python จาก Homebrew / Ubuntu รุ่นใหม่ป้องกันการติดตั้งลง system Python — ไม่ใช่บั๊กของ Agent Reach</p>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">วิธีแก้</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>pipx install https://github.com/Panniantong/agent-reach/archive/main.zip
+# หรือใช้ venv
+python3 -m venv ~/.agent-reach-venv
+source ~/.agent-reach-venv/bin/activate
+pip install https://github.com/Panniantong/agent-reach/archive/main.zip</pre></div>
+      </div></details>
+
+    <details><summary><span class="ico" style="color:var(--t)">warning</span>Windows: python3 เปิด Microsoft Store</summary>
+      <div class="body">
+        <p><b>สาเหตุ:</b> <code class="inl">python3</code> เป็น Store alias ของ Windows ไม่ใช่ Python จริง (ตรวจได้ด้วย <code class="inl">where python3</code> จะชี้ไปที่ <code class="inl">...\AppData\Local\Microsoft\WindowsApps\python3.exe</code>)</p>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">วิธีแก้ — ใช้ Python Launcher</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>py -3 -m venv $env:USERPROFILE\.agent-reach-venv
+$env:USERPROFILE\.agent-reach-venv\Scripts\Activate.ps1
+python -m pip install https://github.com/Panniantong/agent-reach/archive/main.zip</pre></div>
+      </div></details>
+
+    <details><summary><span class="ico" style="color:var(--err)">error</span>OpenCLI ขึ้น AUTH_REQUIRED / Extension: not connected</summary>
+      <div class="body">
+        <ul class="tick dot">
+          <li>ตรวจว่าติดตั้ง <a href="https://chromewebstore.google.com/detail/opencli/ildkmabpimmkaediidaifkhjpohdnifk">ส่วนขยาย OpenCLI</a> ใน Chrome แล้ว และ Chrome เปิดค้างอยู่</li>
+          <li>รัน <code class="inl">opencli doctor</code> ต้องขึ้น <code class="inl">Extension: connected</code></li>
+          <li>ล็อกอินเว็บปลายทางใน Chrome ให้เรียบร้อยก่อน</li>
+          <li>ถ้าเป็น 小红书 แล้วยังไม่มี session อยู่แล้ว <b>อย่าให้ Agent ล็อกอินให้</b> — ให้เปลี่ยนไปใช้เส้นทาง Cookie-Editor + xiaohongshu-mcp แทน</li>
+        </ul>
+      </div></details>
+
+    <details><summary><span class="ico" style="color:var(--err)">error</span>Bilibili คืน 412 / ดึงข้อมูลไม่ได้</summary>
+      <div class="body">
+        <p><b>สาเหตุ:</b> คุณ (หรือ Agent) กำลังใช้ yt-dlp กับ B站 ซึ่งโดนบล็อกหมดแล้ว</p>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">วิธีแก้ — เปลี่ยนไป bili-cli</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>pipx install bilibili-cli
+bili video BVxxx
+bili search "คำค้น" --type video -n 5</pre></div>
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">ทางสำรองสุดท้าย — เรียก Search API ตรง</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+curl -s -c /tmp/bili_ck.txt -o /dev/null -A "$UA" "https://www.bilibili.com/"
+curl -s -b /tmp/bili_ck.txt -A "$UA" -e "https://www.bilibili.com/" \
+  "https://api.bilibili.com/x/web-interface/search/all/v2?keyword=QUERY&page=1"</pre></div>
+      </div></details>
+
+    <details><summary><span class="ico" style="color:var(--t)">warning</span>OpenCLI คืน "Caption URL returned empty response"</summary>
+      <div class="body">
+        <p>URL ของ subtitle มีวันหมดอายุ บางครั้งพลาดชั่วคราว — <b>ห้ามตีความว่า “วิดีโอไม่มี subtitle”</b> ให้ลองซ้ำได้ไม่เกิน 3 ครั้ง ถ้ายังไม่ได้ค่อยตกไป <code class="inl">agent-reach transcribe</code></p>
+      </div></details>
+
+    <details><summary><span class="ico" style="color:var(--t)">warning</span>xhs user / user-posts / favorites คืน API error</summary>
+      <div class="body">
+        <p>เป็นปัญหาที่รู้อยู่แล้วของ xhs-cli ซึ่งต้นทางหยุดพัฒนาตั้งแต่ มี.ค. 2026 ไม่มีคนแก้ — ให้ย้ายไปใช้ OpenCLI (เดสก์ท็อป) หรือ xiaohongshu-mcp (เซิร์ฟเวอร์)</p>
+      </div></details>
+
+    <details><summary><span class="ico" style="color:var(--t)">warning</span>OpenClaw: Agent รันคำสั่งไม่ได้เลย</summary>
+      <div class="body">
+        <div class="cmd"><div class="cmd-head"><span class="cmd-title">เปิดสิทธิ์ exec ก่อน แล้วรีสตาร์ต</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+          <pre>openclaw config set tools.profile "coding"
+openclaw gateway restart</pre>
+          <div class="cmd-note">ตั้งค่าเสร็จให้เปิดบทสนทนาใหม่ · Agent อื่น (Hermes, Claude Code, Cursor, Windsurf) ไม่มีข้อจำกัดนี้</div></div>
+      </div></details>
+
+    <details><summary><span class="ico" style="color:var(--p)">help</span>ยังไม่หาย — ทำอะไรต่อ</summary>
+      <div class="body">
+        <ul class="tick dot">
+          <li>รัน <code class="inl">agent-reach doctor</code> แล้วอ่านข้อความแก้ที่มันแนะนำ (มักเป็นคำสั่งที่ก๊อปไปรันได้เลย)</li>
+          <li>อ่าน <a href="https://github.com/Panniantong/Agent-Reach/blob/main/docs/troubleshooting.md">troubleshooting.md</a> ฉบับต้นทาง</li>
+          <li>ส่งผลลัพธ์ของ <code class="inl">agent-reach doctor --json</code> ให้ Agent แล้วบอกว่า “ช่วยวินิจฉัยและแก้ให้หน่อย แต่ห้ามใช้ sudo และห้ามแตะไฟล์นอก ~/.agent-reach/”</li>
+          <li>แจ้งบั๊กหรือขอฟีเจอร์ที่ <a href="https://github.com/Panniantong/Agent-Reach/issues">GitHub Issues</a></li>
+        </ul>
+      </div></details>
+
+  </div>
+</section>
+
+<!-- ================= 10 FOR AI ================= -->
+<section class="sec" id="ai">
+  <span class="eyebrow"><span class="ico" style="font-size:1rem">smart_toy</span>บทที่ 10 — สำหรับ AI</span>
+  <h2>ให้ AI อ่านหน้านี้แล้วทำตาม</h2>
+  <p class="lede">หน้านี้ออกแบบให้ AI อ่านได้ทั้งหมด — เนื้อหาทุกบทอยู่ใน HTML จริง (ไม่ได้สร้างด้วย JavaScript) ต่อให้บทนั้นยังไม่ถูกเปิดดูอยู่ AI ที่ fetch หน้านี้จะเห็นครบทุกบท</p>
+
+  <div class="stack-lg" style="margin-top:1.6rem">
+
+    <div class="stack">
+      <h3 class="h3">วิธีใช้ — ส่งหน้านี้ให้ AI</h3>
+      <div class="cmd"><div class="cmd-head"><span class="cmd-title">ประโยคสั่ง AI (วางพร้อม URL ของหน้านี้)</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+        <pre>อ่านคู่มือ Agent Reach ฉบับนี้ให้ครบทุกบท: &lt;วาง URL ของหน้านี้&gt;
+
+แล้วทำตามนี้:
+1. สรุปให้ฉันฟังก่อนว่าเครื่องฉันควรติดตั้งช่องทางไหนบ้าง (ถามฉันถ้าไม่แน่ใจว่าเป็นเดสก์ท็อปหรือเซิร์ฟเวอร์)
+2. รันเฉพาะโหมดตรวจสอบก่อน: agent-reach install --env=auto
+3. สรุปผลให้ฉันอนุมัติ แล้วค่อยรันโหมด --system
+4. ห้ามใช้ sudo ห้ามแก้ไฟล์นอก ~/.agent-reach/ ห้ามสร้างไฟล์ใน workspace
+5. จบด้วย agent-reach doctor แล้วรายงานว่าช่องไหนใช้ได้ ช่องไหนต้องให้ฉันทำอะไรเพิ่ม</pre></div>
+      <div class="cmd"><div class="cmd-head"><span class="cmd-title">ถ้าอยากให้ AI อ่านจากต้นทางโดยตรง</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+        <pre>https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/install.md
+https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/update.md
+https://raw.githubusercontent.com/Panniantong/agent-reach/main/agent_reach/skill/SKILL_en.md
+https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/troubleshooting.md
+https://raw.githubusercontent.com/Panniantong/agent-reach/main/llms.txt</pre></div>
+    </div>
+
+    <div class="stack">
+      <h3 class="h3">ข้อกำหนดแบบเครื่องอ่าน (คัดลอกไปวางให้ AI ได้ทั้งก้อน)</h3>
+      <div class="cmd"><div class="cmd-head"><span class="cmd-title">AGENT-REACH OPERATING SPEC v1.5.0</span><button class="copy"><span class="ico">content_copy</span>คัดลอก</button></div>
+<pre># AGENT REACH — OPERATING SPEC (v1.5.0)
+
+ROLE
+  Agent Reach is a capability layer: it SELECTS, INSTALLS, HEALTH-CHECKS and
+  ROUTES upstream tools. It is NOT a wrapper. You (the agent) call the upstream
+  tools directly.
+
+STANDING RULES
+  1. Before acting on a multi-backend or login-backed platform
+     (xiaohongshu, reddit, bilibili, twitter, facebook, instagram, xueqiu):
+     run `agent-reach doctor --json` and use the populated `active_backend`.
+     `active_backend: null` means Doctor deliberately skipped a live probe —
+     it does NOT mean no backend exists.
+  2. Announce what you use: "using agent-reach, platform X via backend Y".
+  3. On failure, follow the documented retry chain. Never invent commands.
+  4. Success = non-empty real content. Exit code 0 with empty fields is failure.
+  5. For broad research: combine Exa (web) + Twitter/Reddit (discussion)
+     + Xiaohongshu/Bilibili (Chinese perspective), collect in parallel,
+     then synthesize.
+  6. After a substantial multi-platform task, run `agent-reach check-update`
+     once. Never interrupt the task to update. Never nag twice.
+
+BOUNDARIES (hard)
+  - No sudo unless the user explicitly approved.
+  - Do not modify system files outside ~/.agent-reach/.
+  - Do not install packages not listed in the official install guide.
+  - Do not disable firewalls or security settings.
+  - Do not clone repos, create files, or run commands in the agent workspace.
+    Use /tmp/ for temp files and ~/.agent-reach/ for persistent data.
+  - Never log the user into XiaoHongShu and never read its browser cookies.
+    OpenCLI may use ONLY an existing Chrome session the user controls.
+  - Twitter cookies saved via `agent-reach configure twitter-cookies` are for
+    doctor's presence check only. Before running `twitter`, explicitly provide
+    TWITTER_AUTH_TOKEN and TWITTER_CT0 in the child process environment,
+    without logging their values.
+  - Read-only by default. Do not post, comment, or like.
+
+INSTALL
+  agent-reach install --env=auto            # check only (safe default)
+  agent-reach install --env=auto --dry-run  # preview
+  agent-reach install --env=auto --system   # actually install (needs approval)
+  --channels=opencli,twitter,xiaoyuzhou,xueqiu,xiaohongshu,reddit,facebook,
+             instagram,bilibili,linkedin,all
+
+DIAGNOSTICS
+  agent-reach doctor          # human readable
+  agent-reach doctor --json   # machine readable, per-channel active_backend
+  agent-reach watch           # health + update check, for scheduled jobs
+  agent-reach check-update
+
+ZERO-CONFIG COMMANDS
+  mcporter call exa.web_search_exa query="q" numResults=5
+  curl -s "https://r.jina.ai/URL"
+  gh search repos "q" --sort stars --limit 10
+  yt-dlp --write-sub --write-auto-sub --skip-download -o "/tmp/%(id)s" "URL"
+  curl -s "https://www.v2ex.com/api/topics/hot.json" -H "User-Agent: agent-reach/1.0"
+  bili search "q" --type video -n 5
+  python3 -c "import feedparser; [print(e.title, e.link) for e in feedparser.parse('URL').entries[:5]]"
+
+LOGIN-BACKED COMMANDS (choose by doctor's active_backend)
+  twitter feed -n 20 | twitter tweet URL | twitter user-posts @u -n 20
+  opencli reddit search "q" -f yaml      | rdt search "q" --limit 10
+  opencli xiaohongshu search "q" -f yaml # then read via FULL URL with xsec_token
+  opencli facebook search "q" -f yaml    | opencli facebook groups -f yaml
+  opencli instagram search "q" -f yaml   # user search, not post keyword search
+  opencli instagram user USERNAME -f yaml
+  opencli bilibili subtitle BVxxx
+  opencli xueqiu stock NVDA -f yaml
+  mcporter call linkedin.get_person_profile linkedin_username="u"
+
+CRITICAL CAVEATS
+  - NEVER use yt-dlp for Bilibili (412 blocked). yt-dlp is YouTube only.
+  - XiaoHongShu requires xsec_token: search first, then read the full URL.
+  - Rate limit XiaoHongShu to one call every 2-3 seconds or hit CAPTCHA.
+  - Instagram/Facebook 429 => have the user re-login in Chrome, slow down.
+  - Reddit has NO zero-config path. Login is mandatory.
+  - Xueqiu HTTP 400 = cookie/session problem, not a missing ticker.
+  - Cookie auth carries ACCOUNT BAN RISK. Recommend a dedicated burner account.
+
+RETRY CHAIN — YOUTUBE SUBTITLES
+  1. yt-dlp --write-sub --write-auto-sub ...
+  2. opencli youtube transcript "URL" -f yaml
+  3. retry step 2 up to 3x on "Caption URL returned empty response"
+  4. agent-reach transcribe "URL"
+
+RETRY CHAIN — TWITTER SEARCH
+  1. twitter search "q" -n 10
+  2. pipx upgrade twitter-cli && retry
+  3. opencli twitter search "q" -f yaml
+  4. fall back to twitter feed / twitter user-posts
+
+SOURCES OF TRUTH
+  install:   https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/install.md
+  update:    https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/update.md
+  skill:     https://raw.githubusercontent.com/Panniantong/agent-reach/main/agent_reach/skill/SKILL_en.md
+  trouble:   https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/troubleshooting.md
+</pre></div>
+    </div>
+
+    <div class="stack">
+      <h3 class="h3">โครงสร้าง skill ที่ Agent จะได้อ่าน</h3>
+      <p style="color:var(--on-surf-var)">หลังติดตั้ง Agent Reach จะเขียนไฟล์ชุดนี้ลงโฟลเดอร์ skill ของ Agent — Agent อ่าน SKILL.md ก่อน แล้วค่อยเปิดไฟล์ references ที่ตรงกับงาน (ไฟล์ references เขียนเป็นภาษาจีน แต่คำสั่งเป็นสากล)</p>
+      <div class="tw"><table>
+        <thead><tr><th>ไฟล์</th><th>ครอบคลุม</th></tr></thead>
+        <tbody>
+          <tr><td><code>SKILL.md</code> / <code>SKILL_en.md</code></td><td>กติกาประจำ session + ตารางเลือกเส้นทาง + คำสั่ง zero-config</td></tr>
+          <tr><td><code>references/search.md</code></td><td>Exa AI search</td></tr>
+          <tr><td><code>references/social.md</code></td><td>小红书, Twitter, B站, V2EX, Reddit, Facebook, Instagram</td></tr>
+          <tr><td><code>references/video.md</code></td><td>YouTube, Bilibili, 小宇宙 podcast + retry chain</td></tr>
+          <tr><td><code>references/web.md</code></td><td>Jina Reader, Web Reader MCP, RSS</td></tr>
+          <tr><td><code>references/dev.md</code></td><td>GitHub CLI</td></tr>
+          <tr><td><code>references/career.md</code></td><td>LinkedIn</td></tr>
+          <tr><td><code>references/finance.md</code></td><td>雪球 ราคาหุ้นและเนื้อหาตลาด</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note info"><span class="ico">psychology</span><div><b>Skill นี้ไม่ใช่สำหรับ:</b> เขียนรายงาน/วิเคราะห์/แปล (มันแค่ “ดึงเนื้อหา”) · การเขียนข้อมูลกลับไปที่แพลตฟอร์ม (โพสต์/คอมเมนต์/ไลก์) · แพลตฟอร์มที่คุณมี skill เฉพาะทางอยู่แล้ว (ให้ใช้ skill นั้นก่อน)</div></div>
+    </div>
+
+  </div>
+</section>
+
+  </div><!-- /content -->
+
+  <footer class="footer">
+    <p><b>Agent Reach คู่มือฉบับไทย</b> — เรียบเรียงจาก README, docs/install.md, docs/update.md, docs/troubleshooting.md, docs/cookie-export.md, agent_reach/skill/ และซอร์สโค้ดของ <a href="https://github.com/Panniantong/Agent-Reach">Panniantong/Agent-Reach</a> เวอร์ชัน 1.5.0 (MIT) รวมถึงเอกสาร <a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/skills">Hermes Agent Skills</a> สำหรับส่วนการติดตั้งบน Hermes</p>
+    <p style="margin-top:.6rem">คู่มือนี้เป็นเอกสารสรุปโดยผู้ใช้ ไม่ใช่เอกสารทางการของโปรเจกต์ · คำสั่งและพฤติกรรมอาจเปลี่ยนตามเวอร์ชัน ให้ยึด <code class="inl">agent-reach doctor</code> และ repo ต้นทางเป็นหลักเสมอ</p>
+  </footer>
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+(function(){
+  "use strict";
+  var root = document.documentElement;
+
+  /* ---------- ICON FONT GATE ---------- */
+  (function(){
+    var tries = 0;
+    function haveIconFont(){
+      if (!document.fonts || !document.fonts.forEach) return false;
+      var ok = false;
+      try {
+        document.fonts.forEach(function(f){
+          if (f.family && f.family.indexOf('Material Symbols') > -1 && f.status === 'loaded') ok = true;
+        });
+      } catch(e){ return false; }
+      return ok;
+    }
+    function poll(){
+      if (haveIconFont()) { root.classList.add('fonts-ready'); return; }
+      if (++tries > 12) return;
+      setTimeout(poll, 400);
+    }
+    if (document.fonts && document.fonts.load) {
+      document.fonts.load('24px "Material Symbols Rounded"').catch(function(){});
+      if (document.fonts.ready && document.fonts.ready.then) {
+        document.fonts.ready.then(function(){ if (haveIconFont()) root.classList.add('fonts-ready'); });
+      }
+      poll();
+    }
+  })();
+
+  var LS = {
+    get: function(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+    set: function(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  };
+
+  /* ---------- THEME ---------- */
+  var themeBtn = document.getElementById('themebtn');
+  var themeIco = document.getElementById('themeico');
+  function systemDark(){
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  function isDark(){
+    var t = root.getAttribute('data-theme');
+    if (t === 'dark') return true;
+    if (t === 'light') return false;
+    return systemDark();
+  }
+  function paintTheme(){
+    themeIco.textContent = isDark() ? 'light_mode' : 'dark_mode';
+    themeBtn.setAttribute('aria-label', isDark() ? 'สลับเป็นโหมดสว่าง' : 'สลับเป็นโหมดมืด');
+  }
+  var savedTheme = LS.get('ar_theme');
+  if (savedTheme === 'dark' || savedTheme === 'light') root.setAttribute('data-theme', savedTheme);
+  paintTheme();
+  themeBtn.addEventListener('click', function(){
+    var next = isDark() ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    LS.set('ar_theme', next);
+    paintTheme();
+  });
+  if (window.matchMedia){
+    try{
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', paintTheme);
+    }catch(e){}
+  }
+
+  /* ---------- FONT SIZE ---------- */
+  var STEPS = ['88%','100%','113%','128%'];
+  var fs = parseInt(LS.get('ar_fs'), 10);
+  if (isNaN(fs) || fs < 0 || fs > 3) fs = 1;
+  var fsLabel = document.getElementById('fslabel');
+  function paintFs(){
+    root.setAttribute('data-fs', String(fs));
+    fsLabel.textContent = STEPS[fs];
+    document.getElementById('fsdown').disabled = (fs === 0);
+    document.getElementById('fsup').disabled = (fs === STEPS.length - 1);
+    LS.set('ar_fs', String(fs));
+  }
+  document.getElementById('fsdown').addEventListener('click', function(){ if(fs>0){fs--; paintFs();} });
+  document.getElementById('fsup').addEventListener('click', function(){ if(fs<STEPS.length-1){fs++; paintFs();} });
+  paintFs();
+
+  /* ---------- NAVIGATION ---------- */
+  var nav = document.getElementById('nav');
+  var scrim = document.getElementById('scrim');
+  var navItems = Array.prototype.slice.call(document.querySelectorAll('.nav-item'));
+  var sections = Array.prototype.slice.call(document.querySelectorAll('.sec'));
+
+  function closeNav(){ nav.classList.remove('on'); scrim.classList.remove('on'); }
+  function openNav(){ nav.classList.add('on'); scrim.classList.add('on'); }
+  document.getElementById('menubtn').addEventListener('click', openNav);
+  scrim.addEventListener('click', closeNav);
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeNav(); });
+
+  function go(id, push){
+    var found = false;
+    sections.forEach(function(s){
+      var on = (s.id === id);
+      s.classList.toggle('on', on);
+      if (on) found = true;
+    });
+    if (!found) return;
+    navItems.forEach(function(b){
+      b.setAttribute('aria-current', b.dataset.go === id ? 'true' : 'false');
+    });
+    if (push && history.replaceState) history.replaceState(null, '', '#' + id);
+    closeNav();
+    window.scrollTo(0, 0);
+  }
+  navItems.forEach(function(b){
+    b.addEventListener('click', function(){ go(b.dataset.go, true); });
+  });
+  var initial = (location.hash || '').replace('#','');
+  if (initial) go(initial, false);
+
+  /* ---------- SHOW ALL ---------- */
+  var allBtn = document.getElementById('allbtn');
+  var allOn = LS.get('ar_all') === '1';
+  function paintAll(){
+    root.setAttribute('data-all', allOn ? '1' : '0');
+    allBtn.setAttribute('aria-pressed', allOn ? 'true' : 'false');
+    allBtn.querySelector('.ico').textContent = allOn ? 'unfold_less' : 'unfold_more';
+    allBtn.title = allOn ? 'กลับไปดูทีละบท' : 'แสดงทุกหัวข้อพร้อมกัน';
+    LS.set('ar_all', allOn ? '1' : '0');
+  }
+  allBtn.addEventListener('click', function(){ allOn = !allOn; paintAll(); });
+  paintAll();
+
+  /* ---------- TABS ---------- */
+  document.querySelectorAll('.tabs').forEach(function(bar){
+    var scope = bar.parentElement;
+    bar.querySelectorAll('.tab').forEach(function(tab){
+      tab.addEventListener('click', function(){
+        bar.querySelectorAll('.tab').forEach(function(t){ t.setAttribute('aria-selected','false'); });
+        tab.setAttribute('aria-selected','true');
+        scope.querySelectorAll(':scope > .tabpanel').forEach(function(p){
+          p.classList.toggle('on', p.id === tab.dataset.tab);
+        });
+      });
+    });
+  });
+
+  /* ---------- COPY ---------- */
+  function fallbackCopy(text, btn){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly','');
+    ta.style.position = 'fixed';
+    ta.style.top = '-1000px';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch(e){ ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+  function flash(btn, msg, good){
+    var original = btn.innerHTML;
+    btn.innerHTML = '<span class="ico">' + (good ? 'check' : 'error') + '</span>' + msg;
+    btn.classList.toggle('done', !!good);
+    setTimeout(function(){
+      btn.innerHTML = original;
+      btn.classList.remove('done');
+    }, 1800);
+  }
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var box = btn.closest('.cmd');
+      if (!box) return;
+      var pre = box.querySelector('pre');
+      if (!pre) return;
+      var text = pre.innerText;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function(){
+          flash(btn, 'คัดลอกแล้ว', true);
+        }).catch(function(){
+          var ok2 = fallbackCopy(text);
+          flash(btn, ok2 ? 'คัดลอกแล้ว' : 'กด Ctrl+C เอง', ok2);
+        });
+      } else {
+        var ok = fallbackCopy(text);
+        flash(btn, ok ? 'คัดลอกแล้ว' : 'กด Ctrl+C เอง', ok);
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

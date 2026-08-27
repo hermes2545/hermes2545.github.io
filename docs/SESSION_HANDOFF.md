@@ -16,44 +16,45 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with f
 
 ### Reading collection
 
-- 23 standalone HTML guides indexed from `data/books.json`.
+- 24 standalone HTML guides indexed from `data/books.json`.
 - The Reading storefront title is **Coffee and Books**. Its environment uses a bright sunlit outdoor garden photograph containing only trees, foliage, grass, and natural daylight, plus heavy translucent iOS-inspired glass walls and shelves and one seamless user-approved 1044×237 retouched header image. The header removes baked UI on the left while preserving the original cup, latte art, table, garden, and lighting on the right; the site logo and title remain semantic HTML.
 - The Navigation bar, Title banner, Reading/Search panel, and Bookshelf panel share one responsive width: 1180px maximum on desktop and the same 4px side gutters on mobile. The garden wallpaper uses the photograph's natural color with no brightness/saturation/contrast filter and no color-wash overlay. The retouched header image uses `cover`, so no blank cream strip appears when the banner widens.
 - Coffee and Books styles live only in `assets/css/reading-library.css`, loaded only by the Reading template. Shared `assets/css/library.css` is restored byte-for-byte to the pre-Coffee `ca74827` baseline so the App and Audio collections cannot inherit the Reading wallpaper, glass panels, geometry, or header treatment.
 - Book titles and publish dates above each cover are intentionally text-only: no label panel, border, shadow, or metadata backdrop. Readability comes from dark typography and restrained text shadow while the book covers remain dominant.
-- `Hermes_Agent_Advance_Computer_Use_Guide_TH.html` is the newest local guide: a byte-preserved, user-supplied 13-panel Practical Guide covering installation, platform prerequisites, background-first control, Verify–Escalate ladder, typed browser, existing-profile attachment, permission modes, examples, troubleshooting, production checklists, commands, and sources.
+- `AgentReach_Thai_Guide.html` is the newest local guide: the owner-supplied 170,001-byte HTML is preserved byte-for-byte at SHA-256 `e3c92f5eafafdf8b498a593fc825f11c1f2bb78cb479a6d6e94ea436bd1bad90`, with 10 responsive sections/navigation items and the supplied artwork normalized only to a 600×900 EXIF-free RGB WebP.
 - The imported `hermes-memory` and `hermes-guardian` repositories retain their original source commits under dedicated subdirectories.
 - Shelf-facing titles remain Thai-first except the user-specified English titles **Claude Prompt Caching** and **Grok Bot vs Claude Code vs Codex**, while necessary product and technical terms are retained.
 - Newest publication appears at the upper-left, then flows right and downward.
 - Every guide opens in a new browser tab.
-- All 23 reading books use individually designed or owner-approved 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork. The newest Computer Use guide uses the owner-supplied final cover without redesign.
+- All 24 reading books use individually designed or owner-approved 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork. The newest Agent Reach guide and Computer Use guide use owner-supplied final covers without redesign.
 - Reproducible cover designs live under `templates/`, including `grok-bot-vs-claude-codex-cover.template.html`, `claude-prompt-caching-cover.template.html`, `vault-ai-safety-cover.template.html`, `agent-reach-comparison-cover.template.html`, and `hermes-concepts-for-everyone-cover.template.html`; legacy Facebook assets remain archived but unused.
 - **Claude Prompt Caching** is a byte-preserved user-supplied interactive guide dated 21 June 2026. Its cover uses the officially documented Claude Code Spark cue in an independent editorial context with a visible non-affiliation notice.
 - **Grok Bot vs Claude Code vs Codex** is an 11-view standalone comparison with 13 official sources and embedded transparent Grok/Claude/Codex logo assets. Its editorial cover distinguishes a persistent teammate from temporary spawned workers and carries a visible non-affiliation notice.
 
 ### Audio collection
 
-- 49 YouTube entries indexed from `data/audio-books.json`; the newest is **Grok Bot vs Claude Code & Codex: AI Teammate ถาวรต่างจาก Spawn Agents อย่างไร** (`VQdCzVNhTmI`). It is Public, Not made for kids, 20:23, uses the approved Tricolor Segment Bars video and custom thumbnail, and is verified in the exact `tech (Ai)` playlist. The original Hermes podcast `KtHYNnLM_Dk` remains Unlisted and is not referenced by the active catalog.
+- 50 YouTube entries indexed from `data/audio-books.json`; the newest is **Agent Reach: มอบดวงตาให้ AI ทะลวง Social Platform** (`UtzEjC9G3Dg`). It is Public, Not made for kids, 22:55, 1080p30, uses the approved Target Water Ripple video and custom thumbnail, and is verified at position 1 in the exact `tech (Ai)` playlist. The original Hermes podcast `KtHYNnLM_Dk` remains Unlisted and is not referenced by the active catalog.
 - Newest publication appears at the upper-left.
 - Local thumbnail assets are stored under `assets/audio-covers/`.
 - Each audio item uses a large iPod-style device at the existing book footprint: a full 4:3 thumbnail screen above a click wheel, with duration at the upper-right of the lower control panel and a PLAY label below.
 - Audio titles no longer show the redundant `AUDIO BOOK` kicker.
 - Each item and the playlist button open YouTube in a new tab.
 - The Audio room uses a light premium technology-retail theme inspired by Apple Fifth Avenue's architectural materials: a luminous glass-cube mark, circular skylights, pale stone/off-white terrazzo surfaces, stainless-steel details, translucent dark navigation, and maple display tables. Apple Blue is reserved for interactive controls.
-- The Audio room now uses the selected **Option 3** photograph of the Apple Fifth Avenue retail floor as a local 1600×1200 wallpaper. Navigation, header, search/tools, the full bookshelf wall, and shelf planks use Audio-scoped iOS-style Liquid Glass surfaces (30px room blur, 24px shelf blur); all 49 iPods remain foreground content. Attribution and CC BY 4.0 terms are recorded in `docs/reports/AUDIO_ROOM_IMAGE_ATTRIBUTION.md`.
-- Audio uses progressive disclosure to keep the initial page short: JavaScript starts with the newest 10 entries, loads 10 more per click, can reveal all 49, and can collapse back to 10. A lightweight year archive is generated from existing `time[datetime]` values (currently 2026 and 2025) without changing catalog schema. Search always checks all 49 entries and clearing a query resets the newest-10 view; No-JS users still receive all 49 server-rendered cards.
+- The Audio room now uses the selected **Option 3** photograph of the Apple Fifth Avenue retail floor as a local 1600×1200 wallpaper. Navigation, header, search/tools, the full bookshelf wall, and shelf planks use Audio-scoped iOS-style Liquid Glass surfaces (30px room blur, 24px shelf blur); all 50 iPods remain foreground content. Attribution and CC BY 4.0 terms are recorded in `docs/reports/AUDIO_ROOM_IMAGE_ATTRIBUTION.md`.
+- Audio uses progressive disclosure to keep the initial page short: JavaScript starts with the newest 10 entries, loads 10 more per click, can reveal all 50, or can collapse back to 10. A lightweight year archive is generated from existing `time[datetime]` values (currently 2026 and 2025) without changing catalog schema. Search always checks all 50 entries and clearing a query resets the newest-10 view; No-JS users still receive all 50 server-rendered cards.
 - The Audio collection header is titled **The Audio Shelf** while the Reading collection is titled **Coffee and Books**.
 
 ### App collection
 
-- 5 browser apps indexed from `data/apps.json`: **PDF Password Remover**, **Pac-Man**, **Bakery Center**, **Battle Tank**, and **Lode Runner**.
-- The generated shelf is `app-library.html`; stable launchers include `app/pdf-password-remover.html`, `app/pacman.html`, `app/bakery-center.html`, `app/battle-tank.html`, and `app/loderunner.html`.
+- 6 browser apps indexed from `data/apps.json`: **PDF Password Remover**, **Pac-Man**, **ตุ่มเงิน**, **Bakery Center**, **Battle Tank**, and **Lode Runner**.
+- The generated shelf is `app-library.html`; stable launchers include `app/pdf-password-remover.html`, `app/pacman.html`, `app/tumngern.html`, `app/bakery-center.html`, `app/battle-tank.html`, and `app/loderunner.html`.
 - PDF Password Remover is a byte-preserved user-supplied single-file app (`user-supplied-preserved`). It processes authorized PDFs locally in the browser, keeps password presets in page memory only, and loads version-pinned `qpdf-run@0.2.1` worker/JavaScript/WASM assets through verified SHA-384 SRI values.
 - Battle Tank preserves its imported source HTML byte-for-byte. Bakery Center records the pinned upstream hash but is published as a Library-hardened derivative with schema validation, safe IDs/icons/photos, stored-data migration, and Stored-XSS regression coverage.
 - Lode Runner keeps its multi-file runtime under `app/loderunner/`; `app/loderunner.html` is a minimal same-origin fullscreen wrapper.
+- ตุ่มเงิน keeps its PWA runtime under `app/tumngern/`; the only Source modifications are deployment-base changes from `/tumngern/` to `/app/tumngern/` plus matching Workbox revisions. Its optional Sync feature is user-initiated, not enabled by default, and openly warns that server payloads are not yet end-to-end encrypted.
 - Development tools, executable files, source disk images, repository metadata, and unrelated README files are excluded from the imported Lode Runner runtime.
 - Every App appears as a CSS-rendered 3.5-inch diskette with a content-specific sticker label rather than a book cover.
-- Pac-Man, Battle Tank, and Lode Runner carry local 360×220 WebP stickers made from source-derived runtime imagery and original-game visual research; Bakery retains its paper utility label.
+- Pac-Man, Battle Tank, Lode Runner, and ตุ่มเงิน carry local source-derived WebP stickers; Bakery and PDF Password Remover retain paper utility labels.
 - The App room uses a light Pantip Plaza 1990s software-floor visual language: pale retail wall, perforated metal display board, LED signage, Windows 95-style search panel, and metal shelf edges.
 - The App header is branded **พันธุ์ทิพย์พลาซ่า** and uses the user-supplied Pantip Plaza logo at the upper-left instead of the former `3½` badge. Its long Thai LED shop message scrolls continuously from right to left at a restrained 28-second pace and changes red → green → yellow → blue on each completed loop.
 - The App LED is functional storefront signage, not decorative motion. `app-library.css` explicitly preserves its 28-second infinite animation even when the browser reports `prefers-reduced-motion: reduce`; this narrowly overrides the shared decorative-animation reduction without changing other pages.
@@ -106,7 +107,7 @@ python scripts/build_gallery.py --check
 git diff --check
 ```
 
-Expected verified result at close: **82 tests passed**, all four generated pages current, and no diff-check errors.
+Expected verified result at close: **85 tests passed**, all four generated pages current, and no diff-check errors.
 
 ## Publication workflow
 
@@ -126,7 +127,7 @@ Expected verified result at close: **82 tests passed**, all four generated pages
 
 ## Next recommended step
 
-No implementation task is pending. The updated, byte-preserved replacement for **คู่มือ Hermes Agent Advance Computer Use** is published and production-verified. Future Reading/Audio/App publications remain approval-gated; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
+No implementation task is pending. The current approved publication contains Agent Reach Reading/Audio plus the Tumngern App; final remote/deployment evidence is recorded at session close. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
 
 ## Latest close checkpoint — 2026-08-27
 
@@ -147,6 +148,8 @@ No implementation task is pending. The updated, byte-preserved replacement for *
 - Production Gallery contains 5 artworks, including **Grok Bot: จุดที่ควรระวัง** dated 27/08/2026. Desktop and 390px mobile previews passed with no clipping, overlap, or horizontal overflow; Production catalog/title/date read-back passed and the artwork hash matched Local exactly.
 - Pre-share scan of all twelve changed/new files passed with no credentials, PII, private paths, or Drive IDs. The published artwork is a single-frame 1024×1280 RGB WebP with no EXIF.
 - Standing approval is active for qualifying original Gallery image uploads: preserve visible content, run all gates, then commit, push both Library remotes, publish, and production-verify automatically. All other collections and operations remain approval-gated.
+- Current approved local verification passed **85 tests** with Reading 24, Audio 50, App 6, and Gallery 5; all generators are current and `git diff --check` passes.
+- Current pre-share scan covered 33 changed/new files: no credential, private key, private local path, Drive ID, or image EXIF/ICC was found. Tumngern retains one owner-published contact Email from its Public upstream; this intentional public contact is documented in `docs/reports/APP_IMPORT_SOURCE_AUDIT.md`.
 - No Library QA server, Studio browser, headless browser, or render process remains running.
 - The only untracked working-tree path is local private `.hermes/`; never stage or push it.
 

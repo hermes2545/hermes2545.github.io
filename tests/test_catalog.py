@@ -38,7 +38,7 @@ class CatalogTests(unittest.TestCase):
     def test_required_fields_and_unique_ids_and_links(self):
         required = {"id", "title", "short_title", "href", "cover", "category", "summary", "accent", "published_at"}
         self.assertTrue(self.books)
-        self.assertEqual(len(self.books), 23)
+        self.assertEqual(len(self.books), 24)
         self.assertEqual(len({book["id"] for book in self.books}), len(self.books))
         self.assertEqual(len({book["href"] for book in self.books}), len(self.books))
         for book in self.books:
@@ -48,7 +48,7 @@ class CatalogTests(unittest.TestCase):
             self.assertRegex(book["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
 
     def test_every_reading_book_uses_an_approved_custom_cover(self):
-        self.assertEqual(len(self.books), 23)
+        self.assertEqual(len(self.books), 24)
         for book in self.books:
             self.assertEqual(book["cover"], f'assets/covers/custom/{book["id"]}.webp')
             self.assertEqual(Path(book["cover"]).suffix, ".webp")
@@ -97,6 +97,7 @@ class CatalogTests(unittest.TestCase):
             "claude-prompt-caching": "Claude Prompt Caching",
             "grok-bot-vs-claude-codex": "Grok Bot vs Claude Code vs Codex",
             "hermes-agent-advance-computer-use": "คู่มือ Hermes Agent Advance Computer Use",
+            "agent-reach-thai-guide": "Agent Reach คู่มือฉบับไทย",
         }
         actual = {book["id"]: book["short_title"] for book in self.books}
         self.assertEqual(actual, expected)
@@ -275,6 +276,37 @@ class CatalogTests(unittest.TestCase):
 
         markdown_source = ROOT / "docs" / "guides" / "HERMES_AGENT_ADVANCE_COMPUTER_USE_TH.md"
         self.assertTrue(markdown_source.is_file())
+        cover = ROOT / book["cover"]
+        self.assertTrue(cover.is_file())
+        with Image.open(cover) as image:
+            self.assertEqual(image.format, "WEBP")
+            self.assertEqual(image.size, (600, 900))
+            self.assertEqual(image.mode, "RGB")
+            self.assertEqual(len(image.getexif()), 0)
+
+    def test_agent_reach_thai_guide_is_catalogued_byte_for_byte(self):
+        matches = [book for book in self.books if book["id"] == "agent-reach-thai-guide"]
+        self.assertEqual(len(matches), 1)
+        book = matches[0]
+        self.assertEqual(book["title"], "Agent Reach คู่มือฉบับไทย — ให้ AI Agent มองเห็นทั้งอินเทอร์เน็ต")
+        self.assertEqual(book["short_title"], "Agent Reach คู่มือฉบับไทย")
+        self.assertEqual(book["href"], "AgentReach_Thai_Guide.html")
+        self.assertEqual(book["cover"], "assets/covers/custom/agent-reach-thai-guide.webp")
+        self.assertEqual(book["category"], "AI Research Tools")
+        self.assertEqual(book["published_at"], "2026-08-27T18:45:37+07:00")
+
+        source = ROOT / book["href"]
+        self.assertTrue(source.is_file())
+        source_text = source.read_text(encoding="utf-8")
+        self.assertEqual(
+            hashlib.sha256(source.read_bytes()).hexdigest(),
+            "e3c92f5eafafdf8b498a593fc825f11c1f2bb78cb479a6d6e94ea436bd1bad90",
+        )
+        self.assertEqual(source_text.count('<section class="sec'), 10)
+        self.assertEqual(source_text.count('class="nav-item"'), 10)
+        for marker in ("localStorage", "@media(max-width:1000px)", "navigator.clipboard", "Agent Reach คู่มือฉบับไทย"):
+            self.assertIn(marker, source_text)
+
         cover = ROOT / book["cover"]
         self.assertTrue(cover.is_file())
         with Image.open(cover) as image:

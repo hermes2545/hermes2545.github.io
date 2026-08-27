@@ -16,18 +16,18 @@ class AppLibraryTests(unittest.TestCase):
         self.apps = load_apps(CATALOG)
         self.page = render_app_library(self.apps)
 
-    def test_catalog_has_five_unique_apps_with_required_metadata(self):
+    def test_catalog_has_six_unique_apps_with_required_metadata(self):
         required = {
             "id", "title", "short_title", "href", "category", "summary",
             "published_at", "source_repository", "source_commit", "source_sha256",
             "import_mode", "sticker", "label",
         }
-        self.assertEqual(len(self.apps), 5)
+        self.assertEqual(len(self.apps), 6)
         self.assertEqual(
             {app["id"] for app in self.apps},
-            {"battle-tank", "bakery-center", "loderunner", "pacman", "pdf-password-remover"},
+            {"battle-tank", "bakery-center", "loderunner", "pacman", "pdf-password-remover", "tumngern"},
         )
-        self.assertEqual(len({app["href"] for app in self.apps}), 5)
+        self.assertEqual(len({app["href"] for app in self.apps}), 6)
         for app in self.apps:
             self.assertTrue(required <= app.keys(), app)
             self.assertRegex(app["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
@@ -75,6 +75,11 @@ class AppLibraryTests(unittest.TestCase):
                 "app/pdf-password-remover.html",
                 None,
                 None,
+            ),
+            "tumngern": (
+                "app/tumngern.html",
+                "https://github.com/p2544/tumngern",
+                "fa43333cf0e73a2d2812e326644f0b9c960852da",
             ),
         }
         actual = {app["id"]: app for app in self.apps}
@@ -130,6 +135,39 @@ class AppLibraryTests(unittest.TestCase):
         self.assertIn("passwords stay in page memory only", source.lower())
         self.assertNotIn("pdf-remover.password", source)
 
+    def test_tumngern_preserves_runtime_with_only_library_path_adjustments(self):
+        matches = [app for app in self.apps if app["id"] == "tumngern"]
+        self.assertEqual(len(matches), 1)
+        app = matches[0]
+        runtime = ROOT / "app" / "tumngern"
+        launcher = (ROOT / app["href"]).read_text(encoding="utf-8")
+        source = (runtime / "index.html").read_text(encoding="utf-8")
+        manifest = (runtime / "manifest.webmanifest").read_text(encoding="utf-8")
+        bundle = runtime / "assets" / "index-Ceo_ISap.js"
+
+        self.assertEqual(app["import_mode"], "path-adjusted-derivative")
+        self.assertEqual(app["source_sha256"], "fff943118e976ff86536bfcb54824cceb246200a35f43b2fe839231aa305fbf8")
+        self.assertIn('location.replace("tumngern/index.html")', launcher)
+        self.assertIn("/app/tumngern/", source)
+        self.assertNotIn('href="/tumngern/', source)
+        self.assertIn('"start_url":"/app/tumngern/"', manifest)
+        self.assertIn('"scope":"/app/tumngern/"', manifest)
+        for required in (
+            "registerSW.js", "sw.js", "workbox-9c191d2f.js", "favicon.png",
+            "apple-touch-icon.png", "icons/icon-192.png", "icons/icon-512.png",
+            "assets/index-yeERhZb2.css", "assets/jar-base-CpTyooRN.png",
+        ):
+            self.assertTrue((runtime / required).is_file(), required)
+        bundle_text = bundle.read_text(encoding="utf-8")
+        self.assertNotEqual(
+            hashlib.sha256(bundle.read_bytes()).hexdigest(),
+            "70d4f37f138b1f77d4cdd7766e6ed452e864c8f8fc673ed1de3215e72d9eed1d",
+        )
+        self.assertNotIn("`/tumngern/", bundle_text)
+        self.assertIn("/app/tumngern/assets/splash-5qKAe-81.jpg", bundle_text)
+        self.assertIn("tumngern:sync-server", bundle_text)
+        self.assertIn("ยังไม่ได้เข้ารหัสแบบ end-to-end", bundle_text)
+
     def test_loderunner_keeps_upstream_runtime_unchanged_behind_stable_wrapper(self):
         wrapper = (ROOT / "app" / "loderunner.html").read_text(encoding="utf-8")
         runtime = ROOT / "app" / "loderunner" / "lodeRunner.html"
@@ -175,14 +213,14 @@ class AppLibraryTests(unittest.TestCase):
             self.assertFalse((ROOT / "assets" / "app-stickers" / f"{app_id}.webp").exists(), app_id)
 
     def test_page_renders_each_app_as_a_three_and_half_inch_diskette(self):
-        self.assertEqual(self.page.count('class="app-card"'), 5)
-        self.assertEqual(self.page.count('class="diskette"'), 5)
-        self.assertEqual(self.page.count('class="diskette-shutter"'), 5)
-        self.assertEqual(self.page.count('class="diskette-label'), 5)
-        self.assertEqual(self.page.count('class="diskette-hub"'), 5)
-        self.assertEqual(self.page.count('class="diskette-sticker"'), 3)
-        self.assertEqual(self.page.count('target="_blank"'), 5)
-        self.assertEqual(self.page.count('rel="noopener"'), 5)
+        self.assertEqual(self.page.count('class="app-card"'), 6)
+        self.assertEqual(self.page.count('class="diskette"'), 6)
+        self.assertEqual(self.page.count('class="diskette-shutter"'), 6)
+        self.assertEqual(self.page.count('class="diskette-label'), 6)
+        self.assertEqual(self.page.count('class="diskette-hub"'), 6)
+        self.assertEqual(self.page.count('class="diskette-sticker"'), 4)
+        self.assertEqual(self.page.count('target="_blank"'), 6)
+        self.assertEqual(self.page.count('rel="noopener"'), 6)
         for app in self.apps:
             self.assertEqual(self.page.count(f'href="{app["href"]}"'), 1)
             self.assertIn(html.escape(app["short_title"]), self.page)
