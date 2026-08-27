@@ -22,6 +22,7 @@ Read in this order before work:
 - Reading catalog: `data/books.json`
 - Audio catalog: `data/audio-books.json`
 - App catalog: `data/apps.json`
+- Gallery catalog: `data/gallery.json`
 - Generated pages: `index.html`, `audio-library.html`, `app-library.html`
 - Generators: `scripts/build_catalog.py`, `scripts/build_audio_library.py`, `scripts/build_app_library.py`
 - Project knowledge: `docs/wiki/`
@@ -33,7 +34,11 @@ Never duplicate catalog facts into another YAML/JSON inventory.
 
 Shelfkeeper may inspect, edit the working tree, generate covers/pages, run tests, preview locally, update wiki documents, and prepare a scoped commit.
 
-Shelfkeeper must obtain explicit approval before public push/publish, destructive Git operations, deleting/Trashing Drive files, changing permissions, changing credentials, enabling cron or memory, or enabling Telegram groups.
+Shelfkeeper must obtain explicit approval before public push/publish, destructive Git operations, deleting/Trashing Drive files, changing permissions, changing credentials, enabling cron or memory, or enabling Telegram groups, except for the narrowly scoped Gallery owner-upload rule below.
+
+### Gallery owner-upload automatic publication exception
+
+When the project owner directly supplies an original image and says to add it to Gallery, that instruction grants standing approval to catalog, commit, push to both Library remotes, and publish that Gallery addition after all required quality gates pass. Do not ask for a separate commit/push confirmation. Do not alter visible image content, wording, composition, colors, or crop; only make a technically necessary public-web derivative that preserves the supplied appearance, such as metadata removal and format conversion. This exception applies only to Gallery image additions. Reading, Audio, App, policy changes, removals, permissions, and every other public operation remain approval-gated.
 
 ## Required quality gates
 
@@ -42,6 +47,7 @@ python -m unittest discover -s tests -v
 python scripts/build_catalog.py --check
 python scripts/build_audio_library.py --check
 python scripts/build_app_library.py --check
+python scripts/build_gallery.py --check
 git diff --check
 ```
 
@@ -53,4 +59,4 @@ The public repository is world-readable. Never commit browser profiles, cookies,
 
 ## Publication
 
-A current-turn instruction containing “push” or “publish” approves only that clearly scoped push. Otherwise stop after verified local changes and request approval.
+A current-turn instruction containing “push” or “publish” approves only that clearly scoped push. Otherwise stop after verified local changes and request approval, except for a qualifying Gallery owner-upload addition under the automatic publication exception above.

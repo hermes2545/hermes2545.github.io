@@ -38,5 +38,15 @@
     "image": "assets/gallery/artworks/12-grok-bot-cautions-and-limitations.webp",
     "alt": "อินโฟกราฟิกภาษาไทยสรุปจุดที่ต้องระวังและข้อจำกัดของ Grok Bot ได้แก่ Shared Cloud Computer ข้อมูลตกค้าง การอนุมัติสิทธิ์ ความเป็นส่วนตัวของ Cursor และข้อจำกัดของแพ็กเกจ",
     "featured_order": 4
+  },
+  {
+    "id": "grok-bot-security-boundaries",
+    "title": "Grok Bot: จุดที่ควรระวัง",
+    "category": "Security",
+    "format": "4:5",
+    "published_at": "2026-08-27",
+    "image": "assets/gallery/artworks/13-grok-bot-security-boundaries.webp",
+    "alt": "อินโฟกราฟิกภาษาไทยอธิบายขอบเขตด้านความปลอดภัยของ Grok Bot ครอบคลุมไฟล์ เซสชันเบราว์เซอร์ การล็อกอิน คอนเนคเตอร์ การแชร์คลาวด์ การอนุมัติ และความเป็นส่วนตัว",
+    "featured_order": 5
   }
 ]

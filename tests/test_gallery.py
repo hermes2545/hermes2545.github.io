@@ -16,12 +16,12 @@ class GalleryTests(unittest.TestCase):
         self.items = load_gallery(CATALOG)
         self.page = render_gallery(self.items)
 
-    def test_catalog_has_only_four_user_supplied_records(self):
+    def test_catalog_has_only_five_user_supplied_records(self):
         required = {
             "id", "title", "category", "format", "published_at",
             "image", "alt", "featured_order",
         }
-        self.assertEqual(len(self.items), 4)
+        self.assertEqual(len(self.items), 5)
         self.assertEqual(
             {item["id"] for item in self.items},
             {
@@ -29,10 +29,11 @@ class GalleryTests(unittest.TestCase):
                 "ai-agent-web-access-barriers",
                 "hermes-agent-v0-20-herald-release",
                 "grok-bot-cautions-and-limitations",
+                "grok-bot-security-boundaries",
             },
         )
         self.assertEqual({item["category"] for item in self.items}, {"Security", "Development"})
-        self.assertEqual({item["featured_order"] for item in self.items}, {1, 2, 3, 4})
+        self.assertEqual({item["featured_order"] for item in self.items}, {1, 2, 3, 4, 5})
         for item in self.items:
             self.assertEqual(set(item), required, item)
             self.assertRegex(item["published_at"], r"^\d{4}-\d{2}-\d{2}$")
@@ -69,21 +70,29 @@ class GalleryTests(unittest.TestCase):
                 "4:5",
                 "assets/gallery/artworks/12-grok-bot-cautions-and-limitations.webp",
             ),
+            (
+                "grok-bot-security-boundaries",
+                "Grok Bot: จุดที่ควรระวัง",
+                "Security",
+                "4:5",
+                "assets/gallery/artworks/13-grok-bot-security-boundaries.webp",
+            ),
         )
-        expected_dates = ("2026-08-26", "2026-08-26", "2026-08-04", "2026-08-27")
-        for item, values, published_at in zip(self.items[:4], expected, expected_dates):
+        expected_dates = ("2026-08-26", "2026-08-26", "2026-08-04", "2026-08-27", "2026-08-27")
+        for item, values, published_at in zip(self.items[:5], expected, expected_dates):
             self.assertEqual(
                 (item["id"], item["title"], item["category"], item["format"], item["image"]),
                 values,
             )
             self.assertEqual(item["published_at"], published_at)
 
-    def test_catalog_images_are_four_user_supplied_webps_and_examples_are_absent(self):
+    def test_catalog_images_are_five_user_supplied_webps_and_examples_are_absent(self):
         expected_sizes = {
             "09-hermes-home-assistant.webp": (906, 1280),
             "10-ai-agent-web-access-barriers.webp": (1280, 720),
             "11-hermes-agent-v0-20-herald-release.webp": (905, 1280),
             "12-grok-bot-cautions-and-limitations.webp": (1024, 1280),
+            "13-grok-bot-security-boundaries.webp": (1024, 1280),
         }
         self.assertEqual({Path(item["image"]).name for item in self.items}, set(expected_sizes))
         for item in self.items:

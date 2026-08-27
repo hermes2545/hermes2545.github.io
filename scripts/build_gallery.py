@@ -19,6 +19,7 @@ IMAGE_SIZES = {
     "10-ai-agent-web-access-barriers.webp": (1280, 720),
     "11-hermes-agent-v0-20-herald-release.webp": (905, 1280),
     "12-grok-bot-cautions-and-limitations.webp": (1024, 1280),
+    "13-grok-bot-security-boundaries.webp": (1024, 1280),
 }
 CATEGORY_ORDER = ("AI", "Data", "Security", "Development")
 

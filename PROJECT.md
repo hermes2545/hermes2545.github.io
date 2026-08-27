@@ -26,6 +26,7 @@ Maintain a public static library of practical guides, audio content, browser app
 - Audio collection uses `data/audio-books.json`.
 - App catalog uses `data/apps.json`; source runtimes live under `app/` and the generated shelf is `app-library.html`.
 - Gallery catalog uses `data/gallery.json`; approved local artwork lives under `assets/gallery/` and the generated page is `gallery.html`.
+- Owner-supplied original Gallery images carry standing approval for cataloguing, scoped commit, push to both Library remotes, and publication after full quality gates. Shelfkeeper must preserve visible image content and may only make a technically necessary public-web derivative such as metadata removal and format conversion. This exception does not apply to Reading, Audio, App, removals, or any other public change.
 - Reading covers use individually designed 600×900 custom artwork under `assets/covers/custom/`; reproducible design sources live under `templates/`.
 - Audio covers use locally cached playlist thumbnails.
 - App shelf objects are 3.5-inch diskette designs whose labels reflect each program's content.
