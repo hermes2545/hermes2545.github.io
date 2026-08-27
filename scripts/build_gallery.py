@@ -17,6 +17,8 @@ OUTPUT_PATH = ROOT / "gallery.html"
 IMAGE_SIZES = {
     "09-hermes-home-assistant.webp": (906, 1280),
     "10-ai-agent-web-access-barriers.webp": (1280, 720),
+    "11-hermes-agent-v0-20-herald-release.webp": (905, 1280),
+    "12-grok-bot-cautions-and-limitations.webp": (1024, 1280),
 }
 CATEGORY_ORDER = ("AI", "Data", "Security", "Development")
 

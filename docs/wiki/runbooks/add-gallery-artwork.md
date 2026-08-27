@@ -11,6 +11,10 @@ tags: [library, gallery, artwork]
 
 # Add Gallery Artwork
 
+## Interpretation rule
+
+When the project owner says **“เอารูปเข้าแกลเลอรี”**, treat it as an instruction to add the supplied image to the Gallery catalog and generated page. Inspect the image only to derive safe catalog metadata and verify quality; do not answer with an image description instead of performing the catalog operation. If no publication date is supplied, use the date the artwork is added locally and report that assumption.
+
 1. Confirm the image is approved for public use and record public-safe attribution without local paths.
 2. Write a focused failing test for the stable ID, exact minimal catalog fields, local image path, dimensions, mode, and metadata.
 3. Place an EXIF-free local image under `assets/gallery/artworks/`; do not hotlink remote assets or copy private design sources.

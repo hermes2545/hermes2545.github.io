@@ -1,6 +1,6 @@
 # The Knowledge Shelf — Session Handoff
 
-**Updated:** 2026-08-26
+**Updated:** 2026-08-27
 
 **Public site:** https://hermes2545.github.io/
 
@@ -60,7 +60,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with f
 
 ### Gallery collection
 
-- 2 user/project-owner supplied EXIF-free WebP artworks are indexed from `data/gallery.json` and generated into `gallery.html`. The eight original prototype PNG examples were removed from the public catalog and assets at the user's request; their private design sources remain under `.hermes/` only.
+- 4 user/project-owner supplied EXIF-free WebP artworks are indexed from `data/gallery.json` and generated into `gallery.html`. The newest local addition by featured order is **Grok Bot: จุดที่ต้องระวังและข้อจำกัด**, dated 27 August 2026 and catalogued as Security/4:5; **Hermes Agent v0.20 (Herald Release)** retains its requested date of 4 August 2026. The eight original prototype PNG examples were removed from the public catalog and assets at the user's request; their private design sources remain under `.hermes/` only.
 - The hero is a user/project-owner supplied image converted locally to an EXIF-free 1280×559 RGB WebP at `assets/gallery/gallery-hero.webp`; public-safe attribution is recorded in `docs/reports/GALLERY_IMAGE_ATTRIBUTION.md`.
 - The page supports category filtering, Featured/Newest/Title sorting, grid/list views, and a modal lightbox with previous/next controls, arrow keys, Escape, and focus restoration.
 - The Gallery lightbox supports 100–400% zoom with −/+/reset controls, keyboard `+`/`-`/`0`, and clamped pointer panning for mouse, touch, and pen. Changing images and closing the viewer reset the viewport to 100%.
@@ -126,7 +126,7 @@ Expected verified result at close: **81 tests passed**, all four generated pages
 
 ## Next recommended step
 
-No implementation task is pending. Begin the next session by reading this handoff, checking Git/remote state, and continuing from the user's next Library request. Do not recreate or republish the completed Grok/Claude/Codex book or podcast unless explicitly asked.
+The Gallery additions **Hermes Agent v0.20 (Herald Release)** and **Grok Bot: จุดที่ต้องระวังและข้อจำกัด** are complete and verified locally but remain uncommitted and unpublished. Begin the next session by checking Git/remote state; do not push them without explicit approval. Do not recreate or republish the completed Grok/Claude/Codex book or podcast unless explicitly asked.
 
 ## Latest close checkpoint — 2026-08-27
 
@@ -137,8 +137,9 @@ No implementation task is pending. Begin the next session by reading this handof
 - The newest guide has 11 interactive views, 13 official sources, three embedded transparent logos, a 600×900 custom cover, and verified desktop/mobile navigation, search, theme, drawer, and overflow behavior.
 - YouTube podcast `VQdCzVNhTmI` is Public, Not made for kids, 20:23, published on **manny calavara**, uses the approved Tricolor Segment Bars video and approved title/description, and is verified in the exact `tech (Ai)` playlist.
 - Audio production contains 49 entries; `VQdCzVNhTmI` is playlist/catalog position 1 at `https://hermes2545.github.io/audio-library.html`.
-- Latest full verification: **81 tests passed**; Reading 22, Audio 49, App 5, Gallery 2; all generators current, project knowledge valid, production hashes matched Local, and Production runtime errors were 0.
-- Pre-share scan passed with no secrets, PII, private paths, Drive IDs, or staged `.hermes/` files.
+- Latest published full verification: **81 tests passed**; Reading 22, Audio 49, App 5, Gallery 2; all generators current, project knowledge valid, production hashes matched Local, and Production runtime errors were 0.
+- Local pending Gallery state: 4 artworks, including **Hermes Agent v0.20 (Herald Release)** dated 04/08/2026 and **Grok Bot: จุดที่ต้องระวังและข้อจำกัด** dated 27/08/2026; desktop and 390px mobile previews passed. Full close verification passed with **81 tests**, all four generators current, project knowledge valid, JavaScript syntax valid, and no diff-check errors.
+- Pre-share scan of all ten changed/new files passed with no credentials, PII, private paths, or Drive IDs. The two pending artwork files are single-frame RGB WebPs with no EXIF: 905×1280 and 1024×1280 respectively.
 - No Library QA server, Studio browser, headless browser, or render process remains running.
 - The only untracked working-tree path is local private `.hermes/`; never stage or push it.
 

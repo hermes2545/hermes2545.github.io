@@ -18,5 +18,25 @@
     "image": "assets/gallery/artworks/10-ai-agent-web-access-barriers.webp",
     "alt": "อินโฟกราฟิกอธิบายอุปสรรคที่ AI Agent และ Headless Browser พบเมื่อเข้าเว็บไซต์ พร้อมแนวทางเข้าถึงข้อมูลอย่างรับผิดชอบ",
     "featured_order": 2
+  },
+  {
+    "id": "hermes-agent-v0-20-herald-release",
+    "title": "Hermes Agent v0.20 (Herald Release)",
+    "category": "Development",
+    "format": "A4",
+    "published_at": "2026-08-04",
+    "image": "assets/gallery/artworks/11-hermes-agent-v0-20-herald-release.webp",
+    "alt": "อินโฟกราฟิกภาษาไทยสรุปฟีเจอร์ใหม่ของ Hermes Agent v0.20 Herald Release ทั้ง Open Line Engine, Voice Notes, A2A, Smart Approval และการปรับปรุงความเร็ว",
+    "featured_order": 3
+  },
+  {
+    "id": "grok-bot-cautions-and-limitations",
+    "title": "Grok Bot: จุดที่ต้องระวังและข้อจำกัด",
+    "category": "Security",
+    "format": "4:5",
+    "published_at": "2026-08-27",
+    "image": "assets/gallery/artworks/12-grok-bot-cautions-and-limitations.webp",
+    "alt": "อินโฟกราฟิกภาษาไทยสรุปจุดที่ต้องระวังและข้อจำกัดของ Grok Bot ได้แก่ Shared Cloud Computer ข้อมูลตกค้าง การอนุมัติสิทธิ์ ความเป็นส่วนตัวของ Cursor และข้อจำกัดของแพ็กเกจ",
+    "featured_order": 4
   }
 ]
