@@ -250,10 +250,12 @@ class CatalogTests(unittest.TestCase):
         source_text = source.read_text(encoding="utf-8")
         self.assertEqual(
             hashlib.sha256(source.read_bytes()).hexdigest(),
-            "d66393c8cb363376c8fc88754c3918de5978b1183a4bf5db3771d667f343f8f1",
+            "1ff59d838fc50843f964c71ab3757051b2eeabd5f0701fc515794ac00ddf9581",
         )
         self.assertEqual(source_text.count('<article class="panel'), 13)
         self.assertEqual(source_text.count('class="nav-btn'), 13)
+        self.assertEqual(source_text.count("data:image/jpeg;base64,"), 1)
+        self.assertIn('aria-label="Hermes Agent logo"', source_text)
         self.assertIn('id="sources"', source_text)
         for marker in (
             "hermes computer-use doctor",
