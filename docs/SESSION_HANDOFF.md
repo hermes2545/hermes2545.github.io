@@ -126,7 +126,21 @@ Expected verified result at close: **81 tests passed**, all four generated pages
 
 ## Next recommended step
 
-The Gallery implementation and the two user-supplied additions are locally verified and committed; request explicit approval before public push.
+No implementation task is pending. Begin the next session by reading this handoff, checking Git/remote state, and continuing from the user's next Library request. Do not recreate or republish the completed Grok/Claude/Codex book or podcast unless explicitly asked.
+
+## Latest close checkpoint — 2026-08-27
+
+- Production commit: `41c150d922dbb7ce901cfd265409033c1ffab9a8` (`Add Grok agent comparison book and podcast`).
+- Local `main`, public `origin/main`, and private `backup/main` are identical at that commit.
+- GitHub Pages deployment run `33048745008` completed successfully.
+- Reading production contains 22 books; the newest is **Grok Bot vs Claude Code vs Codex** at `https://hermes2545.github.io/grok-bot-vs-claude-code-vs-codex.html`.
+- The newest guide has 11 interactive views, 13 official sources, three embedded transparent logos, a 600×900 custom cover, and verified desktop/mobile navigation, search, theme, drawer, and overflow behavior.
+- YouTube podcast `VQdCzVNhTmI` is Public, Not made for kids, 20:23, published on **manny calavara**, uses the approved Tricolor Segment Bars video and approved title/description, and is verified in the exact `tech (Ai)` playlist.
+- Audio production contains 49 entries; `VQdCzVNhTmI` is playlist/catalog position 1 at `https://hermes2545.github.io/audio-library.html`.
+- Latest full verification: **81 tests passed**; Reading 22, Audio 49, App 5, Gallery 2; all generators current, project knowledge valid, production hashes matched Local, and Production runtime errors were 0.
+- Pre-share scan passed with no secrets, PII, private paths, Drive IDs, or staged `.hermes/` files.
+- No Library QA server, Studio browser, headless browser, or render process remains running.
+- The only untracked working-tree path is local private `.hermes/`; never stage or push it.
 
 ## Published artifact
 
