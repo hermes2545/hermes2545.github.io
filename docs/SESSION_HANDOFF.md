@@ -126,7 +126,7 @@ Expected verified result at close: **82 tests passed**, all four generated pages
 
 ## Next recommended step
 
-The Reading guide **คู่มือ Hermes Agent Advance Computer Use** is complete and verified locally but remains uncommitted and unpublished. It is not covered by the Gallery automatic-publication exception; obtain explicit approval before commit/push. Future qualifying original Gallery image uploads remain auto-publishable after full quality gates.
+No implementation task is pending. **คู่มือ Hermes Agent Advance Computer Use** is published and production-verified. Future Reading/Audio/App publications still require explicit approval; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
 
 ## Latest close checkpoint — 2026-08-27
 
@@ -138,9 +138,10 @@ The Reading guide **คู่มือ Hermes Agent Advance Computer Use** is co
 - YouTube podcast `VQdCzVNhTmI` is Public, Not made for kids, 20:23, published on **manny calavara**, uses the approved Tricolor Segment Bars video and approved title/description, and is verified in the exact `tech (Ai)` playlist.
 - Audio production contains 49 entries; `VQdCzVNhTmI` is playlist/catalog position 1 at `https://hermes2545.github.io/audio-library.html`.
 - Latest Gallery content/policy commit: `129a98113e537223a61dc01b44465172e808505e` (`Add Grok Bot Gallery safety infographic`). Public and private remote HEADs matched at this commit; GitHub Pages deployment `33056751785` succeeded.
-- Latest published full verification: **81 tests passed**; Reading 22, Audio 49, App 5, Gallery 5; all generators current and project knowledge valid.
-- Local pending Reading state: 23 books with **คู่มือ Hermes Agent Advance Computer Use** first/newest at 27/08/2026. Full verification passed with **82 tests**; all generators current, project knowledge valid, inline JavaScript syntax valid, desktop/mobile visuals passed, interactive CDP checks passed, and no diff-check errors.
-- The new manual has 13 panels, 13 matching navigation items, 15 HTTPS references, zero conversational `ค่ะ` tokens, no local absolute paths, and SHA-256 `d66393c8cb363376c8fc88754c3918de5978b1183a4bf5db3771d667f343f8f1`, matching the supplied HTML exactly. Its final owner-supplied cover is an EXIF-free 600×900 RGB WebP. Pre-share, official-link, JavaScript, interaction, and visual verification passed.
+- Latest published full verification: **82 tests passed**; Reading 23, Audio 49, App 5, Gallery 5; all generators current and project knowledge valid.
+- Reading publication commit: `4b6f48054d3555ab6a9ae96b7de4260c3ebcc96f` (`Add Hermes advanced computer use guide`). Public and private remote HEADs matched; GitHub Pages deployment `33061438459` succeeded.
+- Production Reading contains 23 books with **คู่มือ Hermes Agent Advance Computer Use** first/newest at 27/08/2026. Full verification passed with **82 tests**; all generators current, project knowledge valid, inline JavaScript syntax valid, desktop/mobile visuals passed, interactive CDP checks passed, and no diff-check errors.
+- The new manual has 13 panels, 13 matching navigation items, 15 HTTPS references, zero conversational `ค่ะ` tokens, no local absolute paths, and SHA-256 `d66393c8cb363376c8fc88754c3918de5978b1183a4bf5db3771d667f343f8f1`, matching both the supplied HTML and Production exactly. Its final owner-supplied cover is an EXIF-free 600×900 RGB WebP whose Production hash also matched Local. Pre-share, official-link, JavaScript, interaction, visual, and Production DOM verification passed.
 - Production Gallery contains 5 artworks, including **Grok Bot: จุดที่ควรระวัง** dated 27/08/2026. Desktop and 390px mobile previews passed with no clipping, overlap, or horizontal overflow; Production catalog/title/date read-back passed and the artwork hash matched Local exactly.
 - Pre-share scan of all twelve changed/new files passed with no credentials, PII, private paths, or Drive IDs. The published artwork is a single-frame 1024×1280 RGB WebP with no EXIF.
 - Standing approval is active for qualifying original Gallery image uploads: preserve visible content, run all gates, then commit, push both Library remotes, publish, and production-verify automatically. All other collections and operations remain approval-gated.
