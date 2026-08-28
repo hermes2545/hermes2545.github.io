@@ -21,6 +21,8 @@ IMAGE_SIZES = {
     "12-grok-bot-cautions-and-limitations.webp": (1024, 1280),
     "13-grok-bot-security-boundaries.webp": (1024, 1280),
     "14-personal-infrastructure-wiki.webp": (1280, 720),
+    "15-claude-skills-plugin-connector.webp": (1280, 720),
+    "16-grok-bot-memory-project-computer.webp": (1280, 722),
 }
 CATEGORY_ORDER = ("AI", "Data", "Security", "Development", "Infrastructure")
 

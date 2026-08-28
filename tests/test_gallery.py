@@ -16,12 +16,12 @@ class GalleryTests(unittest.TestCase):
         self.items = load_gallery(CATALOG)
         self.page = render_gallery(self.items)
 
-    def test_catalog_has_only_six_user_supplied_records(self):
+    def test_catalog_has_only_eight_user_supplied_records(self):
         required = {
             "id", "title", "category", "format", "published_at",
             "image", "alt", "featured_order",
         }
-        self.assertEqual(len(self.items), 6)
+        self.assertEqual(len(self.items), 8)
         self.assertEqual(
             {item["id"] for item in self.items},
             {
@@ -31,10 +31,12 @@ class GalleryTests(unittest.TestCase):
                 "grok-bot-cautions-and-limitations",
                 "grok-bot-security-boundaries",
                 "personal-infrastructure-wiki",
+                "claude-skills-plugin-connector",
+                "grok-bot-memory-project-computer",
             },
         )
-        self.assertEqual({item["category"] for item in self.items}, {"Security", "Development", "Infrastructure"})
-        self.assertEqual({item["featured_order"] for item in self.items}, {1, 2, 3, 4, 5, 6})
+        self.assertEqual({item["category"] for item in self.items}, {"AI", "Security", "Development", "Infrastructure"})
+        self.assertEqual({item["featured_order"] for item in self.items}, {1, 2, 3, 4, 5, 6, 7, 8})
         for item in self.items:
             self.assertEqual(set(item), required, item)
             self.assertRegex(item["published_at"], r"^\d{4}-\d{2}-\d{2}$")
@@ -85,16 +87,30 @@ class GalleryTests(unittest.TestCase):
                 "16:9",
                 "assets/gallery/artworks/14-personal-infrastructure-wiki.webp",
             ),
+            (
+                "claude-skills-plugin-connector",
+                "Skills vs Plugin vs Connector ใน Claude",
+                "AI",
+                "16:9",
+                "assets/gallery/artworks/15-claude-skills-plugin-connector.webp",
+            ),
+            (
+                "grok-bot-memory-project-computer",
+                "ระบบ Memory, Project และ Computer ของ Grok Bot",
+                "AI",
+                "16:9",
+                "assets/gallery/artworks/16-grok-bot-memory-project-computer.webp",
+            ),
         )
-        expected_dates = ("2026-08-26", "2026-08-26", "2026-08-04", "2026-08-27", "2026-08-27", "2026-08-28")
-        for item, values, published_at in zip(self.items[:6], expected, expected_dates):
+        expected_dates = ("2026-08-26", "2026-08-26", "2026-08-04", "2026-08-27", "2026-08-27", "2026-08-28", "2026-08-28", "2026-08-28")
+        for item, values, published_at in zip(self.items[:8], expected, expected_dates):
             self.assertEqual(
                 (item["id"], item["title"], item["category"], item["format"], item["image"]),
                 values,
             )
             self.assertEqual(item["published_at"], published_at)
 
-    def test_catalog_images_are_six_user_supplied_webps_and_examples_are_absent(self):
+    def test_catalog_images_are_eight_user_supplied_webps_and_examples_are_absent(self):
         expected_sizes = {
             "09-hermes-home-assistant.webp": (906, 1280),
             "10-ai-agent-web-access-barriers.webp": (1280, 720),
@@ -102,6 +118,8 @@ class GalleryTests(unittest.TestCase):
             "12-grok-bot-cautions-and-limitations.webp": (1024, 1280),
             "13-grok-bot-security-boundaries.webp": (1024, 1280),
             "14-personal-infrastructure-wiki.webp": (1280, 720),
+            "15-claude-skills-plugin-connector.webp": (1280, 720),
+            "16-grok-bot-memory-project-computer.webp": (1280, 722),
         }
         self.assertEqual({Path(item["image"]).name for item in self.items}, set(expected_sizes))
         for item in self.items:
@@ -148,6 +166,7 @@ class GalleryTests(unittest.TestCase):
             'class="skip-link"',
             'aria-live="polite"',
             'data-filter="All"',
+            'data-filter="AI"',
             'data-filter="Infrastructure"',
             'id="gallery-sort"',
             'id="grid-view"',

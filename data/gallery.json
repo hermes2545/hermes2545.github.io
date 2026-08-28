@@ -58,5 +58,25 @@
     "image": "assets/gallery/artworks/14-personal-infrastructure-wiki.webp",
     "alt": "อินโฟกราฟิก Personal Infrastructure Wiki แสดงแผนที่ความรู้ที่ AI อ่านได้สำหรับ HomeOps และ Homelab ครอบคลุม Short Memory, Markdown Wiki, YAML Inventory, Runbooks, ระบบเครือข่าย การสำรองข้อมูล Observability และ Security",
     "featured_order": 6
+  },
+  {
+    "id": "claude-skills-plugin-connector",
+    "title": "Skills vs Plugin vs Connector ใน Claude",
+    "category": "AI",
+    "format": "16:9",
+    "published_at": "2026-08-28",
+    "image": "assets/gallery/artworks/15-claude-skills-plugin-connector.webp",
+    "alt": "อินโฟกราฟิกภาษาไทยเปรียบเทียบ Skills, Plugin และ Connector ใน Claude โดยอธิบายว่า Skill กำหนดวิธีทำงาน Plugin ลงมือทำหรือเปลี่ยนแปลง และ Connector อ่านหรือเข้าถึงข้อมูล พร้อมตัวอย่างการใช้ทั้งสามอย่างร่วมกัน",
+    "featured_order": 7
+  },
+  {
+    "id": "grok-bot-memory-project-computer",
+    "title": "ระบบ Memory, Project และ Computer ของ Grok Bot",
+    "category": "AI",
+    "format": "16:9",
+    "published_at": "2026-08-28",
+    "image": "assets/gallery/artworks/16-grok-bot-memory-project-computer.webp",
+    "alt": "อินโฟกราฟิกภาษาไทยอธิบายระบบ Memory, Project และ Computer ของ Grok Bot ทั้งความจำกลาง ความจำแยกของแต่ละบอต การ JOIN โปรเจกต์ โฟลเดอร์และเดสก์ท็อปร่วม รวมถึง GitHub และเว็บที่รันแล้ว",
+    "featured_order": 8
   }
 ]
