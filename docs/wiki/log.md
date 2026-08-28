@@ -92,3 +92,7 @@ tags: [library, changelog]
 - Added the owner-supplied **Agent Reach คู่มือฉบับไทย** as the 24th Reading entry. Preserved the 170,001-byte HTML byte-for-byte at SHA-256 `e3c92f5e…`, normalized the supplied portrait artwork only to an EXIF-free 600×900 RGB WebP, and verified 10 responsive sections/navigation items plus desktop/mobile behavior.
 - Added **ตุ่มเงิน** from `p2544/tumngern` commit `fa43333` as the sixth App entry with the owner-requested date 30 July 2026. Imported the runtime under `app/tumngern/` as a path-adjusted derivative, retained source provenance, fixed all PWA/splash base paths, and verified splash/onboarding at 1440px and 390px with all assets returning 200 and no runtime exceptions.
 - Published the Agent Reach Reading/Audio additions and **ตุ่มเงิน** App in commit `9ad661f`; public/private remote HEADs matched, GitHub Pages deployment `33070600654` succeeded, Production rendered Reading 24 / Audio 50 / App 6, all nine sampled Production artifact hashes matched Local, and live Tumngern mobile runtime loaded every PWA resource with HTTP 200 and no exceptions or overflow.
+
+## 2026-08-28
+
+- Added the owner-supplied **Personal Infrastructure Wiki** infographic to Gallery as Infrastructure/16:9 using the local-addition date **28 August 2026**. Converted the 1280×720 JPEG through its embedded color profile to a lossless sRGB WebP without cropping or visible edits, removed EXIF/ICC metadata, added the Infrastructure filter, and verified the six-artwork Gallery on desktop and 390px mobile.

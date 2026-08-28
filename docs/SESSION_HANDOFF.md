@@ -1,6 +1,6 @@
 # The Knowledge Shelf — Session Handoff
 
-**Updated:** 2026-08-27
+**Updated:** 2026-08-28
 
 **Public site:** https://hermes2545.github.io/
 
@@ -61,7 +61,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with f
 
 ### Gallery collection
 
-- 5 user/project-owner supplied EXIF-free WebP artworks are indexed from `data/gallery.json` and generated into `gallery.html`. The newest published addition by featured order is **Grok Bot: จุดที่ควรระวัง**, dated 27 August 2026 and catalogued as Security/4:5. The eight original prototype PNG examples were removed from the public catalog and assets at the user's request; their private design sources remain under `.hermes/` only.
+- 6 user/project-owner supplied EXIF-free WebP artworks are indexed from `data/gallery.json` and generated into `gallery.html`. The newest addition by date is **Personal Infrastructure Wiki**, dated 28 August 2026 and catalogued as Infrastructure/16:9 at featured order 6. The eight original prototype PNG examples were removed from the public catalog and assets at the user's request; their private design sources remain under `.hermes/` only.
 - The hero is a user/project-owner supplied image converted locally to an EXIF-free 1280×559 RGB WebP at `assets/gallery/gallery-hero.webp`; public-safe attribution is recorded in `docs/reports/GALLERY_IMAGE_ATTRIBUTION.md`.
 - The page supports category filtering, Featured/Newest/Title sorting, grid/list views, and a modal lightbox with previous/next controls, arrow keys, Escape, and focus restoration.
 - The Gallery lightbox supports 100–400% zoom with −/+/reset controls, keyboard `+`/`-`/`0`, and clamped pointer panning for mouse, touch, and pen. Changing images and closing the viewer reset the viewport to 100%.

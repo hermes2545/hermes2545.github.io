@@ -48,5 +48,15 @@
     "image": "assets/gallery/artworks/13-grok-bot-security-boundaries.webp",
     "alt": "อินโฟกราฟิกภาษาไทยอธิบายขอบเขตด้านความปลอดภัยของ Grok Bot ครอบคลุมไฟล์ เซสชันเบราว์เซอร์ การล็อกอิน คอนเนคเตอร์ การแชร์คลาวด์ การอนุมัติ และความเป็นส่วนตัว",
     "featured_order": 5
+  },
+  {
+    "id": "personal-infrastructure-wiki",
+    "title": "Personal Infrastructure Wiki",
+    "category": "Infrastructure",
+    "format": "16:9",
+    "published_at": "2026-08-28",
+    "image": "assets/gallery/artworks/14-personal-infrastructure-wiki.webp",
+    "alt": "อินโฟกราฟิก Personal Infrastructure Wiki แสดงแผนที่ความรู้ที่ AI อ่านได้สำหรับ HomeOps และ Homelab ครอบคลุม Short Memory, Markdown Wiki, YAML Inventory, Runbooks, ระบบเครือข่าย การสำรองข้อมูล Observability และ Security",
+    "featured_order": 6
   }
 ]
