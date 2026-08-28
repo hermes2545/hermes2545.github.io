@@ -1,6 +1,6 @@
 # The Knowledge Shelf — Session Handoff
 
-**Updated:** 2026-08-28
+**Updated:** 2026-08-29
 
 **Public site:** https://hermes2545.github.io/
 
@@ -33,15 +33,15 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with f
 
 ### Audio collection
 
-- 51 YouTube entries indexed from `data/audio-books.json`; the newest is **Alex Finn: ใช้ Grok Bot คุมกองทัพ AI ให้บริหารงานแทนเรา** (`oe3zUOLrLF4`). It is Public, Not made for kids, 12:33, 1080p30, uses the approved no-panel Edge Ladder Spectrum and custom thumbnail, and is verified at position 1 in the exact `tech (Ai)` playlist. Female speech drives the Magenta/Violet top-left equalizer and male speech drives the Electric Blue/Cyan bottom-right equalizer. The original Hermes podcast `KtHYNnLM_Dk` remains Unlisted and is not referenced by the active catalog.
+- 52 YouTube entries indexed from `data/audio-books.json`; the newest is **Grok AI ทางลัดสำหรับมือใหม่: ต่างจาก Claude, ChatGPT และ DeepSeek อย่างไร?** (`YivD8OO85TM`). It is Public, Not made for kids, 18:47, 1080p30, uses the approved Glass Spectrum Equalizer and owner-supplied custom thumbnail, includes five verified source URLs, and is verified at position 1 in the exact Public `tech (Ai)` playlist. Female speech drives the Purple/Pink left equalizer and male speech drives the Green/Cyan right equalizer. The original Hermes podcast `KtHYNnLM_Dk` remains Unlisted and is not referenced by the active catalog.
 - Newest publication appears at the upper-left.
 - Local thumbnail assets are stored under `assets/audio-covers/`.
 - Each audio item uses a large iPod-style device at the existing book footprint: a full 4:3 thumbnail screen above a click wheel, with duration at the upper-right of the lower control panel and a PLAY label below.
 - Audio titles no longer show the redundant `AUDIO BOOK` kicker.
 - Each item and the playlist button open YouTube in a new tab.
 - The Audio room uses a light premium technology-retail theme inspired by Apple Fifth Avenue's architectural materials: a luminous glass-cube mark, circular skylights, pale stone/off-white terrazzo surfaces, stainless-steel details, translucent dark navigation, and maple display tables. Apple Blue is reserved for interactive controls.
-- The Audio room now uses the selected **Option 3** photograph of the Apple Fifth Avenue retail floor as a local 1600×1200 wallpaper. Navigation, header, search/tools, the full bookshelf wall, and shelf planks use Audio-scoped iOS-style Liquid Glass surfaces (30px room blur, 24px shelf blur); all 51 iPods remain foreground content. Attribution and CC BY 4.0 terms are recorded in `docs/reports/AUDIO_ROOM_IMAGE_ATTRIBUTION.md`.
-- Audio uses progressive disclosure to keep the initial page short: JavaScript starts with the newest 10 entries, loads 10 more per click, can reveal all 51, or can collapse back to 10. A lightweight year archive is generated from existing `time[datetime]` values (currently 2026 and 2025) without changing catalog schema. Search always checks all 51 entries and clearing a query resets the newest-10 view; No-JS users still receive all 51 server-rendered cards.
+- The Audio room now uses the selected **Option 3** photograph of the Apple Fifth Avenue retail floor as a local 1600×1200 wallpaper. Navigation, header, search/tools, the full bookshelf wall, and shelf planks use Audio-scoped iOS-style Liquid Glass surfaces (30px room blur, 24px shelf blur); all 52 iPods remain foreground content. Attribution and CC BY 4.0 terms are recorded in `docs/reports/AUDIO_ROOM_IMAGE_ATTRIBUTION.md`.
+- Audio uses progressive disclosure to keep the initial page short: JavaScript starts with the newest 10 entries, loads 10 more per click, can reveal all 52, or can collapse back to 10. A lightweight year archive is generated from existing `time[datetime]` values (currently 2026 and 2025) without changing catalog schema. Search always checks all 52 entries and clearing a query resets the newest-10 view; No-JS users still receive all 52 server-rendered cards.
 - The Audio collection header is titled **The Audio Shelf** while the Reading collection is titled **Coffee and Books**.
 
 ### App collection
@@ -107,7 +107,7 @@ python scripts/build_gallery.py --check
 git diff --check
 ```
 
-Expected verified result at close: **86 tests passed**, all four generated pages current, and no diff-check errors.
+Expected verified result at close: **87 tests passed**, all four generated pages current, and no diff-check errors.
 
 ## Publication workflow
 
@@ -127,7 +127,7 @@ Expected verified result at close: **86 tests passed**, all four generated pages
 
 ## Next recommended step
 
-No implementation task is pending. The Alex Finn YouTube podcast and Audio Shelf entry, Agent Reach Reading/Audio, and the Tumngern App are published and production-verified. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
+The Grok AI beginner podcast is Public on YouTube and its 52nd Audio Shelf entry is locally verified, pending the already approved Library content push and Production read-back. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
 
 ## Latest close checkpoint — 2026-08-29
 
@@ -148,9 +148,10 @@ No implementation task is pending. The Alex Finn YouTube podcast and Audio Shelf
 - Production Gallery contains 8 artworks. The newest additions are **Skills vs Plugin vs Connector ใน Claude** and **ระบบ Memory, Project และ Computer ของ Grok Bot**, both dated 28/08/2026 as AI/16:9. Desktop and 390px mobile previews passed with no clipping, overlap, or horizontal overflow; Production AI filter/lightbox/title/date/dimensions read-back passed and both artwork hashes matched Local exactly.
 - Pre-share scan of all twelve changed/new files passed with no credentials, PII, private paths, or Drive IDs. The published artwork is a single-frame 1024×1280 RGB WebP with no EXIF.
 - Standing approval is active for qualifying original Gallery image uploads: preserve visible content, run all gates, then commit, push both Library remotes, publish, and production-verify automatically. All other collections and operations remain approval-gated.
-- Current approved verification passed **86 tests** with Reading 24, Audio 51, App 6, and Gallery 8; all generators are current and `git diff --check` passes. The Alex Finn Audio Shelf addition is Production-verified.
+- Current approved verification passed **87 tests** with Reading 24, Audio 52, App 6, and Gallery 8; all generators are current and `git diff --check` passes. The new Grok AI beginner Audio Shelf entry is locally verified and awaits its approved content push; the Alex Finn Audio Shelf addition remains Production-verified.
 - Alex Finn Audio publication commit: `4275d4337b0d6692c3eb1601d8b9a2ddcfefe607` (`Publish Alex Finn podcast on Audio Shelf`). Local, public `origin/main`, and private `backup/main` matched at this commit before the close-document update; Pages run `33204031199` succeeded.
 - Production Audio contains 51 cards with `oe3zUOLrLF4` first/newest, date 29/08/2026, duration 12:33, exact playlist URL, and a 480×360 local cover. Production cover SHA-256 `bb253041b185f6b1c3e7ecd52519a6a28a50098349de17d58d63c272a0ef386e` matched Local. Desktop/mobile search, first-card, runtime-error, broken-image, and overflow checks passed.
+- YouTube video `YivD8OO85TM` is Public, Not made for kids, 18:47, published by **manny calavara**, uses the approved custom thumbnail, has clean checks, and is playlist position 1 in `tech (Ai)`. The matching 52-card Audio Shelf build passed local desktop/mobile and full project verification; Production deployment is pending the approved content push.
 - Current pre-share scan covered 33 changed/new files: no credential, private key, private local path, Drive ID, or image EXIF/ICC was found. Tumngern retains one owner-published contact Email from its Public upstream; this intentional public contact is documented in `docs/reports/APP_IMPORT_SOURCE_AUDIT.md`.
 - Content publication commit: `9ad661fed5a9a4f33c1127cdebcdcdc3465206cf` (`Publish Agent Reach and Tumngern additions`). Local, public `origin/main`, and private `backup/main` matched at this commit before the close-document update.
 - GitHub Pages deployment `33070600654` completed successfully for the content commit.
