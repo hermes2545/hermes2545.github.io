@@ -96,3 +96,4 @@ tags: [library, changelog]
 ## 2026-08-28
 
 - Added the owner-supplied **Personal Infrastructure Wiki** infographic to Gallery as Infrastructure/16:9 using the local-addition date **28 August 2026**. Converted the 1280×720 JPEG through its embedded color profile to a lossless sRGB WebP without cropping or visible edits, removed EXIF/ICC metadata, added the Infrastructure filter, and verified the six-artwork Gallery on desktop and 390px mobile.
+- Published **Personal Infrastructure Wiki** in commit `6b5f5f6`; public/private remote HEADs matched, GitHub Pages deployment `33166761238` succeeded, Production rendered six Gallery cards with the correct 28/08/2026 date and Infrastructure filter, the Production image SHA-256 matched Local (`56e46ad1…`), and desktop/mobile lightbox checks found no runtime errors or horizontal overflow.
