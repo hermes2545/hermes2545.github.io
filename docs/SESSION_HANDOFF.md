@@ -33,15 +33,15 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with f
 
 ### Audio collection
 
-- 50 YouTube entries indexed from `data/audio-books.json`; the newest is **Agent Reach: มอบดวงตาให้ AI ทะลวง Social Platform** (`UtzEjC9G3Dg`). It is Public, Not made for kids, 22:55, 1080p30, uses the approved Target Water Ripple video and custom thumbnail, and is verified at position 1 in the exact `tech (Ai)` playlist. The original Hermes podcast `KtHYNnLM_Dk` remains Unlisted and is not referenced by the active catalog.
+- 51 YouTube entries indexed from `data/audio-books.json`; the newest is **Alex Finn: ใช้ Grok Bot คุมกองทัพ AI ให้บริหารงานแทนเรา** (`oe3zUOLrLF4`). It is Public, Not made for kids, 12:33, 1080p30, uses the approved no-panel Edge Ladder Spectrum and custom thumbnail, and is verified at position 1 in the exact `tech (Ai)` playlist. Female speech drives the Magenta/Violet top-left equalizer and male speech drives the Electric Blue/Cyan bottom-right equalizer. The original Hermes podcast `KtHYNnLM_Dk` remains Unlisted and is not referenced by the active catalog.
 - Newest publication appears at the upper-left.
 - Local thumbnail assets are stored under `assets/audio-covers/`.
 - Each audio item uses a large iPod-style device at the existing book footprint: a full 4:3 thumbnail screen above a click wheel, with duration at the upper-right of the lower control panel and a PLAY label below.
 - Audio titles no longer show the redundant `AUDIO BOOK` kicker.
 - Each item and the playlist button open YouTube in a new tab.
 - The Audio room uses a light premium technology-retail theme inspired by Apple Fifth Avenue's architectural materials: a luminous glass-cube mark, circular skylights, pale stone/off-white terrazzo surfaces, stainless-steel details, translucent dark navigation, and maple display tables. Apple Blue is reserved for interactive controls.
-- The Audio room now uses the selected **Option 3** photograph of the Apple Fifth Avenue retail floor as a local 1600×1200 wallpaper. Navigation, header, search/tools, the full bookshelf wall, and shelf planks use Audio-scoped iOS-style Liquid Glass surfaces (30px room blur, 24px shelf blur); all 50 iPods remain foreground content. Attribution and CC BY 4.0 terms are recorded in `docs/reports/AUDIO_ROOM_IMAGE_ATTRIBUTION.md`.
-- Audio uses progressive disclosure to keep the initial page short: JavaScript starts with the newest 10 entries, loads 10 more per click, can reveal all 50, or can collapse back to 10. A lightweight year archive is generated from existing `time[datetime]` values (currently 2026 and 2025) without changing catalog schema. Search always checks all 50 entries and clearing a query resets the newest-10 view; No-JS users still receive all 50 server-rendered cards.
+- The Audio room now uses the selected **Option 3** photograph of the Apple Fifth Avenue retail floor as a local 1600×1200 wallpaper. Navigation, header, search/tools, the full bookshelf wall, and shelf planks use Audio-scoped iOS-style Liquid Glass surfaces (30px room blur, 24px shelf blur); all 51 iPods remain foreground content. Attribution and CC BY 4.0 terms are recorded in `docs/reports/AUDIO_ROOM_IMAGE_ATTRIBUTION.md`.
+- Audio uses progressive disclosure to keep the initial page short: JavaScript starts with the newest 10 entries, loads 10 more per click, can reveal all 51, or can collapse back to 10. A lightweight year archive is generated from existing `time[datetime]` values (currently 2026 and 2025) without changing catalog schema. Search always checks all 51 entries and clearing a query resets the newest-10 view; No-JS users still receive all 51 server-rendered cards.
 - The Audio collection header is titled **The Audio Shelf** while the Reading collection is titled **Coffee and Books**.
 
 ### App collection
@@ -107,7 +107,7 @@ python scripts/build_gallery.py --check
 git diff --check
 ```
 
-Expected verified result at close: **85 tests passed**, all four generated pages current, and no diff-check errors.
+Expected verified result at close: **86 tests passed**, all four generated pages current, and no diff-check errors.
 
 ## Publication workflow
 
@@ -148,7 +148,7 @@ No implementation task is pending. Agent Reach Reading/Audio and the Tumngern Ap
 - Production Gallery contains 8 artworks. The newest additions are **Skills vs Plugin vs Connector ใน Claude** and **ระบบ Memory, Project และ Computer ของ Grok Bot**, both dated 28/08/2026 as AI/16:9. Desktop and 390px mobile previews passed with no clipping, overlap, or horizontal overflow; Production AI filter/lightbox/title/date/dimensions read-back passed and both artwork hashes matched Local exactly.
 - Pre-share scan of all twelve changed/new files passed with no credentials, PII, private paths, or Drive IDs. The published artwork is a single-frame 1024×1280 RGB WebP with no EXIF.
 - Standing approval is active for qualifying original Gallery image uploads: preserve visible content, run all gates, then commit, push both Library remotes, publish, and production-verify automatically. All other collections and operations remain approval-gated.
-- Current approved local verification passed **85 tests** with Reading 24, Audio 50, App 6, and Gallery 8; all generators are current and `git diff --check` passes.
+- Current approved local verification passed **86 tests** with Reading 24, Audio 51, App 6, and Gallery 8; all generators are current and `git diff --check` passes. The Alex Finn Audio Shelf addition is locally verified and awaiting the already-approved scoped publication.
 - Current pre-share scan covered 33 changed/new files: no credential, private key, private local path, Drive ID, or image EXIF/ICC was found. Tumngern retains one owner-published contact Email from its Public upstream; this intentional public contact is documented in `docs/reports/APP_IMPORT_SOURCE_AUDIT.md`.
 - Content publication commit: `9ad661fed5a9a4f33c1127cdebcdcdc3465206cf` (`Publish Agent Reach and Tumngern additions`). Local, public `origin/main`, and private `backup/main` matched at this commit before the close-document update.
 - GitHub Pages deployment `33070600654` completed successfully for the content commit.

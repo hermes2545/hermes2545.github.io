@@ -4,7 +4,7 @@ type: meta
 status: active
 visibility: public
 created: 2026-08-23
-updated: 2026-08-27
+updated: 2026-08-29
 sources: [docs/SESSION_HANDOFF.md]
 tags: [library, changelog]
 ---
@@ -99,3 +99,8 @@ tags: [library, changelog]
 - Published **Personal Infrastructure Wiki** in commit `6b5f5f6`; public/private remote HEADs matched, GitHub Pages deployment `33166761238` succeeded, Production rendered six Gallery cards with the correct 28/08/2026 date and Infrastructure filter, the Production image SHA-256 matched Local (`56e46ad1…`), and desktop/mobile lightbox checks found no runtime errors or horizontal overflow.
 - Added two owner-supplied AI infographics to Gallery dated **28 August 2026**: **Skills vs Plugin vs Connector ใน Claude** and **ระบบ Memory, Project และ Computer ของ Grok Bot**. Converted both ICC-tagged JPEGs to lossless sRGB WebP without cropping or visible edits, removed EXIF/ICC metadata, expanded Gallery to eight works, and verified both images through the AI filter and desktop/mobile lightboxes.
 - Published both AI infographics in commit `99fab2b`; public/private remote HEADs matched, GitHub Pages deployment `33172361550` succeeded, Production rendered eight Gallery cards with the AI filter and correct dates/dimensions, both Production image hashes matched Local (`8691b61c…`, `4cc3f89a…`), and desktop/mobile lightbox checks found no runtime errors or horizontal overflow.
+
+## 2026-08-29
+
+- Published the YouTube podcast **Alex Finn: ใช้ Grok Bot คุมกองทัพ AI ให้บริหารงานแทนเรา** (`oe3zUOLrLF4`) on channel **manny calavara** using the approved no-panel Edge Ladder Spectrum. The 12:33 video routes female speech to a Magenta/Violet top-left equalizer and male speech to an Electric Blue/Cyan bottom-right equalizer, with Public visibility, Not made for kids, custom thumbnail, clean copyright checks, verified 1080p30 public playback, and exact `tech (Ai)` playlist membership at position 1.
+- Added `oe3zUOLrLF4` locally as Audio Shelf position 1 with a verified 480×360 cover, shifting the prior 50 entries to positions 2–51. Generated `audio-library.html` now contains 51 cards; focused tests and desktop/mobile first-card, search, link, date, duration, cover, and overflow checks passed. Public Library deployment remains pending the approved scoped push.
