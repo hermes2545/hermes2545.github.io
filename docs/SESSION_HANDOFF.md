@@ -128,7 +128,7 @@ Expected verified result at close: **90 tests passed**, all four generated pages
 
 ## Next recommended step
 
-Gemini Live API Reading guide has been corrected locally to the latest successful interactive-manual book pattern after owner feedback. Next step is to commit and push this scoped fix to both Library remotes, then production-verify the corrected HTML hash/DOM. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
+Gemini Live API Reading guide has been corrected and published to the latest successful interactive-manual book pattern after owner feedback. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
 
 ## Latest close checkpoint — 2026-08-30
 
@@ -137,8 +137,9 @@ Gemini Live API Reading guide has been corrected locally to the latest successfu
 - Reading now contains 25 local books; the Gemini Live API entry is first/newest with `publish on 30/08/2026` and category plaque `AI Voice Agents`.
 - Verification before the first content push passed: focused Gemini tests, full `python -m unittest discover -s tests -v` with **90 tests**, all four generator `--check` commands, and `git diff --check`; the first HTML was later superseded by the owner-requested interactive-manual correction.
 - Initial content commit `6983d66cb88902628d7e68d40a5a33c9431d21e4` and publication-record commit `38ae02c7a3d834a8fd1f80ba05f76e77f6672ff1` were pushed to both public `origin/main` and private `backup/main` before the correction.
-- Corrected Gemini Live API HTML now follows the latest successful book/manual pattern: 10 `sec` views, 10 `nav-item` controls, sidebar/topbar navigation, `localStorage` state, `navigator.clipboard` copy support, search results, theme/font controls, print CSS, and no reader-facing `ค่ะ`.
-- Local desktop/mobile headless Chromium screenshots passed after the correction; no obvious clipping, overlap, or horizontal overflow was visible, and JavaScript syntax passed `node --check`.
+- Corrected Gemini Live API HTML now follows the latest successful book/manual pattern and was published in commit `8e659b46eae9c90d3a770d355b4b06bbfd82d7c6`: 10 `sec` views, 10 `nav-item` controls, sidebar/topbar navigation, `localStorage` state, `navigator.clipboard` copy support, search results, theme/font controls, print CSS, and no reader-facing `ค่ะ`.
+- Local/public/private HEADs for the correction matched `8e659b46eae9c90d3a770d355b4b06bbfd82d7c6`; Production read-back matched Local SHA-256 for the corrected `Gemini_Live_API_Guide_TH.html` (`5d7b180c…`) and `index.html` (`07d7274…`).
+- Production DOM confirmed the corrected manual shape: 10 sections, 10 navigation items, active Overview, 600×900 cover loaded, `localStorage`/`navigator.clipboard`/print CSS present, no reader-facing `ค่ะ`, and no horizontal overflow.
 - Pre-share scan of intended public files found no private local paths, cache paths, tokens, or credential patterns. All six external source URLs returned HTTP 200.
 - Temporary local HTTP server `proc_29c02dcc191d` exited after preview; no Library preview server remains running.
 
