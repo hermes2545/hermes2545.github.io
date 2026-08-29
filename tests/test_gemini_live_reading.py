@@ -39,6 +39,21 @@ class GeminiLiveReadingGuideTests(unittest.TestCase):
             "Sources",
         ):
             self.assertIn(section, html)
+        self.assertEqual(html.count('<section class="sec'), 10)
+        self.assertEqual(html.count('class="nav-item"'), 10)
+        for marker in (
+            "localStorage",
+            "navigator.clipboard",
+            "@media print",
+            "searchResults",
+            "data-copy",
+            "data-theme",
+            "data-fs",
+            "stateful WebSocket",
+            "send_realtime_input",
+            "session.receive()",
+        ):
+            self.assertIn(marker, html)
         for url in (
             "https://ai.google.dev/gemini-api/docs/live-api",
             "https://www.youtube.com/watch?v=pFc-HcUgFgY",
@@ -48,6 +63,7 @@ class GeminiLiveReadingGuideTests(unittest.TestCase):
             "https://raw.githubusercontent.com/cuppibla/live-dj/main/backend/tools.py",
         ):
             self.assertIn(url, html)
+        self.assertNotIn("ค่ะ", html)
         self.assertNotIn("/" + "home" + "/", html)
         self.assertNotIn("ca" + "che/", html)
         credential_pattern = "AI" + "za|ya" + "29\\.|gh" + "p_|github" + "_pat_"

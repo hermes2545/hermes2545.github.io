@@ -111,4 +111,4 @@ tags: [library, changelog]
 
 ## 2026-08-30
 
-- Published **Gemini Live API — คู่มือสร้าง Voice Agent แบบ Real-Time** in commit `6983d66`; public and private remote HEADs matched, Production returned 25 Reading cards with the Gemini entry first/newest, and live HTML/index/cover hashes matched Local. Production desktop/mobile DOM confirmed 29 guide sections, 600×900 cover loading, and no horizontal overflow.
+- Published **Gemini Live API — คู่มือสร้าง Voice Agent แบบ Real-Time** in commit `6983d66`; public and private remote HEADs matched, Production returned 25 Reading cards with the Gemini entry first/newest, and live HTML/index/cover hashes matched Local. After owner feedback, rebuilt the guide to follow the latest successful Reading-book pattern from `interactive-reference-manuals` / owner-supplied artifacts: a sidebar/topbar Interactive Reference Manual with 10 views, hash navigation, search, theme/font controls, copy button, print mode, and reader-facing Thai without conversational particles.
