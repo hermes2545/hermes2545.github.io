@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gemini Live API — คู่มือสร้าง Voice Agent แบบ Real-Time</title>
+  <meta name="description" content="คู่มือภาษาไทยสรุป Gemini Live API สำหรับสร้าง Voice Agent แบบ Real-Time พร้อม use cases, ความต่างจาก TTS เดิม, live transcription, barge-in และ tool use">
+  <link rel="icon" href="assets/icons/shelfkeeper-librarian.webp">
+  <style>
+    :root { color-scheme: light; --ink:#11182f; --muted:#5d6681; --blue:#1266f1; --cyan:#00a9df; --violet:#7d4dff; --pink:#e552b5; --paper:#fbfdff; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; max-width: 100%; overflow-x: hidden; }
+    body { margin: 0; font-family: "Noto Sans Thai", "Noto Sans", system-ui, sans-serif; color: var(--ink); background: radial-gradient(circle at 18% 8%, rgba(31,118,255,.16), transparent 32rem), radial-gradient(circle at 82% 18%, rgba(239,76,181,.15), transparent 30rem), linear-gradient(135deg, #f7fbff 0%, #fff 42%, #f4f7ff 100%); max-width: 100%; overflow-x: hidden; }
+    a { color: var(--blue); }
+    .hero { min-height: 92vh; display: grid; grid-template-columns: minmax(0, 1.04fr) minmax(280px, .72fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: center; padding: clamp(2rem, 5vw, 5rem); position: relative; overflow: hidden; }
+    .hero::before { content:""; position:absolute; inset:-20% -10% auto auto; width:36rem; height:36rem; background: conic-gradient(from 140deg, #00b8ff, #7b5cff, #ff5eb9, #ff8a3d, #00b8ff); opacity:.22; filter: blur(42px); border-radius:50%; }
+    .eyebrow { letter-spacing:.14em; text-transform:uppercase; color:var(--blue); font-weight:800; font-size:.82rem; }
+    h1 { margin:.35rem 0 .7rem; font-size: clamp(3rem, 9vw, 7.8rem); line-height:.9; letter-spacing:-.07em; }
+    .gradient-text { background: linear-gradient(90deg, #05133e, #1266f1 42%, #00a9df 60%, #a64fff 78%, #ff7b32); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .subtitle { max-width: 52rem; font-size: clamp(1.22rem, 2.3vw, 2rem); line-height:1.55; color:#283451; font-weight:650; }
+    .hero-points { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:1rem; margin-top:2rem; }
+    .hero-points article { padding:1rem; border:1px solid rgba(42,107,255,.18); border-radius:1.25rem; background:rgba(255,255,255,.76); box-shadow:0 20px 50px rgba(31,64,154,.09); backdrop-filter: blur(18px); }
+    .hero-points strong { display:block; color:#0c48c8; font-size:1.03rem; }
+    .hero-points span { display:block; color:var(--muted); margin-top:.25rem; line-height:1.45; }
+    .cover-card { width:min(360px, 82vw); margin:auto; transform: rotate(1.2deg); filter: drop-shadow(0 34px 45px rgba(27,45,96,.28)); }
+    .cover-card img { width:100%; height:auto; border-radius:1.15rem; display:block; }
+    .layout { display:grid; grid-template-columns: 280px minmax(0, 1fr); gap: clamp(1.2rem, 3vw, 3rem); max-width: 1240px; margin:0 auto; padding:0 clamp(1rem, 4vw, 3rem) 5rem; }
+    .toc { position: sticky; top: 1rem; align-self:start; padding:1rem; border-radius:1.25rem; background:rgba(255,255,255,.78); border:1px solid rgba(42,107,255,.14); box-shadow:0 20px 45px rgba(31,64,154,.08); backdrop-filter: blur(22px); max-height: calc(100vh - 2rem); overflow:auto; }
+    .toc strong { display:block; margin-bottom:.75rem; }
+    .toc a { display:block; text-decoration:none; padding:.48rem .55rem; border-radius:.75rem; color:#304060; line-height:1.35; }
+    .toc a:hover { background:#eef5ff; color:#064fcc; }
+    .toc-level-3 { padding-left:1.15rem !important; font-size:.92rem; color:#5d6681 !important; }
+    main { min-width:0; }
+    .guide-section { margin:0 0 1.25rem; padding: clamp(1.2rem, 2.6vw, 2rem); border-radius:1.6rem; background:rgba(255,255,255,.88); border:1px solid rgba(42,107,255,.13); box-shadow:0 24px 60px rgba(31,64,154,.075); }
+    h2, h3 { letter-spacing:-.035em; line-height:1.18; }
+    h2 { font-size: clamp(1.7rem, 3vw, 2.55rem); margin:.1rem 0 1rem; }
+    h3 { font-size: clamp(1.25rem, 2vw, 1.65rem); margin:.2rem 0 .65rem; color:#113c93; }
+    p, li { font-size:1.06rem; line-height:1.85; }
+    .point-list { padding-left:1.35rem; }
+    code { font-family:"Noto Sans Mono", ui-monospace, monospace; background:#edf4ff; padding:.12rem .35rem; border-radius:.4rem; }
+    .cite { font-weight:800; text-decoration:none; margin-left:.08rem; }
+    .numbered { display:flex; gap:.85rem; align-items:flex-start; }
+    .numbered span { flex:0 0 auto; width:2rem; height:2rem; display:grid; place-items:center; border-radius:50%; background:linear-gradient(135deg,var(--blue),var(--violet)); color:white; font-weight:900; }
+    .source-list { padding-left:1.25rem; }
+    .source-list li { margin:.7rem 0; }
+    .source-list span { display:block; color:var(--muted); overflow-wrap:anywhere; font-size:.92rem; }
+    .back { display:inline-flex; gap:.45rem; align-items:center; text-decoration:none; margin:1.25rem clamp(1rem, 4vw, 3rem); color:#304060; font-weight:800; }
+    @media (max-width: 860px) { .hero { grid-template-columns:1fr; min-height:auto; } .cover-card { max-width:280px; } .hero-points { grid-template-columns:1fr; } .layout { grid-template-columns:1fr; } .toc { position:relative; top:auto; } h1 { font-size: clamp(3rem, 16vw, 5.2rem); } }
+    @media print { .toc, .back { display:none; } .hero { min-height:auto; } .layout { display:block; } .guide-section { break-inside: avoid; box-shadow:none; } }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">← กลับไป Coffee and Books</a>
+  <header class="hero">
+    <div>
+      <div class="eyebrow">The Knowledge Shelf • Voice Agent Guide</div>
+      <h1><span class="gradient-text">Gemini<br>Live API</span></h1>
+      <p class="subtitle">คู่มือสร้าง Voice Agent แบบ Real-Time — เอาไปทำอะไรได้บ้าง ต่างจากของเดิมยังไง และต้องระวังอะไรเมื่อต่อ tools ให้ agent ลงมือทำจริง</p>
+      <div class="hero-points"><article><strong>Low latency</strong><span>คุยสดผ่าน WebSocket แบบ stateful ไม่ใช่รอคำตอบเป็นก้อน</span></article><article><strong>Audio ↔ Audio</strong><span>รับเสียงจริง ตอบเสียงจริง พร้อมสตรีมต่อเนื่อง</span></article><article><strong>Barge‑in</strong><span>ผู้ใช้พูดแทรกได้ และระบบควรหยุดเสียงฝั่ง client ทันที</span></article><article><strong>Tool use</strong><span>ต่อ function calling ให้ voice agent ลงมือทำงานจริงได้</span></article></div>
+    </div>
+    <figure class="cover-card">
+      <img src="assets/covers/custom/gemini-live-api-guide.webp" alt="ปก Gemini Live API คู่มือสร้าง Voice Agent แบบ Real-Time" width="600" height="900">
+    </figure>
+  </header>
+  <div class="layout">
+    <nav class="toc" aria-label="สารบัญ"><strong>สารบัญ</strong><a class="toc-level-2" href="#overview">สรุปสั้น</a>
+<a class="toc-level-2" href="#use-cases">เอาไปทำอะไรได้บ้าง</a>
+<a class="toc-level-3" href="#1-voice-agent-call-assistant">1) ทำ voice agent / call assistant</a>
+<a class="toc-level-3" href="#2-support-retail-assistant">2) ทำผู้ช่วยขาย / support / retail assistant</a>
+<a class="toc-level-3" href="#3-live-transcription-caption">3) ทำ live transcription / caption</a>
+<a class="toc-level-3" href="#4-live-translation">4) ทำ live translation</a>
+<a class="toc-level-3" href="#5-npc-avatar-smart-device">5) ทำเกม / NPC / avatar / smart device</a>
+<a class="toc-level-3" href="#6-agent">6) ทำ agent ที่ “ลงมือทำ” ได้ ไม่ใช่แค่พูด</a>
+<a class="toc-level-3" href="#7">7) ทำระบบที่ผู้ใช้พูดแทรกกลางคันได้</a>
+<a class="toc-level-2" href="#differences">ต่างจาก “ของเดิม” ยังไง</a>
+<a class="toc-level-3" href="#1-live">1) เดิมเป็นทางเดียว แต่ Live เป็นสองทาง</a>
+<a class="toc-level-3" href="#2-live">2) เดิมต้องรอคำตอบเสร็จก่อน แต่ Live ตอบแบบสตรีม</a>
+<a class="toc-level-3" href="#3-interrupt-live">3) เดิม interrupt ยาก แต่ Live พูดแทรกได้</a>
+<a class="toc-level-3" href="#4-live">4) เดิมมักต้องประกอบหลายระบบเอง แต่ Live มีของสำคัญมาในตัว</a>
+<a class="toc-level-3" href="#5-requestresponse-live-session">5) เดิมมักเป็น request/response แต่ Live เป็น session ค้างไว้</a>
+<a class="toc-level-3" href="#6-live-agent">6) เดิมแค่ “พูด” แต่ Live เป็น “agent” ได้</a>
+<a class="toc-level-2" href="#video-lessons">สิ่งที่คลิปสอน</a>
+<a class="toc-level-3" href="#core-lessons">ใจความสำคัญจากคลิป</a>
+<a class="toc-level-2" href="#voicedemo1">โค้ดเดโม voicedemo1 คืออะไร</a>
+<a class="toc-level-2" href="#repo-structure">โครงสร้างสำคัญใน repo</a>
+<a class="toc-level-3" href="#backendrawminimal-py">backend/raw_minimal.py</a>
+<a class="toc-level-3" href="#backendrawserver-py">backend/raw_server.py</a>
+<a class="toc-level-3" href="#tools">backend/tools.py</a>
+<a class="toc-level-2" href="#demo-cautions">ข้อควรระวังจากเดโม</a>
+<a class="toc-level-3" href="#1-session-receive-per-turn-async-generator">1) session.receive() เป็น per-turn async generator</a>
+<a class="toc-level-3" href="#2-mic-sendrealtimeinput">2) ต้องส่ง mic ผ่าน send_realtime_input</a>
+<a class="toc-level-2" href="#gemini-live-vs-gemini-live-api">ถ้าหมายถึง “Gemini Live ในแอป” vs “Gemini Live API”</a>
+<a class="toc-level-2" href="#final-summary">สรุปสุดท้าย</a>
+<a class="toc-level-2" href="#sources">Sources</a></nav>
+    <main>
+      <p>อ้างอิงจากเอกสาร Gemini Live API, วิดีโอที่หัวหน้าแนบมา, และโค้ดเดโม <code>live-dj</code> ค่ะ</p>
+<section class="guide-section level-2" id="overview"><h2>สรุปสั้น</h2>
+<p>Gemini Live API คือ API สำหรับทำ <strong>ผู้ช่วยเสียง/วิดีโอแบบโต้ตอบสด</strong> ไม่ใช่แค่รับข้อความแล้วค่อยแปลงเป็นเสียงทีหลัง โดยเอกสารระบุว่าเป็นการโต้ตอบแบบ <strong>low-latency, real-time</strong> รับสตรีม <strong>เสียง + ภาพ + ข้อความ</strong> ต่อเนื่อง และตอบกลับได้แบบใกล้เคียงการคุยจริงผ่าน <strong>stateful WebSocket</strong>.<a class="cite" href="#source-1" aria-label="ดูแหล่งอ้างอิง 1">[1]</a></p>
+<section class="guide-section level-2" id="use-cases"><h2>เอาไปทำอะไรได้บ้าง</h2>
+<section class="guide-section level-3" id="1-voice-agent-call-assistant"><h3>1) ทำ voice agent / call assistant</h3>
+<p>ใช้ทำบอทคุยเสียงที่ฟังผู้ใช้และตอบกลับแบบสดได้ เหมาะกับผู้ช่วยโทรศัพท์, call bot, customer support, concierge และงานที่ต้องคุยโต้ตอบต่อเนื่องค่ะ.<a class="cite" href="#source-1" aria-label="ดูแหล่งอ้างอิง 1">[1]</a></p>
+<section class="guide-section level-3" id="2-support-retail-assistant"><h3>2) ทำผู้ช่วยขาย / support / retail assistant</h3>
+<p>เอกสารยก use case ด้าน e-commerce และ retail โดยตรง เช่น ผู้ช่วยแนะนำสินค้า, ตอบคำถามลูกค้า, ช่วยปิดการขาย, หรือช่วยแก้ปัญหาเบื้องต้นค่ะ.<a class="cite" href="#source-1" aria-label="ดูแหล่งอ้างอิง 1">[1]</a></p>
+<section class="guide-section level-3" id="3-live-transcription-caption"><h3>3) ทำ live transcription / caption</h3>
+<p>ใช้ถอดเสียงสด ทำซับสด, voice dictation, meeting transcription, customer call logging ได้ เพราะเอกสารมีความสามารถด้าน <strong>Live Transcription</strong> โดยตรงค่ะ.<a class="cite" href="#source-1" aria-label="ดูแหล่งอ้างอิง 1">[1]</a></p>
+<section class="guide-section level-3" id="4-live-translation"><h3>4) ทำ live translation</h3>
+<p>ใช้แปลเสียงสดแบบคุยกันคนละภาษาได้ โดย docs ระบุ <strong>real-time voice-to-voice translation</strong> และรองรับ <strong>70+ ภาษา</strong> ค่ะ.<a class="cite" href="#source-1" aria-label="ดูแหล่งอ้างอิง 1">[1]</a></p>
+<section class="guide-section level-3" id="5-npc-avatar-smart-device"><h3>5) ทำเกม / NPC / avatar / smart device</h3>
+<p>เหมาะกับตัวละครในเกม, NPC, assistant ในรถ, หุ่นยนต์, แว่นอัจฉริยะ หรืออุปกรณ์ที่ต้องสื่อสารด้วยเสียงและ/หรือวิดีโอแบบทันทีค่ะ.<a class="cite" href="#source-1" aria-label="ดูแหล่งอ้างอิง 1">[1]</a></p>
+<section class="guide-section level-3" id="6-agent"><h3>6) ทำ agent ที่ “ลงมือทำ” ได้ ไม่ใช่แค่พูด</h3>
+<p>Gemini Live รองรับ <strong>tool use / function calling</strong> ทำให้โมเดลคุยไปพร้อมกับสั่ง action ในระบบเราได้ เดโม <code>live-dj</code> ใช้จุดนี้ให้ผู้ช่วยเสียงสั่ง <strong>เล่นเพลง, ข้ามเพลง, pause เพลง</strong> ได้จริงค่ะ.<a class="cite" href="#source-1" aria-label="ดูแหล่งอ้างอิง 1">[1]</a><a class="cite" href="#source-5" aria-label="ดูแหล่งอ้างอิง 5">[5]</a><a class="cite" href="#source-7" aria-label="ดูแหล่งอ้างอิง 7">[7]</a><a class="cite" href="#source-8" aria-label="ดูแหล่งอ้างอิง 8">[8]</a></p>
+<section class="guide-section level-3" id="7"><h3>7) ทำระบบที่ผู้ใช้พูดแทรกกลางคันได้</h3>
+<p>จุดเด่นคือทำ UX แบบ “คุยจริง” เช่นผู้ใช้พูดขัดกลางประโยคแล้วระบบหยุดเพื่อฟังใหม่ เหมาะกับงาน call assistant, in-car assistant, kiosk, และ conversational UI ค่ะ.<a class="cite" href="#source-1" aria-label="ดูแหล่งอ้างอิง 1">[1]</a><a class="cite" href="#source-4" aria-label="ดูแหล่งอ้างอิง 4">[4]</a><a class="cite" href="#source-5" aria-label="ดูแหล่งอ้างอิง 5">[5]</a></p>
+<section class="guide-section level-2" id="differences"><h2>ต่างจาก “ของเดิม” ยังไง</h2>
+<p>จากคลิปนี้ เขาเทียบชัดกับ <strong>TTS / AI voice แบบเดิม</strong> ค่ะ</p>
+<section class="guide-section level-3" id="1-live"><h3>1) เดิมเป็นทางเดียว แต่ Live เป็นสองทาง</h3>
+<p>TTS ปกติคือ <strong>ใส่ข้อความ → ได้เสียงกลับมา</strong> เป็นทางเดียว แต่ Gemini Live เป็น <strong>audio-to-audio สองทาง</strong> คือรับเสียงผู้ใช้เป็นเสียงจริง และตอบกลับเป็นเสียงจริงค่ะ.<a class="cite" href="#source-4" aria-label="ดูแหล่งอ้างอิง 4">[4]</a></p>
+<section class="guide-section level-3" id="2-live"><h3>2) เดิมต้องรอคำตอบเสร็จก่อน แต่ Live ตอบแบบสตรีม</h3>
+<p>Gemini Live สามารถ <strong>เริ่มพูดได้ตั้งแต่ยังสร้างคำตอบไม่เสร็จ</strong> ไม่ต้องรอ response เต็มก้อนก่อนค่อยเล่นเสียง จึงรู้สึกสดและลื่นกว่าระบบ voice แบบเดิมค่ะ.<a class="cite" href="#source-1" aria-label="ดูแหล่งอ้างอิง 1">[1]</a><a class="cite" href="#source-4" aria-label="ดูแหล่งอ้างอิง 4">[4]</a></p>
+<section class="guide-section level-3" id="3-interrupt-live"><h3>3) เดิม interrupt ยาก แต่ Live พูดแทรกได้</h3>
+<p>Live รองรับ <strong>barge-in</strong> คือผู้ใช้พูดแทรกกลางประโยคได้ แล้วโมเดลหยุดและฟังใหม่ คลิปกับ repo เดโมย้ำเรื่องนี้มากค่ะ.<a class="cite" href="#source-1" aria-label="ดูแหล่งอ้างอิง 1">[1]</a><a class="cite" href="#source-4" aria-label="ดูแหล่งอ้างอิง 4">[4]</a><a class="cite" href="#source-5" aria-label="ดูแหล่งอ้างอิง 5">[5]</a></p>
+<section class="guide-section level-3" id="4-live"><h3>4) เดิมมักต้องประกอบหลายระบบเอง แต่ Live มีของสำคัญมาในตัว</h3>
+<p>เอกสารระบุฟีเจอร์สำคัญที่ช่วยให้ทำระบบเสียงสดง่ายขึ้น เช่น:<a class="cite" href="#source-1" aria-label="ดูแหล่งอ้างอิง 1">[1]</a></p>
+<ul class="point-list">
+<li>built-in <strong>VAD</strong> (voice activity detection)</li>
+<li><strong>audio transcriptions</strong> ทั้งฝั่งผู้ใช้และโมเดล</li>
+<li><strong>tool use</strong> / function calling</li>
+<li><strong>proactive audio</strong></li>
+<li><strong>affective dialog</strong></li>
+</ul>
+<section class="guide-section level-3" id="5-requestresponse-live-session"><h3>5) เดิมมักเป็น request/response แต่ Live เป็น session ค้างไว้</h3>
+<p>ระบบเรียก LLM ปกติมักถาม-ตอบเป็นรอบๆ แล้วจบ แต่ Live ใช้ <strong>stateful WebSocket connection</strong> ที่เปิดค้างไว้ เพื่อให้สตรีมเสียง/ภาพ/ข้อความต่อเนื่องสองทางได้ค่ะ.<a class="cite" href="#source-1" aria-label="ดูแหล่งอ้างอิง 1">[1]</a></p>
+<section class="guide-section level-3" id="6-live-agent"><h3>6) เดิมแค่ “พูด” แต่ Live เป็น “agent” ได้</h3>
+<p>ความต่างสำคัญคือไม่ใช่แค่ตอบเสียงเพราะๆ แต่เป็น <strong>interactive live agent</strong> ที่เรียก tool ไปทำงานในระบบจริงได้ เช่นในเดโม <code>live-dj</code> ค่ะ.<a class="cite" href="#source-5" aria-label="ดูแหล่งอ้างอิง 5">[5]</a><a class="cite" href="#source-7" aria-label="ดูแหล่งอ้างอิง 7">[7]</a><a class="cite" href="#source-8" aria-label="ดูแหล่งอ้างอิง 8">[8]</a></p>
+<section class="guide-section level-2" id="video-lessons"><h2>สิ่งที่คลิปสอน</h2>
+<p>จาก metadata และ subtitle ของคลิป วิดีโอนี้ตั้งใจสอน 3 เรื่องหลักค่ะ.<a class="cite" href="#source-4" aria-label="ดูแหล่งอ้างอิง 4">[4]</a></p>
+<p class="numbered"><span>1</span><strong>ทำไม live voice ต่างจาก AI voice / TTS แบบปกติ</strong></p>
+<p class="numbered"><span>2</span><strong>สถาปัตยกรรมและ core loop</strong> ของระบบ</p>
+<p class="numbered"><span>3</span><strong>3 แนวคิดที่ทำให้ agent รู้สึกเหมือนมีชีวิต</strong></p>
+<section class="guide-section level-3" id="core-lessons"><h3>ใจความสำคัญจากคลิป</h3>
+<ul class="point-list">
+<li>TTS คือ “พูดได้ แต่ฟังเราไม่ได้” ส่วน Gemini Live คือ <strong>ฟังและพูดแบบสดทั้งสองทาง</strong>.<a class="cite" href="#source-4" aria-label="ดูแหล่งอ้างอิง 4">[4]</a></li>
+<li>มันจับ <strong>tone, pauses, energy, และวิธีที่เราพูด</strong> ได้ ไม่ได้อ่านแค่ข้อความล้วนค่ะ.<a class="cite" href="#source-4" aria-label="ดูแหล่งอ้างอิง 4">[4]</a></li>
+<li>มัน <strong>stream</strong> คำตอบได้ จึงเริ่มพูดก่อนคำตอบจะสร้างเสร็จทั้งหมดค่ะ.<a class="cite" href="#source-4" aria-label="ดูแหล่งอ้างอิง 4">[4]</a></li>
+<li>สถาปัตยกรรมพื้นฐานมี 3 ส่วน: <strong>browser</strong>, <strong>Gemini Live</strong>, และ <strong>backend ขนาดเล็ก</strong> ที่ถือ connection แล้วส่งผ่าน audio ค่ะ.<a class="cite" href="#source-4" aria-label="ดูแหล่งอ้างอิง 4">[4]</a></li>
+<li>loop หลักมี 4 ขั้น: <strong>open → send → receive → play</strong>.<a class="cite" href="#source-4" aria-label="ดูแหล่งอ้างอิง 4">[4]</a><a class="cite" href="#source-6" aria-label="ดูแหล่งอ้างอิง 6">[6]</a><a class="cite" href="#source-7" aria-label="ดูแหล่งอ้างอิง 7">[7]</a></li>
+<li>Gemini Live มี <strong>VAD ในตัว</strong> เพื่อรู้ว่าผู้ใช้เริ่มพูด/หยุดพูดตอนไหนค่ะ.<a class="cite" href="#source-4" aria-label="ดูแหล่งอ้างอิง 4">[4]</a></li>
+<li>การ interrupt ให้รู้สึกไว ควร <strong>หยุดเสียงฝั่ง client/local ทันที</strong> ที่ไมค์จับว่าเราพูด ไม่ควรรอสัญญาณข้าม network ก่อนค่ะ.<a class="cite" href="#source-4" aria-label="ดูแหล่งอ้างอิง 4">[4]</a><a class="cite" href="#source-5" aria-label="ดูแหล่งอ้างอิง 5">[5]</a></li>
+<li>ถ้าจะให้ agent “ทำอะไรได้” ต้องให้ <strong>tools/functions</strong> และระวังว่า <strong>ถ้า tool ช้า เสียงจะเงียบระหว่างรอ</strong> ค่ะ.<a class="cite" href="#source-4" aria-label="ดูแหล่งอ้างอิง 4">[4]</a><a class="cite" href="#source-8" aria-label="ดูแหล่งอ้างอิง 8">[8]</a></li>
+</ul>
+<section class="guide-section level-2" id="voicedemo1"><h2>โค้ดเดโม voicedemo1 คืออะไร</h2>
+<p>ลิงก์ <code>https://g.dev/cloud/voicedemo1</code> ตอนตรวจแล้ว redirect ไปที่ repo <code>cuppibla/live-dj</code> ค่ะ.<a class="cite" href="#source-5" aria-label="ดูแหล่งอ้างอิง 5">[5]</a></p>
+<p>repo นี้เป็นตัวอย่างสร้างผู้ช่วยเสียงชื่อ <strong>Mira</strong> ที่ทำตัวเหมือน DJ คุยกับผู้ใช้ เล่นเพลง ข้ามเพลง และโดนพูดแทรกได้ค่ะ.<a class="cite" href="#source-5" aria-label="ดูแหล่งอ้างอิง 5">[5]</a></p>
+<section class="guide-section level-2" id="repo-structure"><h2>โครงสร้างสำคัญใน repo</h2>
+<section class="guide-section level-3" id="backendrawminimal-py"><h3>backend/raw_minimal.py</h3>
+<p>ไฟล์นี้เป็นตัวอย่าง <strong>primitive แบบสั้นมาก</strong> ของ Live API แกนจริงมีแค่:</p>
+<ul class="point-list">
+<li>เปิด live session</li>
+<li>ส่ง mic audio ขึ้นไป</li>
+<li>รับ audio กลับมา</li>
+<li>ส่งกลับไปเล่นใน browser</li>
+</ul>
+<p>และกำหนด <code>response_modalities</code> เป็น <code>AUDIO</code> พร้อมใช้เสียง <code>Aoede</code> ค่ะ.<a class="cite" href="#source-6" aria-label="ดูแหล่งอ้างอิง 6">[6]</a></p>
+<section class="guide-section level-3" id="backendrawserver-py"><h3>backend/raw_server.py</h3>
+<p>ไฟล์นี้คือเวอร์ชันเต็มของแอป โดยเพิ่ม:</p>
+<ul class="point-list">
+<li>persona/system instruction ของ Mira</li>
+<li>input/output transcription</li>
+<li>tool declarations</li>
+<li>การจัดการ <code>interrupted</code></li>
+<li>รับ function call แล้วส่ง tool response กลับเข้า session</li>
+</ul>
+<p>พูดง่ายๆ คือ <code>raw_minimal.py</code> เป็นแกนสดๆ ส่วน <code>raw_server.py</code> คือแกนเดียวกันที่ต่อให้เป็นโปรดักต์เดโมใช้งานได้จริงขึ้นค่ะ.<a class="cite" href="#source-7" aria-label="ดูแหล่งอ้างอิง 7">[7]</a></p>
+<section class="guide-section level-3" id="tools"><h3>backend/tools.py</h3>
+<p>ไฟล์นี้ประกาศ tools เช่น:</p>
+<ul class="point-list">
+<li><code>play_playlist</code></li>
+<li><code>play_track</code></li>
+<li><code>skip</code></li>
+<li><code>pause</code></li>
+</ul>
+<p>และมีข้อคิดสำคัญว่าใน live session นั้น <strong>function calls เป็น synchronous</strong> ถ้า tool ตอบช้า เสียง agent จะเงียบระหว่างรอ จึงควรให้ handler <strong>return ให้ไวที่สุด</strong> แล้วค่อยให้ฝั่งอื่นไปจัดการต่อค่ะ.<a class="cite" href="#source-8" aria-label="ดูแหล่งอ้างอิง 8">[8]</a></p>
+<section class="guide-section level-2" id="demo-cautions"><h2>ข้อควรระวังจากเดโม</h2>
+<p>repo นี้มีจุดสอนที่สำคัญมาก 2 อย่างค่ะ</p>
+<section class="guide-section level-3" id="1-session-receive-per-turn-async-generator"><h3>1) session.receive() เป็น per-turn async generator</h3>
+<p>ถ้าเขียนวนอ่านแค่ครั้งเดียว agent จะตอบได้แค่หนึ่งช่วงแล้วเงียบ ต้องมี <code>while True</code> ครอบเพื่อให้คุยต่อเนื่องทั้ง session ค่ะ.<a class="cite" href="#source-5" aria-label="ดูแหล่งอ้างอิง 5">[5]</a><a class="cite" href="#source-6" aria-label="ดูแหล่งอ้างอิง 6">[6]</a><a class="cite" href="#source-7" aria-label="ดูแหล่งอ้างอิง 7">[7]</a></p>
+<section class="guide-section level-3" id="2-mic-sendrealtimeinput"><h3>2) ต้องส่ง mic ผ่าน send_realtime_input</h3>
+<p>repo เตือนว่าถ้าส่งผิดวิธี เช่นใช้ <code>send_client_content</code> แทนในจุดที่ควรเป็น mic realtime โมเดลจะไม่ได้ยินเสียงแบบที่ต้องการค่ะ.<a class="cite" href="#source-5" aria-label="ดูแหล่งอ้างอิง 5">[5]</a></p>
+<section class="guide-section level-2" id="gemini-live-vs-gemini-live-api"><h2>ถ้าหมายถึง “Gemini Live ในแอป” vs “Gemini Live API”</h2>
+<p>ถ้าตีความคำว่า “ของเดิม” ว่า Gemini Live ที่ผู้ใช้คุยในแอป Gemini ความต่างจะประมาณนี้ค่ะ</p>
+<ul class="point-list">
+<li><strong>Gemini Live ในแอป</strong> = ฟีเจอร์สำเร็จรูปสำหรับผู้ใช้ปลายทาง</li>
+<li><strong>Gemini Live API</strong> = เครื่องมือให้นักพัฒนาเอาไปสร้างแอป/บริการของตัวเอง</li>
+</ul>
+<p>ดังนั้น API ตัวนี้ไม่ได้แค่ให้เรา “ใช้ Live” แต่ให้เรา <strong>สร้าง product ของเราเองบน primitive เดียวกัน</strong> ค่ะ.<a class="cite" href="#source-1" aria-label="ดูแหล่งอ้างอิง 1">[1]</a><a class="cite" href="#source-4" aria-label="ดูแหล่งอ้างอิง 4">[4]</a></p>
+<section class="guide-section level-2" id="final-summary"><h2>สรุปสุดท้าย</h2>
+<p>Gemini Live API เหมาะกับงานที่ต้องการ <strong>การคุยด้วยเสียงแบบสดจริง</strong>, <strong>ตอบไว</strong>, <strong>พูดแทรกได้</strong>, <strong>ฟังน้ำเสียงได้</strong>, และ <strong>เรียก tools ไปลงมือทำงานต่อได้</strong> ค่ะ.<a class="cite" href="#source-1" aria-label="ดูแหล่งอ้างอิง 1">[1]</a><a class="cite" href="#source-4" aria-label="ดูแหล่งอ้างอิง 4">[4]</a><a class="cite" href="#source-5" aria-label="ดูแหล่งอ้างอิง 5">[5]</a></p>
+<p>ถ้าเทียบกับ voice/TTS แบบเดิม ความต่างหลักคือ:</p>
+<ul class="point-list">
+<li>เดิม: ข้อความ → เสียง, ทางเดียว</li>
+<li>Live: เสียง ↔ เสียง, สองทางแบบสด</li>
+<li>เดิม: รอคำตอบเสร็จก่อน</li>
+<li>Live: stream คำตอบได้</li>
+<li>เดิม: interrupt ยาก</li>
+<li>Live: barge-in ได้</li>
+<li>เดิม: มักเป็นแค่เสียงพูด</li>
+<li>Live: เป็น <strong>agent</strong> ที่ต่อ tool แล้วสั่งงานจริงได้</li>
+</ul>
+<section class="guide-section sources" id="sources"><h2>Sources</h2><ol class="source-list">
+<li id="source-1"><a href="https://ai.google.dev/gemini-api/docs/live-api" target="_blank" rel="noopener">Gemini Live API overview</a><span>https://ai.google.dev/gemini-api/docs/live-api</span></li>
+<li id="source-4"><a href="https://www.youtube.com/watch?v=pFc-HcUgFgY" target="_blank" rel="noopener">YouTube episode</a><span>https://www.youtube.com/watch?v=pFc-HcUgFgY</span></li>
+<li id="source-5"><a href="https://github.com/cuppibla/live-dj" target="_blank" rel="noopener">live-dj repo</a><span>https://github.com/cuppibla/live-dj</span></li>
+<li id="source-6"><a href="https://raw.githubusercontent.com/cuppibla/live-dj/main/backend/raw_minimal.py" target="_blank" rel="noopener">raw_minimal.py</a><span>https://raw.githubusercontent.com/cuppibla/live-dj/main/backend/raw_minimal.py</span></li>
+<li id="source-7"><a href="https://raw.githubusercontent.com/cuppibla/live-dj/main/backend/raw_server.py" target="_blank" rel="noopener">raw_server.py</a><span>https://raw.githubusercontent.com/cuppibla/live-dj/main/backend/raw_server.py</span></li>
+<li id="source-8"><a href="https://raw.githubusercontent.com/cuppibla/live-dj/main/backend/tools.py" target="_blank" rel="noopener">tools.py</a><span>https://raw.githubusercontent.com/cuppibla/live-dj/main/backend/tools.py</span></li>
+</ol></section>
+    </main>
+  </div>
+</body>
+</html>

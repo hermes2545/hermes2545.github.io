@@ -4,7 +4,7 @@ type: meta
 status: active
 visibility: public
 created: 2026-08-23
-updated: 2026-08-29
+updated: 2026-08-30
 sources: [PROJECT.md, AGENTS.md]
 tags: [library, index]
 ---
@@ -41,6 +41,7 @@ tags: [library, index]
 - [Hermes Agent Concepts for Everyone — Thai Guide](../guides/HERMES_AGENT_CONCEPTS_FOR_EVERYONE_TH.md)
 - [VAULT — คู่มือออกแบบระบบ AI ที่ตรวจสอบได้และควบคุมความเสี่ยง](../guides/VAULT_AI_SAFETY_GUIDE_TH.md)
 - [คู่มือ Hermes Agent Advance Computer Use](../guides/HERMES_AGENT_ADVANCE_COMPUTER_USE_TH.md)
+- [คู่มือ Gemini Live API — สร้าง Voice Agent แบบ Real-Time](../guides/GEMINI_LIVE_API_GUIDE_TH.md)
 
 ## Reports
 

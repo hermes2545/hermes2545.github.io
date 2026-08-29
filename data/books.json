@@ -1,5 +1,16 @@
 [
   {
+    "id": "gemini-live-api-guide",
+    "title": "Gemini Live API — คู่มือสร้าง Voice Agent แบบ Real-Time",
+    "short_title": "Gemini Live API",
+    "href": "Gemini_Live_API_Guide_TH.html",
+    "cover": "assets/covers/custom/gemini-live-api-guide.webp",
+    "category": "AI Voice Agents",
+    "summary": "คู่มือภาษาไทยสรุป Gemini Live API สำหรับสร้าง voice agent แบบ real-time รับเสียง/ภาพ/ข้อความ สตรีมคำตอบ พูดแทรกได้ ถอดเสียงสด แปลเสียงสด และเรียก tools ไปลงมือทำงานจริง",
+    "accent": "#1A73E8",
+    "published_at": "2026-08-30T01:34:32+07:00"
+  },
+  {
     "id": "agent-reach-thai-guide",
     "title": "Agent Reach คู่มือฉบับไทย — ให้ AI Agent มองเห็นทั้งอินเทอร์เน็ต",
     "short_title": "Agent Reach คู่มือฉบับไทย",

@@ -4,7 +4,7 @@ type: meta
 status: active
 visibility: public
 created: 2026-08-23
-updated: 2026-08-29
+updated: 2026-08-30
 sources: [docs/SESSION_HANDOFF.md]
 tags: [library, changelog]
 ---
@@ -108,3 +108,7 @@ tags: [library, changelog]
 - Published the YouTube podcast **Grok AI ทางลัดสำหรับมือใหม่: ต่างจาก Claude, ChatGPT และ DeepSeek อย่างไร?** (`YivD8OO85TM`) on channel **manny calavara** using the approved Glass Spectrum Equalizer. The 18:47 Public video is Not made for kids, uses the owner-supplied custom thumbnail, passed clean copyright checks, includes five verified source URLs in its description, and is verified at position 1 in the exact Public `tech (Ai)` playlist.
 - Added `YivD8OO85TM` locally as Audio Shelf position 1 with a verified 480×360 cover, shifting the prior 51 entries to positions 2–52. Generated `audio-library.html` now contains 52 cards; 87 tests, all four build checks, desktop/mobile first-card geometry, full-catalog search/reset, image integrity, and zero-overflow checks passed. Public Library deployment remains pending the approved scoped push.
 - Published the Audio Shelf addition in commit `091b72f`; local/public/private remote HEADs matched and GitHub Pages run `33207676100` succeeded. Production returned 52 cards with `YivD8OO85TM` first/newest, and the live cover SHA-256 matched Local (`caec7d33…`). Desktop/mobile Production checks confirmed initial 10-item disclosure, full-catalog search returning exactly one new item, reset to 10, correct date/duration/link/cover, and zero horizontal overflow.
+
+## 2026-08-30
+
+- Added **Gemini Live API — คู่มือสร้าง Voice Agent แบบ Real-Time** locally as the 25th Reading entry using the owner-supplied cover normalized to an EXIF-free 600×900 RGB WebP while preserving the visible design. Generated `Gemini_Live_API_Guide_TH.html` from the supplied Markdown into a responsive standalone Thai guide with public source links, catalogued it under `AI Voice Agents`, regenerated `index.html`, and verified desktop/mobile Reading shelf plus guide layouts locally. Public Library deployment remains pending a separate explicit push/publish instruction.

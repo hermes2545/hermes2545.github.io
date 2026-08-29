@@ -1,6 +1,6 @@
 # The Knowledge Shelf — Session Handoff
 
-**Updated:** 2026-08-29
+**Updated:** 2026-08-30
 
 **Public site:** https://hermes2545.github.io/
 
@@ -16,17 +16,18 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with f
 
 ### Reading collection
 
-- 24 standalone HTML guides indexed from `data/books.json`.
+- 25 standalone HTML guides indexed from `data/books.json`.
 - The Reading storefront title is **Coffee and Books**. Its environment uses a bright sunlit outdoor garden photograph containing only trees, foliage, grass, and natural daylight, plus heavy translucent iOS-inspired glass walls and shelves and one seamless user-approved 1044×237 retouched header image. The header removes baked UI on the left while preserving the original cup, latte art, table, garden, and lighting on the right; the site logo and title remain semantic HTML.
 - The Navigation bar, Title banner, Reading/Search panel, and Bookshelf panel share one responsive width: 1180px maximum on desktop and the same 4px side gutters on mobile. The garden wallpaper uses the photograph's natural color with no brightness/saturation/contrast filter and no color-wash overlay. The retouched header image uses `cover`, so no blank cream strip appears when the banner widens.
 - Coffee and Books styles live only in `assets/css/reading-library.css`, loaded only by the Reading template. Shared `assets/css/library.css` is restored byte-for-byte to the pre-Coffee `ca74827` baseline so the App and Audio collections cannot inherit the Reading wallpaper, glass panels, geometry, or header treatment.
 - Book titles and publish dates above each cover are intentionally text-only: no label panel, border, shadow, or metadata backdrop. Readability comes from dark typography and restrained text shadow while the book covers remain dominant.
-- `AgentReach_Thai_Guide.html` is the newest local guide: the owner-supplied 170,001-byte HTML is preserved byte-for-byte at SHA-256 `e3c92f5eafafdf8b498a593fc825f11c1f2bb78cb479a6d6e94ea436bd1bad90`, with 10 responsive sections/navigation items and the supplied artwork normalized only to a 600×900 EXIF-free RGB WebP.
+- `Gemini_Live_API_Guide_TH.html` is the newest local Reading guide: generated from the owner-supplied Markdown summary into a responsive Thai HTML guide about Gemini Live API use cases, differences from TTS/AI voice, live transcription/translation, barge-in, and tool use. Its owner-supplied cover is normalized only to an EXIF-free 600×900 RGB WebP at `assets/covers/custom/gemini-live-api-guide.webp`. Public deployment remains pending an explicit Reading push/publish instruction.
+- `AgentReach_Thai_Guide.html` is the previous newest guide: the owner-supplied 170,001-byte HTML is preserved byte-for-byte at SHA-256 `e3c92f5eafafdf8b498a593fc825f11c1f2bb78cb479a6d6e94ea436bd1bad90`, with 10 responsive sections/navigation items and the supplied artwork normalized only to a 600×900 EXIF-free RGB WebP.
 - The imported `hermes-memory` and `hermes-guardian` repositories retain their original source commits under dedicated subdirectories.
 - Shelf-facing titles remain Thai-first except the user-specified English titles **Claude Prompt Caching** and **Grok Bot vs Claude Code vs Codex**, while necessary product and technical terms are retained.
 - Newest publication appears at the upper-left, then flows right and downward.
 - Every guide opens in a new browser tab.
-- All 24 reading books use individually designed or owner-approved 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork. The newest Agent Reach guide and Computer Use guide use owner-supplied final covers without redesign.
+- All 25 reading books use individually designed or owner-approved 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork. The newest Gemini Live API, Agent Reach guide, and Computer Use guide use owner-supplied final covers without redesign.
 - Reproducible cover designs live under `templates/`, including `grok-bot-vs-claude-codex-cover.template.html`, `claude-prompt-caching-cover.template.html`, `vault-ai-safety-cover.template.html`, `agent-reach-comparison-cover.template.html`, and `hermes-concepts-for-everyone-cover.template.html`; legacy Facebook assets remain archived but unused.
 - **Claude Prompt Caching** is a byte-preserved user-supplied interactive guide dated 21 June 2026. Its cover uses the officially documented Claude Code Spark cue in an independent editorial context with a visible non-affiliation notice.
 - **Grok Bot vs Claude Code vs Codex** is an 11-view standalone comparison with 13 official sources and embedded transparent Grok/Claude/Codex logo assets. Its editorial cover distinguishes a persistent teammate from temporary spawned workers and carries a visible non-affiliation notice.
@@ -107,7 +108,7 @@ python scripts/build_gallery.py --check
 git diff --check
 ```
 
-Expected verified result at close: **87 tests passed**, all four generated pages current, and no diff-check errors.
+Expected verified result at close: **90 tests passed**, all four generated pages current, and no diff-check errors.
 
 ## Publication workflow
 
@@ -127,9 +128,20 @@ Expected verified result at close: **87 tests passed**, all four generated pages
 
 ## Next recommended step
 
-No implementation task is pending. The Grok AI beginner podcast and its 52nd Audio Shelf entry are Public and production-verified. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
+Gemini Live API Reading guide is implemented locally and verified but not published. Next step, if approved in a current turn, is a scoped commit/push to both Library remotes and GitHub Pages production verification. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
 
-## Latest close checkpoint — 2026-08-29
+## Latest close checkpoint — 2026-08-30
+
+- Added local Reading guide **Gemini Live API — คู่มือสร้าง Voice Agent แบบ Real-Time** at `Gemini_Live_API_Guide_TH.html` and catalog ID `gemini-live-api-guide`.
+- Owner-supplied cover was normalized only for shelf requirements to `assets/covers/custom/gemini-live-api-guide.webp` as a 600×900 RGB WebP; no redesign was applied.
+- Reading now contains 25 local books; the Gemini Live API entry is first/newest with `publish on 30/08/2026` and category plaque `AI Voice Agents`.
+- Verification passed: focused Gemini tests, full `python -m unittest discover -s tests -v` with **90 tests**, all four generator `--check` commands, and `git diff --check`.
+- Local HTTP/headless Chrome screenshots passed for Reading desktop/mobile and guide desktop/mobile; the guide horizontal overflow was fixed with page-level overflow containment.
+- Pre-share scan of intended public files found no private local paths, cache paths, tokens, or credential patterns. All six external source URLs returned HTTP 200.
+- Public deployment is pending; no commit or push has been made for this Reading addition.
+- Temporary local HTTP server `proc_29c02dcc191d` was used for preview and should be stopped before session close if still running.
+
+## Previous close checkpoint — 2026-08-29
 
 - Gallery content commit: `68448291cfb5db7eda3f373e19612f1eed5cc7aa` (`Add two Gallery infographics`).
 - Local `main`, public `origin/main`, and private `backup/main` matched at that content commit before this close-document update.
