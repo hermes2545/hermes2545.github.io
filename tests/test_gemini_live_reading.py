@@ -41,6 +41,7 @@ class GeminiLiveReadingGuideTests(unittest.TestCase):
             self.assertIn(section, html)
         self.assertEqual(html.count('<section class="sec'), 10)
         self.assertEqual(html.count('class="nav-item"'), 10)
+        self.assertNotIn("gemini-live-api-guide.webp", html)
         for marker in (
             "localStorage",
             "navigator.clipboard",
