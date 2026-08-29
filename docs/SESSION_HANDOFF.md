@@ -128,18 +128,19 @@ Expected verified result at close: **90 tests passed**, all four generated pages
 
 ## Next recommended step
 
-Gemini Live API Reading guide is implemented locally and verified but not published. Next step, if approved in a current turn, is a scoped commit/push to both Library remotes and GitHub Pages production verification. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
+Gemini Live API Reading guide was published and production-verified in commit `6983d66`; only this close-document update may remain after that content commit. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
 
 ## Latest close checkpoint — 2026-08-30
 
 - Added local Reading guide **Gemini Live API — คู่มือสร้าง Voice Agent แบบ Real-Time** at `Gemini_Live_API_Guide_TH.html` and catalog ID `gemini-live-api-guide`.
 - Owner-supplied cover was normalized only for shelf requirements to `assets/covers/custom/gemini-live-api-guide.webp` as a 600×900 RGB WebP; no redesign was applied.
 - Reading now contains 25 local books; the Gemini Live API entry is first/newest with `publish on 30/08/2026` and category plaque `AI Voice Agents`.
-- Verification passed: focused Gemini tests, full `python -m unittest discover -s tests -v` with **90 tests**, all four generator `--check` commands, and `git diff --check`.
-- Local HTTP/headless Chrome screenshots passed for Reading desktop/mobile and guide desktop/mobile; the guide horizontal overflow was fixed with page-level overflow containment.
+- Verification before the content push passed: focused Gemini tests, full `python -m unittest discover -s tests -v` with **90 tests**, all four generator `--check` commands, and `git diff --check`.
+- Published content commit `6983d66cb88902628d7e68d40a5a33c9431d21e4` to both public `origin/main` and private `backup/main`; both remotes read back that exact SHA.
+- Production read-back matched Local SHA-256 for `Gemini_Live_API_Guide_TH.html` (`b5016e3…`), `assets/covers/custom/gemini-live-api-guide.webp` (`d502d4a…`), and `index.html` (`07d7274…`).
+- Production returned 25 Reading cards with Gemini Live API first/newest; production desktop/mobile DOM confirmed 29 guide sections, 600×900 cover loading, and no horizontal overflow.
 - Pre-share scan of intended public files found no private local paths, cache paths, tokens, or credential patterns. All six external source URLs returned HTTP 200.
-- Public deployment is pending; no commit or push has been made for this Reading addition.
-- Temporary local HTTP server `proc_29c02dcc191d` was used for preview and should be stopped before session close if still running.
+- Temporary local HTTP server `proc_29c02dcc191d` exited after preview; no Library preview server remains running.
 
 ## Previous close checkpoint — 2026-08-29
 

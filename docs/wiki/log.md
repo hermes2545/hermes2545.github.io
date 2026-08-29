@@ -111,4 +111,4 @@ tags: [library, changelog]
 
 ## 2026-08-30
 
-- Added **Gemini Live API — คู่มือสร้าง Voice Agent แบบ Real-Time** locally as the 25th Reading entry using the owner-supplied cover normalized to an EXIF-free 600×900 RGB WebP while preserving the visible design. Generated `Gemini_Live_API_Guide_TH.html` from the supplied Markdown into a responsive standalone Thai guide with public source links, catalogued it under `AI Voice Agents`, regenerated `index.html`, and verified desktop/mobile Reading shelf plus guide layouts locally. Public Library deployment remains pending a separate explicit push/publish instruction.
+- Published **Gemini Live API — คู่มือสร้าง Voice Agent แบบ Real-Time** in commit `6983d66`; public and private remote HEADs matched, Production returned 25 Reading cards with the Gemini entry first/newest, and live HTML/index/cover hashes matched Local. Production desktop/mobile DOM confirmed 29 guide sections, 600×900 cover loading, and no horizontal overflow.
