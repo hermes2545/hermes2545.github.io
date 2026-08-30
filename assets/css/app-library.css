@@ -22,6 +22,7 @@
 }
 .app-page::before { opacity: .05; }
 .app-page .ambient-light {
+  display: none;
   left: 0;
   width: 100%;
   transform: none;

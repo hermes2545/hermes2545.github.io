@@ -257,6 +257,7 @@ class AppLibraryTests(unittest.TestCase):
         self.assertIn('url("../app-room/owner-supplied-pantip-plaza-wallpaper.webp")', stylesheet)
         self.assertIn("backdrop-filter: blur(24px) saturate(1.22)", stylesheet)
         self.assertIn(".app-page .ambient-light", stylesheet)
+        self.assertIn("display: none;", stylesheet)
         self.assertIn("overflow-x: clip;", stylesheet)
         self.assertIn("width: 100%;", stylesheet)
         self.assertIn("transform: none;", stylesheet)
