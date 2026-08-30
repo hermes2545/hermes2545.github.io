@@ -21,7 +21,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with f
 
 ### Reading collection
 
-- 26 standalone HTML guides indexed from `data/books.json`.
+- 27 standalone HTML guides indexed from `data/books.json`.
 - The Reading storefront title is **Coffee and Books**. Its environment uses a bright sunlit outdoor garden photograph containing only trees, foliage, grass, and natural daylight, plus heavy translucent iOS-inspired glass walls and shelves and one seamless user-approved 1044×237 retouched header image. The header removes baked UI on the left while preserving the original cup, latte art, table, garden, and lighting on the right; the site logo and title remain semantic HTML.
 - The Navigation bar, Title banner, Reading/Search panel, and Bookshelf panel share one responsive width: 1180px maximum on desktop and the same 4px side gutters on mobile. The garden wallpaper uses the photograph's natural color with no brightness/saturation/contrast filter and no color-wash overlay. The retouched header image uses `cover`, so no blank cream strip appears when the banner widens.
 - Coffee and Books styles live only in `assets/css/reading-library.css`, loaded only by the Reading template. Shared `assets/css/library.css` is restored byte-for-byte to the pre-Coffee `ca74827` baseline so the App and Audio collections cannot inherit the Reading wallpaper, glass panels, geometry, or header treatment.
@@ -33,7 +33,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with f
 - Shelf-facing titles remain Thai-first except the user-specified English titles **Claude Prompt Caching** and **Grok Bot vs Claude Code vs Codex**, while necessary product and technical terms are retained.
 - Newest publication appears at the upper-left, then flows right and downward.
 - Every guide opens in a new browser tab.
-- All 26 reading books use individually designed or owner-approved 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork. The newest Profile Migration guide, Gemini Live API, Agent Reach guide, and Computer Use guide use owner-supplied final covers without redesign.
+- All 27 reading books use individually designed or owner-approved 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork. The newest Visual Art Director Agent manual, Profile Migration guide, Gemini Live API, Agent Reach guide, and Computer Use guide use owner-supplied final covers without redesign.
 - Reproducible cover designs live under `templates/`, including `grok-bot-vs-claude-codex-cover.template.html`, `claude-prompt-caching-cover.template.html`, `vault-ai-safety-cover.template.html`, `agent-reach-comparison-cover.template.html`, and `hermes-concepts-for-everyone-cover.template.html`; legacy Facebook assets remain archived but unused.
 - **Claude Prompt Caching** is a byte-preserved user-supplied interactive guide dated 21 June 2026. Its cover uses the officially documented Claude Code Spark cue in an independent editorial context with a visible non-affiliation notice.
 - **Grok Bot vs Claude Code vs Codex** is an 11-view standalone comparison with 13 official sources and embedded transparent Grok/Claude/Codex logo assets. Its editorial cover distinguishes a persistent teammate from temporary spawned workers and carries a visible non-affiliation notice.
@@ -114,7 +114,7 @@ python scripts/build_gallery.py --check
 git diff --check
 ```
 
-Expected verified result at close: **93 tests passed**, all four generated pages current, and no diff-check errors.
+Expected verified result at close: **96 tests passed**, all four generated pages current, and no diff-check errors.
 
 ## Publication workflow
 
@@ -134,9 +134,17 @@ Expected verified result at close: **93 tests passed**, all four generated pages
 
 ## Next recommended step
 
-Profile Migration guide was added locally and approved for publication in the current turn. After push, verify `Hermes_Profile_Migration_Linux_Server_Guide_TH.html`, Reading count 26, cover hash/dimensions, and production mobile/desktop manual shape. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
+Visual Art Director Agent manual was added locally and approved for publication in the current turn. After push, verify `Visual_Art_Director_Agent_Interactive_Manual.html`, Reading count 27, cover hash/dimensions, and production mobile/desktop manual shape. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
 
 ## Latest close checkpoint — 2026-08-30
+
+- Added local Reading guide **Visual Art Director Agent — Interactive Reference Manual** at `Visual_Art_Director_Agent_Interactive_Manual.html` and catalog ID `visual-art-director-agent`.
+- Preserved the owner-supplied HTML byte-for-byte at SHA-256 `2817badb48fb59f89e76a68a678f93eb80dc31fe796b5f07fe8fa6f87fc1b58e`, with 11 chapter views/navigation items, localStorage, clipboard copy controls, print CSS, desktop/mobile layout, and no reader-facing `ค่ะ`.
+- Owner-supplied Visual Art Director cover was normalized only for shelf requirements to `assets/covers/custom/visual-art-director-agent.webp` as an EXIF-free 600×900 RGB WebP.
+- Reading now contains 27 local books; the Visual Art Director entry is first/newest with category plaque `AI Design Workflow`.
+- Verification before push passed: focused Visual Art Director tests, full `python -m unittest discover -s tests -v` with **96 tests**, all four generator `--check` commands, and `git diff --check`.
+
+## Previous close checkpoint — 2026-08-30
 
 - Added local Reading guide **คู่มือย้าย Hermes Profile ไปยัง Linux Server เครื่องใหม่** at `Hermes_Profile_Migration_Linux_Server_Guide_TH.html` and catalog ID `hermes-profile-migration-linux-server-guide`.
 - Built the guide from the owner-supplied Markdown into the established 10-view interactive manual pattern: 10 `sec` views, 10 `nav-item` controls, sidebar/topbar navigation, hash routing, `localStorage`, `navigator.clipboard`, `searchResults`, theme/font controls, copy buttons, and print CSS.

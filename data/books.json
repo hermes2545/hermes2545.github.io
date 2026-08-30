@@ -1,5 +1,16 @@
 [
   {
+    "id": "visual-art-director-agent",
+    "title": "Visual Art Director Agent — Interactive Reference Manual",
+    "short_title": "Visual Art Director Agent",
+    "href": "Visual_Art_Director_Agent_Interactive_Manual.html",
+    "cover": "assets/covers/custom/visual-art-director-agent.webp",
+    "category": "AI Design Workflow",
+    "summary": "คู่มือ Interactive Reference Manual สำหรับสอน AI Agent ให้ทำงานเป็น Art Director ด้านภาพอย่างมืออาชีพ ตั้งแต่ art direction, model routing, image generation, graphic finishing, prompt compiler, quality review และ final delivery",
+    "accent": "#0CA5C6",
+    "published_at": "2026-08-30T14:39:48+07:00"
+  },
+  {
     "id": "hermes-profile-migration-linux-server-guide",
     "title": "คู่มือย้าย Hermes Profile ไปยัง Linux Server เครื่องใหม่",
     "short_title": "Hermes Profile Migration",
