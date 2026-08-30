@@ -1,5 +1,16 @@
 [
   {
+    "id": "hermes-profile-migration-linux-server-guide",
+    "title": "คู่มือย้าย Hermes Profile ไปยัง Linux Server เครื่องใหม่",
+    "short_title": "Hermes Profile Migration",
+    "href": "Hermes_Profile_Migration_Linux_Server_Guide_TH.html",
+    "cover": "assets/covers/custom/hermes-profile-migration-linux-server-guide.webp",
+    "category": "Hermes Guide",
+    "summary": "คู่มือย้าย Hermes Agent profile ระหว่าง Linux Server แบบปลอดภัย ตั้งแต่ intake, inventory, backup, secrets/OAuth, gateway, cron, verification, rollback และ handoff โดยไม่ blind copy secrets หรือเปิดงานซ้ำสองเครื่อง",
+    "accent": "#008AA6",
+    "published_at": "2026-08-30T14:12:57+07:00"
+  },
+  {
     "id": "gemini-live-api-guide",
     "title": "Gemini Live API — คู่มือสร้าง Voice Agent แบบ Real-Time",
     "short_title": "Gemini Live API",

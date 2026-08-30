@@ -14,20 +14,26 @@
 
 The site is a static GitHub Pages library branded **The Knowledge Shelf** with four generated collections: Reading, Audio, App, and Gallery.
 
+### Workflow policy
+
+- Owner-confirmed skill fidelity rule: reuse recorded original skill/runbook/history patterns by default for every Library workflow. Ask before changing established formats, methods, role splits, artifact structures, or verification patterns unless the owner explicitly requests a different approach in the current task.
+- Non-trivial multi-part work should use Shelfkeeper as orchestrator with worker/reviewer specialist agents when prior pattern or risk calls for it. Inspect project history first; if no pattern exists, design a new workflow deliberately and record it after verification.
+
 ### Reading collection
 
-- 25 standalone HTML guides indexed from `data/books.json`.
+- 26 standalone HTML guides indexed from `data/books.json`.
 - The Reading storefront title is **Coffee and Books**. Its environment uses a bright sunlit outdoor garden photograph containing only trees, foliage, grass, and natural daylight, plus heavy translucent iOS-inspired glass walls and shelves and one seamless user-approved 1044×237 retouched header image. The header removes baked UI on the left while preserving the original cup, latte art, table, garden, and lighting on the right; the site logo and title remain semantic HTML.
 - The Navigation bar, Title banner, Reading/Search panel, and Bookshelf panel share one responsive width: 1180px maximum on desktop and the same 4px side gutters on mobile. The garden wallpaper uses the photograph's natural color with no brightness/saturation/contrast filter and no color-wash overlay. The retouched header image uses `cover`, so no blank cream strip appears when the banner widens.
 - Coffee and Books styles live only in `assets/css/reading-library.css`, loaded only by the Reading template. Shared `assets/css/library.css` is restored byte-for-byte to the pre-Coffee `ca74827` baseline so the App and Audio collections cannot inherit the Reading wallpaper, glass panels, geometry, or header treatment.
 - Book titles and publish dates above each cover are intentionally text-only: no label panel, border, shadow, or metadata backdrop. Readability comes from dark typography and restrained text shadow while the book covers remain dominant.
-- `Gemini_Live_API_Guide_TH.html` is the newest Reading guide: after owner feedback it was rebuilt from the provisional article layout into the same Interactive Reference Manual pattern used by the latest successful book work (`interactive-reference-manuals` + owner-supplied catalog artifacts). It now has sidebar/topbar navigation, 10 switchable views, hash navigation, search, theme/font state, copy control, print mode, and reader-facing Thai without `ค่ะ`. A later owner correction removed the cover image from the Overview content; the owner-supplied cover remains only as the shelf/catalog cover normalized to an EXIF-free 600×900 RGB WebP at `assets/covers/custom/gemini-live-api-guide.webp`.
+- `Gemini_Live_API_Guide_TH.html` is the previous newest Reading guide: after owner feedback it was rebuilt from the provisional article layout into the same Interactive Reference Manual pattern used by the latest successful book work (`interactive-reference-manuals` + owner-supplied catalog artifacts). It now has sidebar/topbar navigation, 10 switchable views, hash navigation, search, theme/font state, copy control, print mode, and reader-facing Thai without `ค่ะ`. A later owner correction removed the cover image from the Overview content; the owner-supplied cover remains only as the shelf/catalog cover normalized to an EXIF-free 600×900 RGB WebP at `assets/covers/custom/gemini-live-api-guide.webp`.
+- `Hermes_Profile_Migration_Linux_Server_Guide_TH.html` is the newest Reading guide: built from the owner-supplied Markdown source into the established 10-view `interactive-reference-manuals` pattern with sidebar/topbar navigation, hash routing, search, theme/font controls, copy buttons, print mode, and no reader-facing `ค่ะ`. The large “คู่มือย้าย Hermes Profile” hero appears only in the Overview view per owner correction, not above every menu. The owner-supplied cover is used only as the shelf/catalog cover at `assets/covers/custom/hermes-profile-migration-linux-server-guide.webp`, normalized to EXIF-free 600×900 RGB WebP.
 - `AgentReach_Thai_Guide.html` is the previous newest guide: the owner-supplied 170,001-byte HTML is preserved byte-for-byte at SHA-256 `e3c92f5eafafdf8b498a593fc825f11c1f2bb78cb479a6d6e94ea436bd1bad90`, with 10 responsive sections/navigation items and the supplied artwork normalized only to a 600×900 EXIF-free RGB WebP.
 - The imported `hermes-memory` and `hermes-guardian` repositories retain their original source commits under dedicated subdirectories.
 - Shelf-facing titles remain Thai-first except the user-specified English titles **Claude Prompt Caching** and **Grok Bot vs Claude Code vs Codex**, while necessary product and technical terms are retained.
 - Newest publication appears at the upper-left, then flows right and downward.
 - Every guide opens in a new browser tab.
-- All 25 reading books use individually designed or owner-approved 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork. The newest Gemini Live API, Agent Reach guide, and Computer Use guide use owner-supplied final covers without redesign.
+- All 26 reading books use individually designed or owner-approved 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork. The newest Profile Migration guide, Gemini Live API, Agent Reach guide, and Computer Use guide use owner-supplied final covers without redesign.
 - Reproducible cover designs live under `templates/`, including `grok-bot-vs-claude-codex-cover.template.html`, `claude-prompt-caching-cover.template.html`, `vault-ai-safety-cover.template.html`, `agent-reach-comparison-cover.template.html`, and `hermes-concepts-for-everyone-cover.template.html`; legacy Facebook assets remain archived but unused.
 - **Claude Prompt Caching** is a byte-preserved user-supplied interactive guide dated 21 June 2026. Its cover uses the officially documented Claude Code Spark cue in an independent editorial context with a visible non-affiliation notice.
 - **Grok Bot vs Claude Code vs Codex** is an 11-view standalone comparison with 13 official sources and embedded transparent Grok/Claude/Codex logo assets. Its editorial cover distinguishes a persistent teammate from temporary spawned workers and carries a visible non-affiliation notice.
@@ -108,7 +114,7 @@ python scripts/build_gallery.py --check
 git diff --check
 ```
 
-Expected verified result at close: **90 tests passed**, all four generated pages current, and no diff-check errors.
+Expected verified result at close: **93 tests passed**, all four generated pages current, and no diff-check errors.
 
 ## Publication workflow
 
@@ -128,9 +134,18 @@ Expected verified result at close: **90 tests passed**, all four generated pages
 
 ## Next recommended step
 
-Gemini Live API Reading guide has been corrected and published to the latest successful interactive-manual book pattern after owner feedback. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
+Profile Migration guide was added locally and approved for publication in the current turn. After push, verify `Hermes_Profile_Migration_Linux_Server_Guide_TH.html`, Reading count 26, cover hash/dimensions, and production mobile/desktop manual shape. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
 
 ## Latest close checkpoint — 2026-08-30
+
+- Added local Reading guide **คู่มือย้าย Hermes Profile ไปยัง Linux Server เครื่องใหม่** at `Hermes_Profile_Migration_Linux_Server_Guide_TH.html` and catalog ID `hermes-profile-migration-linux-server-guide`.
+- Built the guide from the owner-supplied Markdown into the established 10-view interactive manual pattern: 10 `sec` views, 10 `nav-item` controls, sidebar/topbar navigation, hash routing, `localStorage`, `navigator.clipboard`, `searchResults`, theme/font controls, copy buttons, and print CSS.
+- Applied the owner correction that the large “คู่มือย้าย Hermes Profile” hero/header appears only in the first Overview view, not above every menu.
+- Owner-supplied cover was normalized only for shelf requirements to `assets/covers/custom/hermes-profile-migration-linux-server-guide.webp` as an EXIF-free 600×900 RGB WebP.
+- Reading now contains 26 local books; the Profile Migration entry is first/newest with category plaque `Hermes Guide`.
+- Verification before push passed: focused Profile Migration tests, full `python -m unittest discover -s tests -v` with **93 tests**, all four generator `--check` commands, and `git diff --check`.
+
+## Previous close checkpoint — 2026-08-30
 
 - Added local Reading guide **Gemini Live API — คู่มือสร้าง Voice Agent แบบ Real-Time** at `Gemini_Live_API_Guide_TH.html` and catalog ID `gemini-live-api-guide`.
 - Owner-supplied cover was normalized only for shelf requirements to `assets/covers/custom/gemini-live-api-guide.webp` as a 600×900 RGB WebP; no redesign was applied.

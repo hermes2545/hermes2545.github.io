@@ -1,0 +1,1205 @@
+<!doctype html>
+<html lang="th" data-theme="light" data-fs="1">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>คู่มือย้าย Hermes Profile ไปยัง Linux Server เครื่องใหม่</title>
+<meta name="description" content="Interactive manual สำหรับย้าย Hermes Profile ไปยัง Linux Server เครื่องใหม่แบบปลอดภัย พร้อม intake, inventory, secrets, gateway, cron, verification และ handoff">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=swap">
+<style>
+:root{--p:#725c00;--on-p:#fff;--p-c:#ffdf86;--on-p-c:#241a00;--s-c:#ece0c2;--on-s-c:#211b0b;--t-c:#ffd9d4;--on-t-c:#3b0804;--ok-c:#bdecc7;--on-ok-c:#073915;--surf:#fff9ef;--on-surf:#211b14;--on-surf-var:#5a5146;--sc-lowest:#fffefb;--sc-low:#f7efe2;--sc:#f0e7d8;--sc-high:#e7dcc9;--outline:#827568;--outline-var:#d3c5b5;--code-bg:#15110d;--code-fg:#f7e7c6;color-scheme:light}
+:root[data-theme="dark"]{--p:#e6c45d;--on-p:#3c2f00;--p-c:#554500;--on-p-c:#ffdf86;--s-c:#4c4635;--on-s-c:#ece0c2;--t-c:#633a35;--on-t-c:#ffd9d4;--ok-c:#20522b;--on-ok-c:#bdecc7;--surf:#12100c;--on-surf:#eee1d1;--on-surf-var:#d3c5b5;--sc-lowest:#0c0a08;--sc-low:#1c1711;--sc:#241e16;--sc-high:#30281d;--outline:#9d8f80;--outline-var:#50463b;--code-bg:#050403;--code-fg:#f6e7ca;color-scheme:dark}
+*{box-sizing:border-box}html{font-size:16px;-webkit-text-size-adjust:100%;scroll-behavior:smooth;max-width:100%;overflow-x:hidden}html[data-fs="0"]{font-size:14px}html[data-fs="1"]{font-size:16px}html[data-fs="2"]{font-size:18px}html[data-fs="3"]{font-size:20px}
+body{margin:0;background:radial-gradient(circle at 10% 0%,rgba(230,196,93,.22),transparent 26rem),radial-gradient(circle at 90% 18%,rgba(138,80,44,.15),transparent 26rem),var(--surf);color:var(--on-surf);font-family:"Sarabun","Noto Sans Thai",system-ui,sans-serif;line-height:1.72;max-width:100%;overflow-x:hidden}
+h1,h2,h3,h4,.disp,.label,.nav-item,.btn,.chip{font-family:"Bai Jamjuree","Sarabun",sans-serif;text-wrap:balance}h1,h2,h3,h4{margin:0;line-height:1.28}p{margin:.45rem 0}a{color:var(--p);text-underline-offset:3px}code,kbd,pre,.mono{font-family:"JetBrains Mono",ui-monospace,monospace}:focus-visible{outline:3px solid var(--p);outline-offset:2px;border-radius:8px}.ico{font-family:"Material Symbols Rounded";font-weight:normal;font-style:normal;font-size:1.25rem;line-height:1;display:inline-flex;align-items:center;justify-content:center;flex:none}.sr{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.shell{display:flex;min-height:100vh}.topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:.5rem;min-height:64px;padding:.6rem .9rem;background:color-mix(in srgb,var(--sc) 94%,transparent);backdrop-filter:blur(18px);border-bottom:1px solid var(--outline-var)}.brand{display:flex;align-items:center;gap:.7rem;min-width:0;flex:1}.brand-mark{width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,#18110a,#9d7c1d 55%,#ffe0a1);display:grid;place-items:center;color:#fff;box-shadow:0 12px 30px rgba(83,62,8,.28)}.brand-txt{min-width:0}.brand-txt b{display:block;font-family:"Bai Jamjuree";white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.brand-txt span{display:block;font-size:.75rem;color:var(--on-surf-var);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.iconbtn,.btn{border:0;cursor:pointer}.iconbtn{width:44px;height:44px;border-radius:999px;background:transparent;color:var(--on-surf-var);display:grid;place-items:center}.iconbtn:hover,.iconbtn[aria-pressed="true"]{background:var(--s-c);color:var(--on-s-c)}.fsgroup{display:flex;align-items:center;gap:2px;background:var(--sc-high);border-radius:999px;padding:2px}.fsgroup .iconbtn{width:36px;height:36px}.fslabel{min-width:2.2rem;text-align:center;font-size:.78rem;font-weight:700;color:var(--on-surf-var)}
+.nav{flex:none;width:310px;height:100vh;position:sticky;top:0;align-self:flex-start;overflow-y:auto;padding:1rem .75rem 3rem;background:var(--sc-low);border-right:1px solid var(--outline-var)}.nav-title{font:.72rem/1.4 "Bai Jamjuree";font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--on-surf-var);padding:.55rem .9rem}.nav-item{display:flex;align-items:center;gap:.8rem;width:100%;padding:.62rem .9rem;margin:0 0 2px;border:0;border-radius:999px;background:transparent;color:var(--on-surf-var);font-size:.92rem;font-weight:600;text-align:left;line-height:1.35;cursor:pointer}.nav-item:hover{background:color-mix(in srgb,var(--on-surf) 8%,transparent)}.nav-item[aria-current="true"]{background:var(--s-c);color:var(--on-s-c)}.nav-num{margin-left:auto;font-size:.72rem;opacity:.55}.main{flex:1;min-width:0;display:flex;flex-direction:column}.content{width:min(1160px,100%);padding:1.6rem clamp(1rem,4vw,2.8rem) 5rem}.sec{display:none;animation:fade .28s ease}.sec.on{display:block}html[data-all="1"] .sec{display:block;margin-bottom:3rem}@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){.sec{animation:none}*{transition:none!important}}
+.scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:45}.scrim.on{display:block}.hero{display:grid;gap:1rem;margin-bottom:1.2rem}.eyebrow{display:inline-flex;align-items:center;gap:.4rem;font-size:.74rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--p)}.sec>h2{font-size:clamp(1.6rem,3.6vw,2.3rem);font-weight:700;margin:.35rem 0 .8rem}.disp{font-size:clamp(2.4rem,7vw,5.2rem);letter-spacing:-.05em;line-height:1.02}.grad{background:linear-gradient(135deg,#24180a,#8c6b12,#e2bd55);-webkit-background-clip:text;background-clip:text;color:transparent}.lede{font-size:1.08rem;color:var(--on-surf-var);max-width:76ch}.section-card{background:var(--sc-lowest);border:1px solid var(--outline-var);border-radius:22px;padding:clamp(1rem,3vw,1.55rem);box-shadow:0 18px 50px rgba(54,36,10,.08)}.section-card h3.phase{font-size:1.35rem;margin:1.1rem 0 .35rem;color:var(--p)}.section-card h3{font-size:1.18rem;margin:1rem 0 .25rem}.section-card h4{font-size:1.02rem;margin:.85rem 0 .15rem;color:var(--on-surf)}.section-card ul{margin:.35rem 0 .8rem;padding-left:1.25rem}.section-card li{margin:.2rem 0}.checklist{list-style:none;padding-left:0!important}.checklist li{display:flex;gap:.55rem;align-items:flex-start}.box{width:1.05rem;height:1.05rem;border-radius:4px;border:1.8px solid var(--outline);display:inline-grid;place-items:center;margin-top:.38rem;font-size:.75rem;flex:none}.callout{border-radius:16px;border:1px solid var(--outline-var);background:var(--sc);padding:.9rem 1rem;margin:.7rem 0}.callout.warn{background:var(--t-c);color:var(--on-t-c);border-color:transparent}.chips{display:flex;flex-wrap:wrap;gap:.42rem;margin:.6rem 0}.chip{display:inline-flex;align-items:center;gap:.35rem;border:1px solid var(--outline-var);border-radius:999px;padding:.28rem .68rem;background:var(--sc-high);font-size:.78rem;font-weight:700}.chip.pri{background:var(--p-c);color:var(--on-p-c);border-color:transparent}.chip.ok{background:var(--ok-c);color:var(--on-ok-c);border-color:transparent}
+.cmd{background:var(--code-bg);border-radius:14px;overflow:hidden;border:1px solid var(--outline-var);margin:.75rem 0}.cmd-head{display:flex;align-items:center;gap:.5rem;padding:.45rem .5rem .45rem .85rem;background:color-mix(in srgb,var(--code-fg) 8%,var(--code-bg))}.cmd-title{font-size:.78rem;font-weight:700;color:var(--code-fg);opacity:.82;flex:1}.cmd pre{margin:0;padding:.85rem 1rem;overflow-x:auto;color:var(--code-fg);font-size:.86rem;line-height:1.75;white-space:pre}.copy{display:inline-flex;align-items:center;border:0;cursor:pointer;background:color-mix(in srgb,var(--code-fg) 14%,transparent);color:var(--code-fg);font-family:"Bai Jamjuree";font-size:.78rem;font-weight:700;padding:.35rem .75rem;border-radius:999px}.copy.done{background:var(--ok-c);color:var(--on-ok-c)}code.inl{background:var(--sc-high);border:1px solid var(--outline-var);border-radius:6px;padding:.08em .4em;font-size:.86em;word-break:break-word}.top-actions{display:flex;flex-wrap:wrap;gap:.65rem;margin-top:.9rem}.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.72rem 1rem;border-radius:999px;background:var(--p);color:var(--on-p);font-weight:700;text-decoration:none}.btn.ghost{background:var(--sc-high);color:var(--on-surf)}.searchbox{position:relative;margin:1rem 0}.searchbox input{width:100%;border:1px solid var(--outline-var);border-radius:999px;background:var(--sc-lowest);color:var(--on-surf);padding:.8rem 1rem;font:inherit}.results{display:none;position:absolute;inset-inline:0;top:calc(100% + .35rem);background:var(--sc-lowest);border:1px solid var(--outline-var);border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.18);z-index:5;overflow:hidden}.results.on{display:block}.result{display:block;width:100%;border:0;background:transparent;color:var(--on-surf);text-align:left;padding:.8rem 1rem;font:inherit;cursor:pointer}.result:hover{background:var(--sc)}
+.preview-note{margin:0 0 1rem;padding:.85rem 1rem;border-radius:16px;background:var(--p-c);color:var(--on-p-c);font-weight:700}@media(max-width:1000px){.nav{position:fixed;left:0;top:0;z-index:50;transform:translateX(-104%);transition:transform .24s ease;width:286px;box-shadow:0 18px 60px rgba(0,0,0,.25)}.nav.on{transform:none}.shell{display:block}.content{width:100%}.menubtn{display:grid}}@media(min-width:1001px){.menubtn{display:none}.shell{display:flex}}@media(max-width:760px){.brand-txt span{display:none}}@media(max-width:430px){.brand-txt{display:none}.topbar{padding:.5rem}.iconbtn{width:40px;height:40px}.fsgroup{display:none}.content{padding-inline:.85rem}}
+@media print{.topbar,.nav,.scrim,.copy,.searchbox,.top-actions{display:none!important}.shell{display:block}.content{width:100%;max-width:none;padding:0}.sec{display:block!important;page-break-inside:avoid;margin-bottom:1.2rem}.section-card,.cmd{box-shadow:none}body{background:white;color:black}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="nav" id="nav" aria-label="สารบัญคู่มือ">
+    <div class="nav-title">Profile Migration Manual</div>
+    <button class="nav-item" data-target="overview" type="button"><span class="ico">route</span>ภาพรวม<span class="nav-num">01</span></button>
+<button class="nav-item" data-target="placeholders-intake" type="button"><span class="ico">assignment</span>Intake & Placeholder<span class="nav-num">02</span></button>
+<button class="nav-item" data-target="inventory" type="button"><span class="ico">inventory_2</span>Inventory เครื่องเดิม<span class="nav-num">03</span></button>
+<button class="nav-item" data-target="data-policy" type="button"><span class="ico">rule</span>คัดแยกข้อมูล<span class="nav-num">04</span></button>
+<button class="nav-item" data-target="new-server" type="button"><span class="ico">dns</span>เตรียมเครื่องใหม่<span class="nav-num">05</span></button>
+<button class="nav-item" data-target="backup-transfer" type="button"><span class="ico">sync_alt</span>Backup & Copy<span class="nav-num">06</span></button>
+<button class="nav-item" data-target="restore-profile" type="button"><span class="ico">settings_backup_restore</span>Restore Profile<span class="nav-num">07</span></button>
+<button class="nav-item" data-target="secrets-auth" type="button"><span class="ico">key</span>Secrets & OAuth<span class="nav-num">08</span></button>
+<button class="nav-item" data-target="gateway-cron-cutover" type="button"><span class="ico">hub</span>Gateway, Cron, Cutover<span class="nav-num">09</span></button>
+<button class="nav-item" data-target="verify-handoff" type="button"><span class="ico">verified</span>Verify & Handoff<span class="nav-num">10</span></button>
+  </nav>
+  <div class="scrim" id="scrim"></div>
+  <main class="main">
+    <header class="topbar">
+      <button class="iconbtn menubtn" id="menuBtn" aria-label="เปิดสารบัญ"><span class="ico">menu</span></button>
+      <div class="brand"><div class="brand-mark" aria-hidden="true"><span class="ico">route</span></div><div class="brand-txt"><b>Hermes Profile Migration</b><span>Interactive Reference Manual · Linux Server Migration</span></div></div>
+      <div class="fsgroup" aria-label="ปรับขนาดตัวอักษร"><button class="iconbtn" id="fsDown" aria-label="ลดตัวอักษร"><span class="ico">text_decrease</span></button><span class="fslabel" id="fsLabel">100%</span><button class="iconbtn" id="fsUp" aria-label="เพิ่มตัวอักษร"><span class="ico">text_increase</span></button></div>
+      <button class="iconbtn" id="allBtn" aria-pressed="false" aria-label="แสดงทุกหน้า"><span class="ico">view_agenda</span></button>
+      <button class="iconbtn" id="themeBtn" aria-pressed="false" aria-label="สลับธีม"><span class="ico">dark_mode</span></button>
+    </header>
+    <div class="content">
+      <section class="sec" id="overview" data-title="ภาพรวม">
+      <div class="hero"><span class="eyebrow"><span class="ico">verified_user</span>The Knowledge Shelf · Operator Guide</span><h1 class="disp"><span class="grad">คู่มือย้าย<br>Hermes Profile</span></h1><p class="lede">คู่มือย้าย Hermes Agent profile จาก Linux Server เครื่องเดิมไปยังเครื่องใหม่แบบปลอดภัย: inventory ก่อน, copy แบบ allowlist, recreate secrets/OAuth, cutover gateway/cron และ verify ก่อนประกาศสำเร็จ</p><div class="chips"><span class="chip pri">Linux Server → Linux Server</span><span class="chip ok">verify first</span><span class="chip">no blind copy</span><span class="chip">rollback ready</span></div><div class="top-actions"><a class="btn" href="#placeholders-intake" data-jump="placeholders-intake"><span class="ico">play_arrow</span>อ่านส่วนถัดไป</a><button class="btn ghost" id="printBtn"><span class="ico">print</span>พิมพ์/บันทึก PDF</button></div></div>
+      <div class="section-card"><p>คู่มือนี้เป็นเอกสารกลางสำหรับใช้ย้าย <strong>Hermes Agent profile</strong> จาก Linux server เครื่องเดิมไปยัง Linux server เครื่องใหม่ โดยออกแบบให้ใช้ได้กับหลายสถานการณ์ เช่น ย้าย profile ส่วนตัว, profile งาน, profile bot, profile ที่มี skills, cron jobs, project repositories, messaging gateway, dashboard, OAuth provider และเอกสาร handoff</p>
+<p>เอกสารนี้ตั้งใจให้เป็น <strong>คู่มือสอนคนอื่น</strong> และ <strong>prompt/template สำหรับใช้งานครั้งต่อไป</strong> จึงไม่ควรใส่ข้อมูลจริงของระบบใดระบบหนึ่งลงไป ให้ใช้ placeholder แทนเสมอ</p>
+<div class="callout warn"><strong>หลักสำคัญ:</strong> หลักสำคัญ: ย้ายให้ปลอดภัยก่อน ย้ายให้ครบถ้วนทีหลัง และอย่าเปิด gateway/cron ซ้ำสองเครื่องพร้อมกันโดยไม่ตั้งใจ</div>
+<p>---</p>
+<h3 class="phase">0. ขอบเขตและหลักการ</h3>
+<h3>0.1 เป้าหมาย</h3>
+<p>เมื่อทำตามคู่มือนี้จนจบ ควรได้ผลลัพธ์ดังนี้</p>
+<ul>
+<li>เครื่องใหม่มี Hermes Agent พร้อมใช้งาน</li>
+<li>มี profile เป้าหมายบนเครื่องใหม่ เช่น <code class="inl">&lt;PROFILE_NAME&gt;</code></li>
+<li>profile ใหม่มี persona/config/skills/project files ที่จำเป็น</li>
+<li>secrets และ OAuth ถูกตั้งอย่างปลอดภัย ไม่คัดลอกมั่ว ๆ จากเครื่องเดิม</li>
+<li>messaging gateway ใช้งานได้บนเครื่องใหม่</li>
+<li>cron jobs ถูกย้ายหรือสร้างใหม่ตามแผน โดยไม่รันซ้ำกับเครื่องเดิม</li>
+<li>มี verification log หรือ evidence ว่าระบบตอบได้จริง</li>
+<li>มี handoff document สรุปว่าทำอะไรไปแล้ว อะไรยังเหลือ และ rollback อย่างไร</li>
+</ul>
+<h3>0.2 สิ่งที่คู่มือนี้ไม่ทำ</h3>
+<p>คู่มือนี้ไม่ใช่คู่มือกู้ทั้งเครื่องแบบ image backup และไม่ใช่คู่มือย้ายทุกข้อมูลแบบ blind copy ทั้ง home directory แต่เป็นแนวทางย้าย <strong>Hermes profile อย่างมีการคัดเลือกและตรวจสอบ</strong></p>
+<p>ไม่ควรใช้คู่มือนี้เพื่อ</p>
+<ul>
+<li>คัดลอก credentials ระหว่างคน/ทีมโดยไม่ได้รับอนุญาต</li>
+<li>แชร์ bot token, API key, OAuth token หรือ browser cookies</li>
+<li>เปิด gateway สองเครื่องด้วย token เดียวกันโดยไม่ได้ตั้งใจ</li>
+<li>เปิด cron เดิมสองชุดพร้อมกัน</li>
+<li>เผยแพร่ไฟล์ <code class="inl">.env</code>, <code class="inl">auth.json</code>, logs, browser profile หรือ local-only files</li>
+</ul>
+<h3>0.3 Placeholder ที่ใช้ในเอกสารนี้</h3>
+<p>ให้แทนค่าต่อไปนี้ด้วยค่าจริงเฉพาะตอนปฏิบัติงาน และอย่าใส่ค่าจริงลงในคู่มือสาธารณะ</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>&lt;OLD_HOST&gt;              เครื่องเดิม
+&lt;NEW_HOST&gt;              เครื่องใหม่
+&lt;PROFILE_NAME&gt;          ชื่อ Hermes profile ที่จะย้าย
+&lt;OLD_HERMES_HOME&gt;       Hermes home ของ profile เดิม
+&lt;NEW_HERMES_HOME&gt;       Hermes home ของ profile ใหม่
+&lt;PROJECT_DIR&gt;           โฟลเดอร์โปรเจกต์ที่ profile ใช้
+&lt;BACKUP_DIR&gt;            โฟลเดอร์เก็บ backup ชั่วคราว
+&lt;DRIVE_OR_ARCHIVE_PATH&gt; ที่เก็บ archive หรือเอกสารส่งต่อ
+&lt;DISCORD_BOT_TOKEN&gt;     Discord bot token — ห้ามใส่ในเอกสาร
+&lt;TELEGRAM_BOT_TOKEN&gt;    Telegram bot token — ห้ามใส่ในเอกสาร
+&lt;ALLOWED_USER_ID&gt;       user ID ที่อนุญาตให้คุยกับ bot
+&lt;HOME_CHANNEL_ID&gt;       channel/chat ID ปลายทาง
+&lt;MODEL_PROVIDER&gt;        provider/model ที่ใช้</code></pre></div>
+<p>---</p></div>
+    </section>
+<section class="sec" id="placeholders-intake" data-title="Intake &amp; Placeholder">
+      <span class="eyebrow"><span class="ico">assignment</span>Phase 02</span>
+      <h2>Intake &amp; Placeholder</h2>
+      <div class="section-card"><h3 class="phase">1. Phase 0 — User Interview และ Intake Document</h3>
+<p>ก่อนเริ่มย้ายจริง ให้สัมภาษณ์ผู้ใช้หรือเจ้าของระบบก่อนเสมอ เป้าหมายคือแยกให้ชัดว่าอะไรต้องย้าย อะไรต้องสร้างใหม่ อะไรต้องปิด และอะไรห้ามย้าย</p>
+<h3>1.1 เลือกวิธีสัมภาษณ์</h3>
+<p>มี 3 วิธีหลัก</p>
+<h4>วิธี A: สัมภาษณ์ในแชท</h4>
+<p>เหมาะสำหรับงานที่มี operator คนเดียวหรืองานที่ต้องทำเร็ว</p>
+<p>ขั้นตอน</p>
+<ul>
+<li>Agent ถามคำถามทีละชุด</li>
+<li>ผู้ใช้ตอบในแชท</li>
+<li>Agent สรุป requirement กลับให้ผู้ใช้ตรวจ</li>
+<li>Agent สร้าง migration plan</li>
+<li>ผู้ใช้อนุมัติ scope</li>
+<li>Agent ลงมือย้ายและ verify</li>
+</ul>
+<p>ข้อดี</p>
+<ul>
+<li>เร็ว</li>
+<li>ใช้ได้ผ่าน CLI, Telegram, Discord หรือ dashboard</li>
+<li>เหมาะกับ prompt reuse</li>
+<li>ไม่ต้องตั้ง permission Google Docs</li>
+</ul>
+<p>ข้อควรระวัง</p>
+<ul>
+<li>ข้อมูลอาจกระจัดกระจายในแชท</li>
+<li>ต้องสรุปเป็นเอกสารก่อนลงมือจริง</li>
+<li>ห้ามให้ผู้ใช้ paste secrets ในแชท</li>
+</ul>
+<h4>วิธี B: Markdown Worksheet</h4>
+<p>เหมาะสำหรับใช้ซ้ำหรือเก็บใน repo/private docs</p>
+<p>ขั้นตอน</p>
+<ul>
+<li>สร้างไฟล์ intake เช่น <code class="inl">migration-intake.md</code></li>
+<li>ให้ผู้ใช้กรอกหรือเลือก checkbox</li>
+<li>Agent อ่าน worksheet</li>
+<li>Agent สร้าง migration plan</li>
+<li>ลงมือหลัง scope ชัดเจน</li>
+</ul>
+<p>ข้อดี</p>
+<ul>
+<li>version control ได้</li>
+<li>ใช้เป็น template ซ้ำได้</li>
+<li>แปลงเป็น prompt ได้ง่าย</li>
+<li>เหมาะกับ automation</li>
+</ul>
+<p>ข้อควรระวัง</p>
+<ul>
+<li>ถ้าไฟล์อยู่ใน repo public ต้องห้ามมี secrets หรือข้อมูลเฉพาะที่ไม่ควรเผยแพร่</li>
+<li>ควรแยก <code class="inl">private</code> กับ <code class="inl">public</code> ให้ชัด</li>
+</ul>
+<h4>วิธี C: Google Docs Worksheet</h4>
+<p>เหมาะสำหรับงานที่มีหลายคนร่วมตรวจหรือใช้สอนทีม</p>
+<p>ขั้นตอน</p>
+<ul>
+<li>สร้าง Google Doc จาก intake template</li>
+<li>ผู้ใช้กรอกตัวเลือกและคำตอบ</li>
+<li>Agent อ่านเอกสารกลับมา</li>
+<li>Agent สรุป migration plan</li>
+<li>หลังจบงาน สร้าง final handoff</li>
+</ul>
+<p>ข้อดี</p>
+<ul>
+<li>อ่านง่ายสำหรับคนทั่วไป</li>
+<li>แชร์ให้ reviewer ได้</li>
+<li>เหมาะกับ training และ checklist</li>
+</ul>
+<p>ข้อควรระวัง</p>
+<ul>
+<li>Google Docs เป็นทางเลือก ไม่ใช่ข้อบังคับ</li>
+<li>ห้ามใส่ token, password, API key, OAuth refresh token หรือ private key ใน Google Docs</li>
+<li>ต้องระวัง permission และ sharing scope</li>
+<li>ให้เก็บเฉพาะชื่อ secret เช่น <code class="inl">DISCORD_BOT_TOKEN</code> ไม่ใช่ค่าจริง</li>
+</ul>
+<h3>1.2 Intake Worksheet Template</h3>
+<p>ใช้ template นี้ก่อนเริ่มย้าย</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code># Hermes Profile Migration Intake Worksheet
+
+## A. Basic Information
+
+- Migration date:
+- Operator:
+- Old host: &lt;OLD_HOST&gt;
+- New host: &lt;NEW_HOST&gt;
+- Profile name: &lt;PROFILE_NAME&gt;
+- Is this profile currently in production?
+  - [ ] Yes
+  - [ ] No
+  - [ ] Not sure
+
+## B. Migration Goal
+
+Choose one:
+
+- [ ] Move existing profile to a new server
+- [ ] Rebuild profile cleanly on a new server
+- [ ] Clone profile for staging/test only
+- [ ] Split one profile into multiple profiles
+- [ ] Consolidate multiple profiles into one server
+
+## C. Migration Strategy
+
+Choose one:
+
+- [ ] Clean rebuild with selected files only
+- [ ] Selective copy of profile files
+- [ ] Full profile restore from backup
+- [ ] Hybrid: clone project repos, copy skills/config, recreate secrets
+
+Recommended default: Hybrid migration
+
+## D. Components to Migrate
+
+- [ ] `SOUL.md` / persona
+- [ ] `config.yaml` settings
+- [ ] profile-specific skills
+- [ ] project repositories or worktrees
+- [ ] runbooks / handoff docs
+- [ ] cron jobs / scheduled jobs
+- [ ] messaging gateway settings
+- [ ] dashboard settings
+- [ ] OAuth provider credentials
+- [ ] memory files
+- [ ] session history
+- [ ] cache/artifacts
+- [ ] logs
+
+## E. Components to Recreate Instead of Copying
+
+- [ ] API keys
+- [ ] bot tokens
+- [ ] OAuth login
+- [ ] dashboard password
+- [ ] browser login/cookies
+- [ ] system service unit
+- [ ] network binding / ports
+
+## F. Messaging Platforms
+
+Platforms used:
+
+- [ ] Telegram
+- [ ] Discord
+- [ ] Slack
+- [ ] LINE
+- [ ] Matrix
+- [ ] Mattermost
+- [ ] Webhook/API only
+- [ ] None
+
+For each platform:
+
+- Existing bot or new bot?
+- Token owner:
+- Allowed users or roles:
+- Home channel/chat:
+- Should old server be stopped before new server starts?
+
+## G. Cron Jobs
+
+- Does the profile have scheduled jobs?
+  - [ ] Yes
+  - [ ] No
+  - [ ] Not sure
+
+Cron migration strategy:
+
+- [ ] Do not migrate cron
+- [ ] Migrate cron but keep paused
+- [ ] Recreate cron manually
+- [ ] Migrate and enable after full verification
+
+## H. Secrets
+
+Do not paste secret values here. List secret names only.
+
+Examples:
+
+- `DISCORD_BOT_TOKEN`
+- `TELEGRAM_BOT_TOKEN`
+- `OPENAI_API_KEY`
+- `ANTHROPIC_API_KEY`
+- `DASHBOARD_BASIC_AUTH_PASSWORD`
+- `OAUTH_PROVIDER_LOGIN`
+
+## I. Success Criteria
+
+The migration is successful when:
+
+- [ ] profile exists on new server
+- [ ] model/provider works
+- [ ] `hermes status` is healthy enough
+- [ ] profile responds locally
+- [ ] gateway responds from messaging platform
+- [ ] cron jobs are correct and not duplicated
+- [ ] project commands/tests pass
+- [ ] old gateway/cron are paused or retired if needed
+- [ ] handoff document is complete
+
+## J. Rollback Plan
+
+- How to stop the new gateway:
+- How to restart the old gateway:
+- Where backup is stored:
+- Who approves rollback:</code></pre></div>
+<h3>1.3 Interview Questions สำหรับ Agent</h3>
+<p>ถ้าใช้แชทแทน worksheet ให้ Agent ถามเป็นชุด ๆ ดังนี้</p>
+<h4>ชุดที่ 1: เป้าหมาย</h4>
+<ul>
+<li>ต้องการย้าย profile ไหนไปเครื่องใหม่</li>
+<li>เครื่องใหม่จะเป็น production ทันทีหรือ staging ก่อน</li>
+<li>เครื่องเดิมจะปิด, เก็บเป็น backup, หรือยังใช้งานต่อ</li>
+<li>ต้องการ downtime ได้หรือไม่</li>
+<li>เกณฑ์ที่ถือว่าสำเร็จคืออะไร</li>
+</ul>
+<h4>ชุดที่ 2: ข้อมูลที่จะย้าย</h4>
+<ul>
+<li>ต้องย้าย persona/SOUL.md หรือสร้างใหม่</li>
+<li>ต้องย้าย config.yaml หรือสร้างใหม่</li>
+<li>ต้องย้าย skills ทั้งหมดหรือเฉพาะบาง skill</li>
+<li>มี project repo/worktree ที่ profile ใช้หรือไม่</li>
+<li>ต้องย้าย session history หรือไม่</li>
+<li>ต้องย้าย memory หรือไม่</li>
+<li>ต้องย้าย logs/cache/artifacts หรือไม่</li>
+</ul>
+<h4>ชุดที่ 3: Secrets และ OAuth</h4>
+<ul>
+<li>ใช้ provider อะไร</li>
+<li>ใช้ OAuth หรือ API key</li>
+<li>จะ login ใหม่บนเครื่องใหม่ได้หรือไม่</li>
+<li>มี bot token หรือ webhook secret อะไรที่ต้องตั้งใหม่</li>
+<li>ใครเป็นคนถือ secret</li>
+<li>ใช้วิธีใส่ secret แบบใด: terminal, form ชั่วคราว, secret manager, หรือ manual edit</li>
+</ul>
+<h4>ชุดที่ 4: Gateway และ messaging</h4>
+<ul>
+<li>ใช้ Telegram, Discord, Slack, LINE หรือ platform อื่น</li>
+<li>จะใช้ bot เดิมหรือสร้าง bot ใหม่</li>
+<li>ต้องตั้ง allowed users/roles หรือไม่</li>
+<li>ต้องตั้ง home channel/chat ใหม่หรือไม่</li>
+<li>เครื่องเดิมมี active poller อยู่หรือไม่</li>
+<li>ต้องหยุด gateway เครื่องเดิมก่อนเปิดเครื่องใหม่หรือไม่</li>
+</ul>
+<h4>ชุดที่ 5: Cron และ automation</h4>
+<ul>
+<li>มี cron jobs หรือ scheduled jobs หรือไม่</li>
+<li>job ใดห้ามรันซ้ำสองเครื่อง</li>
+<li>job ใดต้อง pause ก่อน cutover</li>
+<li>delivery target ต้องเปลี่ยนหรือไม่</li>
+<li>job ใช้ path/token/host-specific value หรือไม่</li>
+</ul>
+<h4>ชุดที่ 6: Verification</h4>
+<ul>
+<li>จะทดสอบ local chat อย่างไร</li>
+<li>จะทดสอบ messaging อย่างไร</li>
+<li>จะทดสอบ project-specific build/test อย่างไร</li>
+<li>ต้องทดสอบ reboot หรือ service autostart หรือไม่</li>
+<li>ต้องทำ handoff ให้ใครอ่าน</li>
+</ul>
+<h3>1.4 หลังสัมภาษณ์ต้องสร้างเอกสารอะไร</h3>
+<p>หลังสัมภาษณ์เสร็จ ควรสร้างเอกสาร 2 ฉบับ</p>
+<h4>เอกสารที่ 1: Migration Plan</h4>
+<p>สร้างก่อนลงมือ ใช้ยืนยัน scope</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code># Hermes Profile Migration Plan
+
+## Scope
+
+## Out of Scope
+
+## Source Environment
+
+## Target Environment
+
+## Data to Migrate
+
+## Data to Recreate
+
+## Secrets Handling Plan
+
+## Gateway Cutover Plan
+
+## Cron Migration Plan
+
+## Verification Checklist
+
+## Rollback Plan
+
+## Approval Needed Before Cutover</code></pre></div>
+<h4>เอกสารที่ 2: Migration Handoff</h4>
+<p>สร้างหลังทำเสร็จ ใช้เป็นหลักฐานและคู่มือดูแลต่อ</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code># Hermes Profile Migration Handoff
+
+## Summary
+
+## What Was Migrated
+
+## What Was Recreated
+
+## What Was Not Migrated
+
+## New Server Status
+
+## Gateway Status
+
+## Cron Status
+
+## Auth/Provider Status
+
+## Verification Evidence
+
+## Remaining Optional Hardening
+
+## Rollback Notes
+
+## Day-2 Operations</code></pre></div>
+<p>---</p></div>
+    </section>
+<section class="sec" id="inventory" data-title="Inventory เครื่องเดิม">
+      <span class="eyebrow"><span class="ico">inventory_2</span>Phase 03</span>
+      <h2>Inventory เครื่องเดิม</h2>
+      <div class="section-card"><h3 class="phase">2. Phase 1 — Pre-Migration Inventory บนเครื่องเดิม</h3>
+<p>ทำ inventory ก่อน copy อะไรทั้งสิ้น เพื่อรู้ว่าระบบเดิมมีอะไรอยู่จริง</p>
+<h3>2.1 ตรวจ Hermes และ profile</h3>
+<p>บนเครื่องเดิม <code class="inl">&lt;OLD_HOST&gt;</code></p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes --version || true
+hermes profile list
+hermes -p &lt;PROFILE_NAME&gt; status
+hermes -p &lt;PROFILE_NAME&gt; config check</code></pre></div>
+<p>บันทึกผลลัพธ์เฉพาะสถานะ ไม่บันทึก secret values</p>
+<p>ควรระบุ</p>
+<ul>
+<li>profile มีอยู่หรือไม่</li>
+<li>model/provider ใช้อะไร</li>
+<li>gateway running หรือ stopped</li>
+<li>messaging platforms configured หรือไม่</li>
+<li>cron jobs มีหรือไม่</li>
+<li>auth provider logged in หรือไม่</li>
+</ul>
+<h3>2.2 ตรวจ Hermes home ของ profile</h3>
+<p>โดยทั่วไป profile จะอยู่ที่</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>~/.hermes/profiles/&lt;PROFILE_NAME&gt;/</code></pre></div>
+<p>แต่ห้าม assume เสมอ ให้ตรวจจาก environment หรือ Hermes status</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>echo &quot;HERMES_HOME=${HERMES_HOME:-$HOME/.hermes}&quot;
+hermes -p &lt;PROFILE_NAME&gt; status</code></pre></div>
+<h3>2.3 สำรวจไฟล์ใน profile</h3>
+<p>ตัวอย่างโครงสร้างที่มักพบ</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>&lt;OLD_HERMES_HOME&gt;/
+  SOUL.md
+  config.yaml
+  .env
+  auth.json
+  skills/
+  cron/
+  sessions/
+  logs/
+  cache/
+  memories/
+  projects/ or project links</code></pre></div>
+<p>ใช้คำสั่งสำรวจแบบไม่เปิดเผย secrets</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>find &lt;OLD_HERMES_HOME&gt; -maxdepth 2 -type f | sort
+find &lt;OLD_HERMES_HOME&gt;/skills -maxdepth 3 -type f | sort</code></pre></div>
+<h3>2.4 ตรวจ Git/project directories</h3>
+<p>ถ้า profile ใช้ project repository ให้ตรวจ</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>cd &lt;PROJECT_DIR&gt;
+git status --short --branch
+git remote -v
+git branch --show-current
+git log -1 --oneline</code></pre></div>
+<p>หลักการ</p>
+<ul>
+<li>ถ้าเป็น project ที่อยู่ใน Git ให้ clone จาก remote บนเครื่องใหม่ดีกว่า copy working tree ทั้งหมด</li>
+<li>ถ้ามี local-only files ให้แยก backup ต่างหาก</li>
+<li>อย่า commit <code class="inl">.env</code>, credentials, cookies, local cache หรือ private registry ลง public repo</li>
+</ul>
+<h3>2.5 ตรวจ skills</h3>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; skills list
+find &lt;OLD_HERMES_HOME&gt;/skills -maxdepth 3 -type f | sort</code></pre></div>
+<p>บันทึก</p>
+<ul>
+<li>skill ใดเป็น global/bundled/local</li>
+<li>skill ใดถูกแก้เฉพาะ profile</li>
+<li>skill ใดมี scripts/templates/references ที่ต้องย้าย</li>
+</ul>
+<h3>2.6 ตรวจ cron jobs</h3>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; cron list</code></pre></div>
+<p>สำหรับแต่ละ job ให้บันทึก</p>
+<ul>
+<li>job name</li>
+<li>schedule</li>
+<li>enabled/paused</li>
+<li>prompt หรือ script ที่ใช้</li>
+<li>delivery target</li>
+<li>dependencies</li>
+<li>secrets ที่ต้องใช้ โดยบันทึกแค่ชื่อ secret ไม่บันทึกค่า</li>
+</ul>
+<h3>2.7 ตรวจ gateway และ messaging</h3>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes gateway list
+hermes -p &lt;PROFILE_NAME&gt; gateway status
+hermes -p &lt;PROFILE_NAME&gt; status</code></pre></div>
+<p>บันทึก</p>
+<ul>
+<li>platform ที่ใช้ เช่น Telegram/Discord/Slack/LINE</li>
+<li>home channel/chat configured หรือไม่</li>
+<li>allowed users/roles configured หรือไม่</li>
+<li>gateway เป็น manual process หรือ service</li>
+<li>มี active process บนเครื่องเดิมหรือไม่</li>
+</ul>
+<h3>2.8 ตรวจ service และ process</h3>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>ps -ef | grep -i hermes | grep -v grep
+systemctl --user list-units | grep -i hermes || true
+systemctl list-units | grep -i hermes || true</code></pre></div>
+<p>ถ้าใช้ systemd service ให้บันทึก unit name แต่ไม่คัดลอก unit แบบ blind copy เพราะ path/user/environment อาจต่างกัน</p>
+<p>---</p></div>
+    </section>
+<section class="sec" id="data-policy" data-title="คัดแยกข้อมูล">
+      <span class="eyebrow"><span class="ico">rule</span>Phase 04</span>
+      <h2>คัดแยกข้อมูล</h2>
+      <div class="section-card"><h3 class="phase">3. Phase 2 — จัดประเภทข้อมูลก่อนย้าย</h3>
+<h3>3.1 ข้อมูลที่มักย้ายได้</h3>
+<p>ย้ายได้หลัง review</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>SOUL.md
+config.yaml
+skills/
+project runbooks
+project docs
+non-secret templates
+non-secret scripts
+selected cron definitions
+selected session handoff documents</code></pre></div>
+<h3>3.2 ข้อมูลที่ควรสร้างใหม่หรือ re-authenticate</h3>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>.env
+API keys
+bot tokens
+OAuth auth.json
+browser profiles/cookies
+dashboard password
+systemd units
+network binding
+home channel ID
+allowed user/role IDs</code></pre></div>
+<p>อธิบายเพิ่มเติม</p>
+<ul>
+<li><code class="inl">.env</code> มี secrets จึงไม่ควรส่งผ่าน chat หรือเก็บในเอกสารทั่วไป</li>
+<li><code class="inl">auth.json</code> เป็น OAuth credential ควร login ใหม่บนเครื่องใหม่ ถ้าเป็นไปได้</li>
+<li>bot token ควรใส่เองผ่าน secure terminal/form/secret manager</li>
+<li>channel IDs อาจเปลี่ยนเมื่อย้าย workspace/server/channel</li>
+</ul>
+<h3>3.3 ข้อมูลที่ไม่ควรย้ายเว้นแต่มีเหตุผลชัดเจน</h3>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>cache/
+logs/
+state.db WAL files
+browser cookies
+unrelated profile data
+other user&#x27;s memories
+active process state
+large generated artifacts
+old temporary files</code></pre></div>
+<h3>3.4 นโยบาย secrets</h3>
+<p>กฎพื้นฐาน</p>
+<ul>
+<li>Secrets ต้องอยู่ใน <code class="inl">.env</code> หรือ secret manager เท่านั้น</li>
+<li>Settings ที่ไม่ใช่ secret ต้องอยู่ใน <code class="inl">config.yaml</code></li>
+<li>ห้ามใส่ secret ใน Google Docs, Markdown guide, public repo, issue tracker หรือ chat</li>
+<li>ถ้าต้องระบุ ให้ระบุชื่อ key เท่านั้น เช่น <code class="inl">DISCORD_BOT_TOKEN</code></li>
+<li>ก่อนแชร์เอกสาร ต้อง scan หา secret และข้อมูลเฉพาะระบบ</li>
+</ul>
+<p>---</p></div>
+    </section>
+<section class="sec" id="new-server" data-title="เตรียมเครื่องใหม่">
+      <span class="eyebrow"><span class="ico">dns</span>Phase 05</span>
+      <h2>เตรียมเครื่องใหม่</h2>
+      <div class="section-card"><h3 class="phase">4. Phase 3 — เตรียมเครื่องใหม่</h3>
+<h3>4.1 ตรวจ OS และ dependency พื้นฐาน</h3>
+<p>บนเครื่องใหม่ <code class="inl">&lt;NEW_HOST&gt;</code></p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>uname -a
+cat /etc/os-release
+python3 --version
+git --version
+ssh -V</code></pre></div>
+<p>ถ้าใช้ Node/Playwright/browser automation/project build ให้ตรวจเพิ่ม</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>node --version || true
+npm --version || true
+google-chrome --version || chromium --version || true</code></pre></div>
+<h3>4.2 ติดตั้ง Hermes Agent</h3>
+<p>ติดตั้งตาม official docs ของ Hermes Agent เวอร์ชันปัจจุบัน</p>
+<p>ตัวอย่าง generic</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash</code></pre></div>
+<p>หลังติดตั้ง</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes doctor
+hermes --help</code></pre></div>
+<h3>4.3 สร้างหรือเตรียม profile ใหม่</h3>
+<p>ถ้าเป็น clean rebuild</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes profile create &lt;PROFILE_NAME&gt; --description &quot;&lt;PROFILE_PURPOSE&gt;&quot;</code></pre></div>
+<p>ถ้าต้องการไม่ seed bundled skills</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes profile create &lt;PROFILE_NAME&gt; --no-skills --description &quot;&lt;PROFILE_PURPOSE&gt;&quot;</code></pre></div>
+<p>ตรวจ profile</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes profile list
+hermes -p &lt;PROFILE_NAME&gt; status</code></pre></div>
+<h3>4.4 ตั้ง model/provider</h3>
+<p>ใช้คำสั่ง Hermes ไม่แก้ config ด้วยมือถ้าไม่จำเป็น</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; model</code></pre></div>
+<p>หรือถ้ารู้ key/value ที่ถูกต้อง</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; config set model &lt;MODEL_NAME&gt;</code></pre></div>
+<p>สำหรับ OAuth provider ให้ login ใหม่บนเครื่องใหม่</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; auth add &lt;PROVIDER_NAME&gt;
+hermes -p &lt;PROFILE_NAME&gt; auth status &lt;PROVIDER_NAME&gt;</code></pre></div>
+<p>---</p></div>
+    </section>
+<section class="sec" id="backup-transfer" data-title="Backup &amp; Copy">
+      <span class="eyebrow"><span class="ico">sync_alt</span>Phase 06</span>
+      <h2>Backup &amp; Copy</h2>
+      <div class="section-card"><h3 class="phase">5. Phase 4 — Backup เครื่องเดิม</h3>
+<h3>5.1 สร้าง backup directory</h3>
+<p>บนเครื่องเดิม</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>mkdir -p &lt;BACKUP_DIR&gt;/&lt;PROFILE_NAME&gt;-migration</code></pre></div>
+<h3>5.2 Backup แบบ allowlist</h3>
+<p>แนะนำให้ copy เฉพาะไฟล์ที่ตั้งใจย้าย</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>rsync -av \
+  &lt;OLD_HERMES_HOME&gt;/SOUL.md \
+  &lt;OLD_HERMES_HOME&gt;/config.yaml \
+  &lt;OLD_HERMES_HOME&gt;/skills/ \
+  &lt;BACKUP_DIR&gt;/&lt;PROFILE_NAME&gt;-migration/profile/</code></pre></div>
+<p>ถ้ามี docs/runbooks/private handoff ที่ต้องย้าย</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>rsync -av \
+  &lt;OLD_HERMES_HOME&gt;/docs/ \
+  &lt;BACKUP_DIR&gt;/&lt;PROFILE_NAME&gt;-migration/docs/ \
+  --exclude &#x27;.env&#x27; \
+  --exclude &#x27;auth.json&#x27; \
+  --exclude &#x27;cache/&#x27; \
+  --exclude &#x27;logs/&#x27;</code></pre></div>
+<h3>5.3 Backup แบบ broader copy พร้อม exclude</h3>
+<p>ใช้เฉพาะเมื่อเข้าใจโครงสร้าง profile ดีแล้ว</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>rsync -av \
+  &lt;OLD_HERMES_HOME&gt;/ \
+  &lt;BACKUP_DIR&gt;/&lt;PROFILE_NAME&gt;-migration/profile/ \
+  --exclude &#x27;.env&#x27; \
+  --exclude &#x27;auth.json&#x27; \
+  --exclude &#x27;google_token.json&#x27; \
+  --exclude &#x27;cache/&#x27; \
+  --exclude &#x27;logs/&#x27; \
+  --exclude &#x27;*.sock&#x27; \
+  --exclude &#x27;state.db-wal&#x27; \
+  --exclude &#x27;state.db-shm&#x27;</code></pre></div>
+<h3>5.4 สร้าง checksum</h3>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>cd &lt;BACKUP_DIR&gt;
+tar -czf &lt;PROFILE_NAME&gt;-migration.tar.gz &lt;PROFILE_NAME&gt;-migration
+sha256sum &lt;PROFILE_NAME&gt;-migration.tar.gz &gt; &lt;PROFILE_NAME&gt;-migration.tar.gz.sha256</code></pre></div>
+<h3>5.5 ตรวจ backup ไม่มี secrets</h3>
+<p>ตัวอย่าง scan เบื้องต้น</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>grep -RInE &quot;(api[_-]?key|token|secret|password|refresh_token|client_secret|private_key)&quot; \
+  &lt;BACKUP_DIR&gt;/&lt;PROFILE_NAME&gt;-migration \
+  --exclude-dir cache \
+  --exclude-dir logs || true</code></pre></div>
+<p>ถ้าพบ secret ให้ลบหรือ redact ก่อนส่งต่อ</p>
+<p>---</p>
+<h3 class="phase">6. Phase 5 — Copy ไปเครื่องใหม่</h3>
+<h3>6.1 ใช้ rsync ผ่าน SSH</h3>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>rsync -avz \
+  &lt;BACKUP_DIR&gt;/&lt;PROFILE_NAME&gt;-migration/ \
+  &lt;NEW_USER&gt;@&lt;NEW_HOST&gt;:&lt;BACKUP_DIR&gt;/&lt;PROFILE_NAME&gt;-migration/</code></pre></div>
+<p>หรือ copy archive</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>scp &lt;BACKUP_DIR&gt;/&lt;PROFILE_NAME&gt;-migration.tar.gz \
+    &lt;BACKUP_DIR&gt;/&lt;PROFILE_NAME&gt;-migration.tar.gz.sha256 \
+    &lt;NEW_USER&gt;@&lt;NEW_HOST&gt;:&lt;BACKUP_DIR&gt;/</code></pre></div>
+<h3>6.2 Verify checksum บนเครื่องใหม่</h3>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>cd &lt;BACKUP_DIR&gt;
+sha256sum -c &lt;PROFILE_NAME&gt;-migration.tar.gz.sha256
+tar -xzf &lt;PROFILE_NAME&gt;-migration.tar.gz</code></pre></div>
+<p>---</p></div>
+    </section>
+<section class="sec" id="restore-profile" data-title="Restore Profile">
+      <span class="eyebrow"><span class="ico">settings_backup_restore</span>Phase 07</span>
+      <h2>Restore Profile</h2>
+      <div class="section-card"><h3 class="phase">7. Phase 6 — Restore profile บนเครื่องใหม่</h3>
+<h3>7.1 ระบุตำแหน่ง profile ใหม่</h3>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; status</code></pre></div>
+<p>โดยทั่วไป</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>&lt;NEW_HERMES_HOME&gt;=~/.hermes/profiles/&lt;PROFILE_NAME&gt;</code></pre></div>
+<h3>7.2 Restore persona และ config</h3>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>cp &lt;BACKUP_DIR&gt;/&lt;PROFILE_NAME&gt;-migration/profile/SOUL.md &lt;NEW_HERMES_HOME&gt;/SOUL.md</code></pre></div>
+<p>สำหรับ <code class="inl">config.yaml</code> ให้ระวัง host-specific paths และ settings</p>
+<p>ทางเลือกที่ปลอดภัยกว่า</p>
+<ul>
+<li>เปิดดู config เดิม</li>
+<li>ย้ายเฉพาะ settings ที่ต้องใช้</li>
+<li>ตั้งค่าด้วยคำสั่ง <code class="inl">hermes config set</code></li>
+</ul>
+<p>ตัวอย่าง</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; config set stt.enabled true
+hermes -p &lt;PROFILE_NAME&gt; config set tts.provider edge</code></pre></div>
+<div class="callout warn"><strong>หลักสำคัญ:</strong> หลีกเลี่ยงการ hand-edit <code class="inl">config.yaml</code> ถ้าไม่จำเป็น เพราะ YAML ผิด indent แล้ว profile อาจพังได้</div>
+<h3>7.3 Restore skills</h3>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>rsync -av \
+  &lt;BACKUP_DIR&gt;/&lt;PROFILE_NAME&gt;-migration/profile/skills/ \
+  &lt;NEW_HERMES_HOME&gt;/skills/</code></pre></div>
+<p>ตรวจ</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; skills list</code></pre></div>
+<p>ถ้า skill มี setup script ให้รันตามคู่มือของ skill นั้น ๆ</p>
+<h3>7.4 Restore project repository</h3>
+<p>ถ้า project มี remote Git ให้ clone ใหม่</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>git clone &lt;PROJECT_REPOSITORY_URL&gt; &lt;PROJECT_DIR&gt;
+cd &lt;PROJECT_DIR&gt;
+git status --short --branch</code></pre></div>
+<p>ถ้า project มี local-only files ให้ copy แยกหลัง scan แล้ว</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>rsync -av &lt;OLD_PROJECT_LOCAL_ONLY_DIR&gt;/ &lt;PROJECT_DIR&gt;/&lt;LOCAL_ONLY_DIR&gt;/</code></pre></div>
+<p>อย่า copy local-only secrets เข้า public repo</p>
+<h3>7.5 Restore docs/runbooks/handoffs</h3>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>rsync -av \
+  &lt;BACKUP_DIR&gt;/&lt;PROFILE_NAME&gt;-migration/docs/ \
+  &lt;NEW_HERMES_HOME&gt;/docs/</code></pre></div>
+<p>ถ้าเอกสารมีข้อมูลเฉพาะระบบ ให้ตั้ง visibility เป็น private/confidential และอย่าเผยแพร่</p>
+<p>---</p></div>
+    </section>
+<section class="sec" id="secrets-auth" data-title="Secrets &amp; OAuth">
+      <span class="eyebrow"><span class="ico">key</span>Phase 08</span>
+      <h2>Secrets &amp; OAuth</h2>
+      <div class="section-card"><h3 class="phase">8. Phase 7 — Secrets และ OAuth</h3>
+<h3>8.1 สร้าง <code class="inl">.env</code> ใหม่</h3>
+<p>สร้าง <code class="inl">.env</code> บนเครื่องใหม่โดยใส่เฉพาะ secrets ที่ต้องใช้จริง</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>nano &lt;NEW_HERMES_HOME&gt;/.env</code></pre></div>
+<p>ตัวอย่าง key names เท่านั้น</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>DISCORD_BOT_TOKEN=&lt;SECRET&gt;
+DISCORD_ALLOWED_USERS=&lt;ALLOWED_USER_ID&gt;
+TELEGRAM_BOT_TOKEN=&lt;SECRET&gt;
+TELEGRAM_ALLOWED_USERS=&lt;ALLOWED_USER_ID&gt;</code></pre></div>
+<p>ห้าม commit <code class="inl">.env</code></p>
+<h3>8.2 ใช้ temporary form ถ้าผู้ใช้ไม่ถนัด terminal</h3>
+<p>สำหรับ remote server อาจสร้าง form ชั่วคราวที่ bind เฉพาะ private network/VPN แล้วให้ผู้ใช้ paste token เอง</p>
+<p>กฎของ temporary form</p>
+<ul>
+<li>URL ต้องเป็นชั่วคราว</li>
+<li>ใช้ nonce/random path</li>
+<li>รับเฉพาะ POST</li>
+<li>บันทึกลง <code class="inl">.env</code> เท่านั้น</li>
+<li>ไม่ log token</li>
+<li>ปิดตัวเองหลัง submit สำเร็จ</li>
+<li>ลบ script หลังใช้งานถ้าไม่ต้องเก็บ</li>
+</ul>
+<h3>8.3 OAuth provider</h3>
+<p>ถ้า provider ใช้ OAuth ให้ login ใหม่บนเครื่องใหม่</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; auth add &lt;PROVIDER_NAME&gt;
+hermes -p &lt;PROFILE_NAME&gt; auth status &lt;PROVIDER_NAME&gt;</code></pre></div>
+<p>หากเป็น device flow</p>
+<ul>
+<li>Agent สร้าง authorization URL/code</li>
+<li>ผู้ใช้เปิด URL และ authorize เอง</li>
+<li>Agent ตรวจ status หลังผู้ใช้บอกว่า authorized</li>
+</ul>
+<p>ห้ามให้ Agent ดู password, 2FA code หรือ recovery code</p>
+<p>---</p></div>
+    </section>
+<section class="sec" id="gateway-cron-cutover" data-title="Gateway, Cron, Cutover">
+      <span class="eyebrow"><span class="ico">hub</span>Phase 09</span>
+      <h2>Gateway, Cron, Cutover</h2>
+      <div class="section-card"><h3 class="phase">9. Phase 8 — Messaging Gateway Migration</h3>
+<h3>9.1 หลักการสำคัญ</h3>
+<ul>
+<li>token เดียวไม่ควรมี gateway/poller ซ้ำสองเครื่อง</li>
+<li>ถ้าย้าย production ให้หยุด gateway เครื่องเดิมก่อนเปิดเครื่องใหม่</li>
+<li>ถ้าทดสอบ staging ให้ใช้ bot token แยกหรือ channel แยก</li>
+<li>ตั้ง allowed users/roles เสมอ</li>
+<li>ตั้ง home channel/chat ใหม่ถ้าจำเป็น</li>
+</ul>
+<h3>9.2 Telegram</h3>
+<p>Telegram bot token เดียวควรมี active poller เพียงชุดเดียว</p>
+<p>Cutover ทั่วไป</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code># บนเครื่องเดิม
+hermes -p &lt;PROFILE_NAME&gt; gateway stop
+hermes -p &lt;PROFILE_NAME&gt; gateway status
+
+# บนเครื่องใหม่
+hermes -p &lt;PROFILE_NAME&gt; gateway run</code></pre></div>
+<p>ถ้าใช้ service</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; gateway install
+hermes -p &lt;PROFILE_NAME&gt; gateway start</code></pre></div>
+<h3>9.3 Discord</h3>
+<p>ขั้นตอนทั่วไป</p>
+<ul>
+<li>สร้าง Discord Application/Bot หรือใช้ bot เดิมตามแผน</li>
+<li>เปิด privileged intents ที่จำเป็น เช่น Server Members Intent และ Message Content Intent</li>
+<li>Invite bot เข้า server ด้วย permissions ที่เหมาะสม</li>
+<li>ตั้ง <code class="inl">DISCORD_BOT_TOKEN</code> ใน <code class="inl">.env</code></li>
+<li>ตั้ง <code class="inl">DISCORD_ALLOWED_USERS</code> หรือ roles</li>
+<li>Start gateway</li>
+<li>ใน channel ปลายทาง ใช้ <code class="inl">/sethome</code> ถ้าต้องการ home channel</li>
+<li>ทดสอบ DM และ server mention</li>
+</ul>
+<p>ตัวอย่างการทดสอบ</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>@&lt;BOT_NAME&gt; hello
+@&lt;BOT_NAME&gt; run a safe status check</code></pre></div>
+<h3>9.4 Discord voice</h3>
+<p>ถ้าจะใช้ voice channel ต้องมี dependency เพิ่ม เช่น FFmpeg, Opus, PyNaCl/discord voice support และ STT/TTS provider</p>
+<p>ตรวจเบื้องต้น</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>ffmpeg -version
+python -c &quot;import discord, nacl; print(&#x27;discord voice deps ok&#x27;)&quot;</code></pre></div>
+<p>ทดสอบ text gateway ให้ผ่านก่อน แล้วค่อยทดสอบ voice</p>
+<h3>9.5 Slack/LINE/Matrix/Mattermost</h3>
+<p>หลักการเหมือนกัน</p>
+<ul>
+<li>สร้าง app/bot หรือ token ตาม platform</li>
+<li>ใส่ secret ใน <code class="inl">.env</code></li>
+<li>ตั้ง allowlist</li>
+<li>ตั้ง home/default channel</li>
+<li>start gateway</li>
+<li>ส่งข้อความทดสอบ</li>
+<li>ตรวจ log ถ้าไม่ตอบ</li>
+</ul>
+<p>---</p>
+<h3 class="phase">10. Phase 9 — Cron Jobs Migration</h3>
+<h3>10.1 Inventory cron บนเครื่องเดิม</h3>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; cron list</code></pre></div>
+<h3>10.2 ตัดสินใจ strategy</h3>
+<p>เลือกหนึ่งแบบ</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>A. ไม่ย้าย cron
+B. ย้ายแต่ pause ไว้
+C. recreate ด้วยมือบนเครื่องใหม่
+D. ย้ายและ enable หลัง verification</code></pre></div>
+<p>แนะนำ: ย้ายแบบ pause ไว้ก่อน แล้วค่อย enable หลัง gateway/provider/delivery verified</p>
+<h3>10.3 ห้าม cron ซ้ำ</h3>
+<p>ก่อน enable บนเครื่องใหม่ ให้ปิดหรือ pause บนเครื่องเดิม</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; cron list
+hermes -p &lt;PROFILE_NAME&gt; cron pause &lt;JOB_ID&gt;</code></pre></div>
+<p>หลังย้าย</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; cron list
+hermes -p &lt;PROFILE_NAME&gt; cron run &lt;JOB_ID&gt;</code></pre></div>
+<h3>10.4 ตรวจ job-specific dependencies</h3>
+<p>สำหรับแต่ละ cron job ตรวจ</p>
+<ul>
+<li>script path ยังมีอยู่ไหม</li>
+<li>working directory ถูกต้องไหม</li>
+<li>env vars ครบไหม</li>
+<li>delivery target เปลี่ยนไหม</li>
+<li>job เขียนไฟล์ไปที่ path เดิมที่ไม่มีในเครื่องใหม่หรือไม่</li>
+<li>job ไปเรียก service ภายในเครื่องเดิมหรือไม่</li>
+</ul>
+<p>---</p>
+<h3 class="phase">12. Phase 11 — Cutover Plan</h3>
+<h3>12.1 Staging test</h3>
+<ul>
+<li>สร้าง profile บนเครื่องใหม่</li>
+<li>copy persona/config/skills/project</li>
+<li>ตั้ง secrets ใหม่</li>
+<li>login OAuth ใหม่</li>
+<li>ทดสอบ local chat</li>
+<li>ทดสอบ project commands</li>
+<li>ยังไม่เปิด production gateway/cron ถ้า token เดียวกับเครื่องเดิม</li>
+</ul>
+<h3>12.2 Production cutover</h3>
+<ul>
+<li>แจ้งช่วง cutover</li>
+<li>backup เครื่องเดิม</li>
+<li>pause cron เครื่องเดิม</li>
+<li>stop gateway เครื่องเดิม</li>
+<li>start gateway เครื่องใหม่</li>
+<li>ตั้ง home channel/chat ใหม่ถ้าจำเป็น</li>
+<li>ส่งข้อความทดสอบจาก user ที่อนุญาต</li>
+<li>ตรวจ response และ log</li>
+<li>enable cron เครื่องใหม่ทีละ job</li>
+<li>เก็บเครื่องเดิมเป็น cold backup</li>
+</ul>
+<h3>12.3 Rollback</h3>
+<p>ถ้าเครื่องใหม่ fail</p>
+<ul>
+<li>stop gateway เครื่องใหม่</li>
+<li>pause cron เครื่องใหม่</li>
+<li>start gateway เครื่องเดิม</li>
+<li>unpause cron เครื่องเดิมเฉพาะ job ที่จำเป็น</li>
+<li>บันทึก incident ว่า fail เพราะอะไร</li>
+<li>อย่าปล่อยทั้งสองเครื่อง active ด้วย token/cron เดียวกัน</li>
+</ul>
+<p>---</p></div>
+    </section>
+<section class="sec" id="verify-handoff" data-title="Verify &amp; Handoff">
+      <span class="eyebrow"><span class="ico">verified</span>Phase 10</span>
+      <h2>Verify &amp; Handoff</h2>
+      <div class="section-card"><h3 class="phase">11. Phase 10 — Verification</h3>
+<h3>11.1 ตรวจ Hermes health</h3>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes doctor
+hermes -p &lt;PROFILE_NAME&gt; config check
+hermes -p &lt;PROFILE_NAME&gt; status
+hermes profile list</code></pre></div>
+<h3>11.2 ตรวจ provider</h3>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; auth status &lt;PROVIDER_NAME&gt;</code></pre></div>
+<p>หรือทดสอบ chat สั้น ๆ</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; chat -q &quot;Reply with OK and the active profile name.&quot;</code></pre></div>
+<h3>11.3 ตรวจ gateway</h3>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes gateway list
+hermes -p &lt;PROFILE_NAME&gt; gateway status</code></pre></div>
+<p>ถ้า gateway ไม่ตอบ ให้ดู log โดย redact secrets ก่อนแชร์</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>tail -n 200 &lt;NEW_HERMES_HOME&gt;/logs/gateway.log</code></pre></div>
+<h3>11.4 ตรวจ messaging</h3>
+<p>สำหรับแต่ละ platform</p>
+<ul>
+<li>ส่งข้อความใน DM</li>
+<li>ส่งข้อความใน server/channel พร้อม mention ถ้าจำเป็น</li>
+<li>ทดสอบ allowed user</li>
+<li>ทดสอบ <code class="inl">/sethome</code> หรือ equivalent</li>
+<li>ตรวจว่า bot ไม่ตอบ user ที่ไม่ได้รับอนุญาต ถ้าตั้ง allowlist</li>
+</ul>
+<h3>11.5 ตรวจ project-specific commands</h3>
+<p>ถ้า profile ผูกกับ project ให้รันคำสั่งของ project นั้น เช่น</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>cd &lt;PROJECT_DIR&gt;
+git status --short --branch
+&lt;PROJECT_TEST_COMMAND&gt;
+&lt;PROJECT_BUILD_COMMAND&gt;</code></pre></div>
+<h3>11.6 ตรวจ cron</h3>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; cron list</code></pre></div>
+<p>ถ้ามี job ที่ควรทำงาน ให้ run แบบ manual หนึ่งครั้งก่อน enable schedule จริง</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; cron run &lt;JOB_ID&gt;</code></pre></div>
+<h3>11.7 ตรวจ reboot resilience</h3>
+<p>ถ้าต้องการให้ระบบอยู่รอดหลัง reboot ให้ติดตั้ง gateway เป็น service แล้วทดสอบ</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; gateway install
+hermes -p &lt;PROFILE_NAME&gt; gateway start
+hermes -p &lt;PROFILE_NAME&gt; gateway status</code></pre></div>
+<p>หลัง reboot</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes gateway list
+hermes -p &lt;PROFILE_NAME&gt; status</code></pre></div>
+<p>---</p>
+<h3 class="phase">13. Phase 12 — Handoff หลังย้ายเสร็จ</h3>
+<p>สร้าง handoff document หลัง verification</p>
+<h3>13.1 Handoff Template</h3>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code># Hermes Profile Migration Handoff
+
+## Summary
+
+Profile `&lt;PROFILE_NAME&gt;` was migrated from `&lt;OLD_HOST&gt;` to `&lt;NEW_HOST&gt;`.
+
+## Final Status
+
+- Profile exists on new server: Yes/No
+- Gateway running: Yes/No
+- Messaging verified: Yes/No
+- Provider verified: Yes/No
+- Cron migrated: Yes/No/Not applicable
+- Old gateway stopped: Yes/No/Not applicable
+- Old cron paused: Yes/No/Not applicable
+
+## Migrated Items
+
+- [ ] SOUL.md
+- [ ] config settings
+- [ ] skills
+- [ ] project repository
+- [ ] project docs/runbooks
+- [ ] selected cron jobs
+
+## Recreated Items
+
+- [ ] `.env` secrets
+- [ ] OAuth login
+- [ ] bot tokens
+- [ ] home channel/chat
+- [ ] service unit
+
+## Not Migrated
+
+- [ ] cache
+- [ ] logs
+- [ ] browser cookies
+- [ ] unrelated profiles
+- [ ] old active process state
+
+## Verification Evidence
+
+Paste safe command outputs only. Redact secrets and private IDs if the document will be shared.
+</code></pre></div>
+<p>hermes profile list: ... hermes gateway list: ... hermes -p &lt;PROFILE_NAME&gt; status: ... messaging test: ... project tests: ...</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>
+## Remaining Work
+
+- [ ] install service autostart
+- [ ] harden dashboard access
+- [ ] rotate old tokens
+- [ ] remove old server after retention period
+- [ ] document operator runbook
+
+## Rollback Notes
+
+Describe how to restore old server operation if needed.</code></pre></div>
+<p>---</p>
+<h3 class="phase">14. Security and Privacy Checklist</h3>
+<p>ก่อนส่งเอกสารออกหรือ upload ไปยัง Drive/repo ให้ตรวจสิ่งเหล่านี้</p>
+<h3>14.1 ห้ามมีข้อมูลเหล่านี้</h3>
+<ul>
+<li>API keys</li>
+<li>bot tokens</li>
+<li>OAuth access/refresh tokens</li>
+<li>passwords</li>
+<li>private keys</li>
+<li>session cookies</li>
+<li>signed URLs</li>
+<li>real personal chat IDs ถ้าเอกสารจะใช้สอนคนอื่น</li>
+<li>real server IP/hostname ถ้าโยงตัวตนหรือระบบจริงได้</li>
+<li>real project names ถ้าเป็น private</li>
+<li>customer/company identifiers</li>
+<li>emails/phone numbers</li>
+<li>absolute local paths ที่เปิดเผย user/organization ถ้าเอกสารจะเผยแพร่</li>
+<li>private Drive IDs หรือ internal repo URLs</li>
+</ul>
+<h3>14.2 Scan command ตัวอย่าง</h3>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>grep -RInE &quot;(api[_-]?key|token|secret|password|passwd|pwd|refresh_token|client_secret|private_key|BEGIN [A-Z ]*PRIVATE KEY|xox[baprs]-|gh[pousr]_|sk-[A-Za-z0-9])&quot; \
+  &lt;DOCUMENT_OR_FOLDER&gt; || true</code></pre></div>
+<h3>14.3 ตรวจ placeholder</h3>
+<p>เอกสาร reusable ควรใช้ placeholder เช่น</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>&lt;PROFILE_NAME&gt;
+&lt;OLD_HOST&gt;
+&lt;NEW_HOST&gt;
+&lt;PROJECT_DIR&gt;
+&lt;BOT_TOKEN&gt;
+&lt;ALLOWED_USER_ID&gt;
+&lt;HOME_CHANNEL_ID&gt;</code></pre></div>
+<p>ไม่ควรมีค่าจริง</p>
+<h3>14.4 ตรวจ metadata</h3>
+<p>ถ้าเป็นไฟล์รูป/PDF/Office ให้ล้าง metadata ถ้าจะแชร์ภายนอก</p>
+<p>Markdown ปกติไม่มี EXIF แต่ยังอาจมีข้อมูลเฉพาะในเนื้อหาได้ จึงต้อง scan ข้อความด้วย</p>
+<p>---</p>
+<h3 class="phase">15. Troubleshooting</h3>
+<h3>15.1 Bot ไม่ตอบหลังย้าย</h3>
+<p>ตรวจตามลำดับ</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes gateway list
+hermes -p &lt;PROFILE_NAME&gt; status
+hermes -p &lt;PROFILE_NAME&gt; gateway status
+tail -n 200 &lt;NEW_HERMES_HOME&gt;/logs/gateway.log</code></pre></div>
+<p>สาเหตุที่พบบ่อย</p>
+<ul>
+<li>gateway ไม่ได้รัน</li>
+<li>token ไม่ถูกต้อง</li>
+<li>allowed user ไม่ตรง</li>
+<li>bot ไม่มี permission ใน channel</li>
+<li>Discord ต้อง mention bot ใน server channel</li>
+<li>Telegram token มี poller อีกเครื่องใช้อยู่</li>
+<li>provider auth ไม่พร้อม</li>
+<li>rate limit ชั่วคราว</li>
+</ul>
+<h3>15.2 Provider authentication failed</h3>
+<p>ตรวจ</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; status
+hermes -p &lt;PROFILE_NAME&gt; auth status &lt;PROVIDER_NAME&gt;</code></pre></div>
+<p>แก้โดย login ใหม่</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; auth add &lt;PROVIDER_NAME&gt;</code></pre></div>
+<h3>15.3 Cron ไม่ทำงาน</h3>
+<p>ตรวจ</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; cron list
+hermes -p &lt;PROFILE_NAME&gt; cron run &lt;JOB_ID&gt;</code></pre></div>
+<p>ดู</p>
+<ul>
+<li>job paused หรือไม่</li>
+<li>script path ถูกไหม</li>
+<li>env vars ครบไหม</li>
+<li>delivery target ใช้ได้ไหม</li>
+<li>old server ยัง run job เดียวกันอยู่ไหม</li>
+</ul>
+<h3>15.4 Dashboard เปิดผ่าน network ไม่ได้</h3>
+<p>หลักทั่วไป</p>
+<ul>
+<li>Dashboard ที่ bind non-loopback ควรมี auth</li>
+<li>ถ้าไม่มี auth ให้ใช้ SSH tunnel หรือ bind <code class="inl">127.0.0.1</code></li>
+<li>อย่าเปิด unauthenticated dashboard บน public/VPN interface</li>
+</ul>
+<h3>15.5 Config พังหลังแก้ YAML</h3>
+<p>ถ้า <code class="inl">config.yaml</code> ผิด ให้ restore จาก backup หรือใช้ <code class="inl">hermes config set</code> แทนการแก้ด้วยมือ</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>hermes -p &lt;PROFILE_NAME&gt; config check</code></pre></div>
+<p>---</p>
+<h3 class="phase">16. Reusable Prompt Template</h3>
+<p>ใช้ prompt นี้ในครั้งต่อไปเมื่อต้องให้ Agent ช่วยย้าย profile</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>You are helping me migrate one Hermes Agent profile from &lt;OLD_HOST&gt; to &lt;NEW_HOST&gt;.
+
+Goal:
+- Migrate profile &lt;PROFILE_NAME&gt; safely to a Linux server.
+- Do not expose or copy secrets blindly.
+- Inventory first, plan second, execute third, verify before declaring done.
+
+Rules:
+1. Ask or create an intake worksheet before making changes.
+2. Do not include real credentials, tokens, OAuth refresh tokens, cookies, or private keys in chat or documents.
+3. Use placeholders in documentation.
+4. Separate settings from secrets: config.yaml for settings, .env or a secret manager for secrets.
+5. Prefer OAuth re-login on the new server instead of copying auth.json.
+6. Do not start a messaging gateway on the new server while the old server is still polling with the same token, unless this is explicitly a staging bot/token.
+7. Do not enable cron jobs on the new server until old jobs are paused or the duplication risk is accepted.
+8. Verify profile status, provider auth, gateway connection, messaging response, cron status, and project tests.
+9. Create a migration handoff after completion.
+10. Before sharing any document, scan for credentials and environment-specific identifiers.
+
+Interview me first using these sections:
+- Migration goal
+- Source and target hosts
+- Profile and project scope
+- Skills to migrate
+- Cron strategy
+- Messaging gateway strategy
+- Secrets/OAuth handling
+- Cutover and rollback plan
+- Success criteria
+
+After the interview, produce:
+1. Hermes Profile Migration Plan
+2. Step-by-step execution checklist
+3. Final handoff template
+
+Do not begin irreversible actions until I approve the cutover.</code></pre></div>
+<p>---</p>
+<h3 class="phase">17. Quick Execution Checklist</h3>
+<p>ใช้เป็น checklist สั้น ๆ ตอนทำงานจริง</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>[ ] Interview user / fill intake worksheet
+[ ] Generate migration plan
+[ ] User approves scope
+[ ] Inventory old profile
+[ ] Inventory skills
+[ ] Inventory cron jobs
+[ ] Inventory messaging gateway
+[ ] Backup selected files
+[ ] Scan backup for secrets
+[ ] Prepare new server
+[ ] Create new profile
+[ ] Restore SOUL.md
+[ ] Restore reviewed config settings
+[ ] Restore selected skills
+[ ] Clone/copy project files
+[ ] Recreate .env secrets safely
+[ ] Re-auth OAuth provider
+[ ] Test local Hermes response
+[ ] Stop/pause old gateway or use separate staging token
+[ ] Start new gateway
+[ ] Set home channel/chat if needed
+[ ] Test messaging response
+[ ] Migrate cron paused
+[ ] Run cron manual tests
+[ ] Enable cron only after duplication risk is cleared
+[ ] Run project tests/build checks
+[ ] Verify logs and status
+[ ] Create final handoff
+[ ] Keep old server as cold backup for retention period</code></pre></div>
+<p>---</p>
+<h3 class="phase">18. Recommended Default Migration Pattern</h3>
+<p>ถ้าไม่มีเหตุผลพิเศษ ให้ใช้ pattern นี้</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>Hybrid migration:
+1. Interview first
+2. Clone project repositories fresh on the new server
+3. Copy SOUL.md and selected skills
+4. Recreate config through hermes config set where possible
+5. Recreate .env secrets manually or through a secure temporary form
+6. Re-auth OAuth on the new server
+7. Migrate cron paused
+8. Stop old gateway before starting production gateway on the new server
+9. Verify end-to-end
+10. Keep old server as cold backup</code></pre></div>
+<p>เหตุผลที่แนะนำ</p>
+<ul>
+<li>ลดการ copy ขยะและ cache</li>
+<li>ลดโอกาส secret หลุด</li>
+<li>ลด path mismatch</li>
+<li>ลด duplicate poller/cron</li>
+<li>ทำ rollback ง่าย</li>
+<li>เหมาะกับ Linux server migration ส่วนใหญ่</li>
+</ul>
+<p>---</p>
+<h3 class="phase">19. Final Definition of Done</h3>
+<p>ถือว่างานย้ายสำเร็จเมื่อมีหลักฐานครบทุกข้อที่อยู่ใน scope</p>
+<div class="cmd"><div class="cmd-head"><span class="cmd-title">command / template</span><button class="copy" data-copy type="button">Copy</button></div><pre><code>[ ] New profile exists
+[ ] Persona/config/skills restored or recreated
+[ ] Provider auth works
+[ ] Local chat works
+[ ] Messaging gateway works
+[ ] Bot responds from intended user/channel
+[ ] Cron state matches migration plan
+[ ] Project repo/tests/build pass if applicable
+[ ] Old gateway/cron are stopped or intentionally left active with documented reason
+[ ] No secrets leaked into docs/repo/chat
+[ ] Handoff document completed</code></pre></div>
+<p>ถ้าข้อใดเป็น optional หรือ out of scope ให้ระบุชัดเจนใน handoff ไม่ควรสรุปว่า “100%” โดยไม่บอกขอบเขต</p></div>
+    </section>
+      <div class="searchbox"><label class="sr" for="search">ค้นหาในคู่มือ</label><input id="search" type="search" placeholder="ค้นหา เช่น cron, gateway, OAuth, rollback, <PROFILE_NAME>"><div class="results" id="searchResults"></div></div>
+    </div>
+  </main>
+</div>
+<script>
+(function(){
+  const root=document.documentElement, nav=document.getElementById('nav'), scrim=document.getElementById('scrim');
+  const secs=[...document.querySelectorAll('.sec')].filter(s=>s.id!=='hero'), navBtns=[...document.querySelectorAll('.nav-item')];
+  const key='profile-migration-manual-preview-state';
+  let state={section:'overview', theme:'light', fs:1, all:false};
+  try{state={...state,...JSON.parse(localStorage.getItem(key)||'{}')}}catch(e){}
+  function save(){localStorage.setItem(key,JSON.stringify(state))}
+  function closeNav(){nav.classList.remove('on');scrim.classList.remove('on')}
+  function setSection(id,push=true){if(!secs.some(s=>s.id===id)) id='overview'; state.section=id; secs.forEach(s=>s.classList.toggle('on',s.id===id)); navBtns.forEach(b=>b.setAttribute('aria-current',b.dataset.target===id?'true':'false')); if(push) history.replaceState(null,'','#'+id); closeNav(); save();}
+  function apply(){root.dataset.theme=state.theme; root.dataset.fs=String(state.fs); root.dataset.all=state.all?'1':'0'; document.getElementById('themeBtn').setAttribute('aria-pressed',state.theme==='dark'); document.getElementById('allBtn').setAttribute('aria-pressed',state.all); document.getElementById('fsLabel').textContent=[88,100,113,125][state.fs]+'%'; setSection(location.hash.slice(1)||state.section,false)}
+  navBtns.forEach(btn=>btn.addEventListener('click',()=>setSection(btn.dataset.target)));
+  document.querySelectorAll('[data-jump]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();setSection(a.dataset.jump)}));
+  document.getElementById('menuBtn').addEventListener('click',()=>{nav.classList.add('on');scrim.classList.add('on')}); scrim.addEventListener('click',closeNav);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape') closeNav()});
+  document.getElementById('themeBtn').addEventListener('click',()=>{state.theme=state.theme==='dark'?'light':'dark';apply();save()});
+  document.getElementById('allBtn').addEventListener('click',()=>{state.all=!state.all;apply();save()});
+  document.getElementById('fsDown').addEventListener('click',()=>{state.fs=Math.max(0,state.fs-1);apply();save()});
+  document.getElementById('fsUp').addEventListener('click',()=>{state.fs=Math.min(3,state.fs+1);apply();save()});
+  document.getElementById('printBtn').addEventListener('click',()=>window.print());
+  document.querySelectorAll('[data-copy]').forEach(btn=>btn.addEventListener('click',async()=>{const text=btn.closest('.cmd').querySelector('code').innerText; try{await navigator.clipboard.writeText(text); btn.textContent='Copied'; btn.classList.add('done'); setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('done')},1300)}catch(e){btn.textContent='Copy failed'}}));
+  const search=document.getElementById('search'), results=document.getElementById('searchResults');
+  const idx=secs.map(s=>({id:s.id,title:s.dataset.title||s.id,text:s.innerText.toLowerCase()}));
+  search.addEventListener('input',()=>{const q=search.value.trim().toLowerCase(); if(!q){results.classList.remove('on');results.innerHTML='';return} const hits=idx.filter(x=>x.text.includes(q)||x.title.toLowerCase().includes(q)).slice(0,10); results.innerHTML=hits.length?hits.map(h=>`<button class="result" data-id="${h.id}">${h.title}</button>`).join(''):'<div class="result">ไม่พบผลลัพธ์</div>'; results.classList.add('on')});
+  results.addEventListener('click',e=>{const b=e.target.closest('[data-id]'); if(b){setSection(b.dataset.id); search.value=''; results.classList.remove('on')}});
+  document.addEventListener('click',e=>{if(!e.target.closest('.searchbox')) results.classList.remove('on')});
+  window.addEventListener('hashchange',()=>setSection(location.hash.slice(1)||'overview',false));
+  apply();
+})();
+</script>
+</body>
+</html>

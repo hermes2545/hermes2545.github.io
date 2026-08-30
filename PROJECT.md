@@ -12,6 +12,8 @@ Maintain a public static library of practical guides, audio content, browser app
 - Cron: none
 - Telegram: dedicated DM-only bot, pending BotFather setup
 - Public push: explicit approval required
+- Workflow fidelity: reuse recorded original skill/runbook/history patterns by default; ask before changing established formats or methods.
+- Non-trivial multi-part work: Shelfkeeper acts as orchestrator and uses worker/reviewer specialist agents when prior pattern or risk calls for it.
 
 ## Project systems
 

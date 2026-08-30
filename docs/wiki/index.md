@@ -20,6 +20,7 @@ tags: [library, index]
 - [Agent autonomy policy](decisions/agent-autonomy-policy.md)
 - [Catalog source of truth](decisions/catalog-source-of-truth.md)
 - [Public/private documentation boundary](decisions/public-private-boundary.md)
+- [Skill fidelity and specialist orchestration](decisions/skill-fidelity-and-specialist-orchestration.md)
 
 ## Runbooks
 
@@ -42,6 +43,7 @@ tags: [library, index]
 - [VAULT — คู่มือออกแบบระบบ AI ที่ตรวจสอบได้และควบคุมความเสี่ยง](../guides/VAULT_AI_SAFETY_GUIDE_TH.md)
 - [คู่มือ Hermes Agent Advance Computer Use](../guides/HERMES_AGENT_ADVANCE_COMPUTER_USE_TH.md)
 - [คู่มือ Gemini Live API — สร้าง Voice Agent แบบ Real-Time](../guides/GEMINI_LIVE_API_GUIDE_TH.md)
+- [คู่มือย้าย Hermes Profile ไปยัง Linux Server เครื่องใหม่](../guides/HERMES_PROFILE_MIGRATION_LINUX_SERVER_GUIDE_TH.md)
 
 ## Reports
 
