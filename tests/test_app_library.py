@@ -256,6 +256,9 @@ class AppLibraryTests(unittest.TestCase):
         self.assertIn("owner-supplied-pantip-plaza-wallpaper.webp", attribution_text)
         self.assertIn('url("../app-room/owner-supplied-pantip-plaza-wallpaper.webp")', stylesheet)
         self.assertIn("backdrop-filter: blur(24px) saturate(1.22)", stylesheet)
+        self.assertIn(".app-page .ambient-light", stylesheet)
+        self.assertIn("width: auto;", stylesheet)
+        self.assertIn("transform: none;", stylesheet)
 
     def test_pantip_title_logo_and_led_marquee_scroll_left_with_loop_colors(self):
         template = (ROOT / "templates" / "app-library.template.html").read_text(encoding="utf-8")

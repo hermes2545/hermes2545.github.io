@@ -20,7 +20,13 @@
   background-attachment: fixed, scroll, fixed;
 }
 .app-page::before { opacity: .05; }
-.app-page .ambient-light { background: radial-gradient(ellipse, rgba(255,255,255,.52), transparent 62%); }
+.app-page .ambient-light {
+  right: 0;
+  left: 0;
+  width: auto;
+  transform: none;
+  background: radial-gradient(ellipse, rgba(255,255,255,.52), transparent 62%);
+}
 .app-page .site-nav { border-bottom-color: rgba(63,55,43,.2); }
 .app-page .site-nav a { color: #5e594f; }
 .app-page .site-nav a:hover { color: #171511; }
