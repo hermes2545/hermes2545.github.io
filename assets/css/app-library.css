@@ -18,12 +18,12 @@
   background-position: center top, center top, center top;
   background-size: cover, auto, cover;
   background-attachment: fixed, scroll, fixed;
+  overflow-x: clip;
 }
 .app-page::before { opacity: .05; }
 .app-page .ambient-light {
-  right: 0;
   left: 0;
-  width: auto;
+  width: 100%;
   transform: none;
   background: radial-gradient(ellipse, rgba(255,255,255,.52), transparent 62%);
 }
@@ -62,13 +62,14 @@
   min-height: 45px;
   overflow: hidden;
   margin: 0 auto 1.5rem;
+  contain: paint;
   border: 5px ridge #9c9d98;
   background:
     radial-gradient(circle, rgba(255,70,60,.22) 1px, transparent 1.5px) 0 0/7px 7px,
     #090b0c;
   box-shadow: 0 9px 20px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.22);
 }
-.app-marquee-track { position: absolute; inset: 0; overflow: hidden; }
+.app-marquee-track { position: absolute; inset: 0; overflow: hidden; contain: paint; }
 .app-marquee-message {
   --led-color: #ff3b30;
   position: absolute;
