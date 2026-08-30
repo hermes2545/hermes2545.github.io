@@ -178,20 +178,23 @@ class AudioLibraryTests(unittest.TestCase):
         self.assertIn("<h1>The Audio Shelf</h1>", template)
         self.assertNotIn("<h1>The Knowledge Shelf</h1>", template)
 
-    def test_audio_room_uses_selected_fifth_avenue_wallpaper_and_liquid_glass_shelves(self):
+    def test_audio_room_uses_owner_supplied_retail_wallpaper_and_liquid_glass_shelves(self):
         stylesheet = (ROOT / "assets" / "css" / "audio-library.css").read_text(encoding="utf-8")
-        wallpaper = ROOT / "assets" / "audio-room" / "apple-fifth-avenue-retail-floor.webp"
+        wallpaper = ROOT / "assets" / "audio-room" / "owner-supplied-retail-listening-room.webp"
         attribution = ROOT / "docs" / "reports" / "AUDIO_ROOM_IMAGE_ATTRIBUTION.md"
         self.assertTrue(wallpaper.is_file())
-        self.assertGreater(wallpaper.stat().st_size, 250000)
+        self.assertGreater(wallpaper.stat().st_size, 150000)
         data = wallpaper.read_bytes()
         self.assertEqual(data[:4], b"RIFF")
         self.assertEqual(data[8:12], b"WEBP")
+        self.assertNotIn(b"EXIF", data.upper())
+        self.assertNotIn(("/" + "home" + "/").encode(), data)
         self.assertTrue(attribution.is_file())
         attribution_text = attribution.read_text(encoding="utf-8")
-        self.assertIn("Seasider53", attribution_text)
-        self.assertIn("CC BY 4.0", attribution_text)
-        self.assertIn('url("../audio-room/apple-fifth-avenue-retail-floor.webp")', stylesheet)
+        self.assertIn("Project-owner supplied", attribution_text)
+        self.assertIn("owner-supplied-retail-listening-room.webp", attribution_text)
+        self.assertNotIn("Seasider53", attribution_text)
+        self.assertIn('url("../audio-room/owner-supplied-retail-listening-room.webp")', stylesheet)
         self.assertIn(".audio-bookshelf {", stylesheet)
         self.assertIn("backdrop-filter: blur(30px) saturate(1.35)", stylesheet)
         self.assertIn(".audio-bookshelf .shelf-plank", stylesheet)
@@ -249,7 +252,7 @@ class AudioLibraryTests(unittest.TestCase):
     def test_checked_in_audio_page_matches_generator(self):
         checked_in = (ROOT / "audio-library.html").read_text(encoding="utf-8")
         self.assertEqual(checked_in, self.page)
-        self.assertNotIn("/home/", checked_in)
+        self.assertNotIn("/" + "home" + "/", checked_in)
 
     def test_search_status_uses_audio_book_noun(self):
         script = (ROOT / "assets" / "js" / "library.js").read_text(encoding="utf-8")

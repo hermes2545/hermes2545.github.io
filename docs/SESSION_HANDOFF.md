@@ -47,7 +47,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with f
 - Audio titles no longer show the redundant `AUDIO BOOK` kicker.
 - Each item and the playlist button open YouTube in a new tab.
 - The Audio room uses a light premium technology-retail theme inspired by Apple Fifth Avenue's architectural materials: a luminous glass-cube mark, circular skylights, pale stone/off-white terrazzo surfaces, stainless-steel details, translucent dark navigation, and maple display tables. Apple Blue is reserved for interactive controls.
-- The Audio room now uses the selected **Option 3** photograph of the Apple Fifth Avenue retail floor as a local 1600×1200 wallpaper. Navigation, header, search/tools, the full bookshelf wall, and shelf planks use Audio-scoped iOS-style Liquid Glass surfaces (30px room blur, 24px shelf blur); all 52 iPods remain foreground content. Attribution and CC BY 4.0 terms are recorded in `docs/reports/AUDIO_ROOM_IMAGE_ATTRIBUTION.md`.
+- The Audio room now uses the project-owner supplied bright retail/listening-room interior photograph as a local 1440×806 EXIF-free RGB WebP wallpaper at `assets/audio-room/owner-supplied-retail-listening-room.webp`. Navigation, header, search/tools, disclosure controls, the full bookshelf wall, and shelf planks use Audio-scoped iOS-style Liquid Glass surfaces (30px room blur, 24px shelf blur); all 52 iPods remain foreground content. Public-safe provenance is recorded in `docs/reports/AUDIO_ROOM_IMAGE_ATTRIBUTION.md`.
 - Audio uses progressive disclosure to keep the initial page short: JavaScript starts with the newest 10 entries, loads 10 more per click, can reveal all 52, or can collapse back to 10. A lightweight year archive is generated from existing `time[datetime]` values (currently 2026 and 2025) without changing catalog schema. Search always checks all 52 entries and clearing a query resets the newest-10 view; No-JS users still receive all 52 server-rendered cards.
 - The Audio collection header is titled **The Audio Shelf** while the Reading collection is titled **Coffee and Books**.
 
@@ -134,9 +134,17 @@ Expected verified result at close: **96 tests passed**, all four generated pages
 
 ## Next recommended step
 
-Visual Art Director Agent manual was added locally and approved for publication in the current turn. After push, verify `Visual_Art_Director_Agent_Interactive_Manual.html`, Reading count 27, cover hash/dimensions, and production mobile/desktop manual shape. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
+After the approved Audio wallpaper push, verify `audio-library.html`, the new wallpaper hash/dimensions, Audio count 52, and production desktop/mobile Liquid Glass readability. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
 
 ## Latest close checkpoint — 2026-08-30
+
+- Replaced the Audio Library wallpaper with the project-owner supplied retail/listening-room interior image at `assets/audio-room/owner-supplied-retail-listening-room.webp`.
+- Preserved the supplied appearance while converting the JPEG into an EXIF-free 1440×806 RGB WebP for public web use; no visible crop, retouching, generative edit, text overlay, or redesign was applied.
+- Updated `assets/css/audio-library.css` to use the new local wallpaper while keeping the Audio-scoped Liquid Glass panels, disclosure controls, iPod cards, search, and 52-entry catalog behavior intact.
+- Updated `docs/reports/AUDIO_ROOM_IMAGE_ATTRIBUTION.md` with public-safe project-owner provenance and removed the previous third-party attribution from the active wallpaper record.
+- Verification before push passed: focused Audio wallpaper regression, full `python -m unittest discover -s tests -v` with **96 tests**, all four generator `--check` commands, `git diff --check`, public-safety scan, and desktop/mobile visual QA.
+
+## Previous close checkpoint — 2026-08-30
 
 - Added local Reading guide **Visual Art Director Agent — Interactive Reference Manual** at `Visual_Art_Director_Agent_Interactive_Manual.html` and catalog ID `visual-art-director-agent`.
 - Preserved the owner-supplied HTML byte-for-byte at SHA-256 `2817badb48fb59f89e76a68a678f93eb80dc31fe796b5f07fe8fa6f87fc1b58e`, with 11 chapter views/navigation items, localStorage, clipboard copy controls, print CSS, desktop/mobile layout, and no reader-facing `ค่ะ`.

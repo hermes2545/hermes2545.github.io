@@ -4,14 +4,13 @@ visibility: public
 
 # Audio Room Image Attribution
 
-## Apple Fifth Avenue retail-floor wallpaper
+## Project-owner supplied retail listening-room wallpaper
 
-- Work: `Apple Store 5th Avenue 2024.jpg`
-- Description: Interior retail floor at Apple Fifth Avenue, New York City
-- Photographer: [Seasider53](https://commons.wikimedia.org/wiki/User:Seasider53)
-- Source: https://commons.wikimedia.org/wiki/File:Apple_Store_5th_Avenue_2024.jpg
-- License: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
-- Local derivative: `assets/audio-room/apple-fifth-avenue-retail-floor.webp`
-- Processing: downloaded through Wikimedia Commons at 1920×1440, resized to 1600×1200 WebP quality 90, EXIF removed; no generative content or color replacement
+- Work: Project-owner supplied retail interior photograph
+- Description: Bright technology retail/listening-room interior with maple display tables, city skyline, greenery, glass façade, pale walls, and ceiling lights
+- Source: Project-owner supplied image for The Knowledge Shelf Audio Library wallpaper
+- License/provenance: Project-owner supplied for use in this Library project
+- Local derivative: `assets/audio-room/owner-supplied-retail-listening-room.webp`
+- Processing: converted from the supplied JPEG to an EXIF-free RGB WebP at the original 1440×806 composition; no visible retouching, cropping, generative edits, or text overlay
 
-The photograph is used as environmental wallpaper behind translucent Liquid Glass surfaces. Audio titles, controls, iPod devices, navigation, and search remain semantic HTML/CSS rather than baked into the image.
+The photograph is used as environmental wallpaper behind translucent Liquid Glass surfaces. Audio titles, controls, iPod devices, navigation, search, disclosure controls, and shelf UI remain semantic HTML/CSS rather than baked into the image.

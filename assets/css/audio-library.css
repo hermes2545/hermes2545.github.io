@@ -369,9 +369,9 @@
   .audio-card .book-title { min-height: 2.6em; }
 }
 
-/* Apple Fifth Avenue interior wallpaper + iOS-style Liquid Glass surfaces. */
+/* Project-owner supplied retail listening-room wallpaper + iOS-style Liquid Glass surfaces. */
 .audio-page {
-  background: url("../audio-room/apple-fifth-avenue-retail-floor.webp") center / cover fixed no-repeat;
+  background: url("../audio-room/owner-supplied-retail-listening-room.webp") center / cover fixed no-repeat;
   color: #18201d;
 }
 .audio-page::before {
