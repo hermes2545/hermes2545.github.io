@@ -239,6 +239,24 @@ class AppLibraryTests(unittest.TestCase):
         self.assertIn("function columnsForViewport()", script)
         self.assertIn('itemName = "App"', script)
 
+    def test_app_room_uses_owner_supplied_pantip_wallpaper(self):
+        stylesheet = (ROOT / "assets" / "css" / "app-library.css").read_text(encoding="utf-8")
+        wallpaper = ROOT / "assets" / "app-room" / "owner-supplied-pantip-plaza-wallpaper.webp"
+        attribution = ROOT / "docs" / "reports" / "APP_ROOM_IMAGE_ATTRIBUTION.md"
+        self.assertTrue(wallpaper.is_file())
+        self.assertGreater(wallpaper.stat().st_size, 180000)
+        data = wallpaper.read_bytes()
+        self.assertEqual(data[:4], b"RIFF")
+        self.assertEqual(data[8:12], b"WEBP")
+        self.assertNotIn(b"EXIF", data.upper())
+        self.assertNotIn(("/" + "home" + "/").encode(), data)
+        self.assertTrue(attribution.is_file())
+        attribution_text = attribution.read_text(encoding="utf-8")
+        self.assertIn("Project-owner supplied", attribution_text)
+        self.assertIn("owner-supplied-pantip-plaza-wallpaper.webp", attribution_text)
+        self.assertIn('url("../app-room/owner-supplied-pantip-plaza-wallpaper.webp")', stylesheet)
+        self.assertIn("backdrop-filter: blur(24px) saturate(1.22)", stylesheet)
+
     def test_pantip_title_logo_and_led_marquee_scroll_left_with_loop_colors(self):
         template = (ROOT / "templates" / "app-library.template.html").read_text(encoding="utf-8")
         stylesheet = (ROOT / "assets" / "css" / "app-library.css").read_text(encoding="utf-8")

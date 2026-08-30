@@ -11,15 +11,29 @@
   --brass-light: #6f4c15;
   background-color: var(--app-paper);
   background-image:
-    radial-gradient(circle at 50% -8%, rgba(255,255,255,.96), transparent 34rem),
-    repeating-linear-gradient(90deg, transparent 0 63px, rgba(52,45,34,.035) 64px);
+    linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.2) 32rem, rgba(221,218,208,.56)),
+    radial-gradient(circle at 50% -8%, rgba(255,255,255,.72), transparent 34rem),
+    url("../app-room/owner-supplied-pantip-plaza-wallpaper.webp");
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-position: center top, center top, center top;
+  background-size: cover, auto, cover;
+  background-attachment: fixed, scroll, fixed;
 }
-.app-page::before { opacity: .09; }
-.app-page .ambient-light { background: radial-gradient(ellipse, rgba(255,255,255,.72), transparent 62%); }
+.app-page::before { opacity: .05; }
+.app-page .ambient-light { background: radial-gradient(ellipse, rgba(255,255,255,.52), transparent 62%); }
 .app-page .site-nav { border-bottom-color: rgba(63,55,43,.2); }
 .app-page .site-nav a { color: #5e594f; }
 .app-page .site-nav a:hover { color: #171511; }
 .app-page .site-nav a[aria-current="page"] { color: #005b6d; border-bottom-color: #00758a; text-shadow: none; }
+.app-page .site-nav,
+.app-page .library-header,
+.app-page .catalog-tools,
+.app-page .library-footer {
+  border-color: rgba(255,255,255,.52);
+  background: rgba(244,243,238,.64);
+  box-shadow: inset 0 1px rgba(255,255,255,.74), 0 18px 44px rgba(50,46,38,.18);
+  backdrop-filter: blur(24px) saturate(1.22);
+}
 .app-library-mark {
   width: clamp(92px, 9vw, 112px);
   aspect-ratio: 314 / 270;
@@ -46,7 +60,7 @@
   background:
     radial-gradient(circle, rgba(255,70,60,.22) 1px, transparent 1.5px) 0 0/7px 7px,
     #090b0c;
-  box-shadow: 0 9px 20px rgba(0,0,0,.55);
+  box-shadow: 0 9px 20px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.22);
 }
 .app-marquee-track { position: absolute; inset: 0; overflow: hidden; }
 .app-marquee-message {
@@ -71,8 +85,9 @@
 .app-tools { grid-template-columns: minmax(250px, .9fr) minmax(360px, 1.1fr); }
 .app-search-panel {
   border: 3px outset #e7e5dc;
-  background: #bdbdbd;
-  box-shadow: 6px 7px 0 rgba(0,0,0,.58);
+  background: rgba(189,189,189,.72);
+  box-shadow: 6px 7px 0 rgba(0,0,0,.45), inset 0 1px rgba(255,255,255,.58);
+  backdrop-filter: blur(18px) saturate(1.12);
 }
 .app-search-panel > label {
   margin: -.5rem -.5rem .6rem;
@@ -97,9 +112,10 @@
   padding: 1.2rem clamp(.5rem, 2vw, 1.5rem) 2.5rem;
   border: 3px ridge #a7a69f;
   background:
-    radial-gradient(circle, #85867f 1px, transparent 1.5px) 0 0/14px 14px,
-    linear-gradient(90deg, #cac7bd, var(--app-wall) 50%, #c9c6bc);
-  box-shadow: inset 0 0 38px rgba(70,61,48,.2), 0 16px 35px rgba(72,62,48,.12);
+    radial-gradient(circle, rgba(133,134,127,.38) 1px, transparent 1.5px) 0 0/14px 14px,
+    linear-gradient(90deg, rgba(238,236,228,.64), rgba(216,213,202,.56) 50%, rgba(237,235,227,.64));
+  box-shadow: inset 0 0 38px rgba(70,61,48,.15), 0 20px 52px rgba(42,39,34,.24);
+  backdrop-filter: blur(24px) saturate(1.22);
 }
 .app-shelf { position: relative; margin-bottom: clamp(3.2rem, 6vw, 4.4rem); }
 .app-shelf:last-of-type { margin-bottom: 2rem; }
