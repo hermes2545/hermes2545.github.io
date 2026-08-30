@@ -34,7 +34,6 @@
 .app-page .site-nav a[aria-current="page"] { color: #005b6d; border-bottom-color: #00758a; text-shadow: none; }
 .app-page .site-nav,
 .app-page .library-header,
-.app-page .catalog-tools,
 .app-page .library-footer {
   border-color: rgba(255,255,255,.52);
   background: rgba(244,243,238,.64);
@@ -90,7 +89,34 @@
   from { left: 100%; transform: translate(0, -50%); }
   to { left: 0; transform: translate(-100%, -50%); }
 }
-.app-tools { grid-template-columns: minmax(250px, .9fr) minmax(360px, 1.1fr); }
+.app-tools {
+  position: relative;
+  width: min(1160px, calc(100% - 2rem));
+  box-sizing: border-box;
+  grid-template-columns: minmax(250px, .9fr) minmax(360px, 1.1fr);
+  gap: clamp(1.4rem, 3.6vw, 3.4rem);
+  align-items: center;
+  overflow: visible;
+  padding: clamp(1.25rem, 2.4vw, 2rem) clamp(1rem, 2.8vw, 2rem) clamp(1rem, 2.2vw, 1.6rem);
+  border: 1px solid rgba(255,255,255,.72);
+  border-radius: 0 0 28px 28px;
+  background:
+    linear-gradient(110deg, rgba(255,255,255,.82), rgba(244,243,238,.66) 54%, rgba(229,226,216,.72)),
+    rgba(244,243,238,.68);
+  box-shadow: inset 0 1px rgba(255,255,255,.9), 0 20px 54px rgba(45,42,36,.24);
+  backdrop-filter: blur(24px) saturate(1.22);
+}
+.app-tools::before {
+  position: absolute;
+  top: 0;
+  right: 1.2rem;
+  left: 1.2rem;
+  height: 3px;
+  content: "";
+  background: linear-gradient(90deg, transparent, rgba(0,117,138,.72), rgba(255,210,10,.72), transparent);
+}
+.app-tools .catalog-intro { min-width: 0; }
+.app-tools .result-status { margin: 0; }
 .app-search-panel {
   border: 3px outset #e7e5dc;
   background: rgba(189,189,189,.72);

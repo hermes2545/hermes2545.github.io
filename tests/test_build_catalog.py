@@ -1,11 +1,29 @@
 import html
 import json
 import unittest
+from html.parser import HTMLParser
 from pathlib import Path
 
 from scripts.build_catalog import SHELF_SIZE, load_books, render_homepage
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+class AnchorNestingParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.depth = 0
+        self.nested = 0
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "a":
+            if self.depth:
+                self.nested += 1
+            self.depth += 1
+
+    def handle_endtag(self, tag):
+        if tag == "a" and self.depth:
+            self.depth -= 1
 
 
 class HomepageBuildTests(unittest.TestCase):
@@ -16,12 +34,39 @@ class HomepageBuildTests(unittest.TestCase):
     def test_homepage_renders_every_book_once(self):
         self.assertEqual(self.html.count('class="book-card"'), len(self.books))
         for book in self.books:
-            self.assertEqual(self.html.count(f'href="{book["href"]}"'), 1)
+            self.assertEqual(self.html.count(f'href="{book["href"]}"'), 3)
             self.assertIn(html.escape(book["short_title"]), self.html)
 
     def test_books_open_in_a_new_tab_with_safe_rel(self):
-        self.assertEqual(self.html.count('target="_blank"'), len(self.books))
-        self.assertEqual(self.html.count('rel="noopener"'), len(self.books))
+        self.assertEqual(self.html.count('target="_blank"'), len(self.books) * 2)
+        self.assertEqual(self.html.count('rel="noopener"'), len(self.books) * 2)
+
+    def test_reading_books_have_glass_circle_html_download_after_date(self):
+        self.assertEqual(self.html.count('class="book-download-html book-download-html--glass"'), len(self.books))
+        self.assertEqual(self.html.count(" download "), len(self.books))
+        self.assertEqual(self.html.count('title="ดาวน์โหลด HTML"'), len(self.books))
+        parser = AnchorNestingParser()
+        parser.feed(self.html)
+        self.assertEqual(parser.nested, 0)
+
+        cards = self.html.split('<article class="book-card"')[1:]
+        self.assertEqual(len(cards), len(self.books))
+        for book, card in zip(self.books, cards):
+            href = html.escape(book["href"])
+            title = html.escape(book["title"])
+            self.assertIn('class="book-date-line"', card)
+            self.assertIn(
+                f'<a class="book-download-html book-download-html--glass" href="{href}" download '
+                f'aria-label="ดาวน์โหลด HTML: {title}" title="ดาวน์โหลด HTML">',
+                card,
+            )
+            self.assertLess(card.index('class="publish-date"'), card.index('class="book-download-html book-download-html--glass"'))
+            self.assertLess(card.index('class="book-download-html book-download-html--glass"'), card.index('class="book-summary"'))
+
+        stylesheet = (ROOT / "assets" / "css" / "reading-library.css").read_text(encoding="utf-8")
+        self.assertIn(".book-download-html--glass", stylesheet)
+        self.assertIn("border-radius: 999px;", stylesheet)
+        self.assertIn("backdrop-filter: blur(12px) saturate(1.16);", stylesheet)
 
     def test_reading_text_is_above_each_book_cover(self):
         cards = self.html.split('<article class="book-card"')[1:]
