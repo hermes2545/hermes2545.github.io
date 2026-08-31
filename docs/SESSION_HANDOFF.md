@@ -140,7 +140,7 @@ After the approved Audio wallpaper push, verify `audio-library.html`, the new wa
 ## Latest close checkpoint — 2026-08-31
 
 - Fixed **Visual Art Director Agent — Interactive Reference Manual** mobile side navigation: the sidebar brand row now includes a mobile-only `×` close button (`id="sidebarClose"`, Thai `aria-label`), Escape closes the drawer, and the mobile/desktop navigation buttons keep `aria-expanded` synchronized. Desktop collapse remains available from the toolbar; mobile users can close from inside the opened menu.
-- Updated `tests/test_visual_art_director_reading.py` with a regression test for the close control and locked the approved HTML SHA-256 to `9cd2cb83b58f8d2d00858e6d437ec8be503b656c03b91d87338005a92f2d8bf7`.
+- Updated `tests/test_visual_art_director_reading.py` with a regression test for the close control and locked the approved HTML SHA-256 to `299fd37972df359c99d4c0ffda8487315d7e2907f2500e3303c6dc07bc5d521a`.
 - Verification before the approved scoped push passed: focused RED→GREEN sidebar test, full `python -m unittest discover -s tests -v` with **99 tests**, all four generator `--check` commands current, `git diff --check`, static navigation checks, and pre-share scan of touched files.
 
 ## Latest close checkpoint — 2026-08-30
