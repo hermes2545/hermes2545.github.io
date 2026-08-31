@@ -433,13 +433,13 @@ main { display: block; }
 .library-footer strong { color: var(--ink); font-family: var(--serif); font-size: 1rem; font-weight: 500; }
 .updated { color: #8f887c; font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; }
 .library-footer.footer-pill {
-  width: min(900px, calc(100% - 2rem));
-  margin: clamp(2.4rem, 5vw, 4.5rem) auto 2rem;
-  padding: .88rem .95rem .88rem clamp(1.35rem, 3vw, 2.35rem);
+  width: min(540px, calc(100% - 2rem));
+  margin: clamp(1.45rem, 3vw, 2.7rem) auto 1.2rem;
+  padding: .53rem .57rem .53rem clamp(.8rem, 1.8vw, 1.4rem);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: clamp(1rem, 3vw, 2rem);
+  gap: clamp(.6rem, 1.8vw, 1.2rem);
   color: #68727f;
   border: 1px solid rgba(210,220,232,.72);
   border-radius: 999px;
@@ -453,24 +453,24 @@ main { display: block; }
   margin: 0;
   color: #111820;
   font-family: "Noto Sans Thai", "Noto Sans Display", Tahoma, system-ui, sans-serif;
-  font-size: clamp(1rem, 2vw, 1.45rem);
+  font-size: clamp(.6rem, 1.2vw, .87rem);
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: -.025em;
 }
 .footer-modes {
-  margin: .36rem 0 0;
+  margin: .22rem 0 0;
   color: #68727f;
   font-family: "Noto Sans Mono", "SFMono-Regular", ui-monospace, monospace;
-  font-size: clamp(.68rem, 1.1vw, .84rem);
+  font-size: clamp(.41rem, .66vw, .5rem);
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: .15em;
 }
 .footer-facebook-link {
-  width: clamp(46px, 5.6vw, 68px);
-  min-width: clamp(46px, 5.6vw, 68px);
-  min-height: clamp(46px, 5.6vw, 68px);
+  width: clamp(28px, 3.36vw, 41px);
+  min-width: clamp(28px, 3.36vw, 41px);
+  min-height: clamp(28px, 3.36vw, 41px);
   aspect-ratio: 1;
   display: grid;
   place-items: center;
@@ -487,11 +487,11 @@ main { display: block; }
 @media (max-width: 650px) {
   .library-footer.footer-pill {
     width: calc(100% - 1rem);
-    padding: 1rem;
+    padding: .6rem;
     flex-direction: column;
     justify-content: center;
     text-align: center;
-    border-radius: 28px;
+    border-radius: 17px;
   }
   .footer-pill-copy { text-align: center; }
 }

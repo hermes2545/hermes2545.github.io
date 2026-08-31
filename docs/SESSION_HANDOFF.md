@@ -80,7 +80,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with f
 ### Shared visual behavior
 
 - All four collections load `assets/css/library-dock.css` last and share one centered Sticky Floating Library Dock. Desktop uses a maximum 720×56px four-segment Liquid Glass switcher fixed 12px below the viewport top while scrolling; mobile uses the available width with 46px minimum hit targets 8px from the top. Labels and icons remain visible, and the current collection uses its own accent.
-- All four generated collection pages now share the owner-selected **Option 4 — Pill Dock** footer locally: `Knowledge for Humans. Structured for AI.` plus `READ · LISTEN · SEE · USE`, with `assets/icons/facebook-f.webp` as an icon-only Facebook link. The requested Facebook URL is used only as the anchor `href` and must not render as visible footer text.
+- All four generated collection pages now share the owner-selected **Option 4 — Pill Dock** footer locally: `Knowledge for Humans. Structured for AI.` plus `READ · LISTEN · SEE · USE`, with `assets/icons/facebook-f.webp` as an icon-only Facebook link. After owner feedback, the footer banner and typography were reduced by roughly 40%: the pill max width is now 540px, with proportionally smaller padding, text, and icon hit area. The requested Facebook URL is used only as the anchor `href` and must not render as visible footer text.
 - Responsive shelves rebuild to one real shelf per visual row: 5/4/3/2 books at desktop/tablet/mobile breakpoints.
 - Reading titles and publication dates sit above each cover; audio titles and publication dates sit above each iPod-style player.
 - Reading categories are removed from the title block and rendered as realistic metal plaques aligned to each book on the shelf edge.
@@ -142,7 +142,7 @@ After the approved Audio wallpaper push, verify `audio-library.html`, the new wa
 ## Latest close checkpoint — 2026-08-31
 
 - Implemented the owner-selected **Option 4 — Pill Dock** footer locally across `index.html`, `audio-library.html`, `gallery.html`, and `app-library.html` by updating the generated templates and CSS sources rather than hand-editing generated pages.
-- The footer copy is `Knowledge for Humans. Structured for AI.` and `READ · LISTEN · SEE · USE`; the owner-supplied Facebook logo is normalized to `assets/icons/facebook-f.webp` and appears as an icon-only link with no visible URL text in the rendered footer.
+- The footer copy is `Knowledge for Humans. Structured for AI.` and `READ · LISTEN · SEE · USE`; the owner-supplied Facebook logo is normalized to `assets/icons/facebook-f.webp` and appears as an icon-only link with no visible URL text in the rendered footer. After owner feedback, the local footer CSS reduces the pill banner and typography by roughly 40%.
 - Added `tests/test_shared_footer.py` and updated existing new-tab count assertions for the additional footer social link. Verification passed: `python -m unittest discover -s tests -v` with **107 tests**, all four generator `--check` commands, `git diff --check`, and a local public-safety/visibility scan of the changed footer files. Public push remains pending explicit owner approval.
 
 ## Latest close checkpoint — 2026-08-31
