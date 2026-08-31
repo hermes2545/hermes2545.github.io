@@ -1,5 +1,16 @@
 [
   {
+    "id": "grokrouter-interactive-reference-manual",
+    "title": "GrokRouter — Interactive Reference Manual (TH)",
+    "short_title": "GrokRouter ทำงานอย่างไร",
+    "href": "GrokRouter_Interactive_Reference_Manual_TH.html",
+    "cover": "assets/covers/custom/grokrouter-interactive-reference-manual.webp",
+    "category": "AI Agent Architecture",
+    "summary": "คู่มือภาษาไทยแบบ Interactive Reference Manual สำหรับทำความเข้าใจ GrokRouter ตั้งแต่แนวคิด Grok Bot เป็นตัวควบคุม, provider/model routing, Codex SDK, OpenRouter, สถาปัตยกรรม, security, recovery, testing และข้อจำกัดของระบบ",
+    "accent": "#FF6B00",
+    "published_at": "2026-09-01T00:38:48+07:00"
+  },
+  {
     "id": "visual-art-director-agent",
     "title": "Visual Art Director Agent — Interactive Reference Manual",
     "short_title": "Visual Art Director Agent",

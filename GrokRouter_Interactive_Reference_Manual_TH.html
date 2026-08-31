@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="th" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>GrokRouter — Interactive Reference Manual (TH)</title>
+<meta name="description" content="คู่มือ GrokRouter ภาษาไทย: installation, providers, commands, architecture, security, recovery, testing and limitations.">
+<style>
+:root{--bg:#f4eee7;--surface:#fffaf5;--surface2:#f2e7dc;--text:#17110d;--muted:#75695f;--border:#e0c5ad;--primary:#e95f00;--primary2:#ff8124;--primary-soft:#ffe4d0;--good:#c65c12;--good-soft:#ffead9;--warn:#dd6708;--warn-soft:#fff0df;--bad:#b94f22;--bad-soft:#fde6dc;--purple:#b66a36;--sidebar:#fff8f1;--shadow:0 15px 38px rgba(76,36,10,.10);--r:16px;--sidebar-w:286px;--top-h:64px;--font-scale:1}
+html[data-theme="dark"]{--bg:#070707;--surface:#151515;--surface2:#101010;--text:#f7f2ea;--muted:#a8a29e;--border:#4a2b15;--primary:#ff6b00;--primary2:#ff8b2c;--primary-soft:#28170d;--good:#ffb25f;--good-soft:#2b1a0d;--warn:#ff7a00;--warn-soft:#2c1809;--bad:#ff9566;--bad-soft:#2b1610;--purple:#d88b52;--sidebar:#0a0a0a;--shadow:none}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--text)}body{font-family:Inter,"Noto Sans Thai","Leelawadee UI",Tahoma,Arial,sans-serif;font-size:calc(15.5px * var(--font-scale));line-height:1.68;overflow:hidden}button,input{font:inherit}button{cursor:pointer}a{color:var(--primary);text-underline-offset:3px}code,pre{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+.app{display:grid;grid-template-columns:var(--sidebar-w) minmax(0,1fr);height:100vh}.sidebar{background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;min-width:0;z-index:20}.brand{height:78px;display:flex;align-items:center;gap:12px;padding:0 18px;border-bottom:1px solid var(--border)}.brand-mark{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(145deg,var(--primary),var(--primary2));color:white;font-weight:900;font-size:19px;box-shadow:0 8px 22px rgba(37,99,235,.24)}.brand-title{font-weight:900;letter-spacing:-.02em}.brand-sub{font-size:11.5px;color:var(--muted)}.search-wrap{padding:12px 12px 4px}.search{width:100%;height:38px;border:1px solid var(--border);border-radius:11px;background:var(--surface2);padding:0 11px;color:var(--text);outline:none}.search:focus{border-color:var(--primary)}.sidebar-nav{padding:8px 10px 18px;overflow:auto;flex:1}.nav-group{margin:6px 0 16px}.nav-label{padding:0 10px 6px;font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;font-weight:900;color:var(--muted)}.nav-item{border:0;background:transparent;color:var(--muted);width:100%;display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:10px;text-align:left;margin:1px 0}.nav-item:hover{background:var(--surface2);color:var(--text)}.nav-item.active{background:var(--primary-soft);color:var(--primary);font-weight:800}.nav-icon{width:17px;height:17px;flex:0 0 17px}.nav-icon svg{width:100%;height:100%}.sidebar-meta{padding:12px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--muted)}
+.workspace{display:grid;grid-template-rows:var(--top-h) minmax(0,1fr);min-width:0}.topbar{background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 18px;gap:12px}.top-left,.top-right{display:flex;align-items:center;gap:8px;min-width:0}.icon-btn,.text-btn{height:37px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);display:grid;place-items:center}.icon-btn{width:37px}.text-btn{padding:0 10px;font-weight:800}.icon-btn:hover,.text-btn:hover{background:var(--surface2)}.mobile-menu{display:none}.crumb{min-width:0}.crumb-cat{font-size:11px;color:var(--muted)}.crumb-title{font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.main{overflow:auto;padding:26px clamp(18px,3.2vw,44px) 60px;scroll-behavior:smooth}.content{max-width:1180px;margin:auto}.page{display:none;animation:in .18s ease}.page.active{display:block}@keyframes in{from{opacity:.45;transform:translateY(5px)}to{opacity:1;transform:none}}.page-head{margin-bottom:20px}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.09em;font-weight:900;color:var(--primary);margin-bottom:5px}h1{font-size:clamp(26px,3vw,38px);line-height:1.18;letter-spacing:-.035em;margin:0 0 8px}h2{font-size:20px;line-height:1.3;margin:28px 0 12px;letter-spacing:-.015em}h3{font-size:16.5px;margin:0}p{margin:0 0 12px}.lead{max-width:920px;color:var(--muted);font-size:1.04em}.muted{color:var(--muted)}.small{font-size:.88em}
+.grid{display:grid;gap:14px;margin:14px 0}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:17px;box-shadow:var(--shadow)}.card p:last-child,.card ul:last-child{margin-bottom:0}.card ul{margin:8px 0 0;padding-left:20px}.card-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.badge,.status-pill,.tag{display:inline-flex;align-items:center;border-radius:999px;font-size:10px;font-weight:900;letter-spacing:.04em;padding:4px 8px;background:var(--primary-soft);color:var(--primary)}.status-row{display:flex;gap:7px;flex-wrap:wrap}.status-pill.beta{background:var(--warn-soft);color:var(--warn)}.status-pill.good,.tag.green{background:var(--good-soft);color:var(--good)}.tag.red{background:var(--bad-soft);color:var(--bad)}.tag.amber{background:var(--warn-soft);color:var(--warn)}
+.hero-grid{display:grid;grid-template-columns:1.06fr .94fr;gap:22px;background:linear-gradient(145deg,var(--surface),var(--surface2));border:1px solid var(--border);border-radius:22px;padding:24px;box-shadow:var(--shadow);overflow:hidden}.hero-title{font-size:clamp(28px,4vw,46px);margin:18px 0 12px;line-height:1.08;letter-spacing:-.045em}.hero-title span{color:var(--primary)}.hero-actions{display:flex;gap:9px;margin-top:17px}.jump{border:0;border-radius:11px;padding:10px 14px;background:var(--primary);color:#fff;font-weight:850}.jump.ghost{background:var(--primary-soft);color:var(--primary)}.router-diagram{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:8px}.node{width:100%;border:1px solid var(--border);background:var(--surface);border-radius:15px;padding:13px;text-align:center;box-shadow:var(--shadow)}.node small{display:block;color:var(--muted);font-size:11px}.node.router{border-color:color-mix(in srgb,var(--primary) 40%,var(--border));background:var(--primary-soft);color:var(--primary)}.split{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%}.arrow{font-weight:900;color:var(--primary);line-height:1}.router-diagram .note{font-size:11px;color:var(--muted);text-align:center}.scenario{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.scenario>div{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px}.scenario span,.scenario small{display:block;color:var(--muted);font-size:11px}.scenario b{display:block;margin:2px 0 4px}
+.callout{border:1px solid var(--border);border-left:4px solid var(--primary);background:var(--surface);border-radius:13px;padding:13px 15px;margin:16px 0}.callout-title{font-weight:900;margin-bottom:3px}.callout.warning{border-left-color:var(--warn);background:var(--warn-soft)}.callout.danger{border-left-color:var(--bad);background:var(--bad-soft)}.callout.success{border-left-color:var(--good);background:var(--good-soft)}.callout.info{border-left-color:var(--primary);background:var(--primary-soft)}
+.steps{margin:10px 0;padding-left:24px}.steps li{padding:5px 0 8px 5px}.steps.large li{padding-bottom:13px}.steps p{color:var(--muted);margin:2px 0}.checklist,.xlist{padding-left:0;list-style:none}.checklist li,.xlist li{position:relative;padding:5px 0 5px 27px}.checklist li:before{content:'✓';position:absolute;left:0;color:var(--good);font-weight:900}.xlist li:before{content:'×';position:absolute;left:1px;color:var(--bad);font-weight:900;font-size:18px}.check-panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:14px}.check-panel label{display:flex;align-items:flex-start;gap:8px}.check-panel input{margin-top:5px}
+.table{width:100%;border-collapse:separate;border-spacing:0;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin:12px 0}.table th,.table td{padding:11px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--border)}.table th{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;background:var(--surface2);color:var(--muted)}.table tr:last-child td{border-bottom:0}.table code{font-size:.9em;background:var(--surface2);padding:2px 5px;border-radius:5px}.codebox{border:1px solid var(--border);background:#111827;color:#eef2ff;border-radius:13px;overflow:hidden;margin:10px 0}.codehead{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:#0b1220;color:#9fb1cc;font-size:11px}.copy-btn{border:1px solid #344155;background:#182235;color:#e7edf7;border-radius:7px;padding:4px 8px;font-size:11px}pre{margin:0;padding:14px;overflow:auto;line-height:1.55}pre code{font-size:13px;color:inherit}
+.timeline-status{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.release-card{border:1px solid var(--border);border-top:4px solid var(--warn);border-radius:15px;background:var(--surface);padding:15px}.release-card.verified{border-top-color:var(--good)}.release-card.preview{border-top-color:var(--purple)}.release-card span,.release-card small{display:block;color:var(--muted);font-size:11px}.release-card b{display:block;font-size:20px;margin:2px 0}.process-line,.gate{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.process-line span,.gate div{background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:7px 10px;font-size:12px}.process-line b,.gate b{color:var(--primary)}.arch-stack{display:grid;gap:8px;max-width:840px}.arch-stack>div:not(.arch-branch){display:grid;grid-template-columns:36px 190px 1fr;align-items:center;gap:10px;border:1px solid var(--border);background:var(--surface);border-radius:14px;padding:11px}.arch-stack span{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--primary-soft);color:var(--primary);font-weight:900;font-size:11px}.arch-stack small{color:var(--muted)}.arch-branch{display:grid;grid-template-columns:1fr 1fr;gap:8px}.arch-branch>div{display:grid;grid-template-columns:36px 1fr;gap:9px;border:1px solid var(--border);background:var(--surface);border-radius:14px;padding:11px}.arch-branch small{grid-column:2}.flow-steps{display:flex;align-items:stretch;gap:7px;overflow:auto;padding-bottom:5px}.flow-steps div{min-width:150px;flex:1;border:1px solid var(--border);background:var(--surface);border-radius:13px;padding:12px;text-align:center}.flow-steps small{display:block;color:var(--muted)}.flow-steps i{align-self:center;color:var(--primary);font-style:normal;font-weight:900}.identity-visual{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.bot-id,.weak-id{border:1px solid var(--border);border-radius:14px;background:var(--surface);padding:12px 14px}.bot-id{background:var(--primary-soft);border-color:color-mix(in srgb,var(--primary) 35%,var(--border));color:var(--primary)}.plus{font-weight:900;color:var(--muted)}.source-list{padding-left:20px}.source-list li{padding:4px 0}.source-note,.one-line{border:1px solid var(--border);background:var(--surface2);border-radius:13px;padding:13px;margin:14px 0}
+.footer-nav{display:flex;justify-content:space-between;gap:10px;margin-top:30px;padding-top:17px;border-top:1px solid var(--border)}.footer-nav button{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:11px;padding:9px 12px;font-weight:800}.empty{display:none;padding:12px;color:var(--muted);font-size:12px}body.sidebar-collapsed{--sidebar-w:74px}body.sidebar-collapsed .brand-copy,body.sidebar-collapsed .nav-label,body.sidebar-collapsed .nav-text,body.sidebar-collapsed .search-wrap,body.sidebar-collapsed .sidebar-meta{display:none}body.sidebar-collapsed .brand{justify-content:center;padding:0}body.sidebar-collapsed .nav-item{justify-content:center}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:fixed;left:0;top:0;bottom:0;width:286px;transform:translateX(-102%);box-shadow:0 20px 50px rgba(0,0,0,.18);transition:.2s}body.menu-open .sidebar{transform:none}.mobile-menu{display:grid}#collapseBtn{display:none}.hero-grid,.grid.three{grid-template-columns:1fr}.grid.two{grid-template-columns:1fr}.timeline-status{grid-template-columns:1fr}.scenario{grid-template-columns:1fr}.check-panel{grid-template-columns:1fr}.main{padding:20px 15px 50px}}
+@media(max-width:620px){.topbar{padding:0 10px}.text-btn.labelled{font-size:0;padding:0 10px}.text-btn.labelled::after{content:'A';font-size:14px}.hero-grid{padding:17px}.split{grid-template-columns:1fr}.table{display:block;overflow:auto;white-space:normal}.arch-stack>div:not(.arch-branch){grid-template-columns:32px 1fr}.arch-stack>div:not(.arch-branch) small{grid-column:2}.arch-branch{grid-template-columns:1fr}}
+@media print{body{overflow:visible}.app{display:block;height:auto}.sidebar,.topbar,.footer-nav{display:none!important}.workspace{display:block}.main{overflow:visible;padding:0}.page{display:block!important;page-break-after:always}.card,.table,.callout{box-shadow:none}}
+
+/* =========================================================
+   GROKROUTER DOCUMENT THEME — based on “How GrokRouter Works”
+   Default: dark. Main palette: #070707 / #151515 / #FF6B00 / warm white.
+   ========================================================= */
+html[data-theme="dark"]{color-scheme:dark}
+html[data-theme="light"]{color-scheme:light}
+::selection{background:color-mix(in srgb,var(--primary) 72%,transparent);color:#fff}
+body{background:var(--bg)}
+.sidebar{background:var(--sidebar);border-right-color:color-mix(in srgb,var(--primary) 28%,var(--border))}
+.brand{border-bottom-color:color-mix(in srgb,var(--primary) 30%,var(--border))}
+.brand-mark{background:#0b0b0b;color:var(--primary);border:1px solid color-mix(in srgb,var(--primary) 72%,var(--border));box-shadow:0 0 0 1px rgba(255,107,0,.05),0 0 26px rgba(255,107,0,.10);font-weight:950}
+.brand-title{font-weight:950;letter-spacing:.005em}.brand-grok{color:var(--text)}.brand-router{color:var(--primary)}
+.brand-sub{letter-spacing:.03em}
+.search{border-color:color-mix(in srgb,var(--primary) 24%,var(--border));background:var(--surface)}
+.search:focus{border-color:var(--primary);box-shadow:0 0 0 3px color-mix(in srgb,var(--primary) 13%,transparent)}
+.nav-label{color:color-mix(in srgb,var(--primary) 68%,var(--muted))}
+.nav-item:hover{background:color-mix(in srgb,var(--primary) 7%,var(--surface));color:var(--text)}
+.nav-item.active{background:var(--primary-soft);color:var(--primary);box-shadow:inset 3px 0 0 var(--primary)}
+.sidebar-meta{border-top-color:color-mix(in srgb,var(--primary) 24%,var(--border))}
+.topbar{background:color-mix(in srgb,var(--bg) 91%,transparent);border-bottom-color:color-mix(in srgb,var(--primary) 26%,var(--border))}
+.icon-btn,.text-btn{background:var(--surface);border-color:color-mix(in srgb,var(--primary) 24%,var(--border))}
+.icon-btn:hover,.text-btn:hover{background:var(--primary-soft);border-color:color-mix(in srgb,var(--primary) 62%,var(--border));color:var(--primary)}
+.crumb-cat,.eyebrow{color:var(--primary)}
+.main{background-color:var(--bg);background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 108px,color-mix(in srgb,var(--primary) 8%,transparent) 109px,color-mix(in srgb,var(--primary) 8%,transparent) 110px);background-attachment:local}
+.page-head{padding-bottom:17px;border-bottom:1px solid color-mix(in srgb,var(--primary) 23%,transparent)}
+h1,h2,h3,.crumb-title,.brand-title{color:var(--text)}
+h2{padding-top:2px}
+a{color:var(--primary)}
+.card,.scenario>div,.node,.check-panel,.release-card,.process-line span,.gate div,.arch-stack>div:not(.arch-branch),.arch-branch>div,.flow-steps>div,.file-tree,.trust-col{background:var(--surface);border-color:color-mix(in srgb,var(--primary) 27%,var(--border));box-shadow:none}
+.card:hover{border-color:color-mix(in srgb,var(--primary) 48%,var(--border))}
+.hero-grid{background:linear-gradient(145deg,var(--surface) 0%,var(--surface) 58%,color-mix(in srgb,var(--primary) 7%,var(--surface)) 100%);border-color:color-mix(in srgb,var(--primary) 46%,var(--border));box-shadow:0 0 0 1px rgba(255,107,0,.03),0 22px 60px rgba(0,0,0,.20)}
+.hero-title span{color:var(--primary)}
+.jump{background:var(--primary);color:#090909;border:1px solid var(--primary);font-weight:950}
+.jump:hover{filter:brightness(1.08)}
+.jump.ghost{background:transparent;color:var(--primary);border-color:color-mix(in srgb,var(--primary) 60%,var(--border))}
+.node.router{background:var(--primary-soft);border-color:color-mix(in srgb,var(--primary) 58%,var(--border));color:var(--primary)}
+.arrow{color:var(--primary)}
+.badge,.status-pill,.tag{background:var(--primary-soft);color:var(--primary);border:1px solid color-mix(in srgb,var(--primary) 26%,transparent)}
+.status-pill.beta,.status-pill.good,.tag.green,.tag.red,.tag.amber{background:var(--primary-soft);color:var(--primary)}
+.callout{background:var(--surface);border-color:color-mix(in srgb,var(--primary) 28%,var(--border));border-left-color:var(--primary)}
+.callout.warning,.callout.danger,.callout.success,.callout.info{background:color-mix(in srgb,var(--primary) 5%,var(--surface));border-left-color:var(--primary)}
+.callout.warning .callout-title,.callout.danger .callout-title,.callout.success .callout-title,.callout.info .callout-title{color:var(--primary)}
+.table{background:var(--surface);border-color:color-mix(in srgb,var(--primary) 30%,var(--border))}
+.table th,.table td{border-bottom-color:color-mix(in srgb,var(--primary) 18%,var(--border))}
+.table th{background:color-mix(in srgb,var(--primary) 6%,var(--surface2));color:color-mix(in srgb,var(--primary) 62%,var(--muted))}
+.table code{background:color-mix(in srgb,var(--primary) 7%,var(--surface2));color:var(--text)}
+.codebox{background:#050505;color:#f7f2ea;border-color:#4a2b15;box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}
+.codehead{background:#0b0b0b;color:#a8a29e;border-bottom:1px solid #3c220f}
+.codehead span{color:#c7b9ae}.copy-btn{border-color:#5b3216;background:#17100b;color:#ff9a4d}.copy-btn:hover{border-color:#ff6b00;background:#28170d;color:#ffb272}
+pre code{color:#f7f2ea}
+.release-card,.release-card.verified,.release-card.preview{border-top-color:var(--primary)}
+.release-card b,.process-line b,.gate b{color:var(--primary)}
+.arch-stack span{background:var(--primary);color:#080808}
+.flow-steps i{color:var(--primary)}
+.checklist li:before,.xlist li:before{color:var(--primary)}
+input[type="checkbox"]{accent-color:var(--primary)}
+hr{border-color:color-mix(in srgb,var(--primary) 22%,transparent)}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--primary) 32%,#242424);border-radius:10px;border:2px solid var(--bg)}::-webkit-scrollbar-thumb:hover{background:color-mix(in srgb,var(--primary) 52%,#242424)}
+
+/* =========================================================
+   ROBUST DOCUMENT SCROLL FIX
+   Desktop uses the browser/document as the vertical scroller.
+   Sidebar and topbar stay visible with sticky positioning.
+   This avoids nested-scroll / CSS Grid height traps when the
+   sidebar is expanded in a maximized desktop browser.
+   ========================================================= */
+html{height:auto;min-height:100%;overflow-x:hidden}
+body{height:auto;min-height:100%;overflow-x:hidden;overflow-y:auto}
+.app{height:auto;min-height:100vh;min-height:100dvh;overflow:visible;align-items:start}
+.workspace{height:auto;min-height:100vh;min-height:100dvh;overflow:visible;align-self:start;grid-template-rows:var(--top-h) auto}
+.topbar{position:sticky;top:0;z-index:18}
+.main{height:auto;min-height:0;overflow:visible;overscroll-behavior:auto;touch-action:auto;scrollbar-gutter:auto}
+
+@media(min-width:901px){
+  .sidebar{
+    position:sticky;
+    top:0;
+    align-self:start;
+    height:100vh;
+    height:100dvh;
+    min-height:0;
+    overflow:hidden;
+  }
+  .sidebar-nav{min-height:0;overflow-y:auto;overscroll-behavior:contain}
+}
+
+@media(max-width:900px){
+  .app{display:block;min-height:100vh;min-height:100dvh}
+  .workspace{height:auto;min-height:100vh;min-height:100dvh;overflow:visible;grid-template-rows:var(--top-h) auto}
+  .sidebar{position:fixed;top:0;bottom:0;height:100vh;height:100dvh;overflow:hidden}
+  .sidebar-nav{min-height:0;overflow-y:auto}
+  .main{height:auto;overflow:visible}
+}
+
+@media print{.main{background:#fff!important;background-image:none!important}.page-head{border-bottom-color:#ddd}.brand-grok,.brand-router{color:#111!important}}
+
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" aria-label="เมนูคู่มือ">
+  <div class="brand"><div class="brand-mark">GR</div><div class="brand-copy"><div class="brand-title"><span class="brand-grok">GROK</span><span class="brand-router">ROUTER</span></div><div class="brand-sub">Interactive Reference Manual</div></div></div>
+  <div class="search-wrap"><input id="navSearch" class="search" type="search" placeholder="ค้นหาหัวข้อ..." aria-label="ค้นหาเมนู"></div>
+  <nav class="sidebar-nav" id="sideNav"><div class="nav-group"><div class="nav-label">เริ่มต้น</div><button class="nav-item" type="button" data-page="overview"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">ภาพรวม</span></button><button class="nav-item" type="button" data-page="concept"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">แนวคิดและ Use Case</span></button><button class="nav-item" type="button" data-page="status"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">สถานะเวอร์ชัน</span></button></div><div class="nav-group"><div class="nav-label">ติดตั้งและใช้งาน</div><button class="nav-item" type="button" data-page="requirements"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">สิ่งที่ต้องมี</span></button><button class="nav-item" type="button" data-page="install-mac"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">ติดตั้งบน macOS</span></button><button class="nav-item" type="button" data-page="first-run"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">ตั้งค่า Provider</span></button><button class="nav-item" type="button" data-page="commands"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">คำสั่งใน Chat</span></button><button class="nav-item" type="button" data-page="models"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">Provider & Models</span></button></div><div class="nav-group"><div class="nav-label">เข้าใจระบบ</div><button class="nav-item" type="button" data-page="architecture"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">สถาปัตยกรรม</span></button><button class="nav-item" type="button" data-page="turn-flow"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">Message / Tool Flow</span></button><button class="nav-item" type="button" data-page="state"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">State & Isolation</span></button><button class="nav-item" type="button" data-page="security"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">Security & Data</span></button></div><div class="nav-group"><div class="nav-label">ดูแลระบบ</div><button class="nav-item" type="button" data-page="doctor"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">Doctor & Troubleshoot</span></button><button class="nav-item" type="button" data-page="recovery"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">Disable / Repair / Restore</span></button><button class="nav-item" type="button" data-page="acceptance"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">Fresh-Bot Acceptance</span></button></div><div class="nav-group"><div class="nav-label">ขั้นสูง</div><button class="nav-item" type="button" data-page="build"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">Build from Source</span></button><button class="nav-item" type="button" data-page="windows"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">Windows Source Preview</span></button><button class="nav-item" type="button" data-page="dev-map"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">Repository Map</span></button><button class="nav-item" type="button" data-page="limitations"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">ข้อจำกัดและสิ่งที่ยังไม่ควรอ้าง</span></button><button class="nav-item" type="button" data-page="license"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">License & Update Policy</span></button><button class="nav-item" type="button" data-page="cheatsheet"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">Cheat Sheet</span></button><button class="nav-item" type="button" data-page="sources"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4l8 8-8 8"/></svg></span><span class="nav-text">แหล่งอ้างอิง</span></button></div><div class="empty" id="emptySearch">ไม่พบหัวข้อ</div></nav>
+  <div class="sidebar-meta">Verified from official repository<br>Data cut: 1 Sep 2026</div>
+</aside>
+<section class="workspace">
+<header class="topbar"><div class="top-left"><button id="menuBtn" class="icon-btn mobile-menu" aria-label="เมนู">☰</button><button id="collapseBtn" class="icon-btn" aria-label="ย่อ sidebar">☰</button><div class="crumb"><div class="crumb-cat" id="crumbCat">GrokRouter</div><div class="crumb-title" id="crumbTitle">Overview</div></div></div><div class="top-right"><button class="text-btn labelled" id="fontDown" title="ลดขนาดตัวอักษร">A−</button><button class="text-btn labelled" id="fontUp" title="เพิ่มขนาดตัวอักษร">A+</button><button class="icon-btn" id="themeBtn" title="Light / Dark">◐</button><button class="text-btn" id="printBtn" title="Print / Save PDF">Print</button></div></header>
+<main class="main" id="main"><div class="content"><section class="page" id="page-overview" data-title="GrokRouter คืออะไร?" data-cat="GrokRouter • Interactive Manual">
+      <header class="page-head"><div class="eyebrow">GrokRouter • Interactive Manual</div><h1>GrokRouter คืออะไร?</h1><p class="lead">คู่มือฉบับละเอียดสำหรับทำความเข้าใจ ติดตั้ง ใช้งาน ตรวจสอบ และย้อนกลับ GrokRouter โดยยึดสถานะต้นฉบับล่าสุดของ repository ณ 1 กันยายน 2026</p></header>
+      
+<div class="hero-grid">
+  <div class="hero-copy">
+    <div class="status-row"><span class="status-pill beta">UNOFFICIAL BETA</span><span class="status-pill">Grok Bot 0.30.0</span><span class="status-pill good">macOS live-verified</span></div>
+    <h2 class="hero-title">ใช้ Grok Bot เหมือนเดิม<br><span>แต่เลือก “สมอง AI” ต่อ Bot ได้</span></h2>
+    <p>GrokRouter แทรกตัวที่ <strong>inference seam</strong> ของ Grok Bot เพื่อส่งคำขอไปยัง <strong>Codex SDK</strong> หรือ <strong>OpenRouter</strong> ขณะที่หน้าแชต, Bot, conversation, Computer, Files, Browser, tool execution และ permission UX ยังคงอยู่ใน Grok Bot</p>
+    <div class="hero-actions"><button class="jump" data-go="install-mac">เริ่มติดตั้งบน Mac</button><button class="jump ghost" data-go="architecture">ดูสถาปัตยกรรม</button></div>
+  </div>
+  <div class="router-diagram" aria-label="GrokRouter flow diagram">
+    <div class="node grok"><b>Grok Bot</b><small>UI • Bots • Tools • Permissions</small></div>
+    <div class="arrow">↓</div>
+    <div class="node router"><b>GrokRouter</b><small>per-Bot provider + model routing</small></div>
+    <div class="split"><div class="node provider"><b>Codex SDK</b><small>OpenAI Codex account</small></div><div class="node provider"><b>OpenRouter</b><small>Claude / Luna / other listed models</small></div></div>
+    <div class="note">Tool authority ยังไหลจาก Grok → Provider ไม่ใช่กลับกัน</div>
+  </div>
+</div>
+<div class="grid three">
+<article class="card"><div class="card-top"><h3>สิ่งที่ “ยังเป็น Grok”</h3><span class="badge">KEEP</span></div><p>Desktop UI, chat, Bot identity, transcript, cloud computer, files, browser, outer tools และ permission behavior</p></article>
+<article class="card"><div class="card-top"><h3>สิ่งที่ Router เปลี่ยน</h3><span class="badge">ROUTE</span></div><p>Provider, model, reasoning effort, provider thread และการแปลง schema ระหว่าง provider กับ Grok tools</p></article>
+<article class="card"><div class="card-top"><h3>จุดเด่นที่สำคัญ</h3><span class="badge">SAFE</span></div><p>ตั้งค่าแยกต่อ Bot, มี Doctor, backup/restore, exact-version gate และ fail-closed เมื่อ host ไม่ตรงที่รองรับ</p></article>
+</div>
+<div class="callout warning"><div class="callout-title">อย่าสับสนกับการเปลี่ยน Grok Bot เป็นแอปใหม่</div><div>GrokRouter ไม่ได้สร้าง UI ใหม่และไม่ได้ย้าย Computer/Files/Browser ไปอยู่กับ provider ภายนอก แต่ patch จุดเรียก inference ภายใน host ที่รองรับเท่านั้น</div></div>
+<h2>ตัวอย่างการใช้งานที่เห็นภาพ</h2>
+<div class="scenario">
+  <div><span>Bot A</span><b>Research Bot</b><small>OpenRouter → Claude</small></div>
+  <div><span>Bot B</span><b>Coding Bot</b><small>Codex SDK → GPT model</small></div>
+  <div><span>Bot C</span><b>Experiment Bot</b><small>OpenRouter → another listed model</small></div>
+</div>
+<p class="muted small">แต่ละ Bot มี provider/model state แยกกัน การเปลี่ยน Bot หนึ่งไม่ควรเปลี่ยนอีก Bot หนึ่ง และ beta.40 เพิ่มการผูก state กับ stable Bot identity ข้าม direct chat/channel</p>
+
+    </section><section class="page" id="page-concept" data-title="แนวคิด: “Grok เป็นตัวควบคุม — Model เป็นตัวคิด”" data-cat="พื้นฐาน">
+      <header class="page-head"><div class="eyebrow">พื้นฐาน</div><h1>แนวคิด: “Grok เป็นตัวควบคุม — Model เป็นตัวคิด”</h1><p class="lead">จุดที่ทำให้ GrokRouter น่าสนใจไม่ใช่แค่การสลับโมเดล แต่คือการพยายามรักษา tool boundary และ permission behavior ของ Grok Bot เอาไว้</p></header>
+      
+<div class="grid two">
+<article class="card"><div class="card-top"><h3>Control Plane</h3></div><p>คำสั่ง <code>/provider</code>, <code>/models</code>, <code>/reasoning</code>, <code>/doctor</code> ถูก router จัดการก่อน model inference จึงให้ผลแบบ deterministic ไม่ใช่ปล่อยให้โมเดล “เดา” ว่าคำสั่งหมายถึงอะไร</p></article>
+<article class="card"><div class="card-top"><h3>Inference Plane</h3></div><p>ข้อความสนทนาที่ไม่ใช่ control command จะถูกส่งไปยัง provider ที่ Bot นั้นเลือก จากนั้นคำตอบกลับเข้าช่องแชต Grok เดิม</p></article>
+<article class="card"><div class="card-top"><h3>Tool Plane</h3></div><p>Provider ขอใช้ tool ได้เฉพาะ schema ที่ Grok ส่งมาใน turn นั้น และ Grok เป็นผู้ execute พร้อมใช้ permission behavior ของตัวเอง</p></article>
+<article class="card"><div class="card-top"><h3>Recovery Plane</h3></div><p>ก่อน patch จะมี verified stock backup; ระบบมี disable, repair, restore และตรวจ exact hash/source anchors เพื่อไม่ patch host ที่ไม่รู้จัก</p></article>
+</div>
+<h2>หลักการสำคัญ 5 ข้อ</h2>
+<ol class="steps">
+<li><b>Version-gated:</b> รองรับ Grok Bot build ที่ระบุอย่างเจาะจง ไม่ wildcard.</li>
+<li><b>Per-Bot state:</b> provider/model/reasoning/thread state ถูกแยกตาม Bot.</li>
+<li><b>Tool authority comes from Grok:</b> โมเดลภายนอกสร้างสิทธิ์ tool เพิ่มเองไม่ได้.</li>
+<li><b>Fail closed:</b> hash, source anchor, credential shape หรือ terminal verification ผิด → หยุด.</li>
+<li><b>Reversible:</b> มี stock backup และ restore path ที่ตรวจสอบก่อนแทนที่ไฟล์.</li>
+</ol>
+<div class="callout info"><div class="callout-title">ทำไม Router command ต้อง intercept ก่อน inference</div><div>ถ้าปล่อย <code>/provider</code> ไปถึง LLM โมเดลอาจตอบเป็นภาษาธรรมชาติแทนการเปลี่ยน state จริง การ intercept ทำให้ command เป็น control operation ที่ตรวจสอบได้</div></div>
+
+    </section><section class="page" id="page-status" data-title="สถานะเวอร์ชันและหลักฐานการรองรับ" data-cat="สถานะปัจจุบัน">
+      <header class="page-head"><div class="eyebrow">สถานะปัจจุบัน</div><h1>สถานะเวอร์ชันและหลักฐานการรองรับ</h1><p class="lead">แยกให้ชัดระหว่าง “source candidate”, “automated pass” และ “live verified” เพื่อไม่สรุปเกินหลักฐาน</p></header>
+      
+<div class="timeline-status">
+<div class="release-card current"><span>Source candidate</span><b>0.1.0-beta.40</b><small>Research/build lock: 2026-08-31</small></div>
+<div class="release-card verified"><span>macOS live evidence</span><b>beta.39</b><small>fresh Bot passed Doctor + provider selection</small></div>
+<div class="release-card preview"><span>Windows</span><b>Source Preview</b><small>x64/Arm64 build + CI pass; native live cycle pending</small></div>
+</div>
+<table class="table"><thead><tr><th>หัวข้อ</th><th>สถานะที่ควรใช้ในคู่มือ</th><th>หมายเหตุ</th></tr></thead><tbody>
+<tr><td>Grok Bot host</td><td><span class="tag red">Exact 0.30.0</span></td><td>unknown build ต้องถูกปฏิเสธ</td></tr>
+<tr><td>macOS</td><td><span class="tag green">Live verified</span></td><td>macOS 12+ Apple silicon; beta.39 มี fresh-Bot proof</td></tr>
+<tr><td>beta.40 features</td><td><span class="tag amber">Candidate</span></td><td>automated test/source evidence ผ่านหลายส่วน แต่ candidate live gates บางรายการยัง pending</td></tr>
+<tr><td>Windows 11 x64/Arm64</td><td><span class="tag amber">Source preview</span></td><td>package/CI ผ่าน แต่ native launch → install → restore → reinstall → fresh-Bot ยัง pending</td></tr>
+<tr><td>OpenRouter outer tools</td><td><span class="tag amber">Schema-dependent</span></td><td>ถ้า Grok ไม่ส่ง actionable tool schema Router ต้องไม่แกล้งทำเป็น execute ได้</td></tr>
+</tbody></table>
+<div class="callout danger"><div class="callout-title">คำที่ไม่ควรเขียน</div><div>อย่าเขียนว่า “รองรับ Windows เต็มรูปแบบแล้ว” หรือ “OpenRouter ใช้ Computer/Sub-agent ได้ครบทุกกรณี” เพราะหลักฐานปัจจุบันยังไม่รองรับคำกล่าวแบบนั้น</div></div>
+<h2>beta.40 candidate เพิ่มอะไร</h2>
+<ul class="checklist"><li>state ตาม stable Bot identity ข้าม direct chat และ channel</li><li>รองรับ addressed command เช่น <code>@Research Bot /provider</code></li><li>native slash discovery ผ่าน user-invocable skills</li><li><code>/doctor</code> เป็น alias จริงและ bypass model inference</li><li>provider-aware delegation ที่ไม่ invent child เมื่อไม่มี schema</li><li>คืน Windows installer source + x64/Arm64 packaging/CI ในฐานะ preview</li></ul>
+
+    </section><section class="page" id="page-requirements" data-title="สิ่งที่ต้องมี ก่อนแตะ Install Router" data-cat="ติดตั้ง">
+      <header class="page-head"><div class="eyebrow">ติดตั้ง</div><h1>สิ่งที่ต้องมี ก่อนแตะ Install Router</h1><p class="lead">เช็ก compatibility และ credential ให้ครบก่อน เพราะตัว installer ตั้งใจหยุดทันทีเมื่อเงื่อนไขสำคัญไม่ตรง</p></header>
+      
+<div class="grid two">
+<article class="card"><div class="card-top"><h3>เครื่อง Mac</h3><span class="badge">REQUIRED</span></div><ul><li>macOS 12 ขึ้นไป</li><li>Apple silicon</li><li>official Grok Bot <b>0.30.0</b> อยู่ใน <code>/Applications</code></li><li>เปิด Grok Bot ได้และเปิด Computer ของ Bot อย่างน้อยหนึ่งตัวได้</li></ul></article>
+<article class="card"><div class="card-top"><h3>Provider credential</h3><span class="badge">ONE OR BOTH</span></div><ul><li>Codex account สำหรับ Codex SDK หรือ</li><li>OpenRouter API key หรือ</li><li>มีทั้งสองอย่างเพื่อสลับใช้งาน</li></ul></article>
+<article class="card"><div class="card-top"><h3>สำหรับ source build</h3><span class="badge">ADVANCED</span></div><ul><li>Xcode Command Line Tools (Swift + codesign)</li><li>Node.js 18+ และ Python 3 สำหรับ test/runtime dev</li></ul></article>
+<article class="card"><div class="card-top"><h3>สิ่งที่ไม่ต้องมีสำหรับ quick install</h3><span class="badge">GOOD</span></div><ul><li>ไม่ต้อง <code>sudo</code></li><li>ไม่ต้องมี Git ถ้า Download ZIP</li><li>ไม่ต้องปิด Gatekeeper</li><li>ไม่ต้องติดตั้ง unknown binary จากที่อื่น</li></ul></article>
+</div>
+<h2>Pre-flight checklist</h2>
+<div class="check-panel"><label><input type="checkbox"> Grok Bot version คือ 0.30.0</label><label><input type="checkbox"> Grok Bot อยู่ใน /Applications</label><label><input type="checkbox"> เปิด Bot Computer ได้</label><label><input type="checkbox"> มี Codex account หรือ OpenRouter key</label><label><input type="checkbox"> Download source จาก repository ต้นฉบับ</label></div>
+<div class="callout warning"><div class="callout-title">ถ้า Grok Bot อัปเดตเองจน version ไม่ตรง</div><div>อย่าฝืนติดตั้งด้วยการแก้ manifest หรือเปิด override แบบสุ่ม หลักการของโปรเจกต์คือ unknown host ต้อง fail closed จนกว่าจะมี manifest/hash/anchor ใหม่และผ่าน acceptance gate</div></div>
+
+    </section><section class="page" id="page-install-mac" data-title="ติดตั้ง GrokRouter บน macOS แบบที่แนะนำ" data-cat="ติดตั้ง">
+      <header class="page-head"><div class="eyebrow">ติดตั้ง</div><h1>ติดตั้ง GrokRouter บน macOS แบบที่แนะนำ</h1><p class="lead">เส้นทางที่ repository แนะนำคือ build native app จาก source ที่ดาวน์โหลดเอง แล้วติดตั้งไว้ใน personal Applications folder</p></header>
+      
+<ol class="steps large">
+<li><b>ติดตั้งและเปิด Grok Bot 0.30.0</b><p>ให้แอปอยู่ใน <code>/Applications</code> เปิดหนึ่งครั้ง เลือก Bot และกด <b>Open computer</b> ให้แน่ใจว่าทำได้</p></li>
+<li><b>Download repository เป็น ZIP</b><p>ที่ GitHub เลือก <b>Code → Download ZIP</b> แล้วแตกไฟล์</p></li>
+<li><b>Double-click <code>Install GrokRouter.command</code></b><p>script จะ build native Swift app จาก source, verify app, ติดตั้งไปที่ <code>~/Applications/GrokRouter.app</code> และเปิดให้</p></li>
+<li><b>เปิด GrokRouter และเลือก provider</b><p>เปิด/ปิด Codex SDK และ OpenRouter, เลือก default provider/model ตามต้องการ</p></li>
+<li><b>กรอก OpenRouter key ถ้าใช้</b><p>key ถูกส่งเข้าสู่ Grok Bot protected Secrets store แล้ว field ใน installer จะถูก clear</p></li>
+<li><b>กด Install Router</b><p>installer ตรวจ exact app/version, เปิด diagnostic แบบ loopback, backup stock host และ patch เฉพาะเมื่อ hash/anchors ตรง</p></li>
+<li><b>ถ้าระบบขอ Bot computer</b><p>กลับไป Grok Bot → เลือก Bot → Open computer แล้วคงทั้ง Grok Bot และ GrokRouter เปิดไว้ระหว่าง install</p></li>
+<li><b>ถ้าเปิด Codex</b><p>ใช้ปุ่ม Codex sign-in และทำ device sign-in ที่แสดงใน Bot terminal</p></li>
+<li><b>สร้าง Bot ใหม่เพื่อทดสอบ</b><p>อย่าใช้แค่ Bot เก่ามายืนยัน เพราะ acceptance ของโปรเจกต์เน้น genuinely fresh Bot</p></li>
+</ol>
+<div class="callout info"><div class="callout-title">Apple Command Line Tools</div><div>ถ้ายังไม่มี ระบบ macOS อาจเสนอให้ติดตั้ง Command Line Tools ก่อน ให้ติดตั้งให้เสร็จแล้วเปิด <code>Install GrokRouter.command</code> ซ้ำ</div></div>
+<h2>สิ่งที่ installer ทำเบื้องหลัง</h2>
+<div class="process-line"><span>verify 0.30.0</span><b>→</b><span>loopback diagnostic</span><b>→</b><span>verify Terminal focus</span><b>→</b><span>checksummed payload</span><b>→</b><span>stock backup</span><b>→</b><span>exact patch</span><b>→</b><span>restart + success marker</span></div>
+
+    </section><section class="page" id="page-first-run" data-title="ตั้งค่า Provider และทดสอบครั้งแรก" data-cat="เริ่มใช้งาน">
+      <header class="page-head"><div class="eyebrow">เริ่มใช้งาน</div><h1>ตั้งค่า Provider และทดสอบครั้งแรก</h1><p class="lead">หลัง install เสร็จ การใช้งานประจำควรกลับไปอยู่ใน Grok Bot ตามเดิม ส่วน GrokRouter ทำหน้าที่ตั้งค่า/ซ่อม/restore</p></header>
+      
+<h2>Minimal fresh-Bot proof</h2>
+<div class="codebox"><div class="codehead"><span>พิมพ์ในช่องแชต Grok Bot ทีละคำสั่ง</span><button class="copy-btn" type="button">Copy</button></div><pre><code>/router doctor
+/models
+openai/gpt-5.6-luna
+/provider</code></pre></div>
+<p>ตัวอย่างนี้ใช้ model ID ที่ README ใช้เป็น acceptance proof ณ เวลาที่ศึกษา จุดสำคัญไม่ใช่ว่าต้องเลือก Luna เสมอ แต่ให้ copy model ID ที่ <code>/models</code> แสดง แล้วตรวจ <code>/provider</code> ว่าตรงกับสิ่งที่เลือก</p>
+<div class="grid two">
+<article class="card"><div class="card-top"><h3>Codex SDK</h3></div><p>authentication ทำผ่าน Codex CLI/SDK device flow ภายใน Bot computer และ reasoning effort ปรับได้ด้วย <code>/reasoning</code>.</p></article>
+<article class="card"><div class="card-top"><h3>OpenRouter</h3></div><p>ใช้ API key จาก protected Secrets store และส่ง request แบบ OpenAI-compatible พร้อม native function schemas เมื่อ Grok มี tool schema ใน turn นั้น</p></article>
+</div>
+<div class="callout success"><div class="callout-title">หลังจากนี้ใช้งานจาก Grok Bot ได้เลย</div><div>ใช้ <code>/provider</code> ดู provider ปัจจุบัน, <code>/models</code> ดู catalog, วาง model ID ที่ listed มาเดี่ยวๆ เพื่อ switch Bot นั้น หรือใช้ <code>/model ...</code></div></div>
+
+    </section><section class="page" id="page-commands" data-title="คำสั่ง GrokRouter ในช่อง Chat" data-cat="ใช้งาน">
+      <header class="page-head"><div class="eyebrow">ใช้งาน</div><h1>คำสั่ง GrokRouter ในช่อง Chat</h1><p class="lead">control commands ถูก parse ก่อน inference จึงเป็นคำสั่งของ router จริง ไม่ใช่ prompt ให้โมเดลตอบเอง</p></header>
+      
+<table class="table command-table"><thead><tr><th>Command</th><th>หน้าที่</th></tr></thead><tbody><tr><td><code>/provider</code></td><td>ดู provider + model ของ Bot นี้</td></tr><tr><td><code>/provider codex</code></td><td>สลับไป Codex SDK</td></tr><tr><td><code>/provider openrouter</code></td><td>สลับไป OpenRouter</td></tr><tr><td><code>/models</code></td><td>ดู model catalog ที่ติดตั้ง</td></tr><tr><td><code>/model sol</code></td><td>เลือก Codex alias gpt-5.6-sol</td></tr><tr><td><code>/model anthropic/claude-sonnet-4.6</code></td><td>เลือก OpenRouter model แบบระบุเต็ม</td></tr><tr><td><code>/models openai/gpt-5.6-luna</code></td><td>plural alias ที่ยอมรับและใช้ switch model</td></tr><tr><td><code>openai/gpt-5.6-luna</code></td><td>วาง listed OpenRouter model ID เดี่ยวๆ</td></tr><tr><td><code>/reasoning minimal|low|medium|high|xhigh</code></td><td>ตั้ง Codex reasoning effort</td></tr><tr><td><code>/router reset</code></td><td>เริ่ม provider thread ใหม่ แต่ไม่ลบ Grok transcript</td></tr><tr><td><code>/router doctor</code></td><td>ตรวจ runtime, patch, provider, credential, tool bridge</td></tr><tr><td><code>/doctor</code></td><td>alias สั้นของ /router doctor</td></tr><tr><td><code>/router help</code></td><td>แสดง command reference</td></tr></tbody></table>
+<h2>ใน Channel / Group</h2>
+<div class="codebox"><div class="codehead"><span>addressed control</span><button class="copy-btn" type="button">Copy</button></div><pre><code>@Research Bot /provider
+@Coding Bot /models</code></pre></div>
+<p>beta.40 candidate รองรับ “pure leading Bot mention” เพื่อสั่งเฉพาะ Bot ที่ address โดยไม่เปลี่ยน Bot อื่น ส่วน prose ที่เพียงกล่าวถึง command ในประโยคปกติจะไม่ถูก intercept</p>
+<div class="callout warning"><div class="callout-title">Model ID ต้องมาจาก catalog</div><div>near-miss, invalid command หรือ model ที่ไม่ listed จะถูกส่ง bounded help แทนการปล่อยไปให้ model inference เพื่อป้องกัน model สร้างคำตอบหลอกว่าการ switch สำเร็จ</div></div>
+
+    </section><section class="page" id="page-models" data-title="Codex SDK vs OpenRouter" data-cat="Provider">
+      <header class="page-head"><div class="eyebrow">Provider</div><h1>Codex SDK vs OpenRouter</h1><p class="lead">สอง provider path มีบทบาทคล้ายกันที่ “ทำ inference” แต่ thread, auth และ tool translation แตกต่างกัน</p></header>
+      
+<table class="table"><thead><tr><th>หัวข้อ</th><th>Codex SDK</th><th>OpenRouter</th></tr></thead><tbody>
+<tr><td>Auth</td><td>Codex CLI/SDK device flow</td><td>OpenRouter API key ใน Grok protected Secrets</td></tr>
+<tr><td>Thread</td><td>resume SDK thread ต่อ Bot</td><td>Chat Completions + router-managed transcript conversion</td></tr>
+<tr><td>Reasoning control</td><td><code>/reasoning</code> รองรับ</td><td>ขึ้นกับ model/provider behavior</td></tr>
+<tr><td>Tools</td><td>outer Grok tools ถูกอธิบายใน prompt/schema และ return structured toolCalls</td><td>outer tools เป็น native function definitions; ต้องมี schema จาก Grok</td></tr>
+<tr><td>Images</td><td>local_image; สูงสุด 4 ภาพ / 20 MB ต่อภาพต่อ turn ตาม architecture doc</td><td>visual tool result แปลงเป็น multimodal follow-up message</td></tr>
+<tr><td>ตัวอย่าง model</td><td><code>gpt-5.6-sol</code> alias ใน README</td><td><code>anthropic/claude-sonnet-4.6</code>, <code>openai/gpt-5.6-luna</code> เป็นตัวอย่างใน repo</td></tr>
+</tbody></table>
+<div class="callout info"><div class="callout-title">Catalog มีสถานะตามแพ็กเกจของ Router</div><div>ให้ใช้ <code>/models</code> เป็น source of truth สำหรับ model ที่ Router รุ่นนั้นติดตั้งไว้ แทนการจำรายชื่อจากคู่มือนี้ เพราะ catalog เปลี่ยนได้ระหว่าง release</div></div>
+<h2>เลือก provider แบบไหนดี</h2>
+<div class="grid two"><article class="card"><div class="card-top"><h3>เลือก Codex เมื่อ</h3></div><ul><li>ต้องการใช้ Codex account/subscription ที่มี</li><li>งาน coding ใน <code>/workspace</code></li><li>ต้องการปรับ reasoning effort ที่ Router expose</li></ul></article><article class="card"><div class="card-top"><h3>เลือก OpenRouter เมื่อ</h3></div><ul><li>ต้องการสลับหลาย vendor/model ผ่าน key เดียว</li><li>ต้องการทดลอง Claude / OpenAI / โมเดลอื่นที่อยู่ใน catalog</li><li>ยอมรับว่าข้อมูล routed turn ถูกส่งไปยัง OpenRouter/ผู้ให้บริการที่เกี่ยวข้อง</li></ul></article></div>
+
+    </section><section class="page" id="page-architecture" data-title="สถาปัตยกรรมแบบ Layer" data-cat="ระบบภายใน">
+      <header class="page-head"><div class="eyebrow">ระบบภายใน</div><h1>สถาปัตยกรรมแบบ Layer</h1><p class="lead">ส่วนนี้ใช้สำหรับเข้าใจว่า component ไหน “มีอำนาจทำอะไร” และทำไมโปรเจกต์จึงย้ำเรื่อง boundary มาก</p></header>
+      
+<div class="arch-stack">
+<div><span>1</span><b>Official Grok Bot</b><small>UI • Bots • Transcript • Computer • Files • Browser • Tool execution • Permissions</small></div>
+<div><span>2</span><b>Patched Host Executor</b><small>stock vs routed path • sanitize payload • launch runtime • translate result back</small></div>
+<div><span>3</span><b>Router Runtime</b><small>commands • stable Bot identity • provider/model state • replay protection • transcript/tool conversion • audit</small></div>
+<div class="arch-branch"><div><span>4A</span><b>Codex SDK</b><small>inference + provider thread</small></div><div><span>4B</span><b>OpenRouter</b><small>inference across listed models</small></div></div>
+</div>
+<h2>Installer layer</h2>
+<p>native platform shells ทำ exact compatibility checks, loopback/noVNC transport, checksummed install, provider setup, restore และ cleanup แต่ไม่ได้เป็นเจ้าของ Grok account data หรือ arbitrary unknown host build.</p>
+<h2>ไฟล์สำคัญ</h2>
+<table class="table"><thead><tr><th>Component</th><th>Source</th><th>หน้าที่</th></tr></thead><tbody>
+<tr><td>macOS installer</td><td><code>installer/GrokBotRouterInstaller.swift</code></td><td>Swift UI + version gate + Vision OCR + noVNC + install/doctor/restore</td></tr>
+<tr><td>Remote bootstrap</td><td><code>remote/install.sh</code></td><td>ติดตั้ง pinned deps/config/runtime/patch/watchdog ใน Bot computer</td></tr>
+<tr><td>Patch engine</td><td><code>patch/router_patch.py</code></td><td>hash + anchors + backup + syntax check + atomic activation/restore</td></tr>
+<tr><td>Compatibility manifest</td><td><code>patch/manifests/0.30.0.json</code></td><td>version, allowed SHA-256, size, source anchors</td></tr>
+<tr><td>Provider runtime</td><td><code>runtime/run-provider.mjs</code></td><td>commands/state/provider bridges/tool conversion/audit</td></tr>
+<tr><td>Provider defaults</td><td><code>runtime/provider.default.json</code></td><td>model catalog/defaults — ไม่เก็บ credentials</td></tr>
+<tr><td>Management CLI</td><td><code>remote/grokbot-router</code></td><td>status/doctor/enable/disable/repair/uninstall</td></tr>
+<tr><td>Watchdog</td><td><code>remote/grokbot-router-watchdog</code></td><td>repair เฉพาะ known stock host เมื่อ routing ยัง enabled</td></tr>
+</tbody></table>
+
+    </section><section class="page" id="page-turn-flow" data-title="หนึ่งข้อความเดินทางอย่างไร" data-cat="ระบบภายใน">
+      <header class="page-head"><div class="eyebrow">ระบบภายใน</div><h1>หนึ่งข้อความเดินทางอย่างไร</h1><p class="lead">เข้าใจ flow นี้แล้วจะเห็นชัดว่า Router ไม่ใช่ผู้ execute computer tool เอง</p></header>
+      
+<h2>Normal conversation turn</h2>
+<ol class="steps"><li>Grok Bot สร้าง session พร้อม conversation/system instructions/tools ที่มีใน turn.</li><li>host adapter ตรวจ <code>provider.json</code>; ถ้า routing disabled → stock inference.</li><li>ถ้า enabled → launch Node runtime และส่ง sanitized JSON ผ่าน stdin.</li><li>runtime โหลด provider/model ของ Bot นั้น.</li><li>Codex resume SDK thread หรือ OpenRouter รับ Chat Completions request.</li><li>text response ถูก wrap กลับเข้า Grok delivery mechanism.</li></ol>
+<h2>Tool turn</h2>
+<div class="flow-steps"><div><b>Grok</b><small>เสนอ tool schema</small></div><i>→</i><div><b>Router</b><small>แปลง schema เท่านั้น</small></div><i>→</i><div><b>Provider</b><small>request tool ที่มี</small></div><i>→</i><div><b>Grok</b><small>permission + execute</small></div><i>→</i><div><b>Provider</b><small>resume + final answer</small></div></div>
+<div class="callout danger"><div class="callout-title">Printed pseudo-tool ≠ สิทธิ์ใช้ tool</div><div>ถ้า provider พิมพ์ข้อความคล้าย function call แต่ Grok ไม่ได้เสนอ schema ที่ match ใน turn นั้น Router ต้องถือว่า inert และไม่ execute</div></div>
+<h2>Replay & completion handling</h2>
+<p>runtime มี replay-control metadata และ per-Bot lock เพื่อกัน host replay ทำให้ inference ซ้ำ หลัง model switch/reset จะเพิ่ม thread epoch เพื่อกัน late response เก่ากลับมาเขียน state ทับการเปลี่ยนใหม่</p>
+
+    </section><section class="page" id="page-state" data-title="Per-Bot State, Identity และ Concurrency" data-cat="ระบบภายใน">
+      <header class="page-head"><div class="eyebrow">ระบบภายใน</div><h1>Per-Bot State, Identity และ Concurrency</h1><p class="lead">การสลับ provider/model ไม่ใช่ global toggle แต่ผูกกับ stable identity ของ Bot และมีการเขียน state แบบ atomic</p></header>
+      
+<div class="grid three">
+<article class="card"><div class="card-top"><h3>State ต่อ Bot</h3></div><p>provider, model, reasoning, provider thread reference และ replay-control metadata</p></article>
+<article class="card"><div class="card-top"><h3>Stable identity</h3></div><p>Bot ID มี priority เหนือ agent/conversation IDs จึงรักษา choice เดิมเมื่อ Bot ไปอยู่ใน channel</p></article>
+<article class="card"><div class="card-top"><h3>Atomic update</h3></div><p>เขียน state ภายใต้ short per-Bot lock และใช้ thread epoch กัน response เก่ามาย้อนการตั้งค่า</p></article>
+</div>
+<h2>ทำไม beta.40 สนใจ Group routing มาก</h2>
+<p>รุ่นก่อนเคยมีปัญหานำ changing request/conversation ID ไปปนกับ identity ทำให้ model switch ดูสำเร็จ แต่ turn ถัดไปอาจอ่าน state คนละไฟล์ beta.40 จึงย้าย logic ให้ stable Bot identity เป็นหลัก และ migrate combined-ID state เก่าแบบ lazy เมื่อเจอครั้งแรก</p>
+<div class="identity-visual"><div class="bot-id">Bot ID<br><b>Primary identity</b></div><div class="plus">&gt;</div><div class="weak-id">Conversation / Channel ID<br><small>context ไม่ใช่ identity หลัก</small></div><div class="plus">&gt;</div><div class="weak-id">Roster order<br><small>ไม่ใช้สร้าง state key</small></div></div>
+
+    </section><section class="page" id="page-security" data-title="Security, Credentials และ Data Boundary" data-cat="ความปลอดภัย">
+      <header class="page-head"><div class="eyebrow">ความปลอดภัย</div><h1>Security, Credentials และ Data Boundary</h1><p class="lead">GrokRouter เป็น unofficial compatibility adapter ที่แก้ code ภายใน Bot computer จึงควรประเมินเหมือน developer tool ที่สามารถรัน code และใช้ computer ในนามผู้ใช้</p></header>
+      
+<div class="grid two">
+<article class="card"><div class="card-top"><h3>Installer access</h3></div><ul><li>Mac validate <code>/Applications/Grok Bot.app</code></li><li>diagnostic port bind เฉพาะ <code>127.0.0.1</code></li><li>operate visible noVNC Bot computer</li><li>write ใต้ <code>/home/box/sand-data/grokbot-router</code></li><li>backup/replace <code>/home/box/sand-host/host-main.cjs</code></li></ul></article>
+<article class="card"><div class="card-top"><h3>OS permissions</h3></div><ul><li>Mac app ไม่ขอ Accessibility</li><li>ไม่ขอ Screen Recording</li><li>ไม่ขอ Full Disk Access</li><li>Windows renderer ออกแบบให้ context isolation + sandbox</li></ul></article>
+<article class="card"><div class="card-top"><h3>Codex credential</h3></div><p>auth ผ่าน pinned Codex CLI/SDK device flow ภายใน Bot computer; Doctor รายงานสถานะและ redact account email</p></article>
+<article class="card"><div class="card-top"><h3>OpenRouter key</h3></div><p>installer ส่ง key ผ่าน loopback DevTools session ไปที่ Grok protected Secrets store, clear field หลังส่ง และ runtime โหลดเมื่อ request ต้องใช้</p></article>
+</div>
+<h2>ข้อมูลถูกส่งไปไหน</h2>
+<table class="table"><thead><tr><th>ปลายทาง</th><th>เมื่อไร</th><th>ข้อมูลที่เกี่ยวข้อง</th></tr></thead><tbody>
+<tr><td>npm</td><td>ระหว่าง installation/runtime dependency setup</td><td>package installation traffic</td></tr>
+<tr><td>OpenAI/Codex</td><td>เมื่อเลือก Codex</td><td>conversation/input ที่ต้องใช้กับ routed turn และ tool context ที่จำเป็น</td></tr>
+<tr><td>OpenRouter</td><td>เมื่อเลือก OpenRouter</td><td>conversation/attachments/tool results ที่ต้องใช้ตอบ turn</td></tr>
+<tr><td>Third-party model provider</td><td>ตาม routing ของ OpenRouter</td><td>อาจ process request ภายใต้ terms/privacy ของ provider นั้น</td></tr>
+</tbody></table>
+<div class="callout warning"><div class="callout-title">Privacy point ที่ต้องรู้</div><div>การรักษา Grok tool boundary ไม่ได้แปลว่า “ข้อมูลไม่ออกจาก Grok” เพราะ routed provider จำเป็นต้องได้รับเนื้อหา conversation/attachment/tool result ที่ใช้ตอบคำถามนั้น</div></div>
+<h2>Integrity controls</h2>
+<ul class="checklist"><li>external release SHA-256 + internal SHA256SUMS</li><li>known stock hash + exact source anchors</li><li>verified stock + timestamped pre-change backup</li><li>generated JS syntax-check ก่อน activate</li><li>atomic replacement และ restore</li><li>unknown host ถูกปฏิเสธ</li></ul>
+
+    </section><section class="page" id="page-doctor" data-title="Doctor และ Troubleshooting" data-cat="ดูแลระบบ">
+      <header class="page-head"><div class="eyebrow">ดูแลระบบ</div><h1>Doctor และ Troubleshooting</h1><p class="lead">เริ่มจาก Doctor ก่อนแก้ไฟล์เอง เพราะระบบมี diagnostic ที่ตั้งใจแยก runtime, patch, provider, credentials และ tool bridge</p></header>
+      
+<h2>จาก Grok chat</h2><div class="codebox"><div class="codehead"><span>chat</span><button class="copy-btn" type="button">Copy</button></div><pre><code>/router doctor
+/doctor
+/provider</code></pre></div>
+<h2>จาก Bot computer CLI</h2><div class="codebox"><div class="codehead"><span>bash</span><button class="copy-btn" type="button">Copy</button></div><pre><code>grokbot-router status
+grokbot-router doctor</code></pre></div>
+<div class="grid two">
+<article class="card"><div class="card-top"><h3>ถ้า /provider กลายเป็นคำตอบธรรมดา</h3></div><p>มีโอกาสว่า router ไม่ active หรือ host ถูก Grok replace กลับเป็น stock ใช้ installer Doctor / Repair Router ตรวจ patch status และ watchdog</p></article>
+<article class="card"><div class="card-top"><h3>ถ้า installer ขอ Bot computer</h3></div><p>กลับไป Grok Bot → select Bot → Open computer แล้วคงทั้งสองแอปเปิดระหว่าง operation</p></article>
+<article class="card"><div class="card-top"><h3>ถ้า terminal verification fail</h3></div><p>ระบบตั้งใจไม่ส่ง payload ต่อถ้ายืนยัน focus/prompt ไม่ได้ เพื่อกัน install text ไปลง chat composer ผิดที่</p></article>
+<article class="card"><div class="card-top"><h3>ถ้า host/version unsupported</h3></div><p>หยุด ไม่ force patch. ต้องรอ manifest/version support ที่ตรวจ stock host ใหม่ครบแล้ว</p></article>
+<article class="card"><div class="card-top"><h3>ถ้า OpenRouter auth fail</h3></div><p>ตรวจ key shape/presence ผ่าน Doctor; placeholder credential ถูก guard ไม่ให้ใช้เป็น key จริง</p></article>
+<article class="card"><div class="card-top"><h3>ถ้า tool ไม่ทำงานกับ OpenRouter</h3></div><p>เช็กว่าตอน turn นั้น Grok ส่ง actionable outer-tool schema จริงหรือไม่; ไม่มี schema = Router ต้องไม่ invent tool authority</p></article>
+</div>
+<div class="callout info"><div class="callout-title">Doctor ไม่ควรเปิดเผย secret</div><div>diagnostic ตั้งใจรายงาน presence/status และ redact key/account detail ไม่ควร copy public issue พร้อม transcript หรือ credentials</div></div>
+
+    </section><section class="page" id="page-recovery" data-title="Pause, Repair, Restore และ Uninstall" data-cat="ดูแลระบบ">
+      <header class="page-head"><div class="eyebrow">ดูแลระบบ</div><h1>Pause, Repair, Restore และ Uninstall</h1><p class="lead">Recovery path เป็นส่วนสำคัญของ design ไม่ใช่ feature เสริม เพราะ Router patch host ของ Grok Bot โดยตรง</p></header>
+      
+<table class="table"><thead><tr><th>Action</th><th>ผล</th><th>เมื่อควรใช้</th></tr></thead><tbody>
+<tr><td><code>disable</code></td><td>adapter ยังอยู่ แต่ session ใหม่ใช้ stock inference</td><td>ต้องการพัก routing โดยยังไม่ถอนระบบ</td></tr>
+<tr><td><code>enable</code></td><td>เปิด routed path กลับมา</td><td>หลัง pause แล้วต้องการใช้ต่อ</td></tr>
+<tr><td><code>repair</code></td><td>reapply adapter เฉพาะ live host ที่เป็น exact allowlisted stock build</td><td>Grok replace host แต่ runtime/config ยังอยู่</td></tr>
+<tr><td><code>uninstall</code></td><td>restore verified stock host; runtime/backup ยังเก็บเพื่อ recovery ตาม README</td><td>ต้องการเอา patch ออกจาก live host</td></tr>
+<tr><td>Restore Stock Grok Bot</td><td>verify persistent backup → atomic restore → disable auto repair → restart</td><td>ต้องการกลับ stock path อย่างเป็นทางการ</td></tr>
+</tbody></table>
+<div class="codebox"><div class="codehead"><span>Management CLI</span><button class="copy-btn" type="button">Copy</button></div><pre><code>grokbot-router status
+grokbot-router doctor
+grokbot-router disable
+grokbot-router enable
+grokbot-router repair
+grokbot-router uninstall</code></pre></div>
+<div class="callout success"><div class="callout-title">Watchdog ไม่ควรฝืนการ Restore</div><div>watchdog repair เฉพาะ known stock host และ routing ยัง enabled; intentional stock restore/disabled/unknown hash ต้องไม่ถูก auto-repair</div></div>
+
+    </section><section class="page" id="page-acceptance" data-title="Fresh-Bot Acceptance: ทดสอบให้เชื่อถือได้" data-cat="Verification">
+      <header class="page-head"><div class="eyebrow">Verification</div><h1>Fresh-Bot Acceptance: ทดสอบให้เชื่อถือได้</h1><p class="lead">โปรเจกต์แยก “code looks correct” ออกจาก “live fresh Bot proof” อย่างชัดเจน จึงควรทดสอบหลังติดตั้งด้วย Bot ใหม่จริง</p></header>
+      
+<h2>ขั้นต่ำสำหรับผู้ใช้ทั่วไป</h2>
+<ol class="steps"><li>Install Router สำเร็จและไม่มี compatibility warning.</li><li>สร้าง <b>Bot ใหม่จริง</b> หลัง install.</li><li>ส่ง <code>/router doctor</code> และดูว่า runtime/patch/provider/credential health ปกติ.</li><li>ส่ง <code>/models</code>.</li><li>เลือกหนึ่ง model ที่ listed ด้วย bare model ID หรือ <code>/model ...</code>.</li><li>ส่ง <code>/provider</code> เพื่อยืนยัน provider/model.</li><li>ส่ง normal prompt ต่ออีกหนึ่ง turn เพื่อยืนยันว่าการ switch ไม่ได้มีแค่ receipt.</li></ol>
+<h2>แนวคิดของ release gate</h2>
+<div class="gate"><div>Install</div><b>→</b><div>Restore</div><b>→</b><div>Reinstall</div><b>→</b><div>Fresh Bot</div><b>→</b><div>Doctor</div><b>→</b><div>Provider switch</div></div>
+<div class="callout warning"><div class="callout-title">อย่านับ automated test เป็น live proof</div><div>Test Matrix ระบุชัดว่าบางความสามารถผ่าน unit/contract test แต่ live candidate ยัง pending โดยเฉพาะ Windows และบาง OpenRouter outer-tool paths</div></div>
+
+    </section><section class="page" id="page-build" data-title="Build จาก Source และรัน Test" data-cat="ขั้นสูง">
+      <header class="page-head"><div class="eyebrow">ขั้นสูง</div><h1>Build จาก Source และรัน Test</h1><p class="lead">สำหรับผู้ที่ต้องการตรวจ source/build เอง repository เปิด native installer shells, payload, runtime, patch engine, tests และ recovery path สำหรับ personal non-commercial use</p></header>
+      
+<h2>Shared runtime tests</h2><div class="codebox"><div class="codehead"><span>bash</span><button class="copy-btn" type="button">Copy</button></div><pre><code>npm ci --prefix runtime --ignore-scripts --no-audit --no-fund
+npm test</code></pre></div>
+<h2>Build macOS</h2><div class="codebox"><div class="codehead"><span>bash</span><button class="copy-btn" type="button">Copy</button></div><pre><code>npm run build:macos</code></pre></div>
+<p>artifact และ checksum อยู่ใน <code>build/</code>; local Mac source build ใช้ ad-hoc signature สำหรับเครื่องที่ build.</p>
+<h2>Windows packaging</h2><div class="codebox"><div class="codehead"><span>bash</span><button class="copy-btn" type="button">Copy</button></div><pre><code>npm run test:windows
+npm run build:windows -- x64
+npm run build:windows -- arm64</code></pre></div>
+<table class="table"><thead><tr><th>Environment</th><th>Requirement</th></tr></thead><tbody><tr><td>Mac build</td><td>macOS 12+ Apple silicon + Xcode Command Line Tools + Swift + codesign</td></tr><tr><td>Windows native setup</td><td>Windows 11 x64/Arm64 + Git Bash + PowerShell + Node.js 22.12+ + Inno Setup 6</td></tr><tr><td>Shared dev suite</td><td>Node.js 18+ + Python 3</td></tr></tbody></table>
+<div class="callout danger"><div class="callout-title">Build เอง ≠ รองรับ Grok Bot version ใหม่</div><div>การ build ผ่านแก้ปัญหา packaging/signing/UI ได้ แต่ไม่ได้ทำให้ host version อื่นปลอดภัยโดยอัตโนมัติ Version ใหม่ต้องมี exact manifest + reviewed transform + test + fresh-Bot live gate ใหม่</div></div>
+
+    </section><section class="page" id="page-windows" data-title="Windows x64 / Arm64: ตอนนี้ควรมองอย่างไร" data-cat="ขั้นสูง">
+      <header class="page-head"><div class="eyebrow">ขั้นสูง</div><h1>Windows x64 / Arm64: ตอนนี้ควรมองอย่างไร</h1><p class="lead">source มี native Electron installer, package pipeline และ CI แล้ว แต่ repository ยังตั้งใจไม่เรียกมันว่า public Windows compatibility จนกว่าจะผ่าน native acceptance cycle</p></header>
+      
+<div class="grid two"><article class="card"><div class="card-top"><h3>สิ่งที่มีแล้ว</h3><span class="badge">AUTOMATED PASS</span></div><ul><li>Windows 11 x64 + Arm64 source</li><li>exact signed-app/version gate</li><li>loopback/noVNC transport</li><li>Tesseract OCR worker</li><li>restore path</li><li>ZIP + Inno Setup packaging</li><li>GitHub CI build artifacts + checksums</li></ul></article><article class="card"><div class="card-top"><h3>สิ่งที่ยังขาดสำหรับคำว่า verified</h3><span class="badge">LIVE PENDING</span></div><ul><li>native Windows launch</li><li>install against official Grok Bot</li><li>restore</li><li>reinstall</li><li>genuinely fresh Bot acceptance</li></ul></article></div>
+<div class="callout warning"><div class="callout-title">คำแนะนำผู้ใช้ทั่วไป</div><div>ถ้าต้องการระบบที่ repository ยืนยัน live ในเวลานี้ ให้ใช้ macOS Apple silicon ก่อน ส่วน Windows เหมาะกับการศึกษา source/build หรือทดสอบแบบยอมรับความเสี่ยงว่า compatibility claim ยัง pending</div></div>
+
+    </section><section class="page" id="page-dev-map" data-title="แผนที่ Repository: จะดูอะไรเมื่ออยากแกะระบบ" data-cat="ขั้นสูง">
+      <header class="page-head"><div class="eyebrow">ขั้นสูง</div><h1>แผนที่ Repository: จะดูอะไรเมื่ออยากแกะระบบ</h1><p class="lead">ใช้เป็น index สำหรับคนหรือ AI ที่ต้องการ audit code โดยไม่เริ่มจากค้นทั้ง repository แบบสุ่ม</p></header>
+      
+<table class="table"><thead><tr><th>ถ้าต้องการศึกษา...</th><th>เริ่มที่</th></tr></thead><tbody>
+<tr><td>ภาพรวมการทำงาน</td><td><code>README.md</code>, <code>docs/HOW-IT-WORKS.md</code></td></tr>
+<tr><td>protocol และ layer boundaries</td><td><code>docs/ARCHITECTURE.md</code></td></tr>
+<tr><td>security boundary/credentials/network</td><td><code>SECURITY.md</code></td></tr>
+<tr><td>หลักฐานความสามารถจริง</td><td><code>docs/TEST-MATRIX.md</code></td></tr>
+<tr><td>release acceptance</td><td><code>docs/FRESH-BOT-ACCEPTANCE.md</code></td></tr>
+<tr><td>สิ่งที่เปลี่ยนแต่ละ beta</td><td><code>RELEASE_NOTES.md</code></td></tr>
+<tr><td>logic provider/runtime</td><td><code>runtime/run-provider.mjs</code></td></tr>
+<tr><td>default model catalog</td><td><code>runtime/provider.default.json</code></td></tr>
+<tr><td>host transformation</td><td><code>patch/router_patch.py</code></td></tr>
+<tr><td>host compatibility</td><td><code>patch/manifests/0.30.0.json</code></td></tr>
+<tr><td>Bot-computer install</td><td><code>remote/install.sh</code></td></tr>
+<tr><td>management</td><td><code>remote/grokbot-router</code>, <code>remote/grokbot-router-watchdog</code></td></tr>
+<tr><td>macOS delivery</td><td><code>installer/</code>, <code>scripts/build-macos-app.sh</code></td></tr>
+<tr><td>Windows delivery</td><td><code>installer-windows/</code>, Windows build/sign scripts</td></tr>
+<tr><td>slash discovery</td><td><code>skills/</code></td></tr>
+<tr><td>automated verification</td><td><code>tests/</code>, <code>.github/workflows/ci.yml</code></td></tr>
+</tbody></table>
+
+    </section><section class="page" id="page-limitations" data-title="สิ่งที่ GrokRouter ยังไม่ใช่ และ Claim ที่ต้องระวัง" data-cat="ข้อจำกัด">
+      <header class="page-head"><div class="eyebrow">ข้อจำกัด</div><h1>สิ่งที่ GrokRouter ยังไม่ใช่ และ Claim ที่ต้องระวัง</h1><p class="lead">ส่วนนี้สำคัญพอๆ กับวิธีติดตั้ง เพราะ Router อยู่บน implementation detail ของ proprietary Grok Bot host</p></header>
+      
+<div class="grid two">
+<article class="card"><div class="card-top"><h3>ไม่ใช่ official xAI feature</h3></div><p>project ระบุชัดว่า unofficial, independent และไม่ affiliated กับ xAI, X, OpenAI, Anthropic หรือ OpenRouter.</p></article>
+<article class="card"><div class="card-top"><h3>ไม่รองรับ version แบบกว้าง</h3></div><p>ปัจจุบัน pin กับ Grok Bot 0.30.0. Unknown builds ถูก reject แทนการเดา.</p></article>
+<article class="card"><div class="card-top"><h3>ไม่ทำให้ provider มี tool authority เพิ่ม</h3></div><p>ถ้า Grok ไม่ส่ง schema ของ Shell/Computer/Sub-agent มาใน turn นั้น Router ต้องไม่ fabricate สิทธิ์.</p></article>
+<article class="card"><div class="card-top"><h3>ไม่ใช่ privacy isolation layer</h3></div><p>routed model ต้องได้รับ conversation/attachment/tool results ที่จำเป็นต่อ turn.</p></article>
+<article class="card"><div class="card-top"><h3>ไม่ควรใช้ Windows claim เต็ม</h3></div><p>source/packaging/CI ผ่าน แต่ native live cycle ยัง pending ตาม test matrix.</p></article>
+<article class="card"><div class="card-top"><h3>ไม่ใช่ redistribution-friendly OSS license</h3></div><p>อนุญาต personal non-commercial build/use แต่ห้าม redistribute/publish/incorporate into product โดยไม่ได้รับ permission.</p></article>
+</div>
+<div class="callout danger"><div class="callout-title">Rule of thumb</div><div>ถ้าคุณอธิบายความสามารถแล้วประโยคนั้นฟังดูแรงกว่าคำใน Test Matrix ให้ลด claim ลงมาอยู่ที่หลักฐานจริง</div></div>
+
+    </section><section class="page" id="page-license" data-title="License และนโยบายการอัปเดต" data-cat="License">
+      <header class="page-head"><div class="eyebrow">License</div><h1>License และนโยบายการอัปเดต</h1><p class="lead">source เปิดให้ดูและ build ใช้ส่วนตัวได้ แต่ข้ออนุญาตไม่เท่ากับ open-source license แบบแจกต่อได้อิสระ</p></header>
+      
+<h2>สิทธิ์ที่ให้</h2><ul class="checklist"><li>view source</li><li>copy/modify/build/use สำหรับ personal, non-commercial purposes</li><li>ทำ private custom build บนเครื่องของตัวเอง</li></ul>
+<h2>สิ่งที่ห้ามโดยไม่มี written permission</h2><ul class="xlist"><li>redistribute source/custom build/official build</li><li>sublicense หรือขาย</li><li>publish mirror/build</li><li>incorporate into another product</li></ul>
+<div class="callout info"><div class="callout-title">วิธีแชร์ที่สอดคล้อง license</div><div>ถ้าจะแนะนำคนอื่น ให้ลิงก์ไป official repository แทนการเอา source หรือ build ไปแจกต่อ</div></div>
+<h2>Update rule ที่สำคัญ</h2><p>เมื่อ Grok Bot มี version ใหม่ อย่าถือว่า Router จะใช้ได้ทันที ต้อง inspect untouched stock host, บันทึก exact hash/size, ตรวจ patch anchor, run full automated suite และทำ live install → restore → reinstall → fresh-Bot gate ใหม่.</p>
+
+    </section><section class="page" id="page-cheatsheet" data-title="Cheat Sheet ใช้งานเร็ว" data-cat="Reference">
+      <header class="page-head"><div class="eyebrow">Reference</div><h1>Cheat Sheet ใช้งานเร็ว</h1><p class="lead">หน้ารวมคำสั่งและขั้นตอนสำคัญสำหรับเปิดอ้างอิงหลังจากเข้าใจระบบแล้ว</p></header>
+      
+<div class="grid two">
+<article class="card"><div class="card-top"><h3>เช็กสถานะ Bot</h3></div>{codeblock('/doctor
+/provider
+/models','chat')}</article>
+<article class="card"><div class="card-top"><h3>สลับ Provider</h3></div>{codeblock('/provider codex
+/provider openrouter','chat')}</article>
+<article class="card"><div class="card-top"><h3>เลือก Model</h3></div>{codeblock('/model sol
+/model anthropic/claude-sonnet-4.6
+openai/gpt-5.6-luna','chat')}</article>
+<article class="card"><div class="card-top"><h3>Reasoning (Codex)</h3></div>{codeblock('/reasoning low
+/reasoning medium
+/reasoning high
+/reasoning xhigh','chat')}</article>
+<article class="card"><div class="card-top"><h3>Reset Thread</h3></div>{codeblock('/router reset','chat')}</article>
+<article class="card"><div class="card-top"><h3>CLI Recovery</h3></div>{codeblock('grokbot-router doctor
+grokbot-router disable
+grokbot-router enable
+grokbot-router repair
+grokbot-router uninstall','bash')}</article>
+</div>
+<div class="one-line"><b>จำประโยคเดียว:</b> Grok Bot ยังเป็นคน “ถือเครื่องมือและสิทธิ์” ส่วน GrokRouter เลือกว่า “โมเดลไหนเป็นคนคิด” ให้ Bot นั้น</div>
+
+    </section><section class="page" id="page-sources" data-title="แหล่งข้อมูลที่ใช้จัดทำคู่มือ" data-cat="Reference">
+      <header class="page-head"><div class="eyebrow">Reference</div><h1>แหล่งข้อมูลที่ใช้จัดทำคู่มือ</h1><p class="lead">คู่มือนี้สังเคราะห์จาก official public repository ของ Prompt Advisers โดยเน้น README, architecture, security, test matrix, release notes และ acceptance docs</p></header>
+      
+<ul class="source-list">
+<li><a href="https://github.com/promptadvisers/grokrouter" target="_blank" rel="noopener">Official repository / README</a></li>
+<li><a href="https://github.com/promptadvisers/grokrouter/blob/main/docs/HOW-IT-WORKS.md" target="_blank" rel="noopener">How It Works</a></li>
+<li><a href="https://github.com/promptadvisers/grokrouter/blob/main/docs/ARCHITECTURE.md" target="_blank" rel="noopener">Architecture</a></li>
+<li><a href="https://github.com/promptadvisers/grokrouter/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></li>
+<li><a href="https://github.com/promptadvisers/grokrouter/blob/main/docs/TEST-MATRIX.md" target="_blank" rel="noopener">Test Matrix</a></li>
+<li><a href="https://github.com/promptadvisers/grokrouter/blob/main/docs/FRESH-BOT-ACCEPTANCE.md" target="_blank" rel="noopener">Fresh-Bot Acceptance</a></li>
+<li><a href="https://github.com/promptadvisers/grokrouter/blob/main/RELEASE_NOTES.md" target="_blank" rel="noopener">Release Notes</a></li>
+<li><a href="https://github.com/promptadvisers/grokrouter/blob/main/LICENSE.md" target="_blank" rel="noopener">License</a></li>
+</ul>
+<div class="source-note"><b>Data cut:</b> ตรวจสอบ repository วันที่ 1 กันยายน 2026 โดย Test Matrix ระบุ research/build lock 31 สิงหาคม 2026, Grok Bot 0.30.0 และ Router candidate 0.1.0-beta.40.</div>
+<p class="muted small">คู่มือนี้เป็นเอกสารอธิบายเชิงเทคนิค ไม่ใช่เอกสารทางการของ xAI หรือผู้ให้บริการโมเดล และควรตรวจ repository อีกครั้งก่อนติดตั้งในอนาคตเนื่องจาก GrokRouter ผูกกับ exact host version.</p>
+
+    </section><div class="footer-nav"><button id="prevBtn">← ก่อนหน้า</button><button id="nextBtn">ถัดไป →</button></div></div></main>
+</section>
+</div>
+<script>
+(()=>{
+const pages=[...document.querySelectorAll('.page')];
+const nav=[...document.querySelectorAll('.nav-item')];
+const main=document.getElementById('main');
+let idx=0;
+function show(id,push=true){
+ const next=pages.findIndex(p=>p.id==='page-'+id); if(next<0)return; idx=next;
+ pages.forEach((p,i)=>p.classList.toggle('active',i===idx));
+ nav.forEach(n=>n.classList.toggle('active',n.dataset.page===id));
+ const p=pages[idx]; document.getElementById('crumbTitle').textContent=p.dataset.title;document.getElementById('crumbCat').textContent=p.dataset.cat;
+ window.scrollTo(0,0); main.scrollTop=0; document.getElementById('prevBtn').disabled=idx===0;document.getElementById('nextBtn').disabled=idx===pages.length-1;
+ if(push){history.replaceState(null,'','#'+id);localStorage.setItem('grokrouter-last-page',id)}
+ if(innerWidth<=900)document.body.classList.remove('menu-open');
+}
+nav.forEach(n=>n.addEventListener('click',()=>show(n.dataset.page)));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
+document.getElementById('prevBtn').addEventListener('click',()=>{if(idx>0)show(pages[idx-1].id.replace('page-',''))});
+document.getElementById('nextBtn').addEventListener('click',()=>{if(idx<pages.length-1)show(pages[idx+1].id.replace('page-',''))});
+document.getElementById('collapseBtn').addEventListener('click',()=>document.body.classList.toggle('sidebar-collapsed'));
+document.getElementById('menuBtn').addEventListener('click',()=>document.body.classList.toggle('menu-open'));
+let scale=parseFloat(localStorage.getItem('grokrouter-font')||'1');function applyScale(){document.documentElement.style.setProperty('--font-scale',scale);localStorage.setItem('grokrouter-font',scale)}applyScale();
+document.getElementById('fontUp').addEventListener('click',()=>{scale=Math.min(1.28,Math.round((scale+.08)*100)/100);applyScale()});
+document.getElementById('fontDown').addEventListener('click',()=>{scale=Math.max(.84,Math.round((scale-.08)*100)/100);applyScale()});
+document.documentElement.dataset.theme='dark';
+document.getElementById('themeBtn').addEventListener('click',()=>{const t=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=t});
+document.getElementById('printBtn').addEventListener('click',()=>window.print());
+document.querySelectorAll('.copy-btn').forEach(btn=>btn.addEventListener('click',async()=>{const code=btn.closest('.codebox').querySelector('code').innerText;try{await navigator.clipboard.writeText(code);const old=btn.textContent;btn.textContent='Copied';setTimeout(()=>btn.textContent=old,1200)}catch{btn.textContent='Select & copy'}}));
+const s=document.getElementById('navSearch');s.addEventListener('input',()=>{const q=s.value.trim().toLowerCase();let found=0;nav.forEach(n=>{const ok=n.innerText.toLowerCase().includes(q);n.style.display=ok?'':'none';if(ok)found++});document.getElementById('emptySearch').style.display=found?'none':'block';document.querySelectorAll('.nav-group').forEach(g=>{const any=[...g.querySelectorAll('.nav-item')].some(n=>n.style.display!=='none');g.style.display=any?'':'none'})});
+document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();s.focus()}if(e.key==='ArrowRight'&&e.altKey&&idx<pages.length-1)show(pages[idx+1].id.replace('page-',''));if(e.key==='ArrowLeft'&&e.altKey&&idx>0)show(pages[idx-1].id.replace('page-',''))});
+const initial=location.hash.slice(1)||localStorage.getItem('grokrouter-last-page')||'overview';show(initial,false);
+})();
+</script>
+</body></html>

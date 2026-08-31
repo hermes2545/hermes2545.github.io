@@ -1,6 +1,6 @@
 # The Knowledge Shelf — Session Handoff
 
-**Updated:** 2026-08-31
+**Updated:** 2026-09-01
 
 **Public site:** https://hermes2545.github.io/
 
@@ -21,20 +21,21 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with f
 
 ### Reading collection
 
-- 28 standalone HTML guides indexed from `data/books.json`.
+- 29 standalone HTML guides indexed from `data/books.json`.
 - The Reading storefront title is **Coffee and Books**. Its environment uses a bright sunlit outdoor garden photograph containing only trees, foliage, grass, and natural daylight, plus heavy translucent iOS-inspired glass walls and shelves and one seamless user-approved 1044×237 retouched header image. The header removes baked UI on the left while preserving the original cup, latte art, table, garden, and lighting on the right; the site logo and title remain semantic HTML.
 - The Navigation bar, Title banner, Reading/Search panel, and Bookshelf panel share one responsive width: 1180px maximum on desktop and the same 4px side gutters on mobile. The garden wallpaper uses the photograph's natural color with no brightness/saturation/contrast filter and no color-wash overlay. The retouched header image uses `cover`, so no blank cream strip appears when the banner widens.
 - Coffee and Books styles live only in `assets/css/reading-library.css`, loaded only by the Reading template. Shared `assets/css/library.css` is restored byte-for-byte to the pre-Coffee `ca74827` baseline so the App and Audio collections cannot inherit the Reading wallpaper, glass panels, geometry, or header treatment.
 - Book titles and publish dates above each cover are intentionally text-only: no label panel, border, shadow, or metadata backdrop. Readability comes from dark typography and restrained text shadow while the book covers remain dominant.
 - Reading shelf cards now include an icon-only **glass circle** HTML download control immediately after each publish date. The control is a sibling `<a download>` pointing to the same book HTML, not nested inside the read links; titles and covers still open guides in new tabs.
-- `Gemini_Live_API_Guide_TH.html` is the previous newest Reading guide: after owner feedback it was rebuilt from the provisional article layout into the same Interactive Reference Manual pattern used by the latest successful book work (`interactive-reference-manuals` + owner-supplied catalog artifacts). It now has sidebar/topbar navigation, 10 switchable views, hash navigation, search, theme/font state, copy control, print mode, and reader-facing Thai without `ค่ะ`. A later owner correction removed the cover image from the Overview content; the owner-supplied cover remains only as the shelf/catalog cover normalized to an EXIF-free 600×900 RGB WebP at `assets/covers/custom/gemini-live-api-guide.webp`.
+- `GrokRouter_Interactive_Reference_Manual_TH.html` is the newest Reading guide: the owner-supplied TH3 HTML is published as a 22-view/22-nav Interactive Reference Manual at SHA-256 `4bb0416dfb7722956073a45ec88acba8183d689dab328372c5e618277c73f20d`, with a robust document scroll fix, `localStorage`, `navigator.clipboard`, print CSS, and no reader-facing `ค่ะ`. Its owner-supplied cover is normalized only for the shelf to an EXIF-free 600×900 RGB WebP at `assets/covers/custom/grokrouter-interactive-reference-manual.webp`.
+- `Gemini_Live_API_Guide_TH.html` is an earlier Reading guide: after owner feedback it was rebuilt from the provisional article layout into the same Interactive Reference Manual pattern used by the latest successful book work (`interactive-reference-manuals` + owner-supplied catalog artifacts). It now has sidebar/topbar navigation, 10 switchable views, hash navigation, search, theme/font state, copy control, print mode, and reader-facing Thai without `ค่ะ`. A later owner correction removed the cover image from the Overview content; the owner-supplied cover remains only as the shelf/catalog cover normalized to an EXIF-free 600×900 RGB WebP at `assets/covers/custom/gemini-live-api-guide.webp`.
 - `Hermes_Profile_Migration_Linux_Server_Guide_TH.html` is the newest Reading guide: built from the owner-supplied Markdown source into the established 10-view `interactive-reference-manuals` pattern with sidebar/topbar navigation, hash routing, search, theme/font controls, copy buttons, print mode, and no reader-facing `ค่ะ`. The large “คู่มือย้าย Hermes Profile” hero appears only in the Overview view per owner correction, not above every menu. The owner-supplied cover is used only as the shelf/catalog cover at `assets/covers/custom/hermes-profile-migration-linux-server-guide.webp`, normalized to EXIF-free 600×900 RGB WebP.
 - `AgentReach_Thai_Guide.html` is the previous newest guide: the owner-supplied 170,001-byte HTML is preserved byte-for-byte at SHA-256 `e3c92f5eafafdf8b498a593fc825f11c1f2bb78cb479a6d6e94ea436bd1bad90`, with 10 responsive sections/navigation items and the supplied artwork normalized only to a 600×900 EXIF-free RGB WebP.
 - The imported `hermes-memory` and `hermes-guardian` repositories retain their original source commits under dedicated subdirectories.
 - Shelf-facing titles remain Thai-first except the user-specified English titles **Claude Prompt Caching** and **Grok Bot vs Claude Code vs Codex**, while necessary product and technical terms are retained.
 - Newest publication appears at the upper-left, then flows right and downward.
 - Every guide opens in a new browser tab.
-- All 28 reading books use individually designed or owner-approved 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork. The newest Visual Art Director Agent manual, Profile Migration guide, Gemini Live API, Agent Reach guide, and Computer Use guide use owner-supplied final covers without redesign.
+- All 29 reading books use individually designed or owner-approved 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork. The newest Visual Art Director Agent manual, Profile Migration guide, Gemini Live API, Agent Reach guide, and Computer Use guide use owner-supplied final covers without redesign.
 - Reproducible cover designs live under `templates/`, including `grok-bot-vs-claude-codex-cover.template.html`, `claude-prompt-caching-cover.template.html`, `vault-ai-safety-cover.template.html`, `agent-reach-comparison-cover.template.html`, and `hermes-concepts-for-everyone-cover.template.html`; legacy Facebook assets remain archived but unused.
 - **Claude Prompt Caching** is a byte-preserved user-supplied interactive guide dated 21 June 2026. Its cover uses the officially documented Claude Code Spark cue in an independent editorial context with a visible non-affiliation notice.
 - **Claude Interactive Manual** is a local Vite/React build imported from `https://github.com/p2544/claude-interactive-course` commit `d4fdc70`, published at `claude-interactive-manual/index.html` with relative assets and `manual500p.pdf`; source example paths were public-safety sanitized from absolute home-directory form to `~/claude/`. It is dated 6 July 2026 and uses the owner-selected Visual Art Director Option 3 AI-generated cover normalized to `assets/covers/custom/claude-interactive-manual.webp`.
@@ -117,7 +118,7 @@ python scripts/build_gallery.py --check
 git diff --check
 ```
 
-Expected verified result at close: **107 tests passed**, all four generated pages current, and no diff-check errors.
+Expected verified result at close: **110 tests passed**, all four generated pages current, and no diff-check errors.
 
 ## Publication workflow
 
@@ -138,6 +139,14 @@ Expected verified result at close: **107 tests passed**, all four generated page
 ## Next recommended step
 
 After the approved Audio wallpaper push, verify `audio-library.html`, the new wallpaper hash/dimensions, Audio count 52, and production desktop/mobile Liquid Glass readability. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
+
+
+## Latest close checkpoint — 2026-09-01
+
+- Added **GrokRouter — Interactive Reference Manual (TH)** as Reading catalog ID `grokrouter-interactive-reference-manual`, first/newest with short title **GrokRouter ทำงานอย่างไร**, href `GrokRouter_Interactive_Reference_Manual_TH.html`, category `AI Agent Architecture`, and date `2026-09-01T00:38:48+07:00`.
+- Replaced the earlier staged HTML with the owner-supplied TH3 file and locked the final SHA-256 to `4bb0416dfb7722956073a45ec88acba8183d689dab328372c5e618277c73f20d`. The manual has 22 pages, 22 navigation buttons, robust document scroll fix markers, `localStorage`, `navigator.clipboard`, print CSS, and no reader-facing `ค่ะ`.
+- The supplied cover is normalized only for shelf delivery as `assets/covers/custom/grokrouter-interactive-reference-manual.webp`, 600×900 RGB WebP, no EXIF, single frame, SHA-256 `9b4749279c04084067f4350073c506fe833fca747cd9466b9a029223de669aeb`.
+- Verification before the current-turn approved push passed: focused GrokRouter tests, full `python -m unittest discover -s tests -v` with **110 tests**, all four generator `--check` commands, `git diff --check`, pre-share scan of intended files with no credential/private-path findings, and Playwright desktop/mobile checks confirming Reading count 29, GrokRouter first, cover natural size 600×900, 22 manual views/nav buttons, working navigation/theme/font/mobile menu interactions, and zero horizontal overflow.
 
 ## Latest close checkpoint — 2026-08-31
 
