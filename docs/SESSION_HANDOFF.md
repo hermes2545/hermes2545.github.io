@@ -1,6 +1,6 @@
 # The Knowledge Shelf — Session Handoff
 
-**Updated:** 2026-08-30
+**Updated:** 2026-08-31
 
 **Public site:** https://hermes2545.github.io/
 
@@ -115,7 +115,7 @@ python scripts/build_gallery.py --check
 git diff --check
 ```
 
-Expected verified result at close: **98 tests passed**, all four generated pages current, and no diff-check errors.
+Expected verified result at close: **99 tests passed**, all four generated pages current, and no diff-check errors.
 
 ## Publication workflow
 
@@ -136,6 +136,12 @@ Expected verified result at close: **98 tests passed**, all four generated pages
 ## Next recommended step
 
 After the approved Audio wallpaper push, verify `audio-library.html`, the new wallpaper hash/dimensions, Audio count 52, and production desktop/mobile Liquid Glass readability. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
+
+## Latest close checkpoint — 2026-08-31
+
+- Fixed **Visual Art Director Agent — Interactive Reference Manual** mobile side navigation: the sidebar brand row now includes a mobile-only `×` close button (`id="sidebarClose"`, Thai `aria-label`), Escape closes the drawer, and the mobile/desktop navigation buttons keep `aria-expanded` synchronized. Desktop collapse remains available from the toolbar; mobile users can close from inside the opened menu.
+- Updated `tests/test_visual_art_director_reading.py` with a regression test for the close control and locked the approved HTML SHA-256 to `9cd2cb83b58f8d2d00858e6d437ec8be503b656c03b91d87338005a92f2d8bf7`.
+- Verification before the approved scoped push passed: focused RED→GREEN sidebar test, full `python -m unittest discover -s tests -v` with **99 tests**, all four generator `--check` commands current, `git diff --check`, static navigation checks, and pre-share scan of touched files.
 
 ## Latest close checkpoint — 2026-08-30
 

@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BOOK_ID = "visual-art-director-agent"
 HTML_PATH = ROOT / "Visual_Art_Director_Agent_Interactive_Manual.html"
 COVER_PATH = ROOT / "assets" / "covers" / "custom" / f"{BOOK_ID}.webp"
-SOURCE_SHA256 = "2817badb48fb59f89e76a68a678f93eb80dc31fe796b5f07fe8fa6f87fc1b58e"
+APPROVED_HTML_SHA256 = "9cd2cb83b58f8d2d00858e6d437ec8be503b656c03b91d87338005a92f2d8bf7"
 
 
 class VisualArtDirectorReadingGuideTests(unittest.TestCase):
@@ -30,10 +30,10 @@ class VisualArtDirectorReadingGuideTests(unittest.TestCase):
         self.assertIn("Art Director", book["summary"])
         self.assertEqual(books[0]["id"], BOOK_ID)
 
-    def test_owner_supplied_html_is_preserved_and_public_safe(self):
+    def test_visual_art_director_html_is_public_safe_and_matches_approved_sidebar_fix(self):
         self.assertTrue(HTML_PATH.is_file())
         html = HTML_PATH.read_text(encoding="utf-8")
-        self.assertEqual(hashlib.sha256(HTML_PATH.read_bytes()).hexdigest(), SOURCE_SHA256)
+        self.assertEqual(hashlib.sha256(HTML_PATH.read_bytes()).hexdigest(), APPROVED_HTML_SHA256)
         self.assertEqual(html.count('<button class="nav-item'), 11)
         self.assertEqual(html.count('<article class="chapter"'), 11)
         for marker in (
@@ -66,6 +66,17 @@ class VisualArtDirectorReadingGuideTests(unittest.TestCase):
             check=False,
         )
         self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_sidebar_has_close_control_when_mobile_menu_is_open(self):
+        html = HTML_PATH.read_text(encoding="utf-8")
+        self.assertIn('id="sidebarClose"', html)
+        self.assertIn('aria-label="ปิดเมนู"', html)
+        self.assertRegex(html, r"\.sidebar-close\s*\{[^}]*display\s*:\s*none")
+        self.assertRegex(html, r"@media \(max-width: 820px\)[\s\S]*\.sidebar-close\s*\{[^}]*display\s*:\s*inline-flex")
+        self.assertIn('$("#sidebarClose").addEventListener("click", closeNavigation);', html)
+        self.assertIn('function closeNavigation(options={})', html)
+        self.assertIn('document.body.classList.remove("mobile-nav-open");', html)
+        self.assertIn('document.body.classList.remove("sidebar-collapsed");', html)
 
     def test_owner_supplied_cover_is_normalized_for_reading_shelf(self):
         self.assertTrue(COVER_PATH.is_file())

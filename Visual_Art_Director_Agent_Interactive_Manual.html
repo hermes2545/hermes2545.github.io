@@ -62,9 +62,16 @@ button { color: inherit; }
   transition: transform .25s ease, width .25s ease;
 }
 .brand {
-  display:flex; gap:12px; align-items:center;
+  display:flex; gap:12px; align-items:center; justify-content:space-between;
   padding: 8px 8px 14px;
 }
+.brand-title { display:flex; gap:12px; align-items:center; min-width:0; }
+.sidebar-close {
+  display:none; align-items:center; justify-content:center;
+  width:36px; height:36px; border:1px solid var(--line); border-radius:10px;
+  background:var(--paper-2); color:var(--ink); cursor:pointer; flex:0 0 auto;
+}
+.sidebar-close:hover { border-color:var(--cyan); color:var(--cyan); }
 .brand-mark {
   width: 42px; height:42px; border-radius:12px;
   background: linear-gradient(145deg, var(--navy), #17647b);
@@ -266,6 +273,7 @@ mark { background:#ffec9d; color:#162332; border-radius:3px; padding:0 2px; }
   .main { margin-left:0; }
   .mobile-menu { display:inline-flex; }
   .desktop-collapse { display:none; }
+  .sidebar-close { display:inline-flex; }
   .toolbar { padding:0 14px; }
   .content { padding:20px 14px 60px; }
   .chapter-header { padding:26px 22px; }
@@ -299,8 +307,11 @@ mark { background:#ffec9d; color:#162332; border-radius:3px; padding:0 2px; }
 <div class="app">
   <aside class="sidebar" id="sidebar">
     <div class="brand">
-      <div class="brand-mark">VA</div>
-      <div><b>Visual Art Director</b><small>Interactive Reference Manual</small></div>
+      <div class="brand-title">
+        <div class="brand-mark">VA</div>
+        <div><b>Visual Art Director</b><small>Interactive Reference Manual</small></div>
+      </div>
+      <button class="sidebar-close" id="sidebarClose" type="button" aria-label="ปิดเมนู" title="ปิดเมนู">×</button>
     </div>
     <div class="search-wrap">
       <span class="search-icon">⌕</span>
@@ -361,8 +372,8 @@ mark { background:#ffec9d; color:#162332; border-radius:3px; padding:0 2px; }
   <main class="main">
     <header class="toolbar">
       <div class="tool-group">
-        <button class="tool-btn mobile-menu" id="mobileMenu" aria-label="เปิดเมนู">☰</button>
-        <button class="tool-btn desktop-collapse" id="collapseBtn" aria-label="ย่อเมนู">☰</button>
+        <button class="tool-btn mobile-menu" id="mobileMenu" aria-label="เปิดเมนู" aria-expanded="false" aria-controls="sidebar">☰</button>
+        <button class="tool-btn desktop-collapse" id="collapseBtn" aria-label="ย่อเมนู" aria-expanded="true" aria-controls="sidebar">☰</button>
         <div class="breadcrumb" id="breadcrumb">คู่มือ / หน้าปก</div>
       </div>
       <div class="tool-group">
@@ -2554,13 +2565,32 @@ function showChapter(id, scroll=true) {
   $("#breadcrumb").textContent = "คู่มือ / " + TITLES[id];
   if (scroll) window.scrollTo({top:0, behavior:"smooth"});
   history.replaceState(null, "", "#" + id);
+  closeNavigation({keepDesktopState:true});
+}
+
+function syncNavigationButtons() {
+  $("#mobileMenu").setAttribute("aria-expanded", document.body.classList.contains("mobile-nav-open") ? "true" : "false");
+  $("#collapseBtn").setAttribute("aria-expanded", document.body.classList.contains("sidebar-collapsed") ? "false" : "true");
+}
+
+function closeNavigation(options={}) {
   document.body.classList.remove("mobile-nav-open");
+  if (!options.keepDesktopState) document.body.classList.remove("sidebar-collapsed");
+  syncNavigationButtons();
 }
 
 $$(".nav-item").forEach(btn => btn.addEventListener("click", () => showChapter(btn.dataset.target)));
 $("#startBtn").addEventListener("click", () => showChapter(CHAPTERS[0]));
-$("#collapseBtn").addEventListener("click", () => document.body.classList.toggle("sidebar-collapsed"));
-$("#mobileMenu").addEventListener("click", () => document.body.classList.toggle("mobile-nav-open"));
+$("#collapseBtn").addEventListener("click", () => {
+  document.body.classList.toggle("sidebar-collapsed");
+  syncNavigationButtons();
+});
+$("#mobileMenu").addEventListener("click", () => {
+  document.body.classList.toggle("mobile-nav-open");
+  syncNavigationButtons();
+});
+$("#sidebarClose").addEventListener("click", closeNavigation);
+syncNavigationButtons();
 
 $$(".next-btn").forEach(btn => btn.addEventListener("click", () => {
   if (!current) return;
@@ -2651,6 +2681,7 @@ window.addEventListener("keydown", e => {
     if (i > 0) showChapter(CHAPTERS[i-1]);
     else showCover();
   }
+  if (e.key === "Escape") closeNavigation();
 });
 
 const initial = location.hash.replace("#","");
