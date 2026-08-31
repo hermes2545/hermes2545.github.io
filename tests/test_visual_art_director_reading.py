@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BOOK_ID = "visual-art-director-agent"
 HTML_PATH = ROOT / "Visual_Art_Director_Agent_Interactive_Manual.html"
 COVER_PATH = ROOT / "assets" / "covers" / "custom" / f"{BOOK_ID}.webp"
-APPROVED_HTML_SHA256 = "299fd37972df359c99d4c0ffda8487315d7e2907f2500e3303c6dc07bc5d521a"
+APPROVED_HTML_SHA256 = "bdb9af09e0b3441a84cf0f0951423fa21e47b81c026b2bac7efa0907917a430d"
 
 
 class VisualArtDirectorReadingGuideTests(unittest.TestCase):
@@ -72,7 +72,8 @@ class VisualArtDirectorReadingGuideTests(unittest.TestCase):
         self.assertIn('id="sidebarClose"', html)
         self.assertIn('aria-label="ปิดเมนู"', html)
         self.assertRegex(html, r"\.sidebar-close\s*\{[^}]*display\s*:\s*none")
-        self.assertRegex(html, r"@media \(max-width: 820px\)[\s\S]*body\.mobile-nav-open \.sidebar\s*\{[^}]*transform\s*:\s*translateX\(0\)\s*!important")
+        self.assertRegex(html, r"@media \(max-width: 820px\)[\s\S]*body\.mobile-nav-open \.sidebar,\s*\.sidebar\.is-open\s*\{[^}]*transform\s*:\s*translateX\(0\)\s*!important")
+        self.assertIn('$("#sidebar").classList.toggle("is-open", document.body.classList.contains("mobile-nav-open"));', html)
         self.assertRegex(html, r"@media \(max-width: 820px\)[\s\S]*\.sidebar-close\s*\{[^}]*display\s*:\s*inline-flex")
         self.assertIn('$("#sidebarClose").addEventListener("click", closeNavigation);', html)
         self.assertIn('function closeNavigation(options={})', html)
