@@ -498,3 +498,14 @@
   .audio-disclosure-actions button,
   .audio-year-filters button { flex: 1 1 calc(50% - .55rem); min-width: 9rem; }
 }
+
+/* Selected Option 4 — Pill Dock footer. */
+.audio-page .library-footer.footer-pill {
+  width: min(900px, calc(100% - 2rem));
+  margin: clamp(2.4rem, 5vw, 4.5rem) auto 2rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,.84);
+}
+@media (max-width: 650px) {
+  .audio-page .library-footer.footer-pill { width: calc(100% - 1rem); border-radius: 28px; }
+}

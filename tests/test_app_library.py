@@ -219,8 +219,9 @@ class AppLibraryTests(unittest.TestCase):
         self.assertEqual(self.page.count('class="diskette-label'), 6)
         self.assertEqual(self.page.count('class="diskette-hub"'), 6)
         self.assertEqual(self.page.count('class="diskette-sticker"'), 4)
-        self.assertEqual(self.page.count('target="_blank"'), 6)
-        self.assertEqual(self.page.count('rel="noopener"'), 6)
+        self.assertEqual(self.page.count('target="_blank"'), 7)
+        self.assertEqual(self.page.count('rel="noopener"'), 7)
+        self.assertIn('class="footer-facebook-link"', self.page)
         for app in self.apps:
             self.assertEqual(self.page.count(f'href="{app["href"]}"'), 1)
             self.assertIn(html.escape(app["short_title"]), self.page)

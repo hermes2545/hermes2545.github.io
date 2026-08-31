@@ -106,8 +106,9 @@ class AudioLibraryTests(unittest.TestCase):
 
     def test_page_renders_all_items_with_dates_durations_and_new_tabs(self):
         self.assertEqual(self.page.count('class="book-card audio-card"'), 52)
-        self.assertEqual(self.page.count('target="_blank"'), 53)  # 52 items + playlist button
-        self.assertEqual(self.page.count('rel="noopener"'), 53)
+        self.assertEqual(self.page.count('target="_blank"'), 54)  # 52 items + playlist button + footer social link
+        self.assertEqual(self.page.count('rel="noopener"'), 54)
+        self.assertIn('class="footer-facebook-link"', self.page)
         self.assertEqual(self.page.count('publish on '), 52)
         self.assertEqual(self.page.count('class="audio-duration"'), 52)
         self.assertIn('publish on 24/08/2026', self.page)

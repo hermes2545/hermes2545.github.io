@@ -295,3 +295,14 @@ h1 { color: #18372a; text-shadow: 0 1px rgba(255,255,255,.65); }
   .book-meta { padding: 0 .12rem; background: transparent; }
   .library-footer { width: calc(100% - 1rem); }
 }
+
+/* Selected Option 4 — Pill Dock footer. */
+.reading-page .library-footer.footer-pill {
+  width: min(900px, calc(100% - 2rem));
+  margin: clamp(2.4rem, 5vw, 4.5rem) auto 2rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,.84);
+}
+@media (max-width: 650px) {
+  .reading-page .library-footer.footer-pill { width: calc(100% - 1rem); border-radius: 28px; }
+}

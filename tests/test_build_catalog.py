@@ -38,8 +38,9 @@ class HomepageBuildTests(unittest.TestCase):
             self.assertIn(html.escape(book["short_title"]), self.html)
 
     def test_books_open_in_a_new_tab_with_safe_rel(self):
-        self.assertEqual(self.html.count('target="_blank"'), len(self.books) * 2)
-        self.assertEqual(self.html.count('rel="noopener"'), len(self.books) * 2)
+        self.assertEqual(self.html.count('target="_blank"'), len(self.books) * 2 + 1)
+        self.assertEqual(self.html.count('rel="noopener"'), len(self.books) * 2 + 1)
+        self.assertIn('class="footer-facebook-link"', self.html)
 
     def test_reading_books_have_glass_circle_html_download_after_date(self):
         self.assertEqual(self.html.count('class="book-download-html book-download-html--glass"'), len(self.books))

@@ -152,3 +152,68 @@ svg { fill: currentColor; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* Selected Option 4 — Pill Dock footer shared with the Library pages. */
+.library-footer.footer-pill {
+  width: min(900px, calc(100% - 2rem));
+  margin: clamp(2.4rem, 5vw, 4.5rem) auto 2rem;
+  padding: .88rem .95rem .88rem clamp(1.35rem, 3vw, 2.35rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(1rem, 3vw, 2rem);
+  color: #68727f;
+  border: 1px solid rgba(210,220,232,.72);
+  border-radius: 999px;
+  background: rgba(255,255,255,.84);
+  box-shadow: inset 0 1px rgba(255,255,255,.92), 0 22px 54px rgba(17,24,32,.12);
+  -webkit-backdrop-filter: blur(24px) saturate(1.18);
+  backdrop-filter: blur(24px) saturate(1.18);
+}
+.footer-pill-copy { min-width: 0; text-align: left; }
+.footer-copy {
+  margin: 0;
+  color: #111820;
+  font-family: "Noto Sans Thai", "Noto Sans Display", Tahoma, system-ui, sans-serif;
+  font-size: clamp(1rem, 2vw, 1.45rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -.025em;
+}
+.footer-modes {
+  margin: .36rem 0 0;
+  color: #68727f;
+  font-family: "Noto Sans Mono", "SFMono-Regular", ui-monospace, monospace;
+  font-size: clamp(.68rem, 1.1vw, .84rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: .15em;
+}
+.footer-facebook-link {
+  width: clamp(46px, 5.6vw, 68px);
+  min-width: clamp(46px, 5.6vw, 68px);
+  min-height: clamp(46px, 5.6vw, 68px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(210,220,232,.92);
+  border-radius: 999px;
+  background: #f5f8fc;
+  box-shadow: inset 0 1px rgba(255,255,255,.86);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.footer-facebook-link:hover { transform: translateY(-2px); box-shadow: inset 0 1px rgba(255,255,255,.92), 0 10px 24px rgba(24,119,242,.22); }
+.footer-facebook-link:focus-visible { outline: 3px solid rgba(24,119,242,.55); outline-offset: 4px; }
+.footer-social-icon { width: 68%; height: 68%; display: block; object-fit: contain; }
+@media (max-width: 650px) {
+  .library-footer.footer-pill {
+    width: calc(100% - 1rem);
+    padding: 1rem;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    border-radius: 28px;
+  }
+  .footer-pill-copy { text-align: center; }
+}
