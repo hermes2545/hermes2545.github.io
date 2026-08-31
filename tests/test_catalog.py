@@ -38,7 +38,7 @@ class CatalogTests(unittest.TestCase):
     def test_required_fields_and_unique_ids_and_links(self):
         required = {"id", "title", "short_title", "href", "cover", "category", "summary", "accent", "published_at"}
         self.assertTrue(self.books)
-        self.assertEqual(len(self.books), 27)
+        self.assertEqual(len(self.books), 28)
         self.assertEqual(len({book["id"] for book in self.books}), len(self.books))
         self.assertEqual(len({book["href"] for book in self.books}), len(self.books))
         for book in self.books:
@@ -48,7 +48,7 @@ class CatalogTests(unittest.TestCase):
             self.assertRegex(book["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
 
     def test_every_reading_book_uses_an_approved_custom_cover(self):
-        self.assertEqual(len(self.books), 27)
+        self.assertEqual(len(self.books), 28)
         for book in self.books:
             self.assertEqual(book["cover"], f'assets/covers/custom/{book["id"]}.webp')
             self.assertEqual(Path(book["cover"]).suffix, ".webp")
@@ -98,6 +98,7 @@ class CatalogTests(unittest.TestCase):
             "agent-reach-comparison": "Agent Reach หรือดึง Transcript ตรง",
             "vault-ai-safety": "คุม AI ไม่ให้พลาดด้วย VAULT",
             "claude-prompt-caching": "Claude Prompt Caching",
+            "claude-interactive-manual": "Claude Interactive Manual",
             "grok-bot-vs-claude-codex": "Grok Bot vs Claude Code vs Codex",
             "hermes-agent-advance-computer-use": "คู่มือ Hermes Agent Advance Computer Use",
             "agent-reach-thai-guide": "Agent Reach คู่มือฉบับไทย",

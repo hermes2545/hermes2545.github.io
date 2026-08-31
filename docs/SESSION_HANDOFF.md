@@ -21,7 +21,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with f
 
 ### Reading collection
 
-- 27 standalone HTML guides indexed from `data/books.json`.
+- 28 standalone HTML guides indexed from `data/books.json`.
 - The Reading storefront title is **Coffee and Books**. Its environment uses a bright sunlit outdoor garden photograph containing only trees, foliage, grass, and natural daylight, plus heavy translucent iOS-inspired glass walls and shelves and one seamless user-approved 1044×237 retouched header image. The header removes baked UI on the left while preserving the original cup, latte art, table, garden, and lighting on the right; the site logo and title remain semantic HTML.
 - The Navigation bar, Title banner, Reading/Search panel, and Bookshelf panel share one responsive width: 1180px maximum on desktop and the same 4px side gutters on mobile. The garden wallpaper uses the photograph's natural color with no brightness/saturation/contrast filter and no color-wash overlay. The retouched header image uses `cover`, so no blank cream strip appears when the banner widens.
 - Coffee and Books styles live only in `assets/css/reading-library.css`, loaded only by the Reading template. Shared `assets/css/library.css` is restored byte-for-byte to the pre-Coffee `ca74827` baseline so the App and Audio collections cannot inherit the Reading wallpaper, glass panels, geometry, or header treatment.
@@ -34,9 +34,10 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with f
 - Shelf-facing titles remain Thai-first except the user-specified English titles **Claude Prompt Caching** and **Grok Bot vs Claude Code vs Codex**, while necessary product and technical terms are retained.
 - Newest publication appears at the upper-left, then flows right and downward.
 - Every guide opens in a new browser tab.
-- All 27 reading books use individually designed or owner-approved 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork. The newest Visual Art Director Agent manual, Profile Migration guide, Gemini Live API, Agent Reach guide, and Computer Use guide use owner-supplied final covers without redesign.
+- All 28 reading books use individually designed or owner-approved 600×900 custom WebP covers under `assets/covers/custom/`; no active catalog entry uses Facebook artwork. The newest Visual Art Director Agent manual, Profile Migration guide, Gemini Live API, Agent Reach guide, and Computer Use guide use owner-supplied final covers without redesign.
 - Reproducible cover designs live under `templates/`, including `grok-bot-vs-claude-codex-cover.template.html`, `claude-prompt-caching-cover.template.html`, `vault-ai-safety-cover.template.html`, `agent-reach-comparison-cover.template.html`, and `hermes-concepts-for-everyone-cover.template.html`; legacy Facebook assets remain archived but unused.
 - **Claude Prompt Caching** is a byte-preserved user-supplied interactive guide dated 21 June 2026. Its cover uses the officially documented Claude Code Spark cue in an independent editorial context with a visible non-affiliation notice.
+- **Claude Interactive Manual** is a local Vite/React build imported from `https://github.com/p2544/claude-interactive-course` commit `d4fdc70`, published at `claude-interactive-manual/index.html` with relative assets and `manual500p.pdf`; source example paths were public-safety sanitized from absolute home-directory form to `~/claude/`. It is dated 6 July 2026 and uses the owner-selected Visual Art Director Option 3 AI-generated cover normalized to `assets/covers/custom/claude-interactive-manual.webp`.
 - **Grok Bot vs Claude Code vs Codex** is an 11-view standalone comparison with 13 official sources and embedded transparent Grok/Claude/Codex logo assets. Its editorial cover distinguishes a persistent teammate from temporary spawned workers and carries a visible non-affiliation notice.
 
 ### Audio collection
@@ -115,7 +116,7 @@ python scripts/build_gallery.py --check
 git diff --check
 ```
 
-Expected verified result at close: **99 tests passed**, all four generated pages current, and no diff-check errors.
+Expected verified result at close: **103 tests passed**, all four generated pages current, and no diff-check errors.
 
 ## Publication workflow
 
@@ -136,6 +137,13 @@ Expected verified result at close: **99 tests passed**, all four generated pages
 ## Next recommended step
 
 After the approved Audio wallpaper push, verify `audio-library.html`, the new wallpaper hash/dimensions, Audio count 52, and production desktop/mobile Liquid Glass readability. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
+
+## Latest close checkpoint — 2026-08-31
+
+- Added **Claude Interactive Manual** from `p2544/claude-interactive-course` as Reading catalog ID `claude-interactive-manual`, dated `2026-07-06T00:00:00+07:00`, with public href `claude-interactive-manual/index.html`.
+- Built the upstream Vite/React course locally, copied the static runtime and bundled `manual500p.pdf`, kept asset links relative, and sanitized bundled absolute home-directory example paths to `~/claude/` for public safety.
+- Published the owner-selected Visual Art Director **Option 3 — Course Object** cover as `assets/covers/custom/claude-interactive-manual.webp`, normalized to 600×900 RGB WebP with no EXIF. Regression coverage in `tests/test_claude_interactive_manual.py` locks catalog metadata, runtime presence, syntax, public-safety scan, and cover normalization.
+- Verification before the owner-approved scoped push passed: `python -m unittest discover -s tests -v` with **103 tests**, all four generator `--check` commands, `git diff --check`, static desktop/mobile responsive checks, and a pre-share scan of intended public files with no credential/private-path findings.
 
 ## Latest close checkpoint — 2026-08-31
 

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>เรียน Claude แบบ Interactive ด้วยตนเอง</title>
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('stag-claude-theme');
+          var dark = stored === 'dark' || (!stored && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (dark) document.documentElement.classList.add('dark');
+        } catch (e) {
+          /* localStorage unavailable, fall back to light */
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="./assets/index-DowiU3Z8.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/rolldown-runtime-Bh1tDfsg.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-react-CnQ8cts2.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-router-BpD8Kk6_.js">
+    <link rel="modulepreload" crossorigin href="./assets/content-ch0-DAEu6rIj.js">
+    <link rel="modulepreload" crossorigin href="./assets/content-ch1-CE_sYC3z.js">
+    <link rel="modulepreload" crossorigin href="./assets/content-ch2-DRP75uad.js">
+    <link rel="modulepreload" crossorigin href="./assets/content-ch3-YGT4tbxu.js">
+    <link rel="modulepreload" crossorigin href="./assets/content-ch4-7C-DGHZn.js">
+    <link rel="modulepreload" crossorigin href="./assets/content-ch5-eKu2U_g-.js">
+    <link rel="modulepreload" crossorigin href="./assets/content-ch6-CJKLeVkA.js">
+    <link rel="modulepreload" crossorigin href="./assets/content-ch7-CpZsveJs.js">
+    <link rel="modulepreload" crossorigin href="./assets/content-wf-a-pTSToIhz.js">
+    <link rel="modulepreload" crossorigin href="./assets/content-wf-b-CCP25I06.js">
+    <link rel="modulepreload" crossorigin href="./assets/content-cookbook-HvbiRmPF.js">
+    <link rel="modulepreload" crossorigin href="./assets/content-appendixB-CmmYuFDR.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-CwqGtbsa.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

@@ -242,6 +242,17 @@
     "published_at": "2026-08-01T10:44:13+07:00"
   },
   {
+    "id": "claude-interactive-manual",
+    "title": "Claude Interactive Manual",
+    "short_title": "Claude Interactive Manual",
+    "href": "claude-interactive-manual/index.html",
+    "cover": "assets/covers/custom/claude-interactive-manual.webp",
+    "category": "Claude Code",
+    "summary": "คอร์สเรียน Claude AI แบบ interactive ภาษาไทย ครอบคลุม 8 บท ตั้งแต่ Claude models, prompt engineering, features, products, custom skills, Agent SDK, safety พร้อม workflows, cookbook, glossary, quiz และ progress tracking",
+    "accent": "#D97757",
+    "published_at": "2026-07-06T00:00:00+07:00"
+  },
+  {
     "id": "hermes-memory-kb",
     "title": "สถาปัตยกรรมความจำ Hermes + Self-Improving KB",
     "short_title": "Hermes จำอย่างไรให้เก่งขึ้น",
