@@ -28,7 +28,7 @@ class GrokRouterReadingGuideTests(unittest.TestCase):
         self.assertEqual(book["published_at"], "2026-09-01T00:38:48+07:00")
         self.assertIn("Grok Bot", book["summary"])
         self.assertIn("provider", book["summary"].lower())
-        self.assertEqual(books[0]["id"], BOOK_ID)
+        self.assertEqual(books[1]["id"], BOOK_ID)
 
     def test_grokrouter_html_is_byte_preserved_and_public_safe(self):
         self.assertTrue(HTML_PATH.is_file())

@@ -1,5 +1,16 @@
 [
   {
+    "id": "human-ai-communication-framework",
+    "title": "Human–AI Communication Framework",
+    "short_title": "Human–AI Communication Framework",
+    "href": "Human_AI_Communication_Framework_Interactive_Reference_Manual.html",
+    "cover": "assets/covers/custom/human-ai-communication-framework.webp",
+    "category": "Human–AI Interaction",
+    "summary": "คู่มือ bilingual Interactive Reference Manual สำหรับกรอบการออกแบบการสื่อสารระหว่างมนุษย์กับ AI ครอบคลุม interface, conversation, ambient AI, delegation, agent-to-agent, generated UI, physical/spatial interaction, oversight, metrics และ M3 research context",
+    "accent": "#D9B66E",
+    "published_at": "2026-09-01T18:41:33+07:00"
+  },
+  {
     "id": "grokrouter-interactive-reference-manual",
     "title": "GrokRouter — Interactive Reference Manual (TH)",
     "short_title": "GrokRouter ทำงานอย่างไร",
