@@ -144,6 +144,13 @@ After the approved Audio wallpaper push, verify `audio-library.html`, the new wa
 
 ## Latest close checkpoint — 2026-09-01
 
+- Published YouTube podcast **ระบบการสื่อสารระหว่างมนุษย์กับ Ai V1.0** as video ID `AJ4cLr7A4Rc` on channel **manny calavara** (`@twitty-bz2wu`) with Public visibility, Not made for kids, custom thumbnail, and exact `tech (Ai)` playlist membership.
+- Rendered from the owner-requested storyboard/image workflow: source audio duration 22:15, 36 generated 2D editorial storyboard scenes, final MP4 H.264 1920×1080 30fps `yuv420p`, AAC 48kHz stereo, SHA-256 `a3067c72350b9279c11d350a1cee9aa9bb9f0bd7aee3982a43963a9852bc3040`, no source/final silence intervals over 3 seconds, and start/middle/end/thumbnail visual QA passed after removing initial scene-badge tofu and regenerating the thumbnail text.
+- YouTube public read-back: oEmbed returned exact title and author **manny calavara**; watch/playlist HTML contained the required Knowledge Shelf and Human–AI Communication Framework URLs plus playlist ID `PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl`; maxres thumbnail returned HTTP 200.
+- Added Audio Shelf catalog entry at position 1 with `assets/audio-covers/AJ4cLr7A4Rc.jpg`, duration 1335 seconds, publish timestamp `2026-09-01T21:17:41+07:00`, and regenerated `audio-library.html` with 53 entries. Focused Audio tests passed and full gates passed with **114 tests**, all four generator `--check` commands, and `git diff --check` clean. Public push was explicitly approved in the current turn.
+
+## Latest close checkpoint — 2026-09-01
+
 - Published **Human–AI Communication Framework** as Reading catalog ID `human-ai-communication-framework`, first/newest with href `Human_AI_Communication_Framework_Interactive_Reference_Manual.html`, category `Human–AI Interaction`, and date `2026-09-01T18:41:33+07:00`.
 - Preserved the owner-supplied HTML byte-for-byte at SHA-256 `95de03e50046b439a5a7deb2793359cf4da887001fe893d2e1be53fec5dc1fb9`; regression coverage locks 1 home page, 15 content pages, 16 navigation buttons, key bilingual Human–AI framework markers, JavaScript syntax, public-safety scan, and no reader-facing `ค่ะ`.
 - Normalized the owner-supplied cover only for shelf delivery as `assets/covers/custom/human-ai-communication-framework.webp`, 600×900 RGB WebP, no EXIF, single frame, SHA-256 `90ab0e70d9b6df68ecf8011b579fa4647cf0859ce664fba414a373c0cb079dbf`. The full supplied portrait is preserved in the foreground with a blurred background fill to satisfy the shelf's 2:3 cover requirement without cropping the source artwork.
