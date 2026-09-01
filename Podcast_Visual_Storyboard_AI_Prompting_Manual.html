@@ -1,0 +1,261 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Podcast Visual Storyboard & AI Image Prompting — Interactive Reference Manual</title><meta name="description" content="Interactive Reference Manual สำหรับทำ Podcast Visual Storyboard และ AI Image Prompting"><style>
+:root{--panel:#fffaf0;--ink:#111827;--line:#e5dfd2;--gold:#d7a84d;--accent:#3dd6c6;--code:#0f172a;--font:1}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at top left,#27415f 0,#111827 35%,#0b1020 100%);color:var(--ink);font-family:"Noto Sans Thai","Noto Sans",system-ui,sans-serif;font-size:calc(16px * var(--font));line-height:1.72;overflow-x:hidden}button,input{font:inherit}a{color:#0f766e}.shell{min-height:100vh;display:grid;grid-template-columns:310px 1fr}.sidebar{position:sticky;top:0;height:100vh;padding:24px;background:linear-gradient(180deg,rgba(15,23,42,.98),rgba(15,23,42,.88));color:#f8fafc;border-right:1px solid rgba(255,255,255,.12);overflow:auto}.brand{display:flex;gap:14px;align-items:center;margin-bottom:24px}.brand-mark{width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,var(--gold),#fff4c2);box-shadow:0 14px 34px rgba(215,168,77,.25)}.brand h1{font-size:1.02rem;line-height:1.25;margin:0}.brand p{margin:.25rem 0 0;color:#cbd5e1;font-size:.82rem}.nav-list{display:grid;gap:10px}.nav-item{width:100%;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.055);color:#e2e8f0;text-align:left;padding:12px 14px;display:grid;grid-template-columns:42px 1fr;gap:10px;align-items:center;cursor:pointer}.nav-item:hover,.nav-item:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.nav-item.active{background:linear-gradient(135deg,rgba(215,168,77,.28),rgba(61,214,198,.16));border-color:rgba(215,168,77,.55);color:#fff}.nav-kicker{font:700 .74rem "Noto Sans",sans-serif;color:#facc15;letter-spacing:.12em}.main{padding:24px 28px 64px;min-width:0}.topbar{position:sticky;top:16px;z-index:5;display:flex;gap:10px;align-items:center;justify-content:space-between;margin:0 auto 22px;max-width:1100px;padding:12px;border:1px solid rgba(255,255,255,.18);border-radius:22px;background:rgba(15,23,42,.76);backdrop-filter:blur(20px);box-shadow:0 24px 80px rgba(0,0,0,.24)}.topbar button,.search{border:1px solid rgba(255,255,255,.18);border-radius:14px;background:rgba(255,255,255,.09);color:#f8fafc;padding:10px 12px}.search{width:min(42vw,360px)}.content{max-width:1100px;margin:auto}.manual-hero{position:relative;overflow:hidden;border-radius:32px;padding:42px;margin-bottom:22px;color:#fff;background:linear-gradient(135deg,rgba(15,23,42,.94),rgba(24,41,68,.86)),linear-gradient(45deg,rgba(215,168,77,.3),transparent);border:1px solid rgba(255,255,255,.14);box-shadow:0 30px 100px rgba(0,0,0,.35)}.manual-hero:after{content:"";position:absolute;right:-80px;top:-80px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(215,168,77,.36),transparent 65%)}.manual-hero h2{font-size:clamp(2rem,5vw,4.5rem);line-height:1.02;margin:0 0 16px;letter-spacing:-.05em}.manual-hero p{max-width:740px;color:#dbeafe;font-size:1.05rem}.badge-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.badge{border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 12px;background:rgba(255,255,255,.08);color:#fde68a;font-size:.86rem}.page{display:none;background:var(--panel);border:1px solid var(--line);border-radius:28px;padding:clamp(22px,4vw,44px);box-shadow:0 22px 70px rgba(0,0,0,.18);margin-bottom:22px}.page.active{display:block}.page-eyebrow{color:#a16207;font:800 .78rem "Noto Sans",sans-serif;letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}h2{font-size:clamp(1.6rem,3vw,2.5rem);line-height:1.16;margin:.2rem 0 1rem;letter-spacing:-.035em}h3{font-size:1.24rem;margin:1.7rem 0 .5rem;color:#1e3a5f}p,li{color:#263141}blockquote{margin:1.2rem 0;padding:1rem 1.2rem;border-left:5px solid var(--gold);background:#fff4d6;border-radius:0 18px 18px 0}pre{position:relative;background:var(--code);color:#e2e8f0;border-radius:18px;padding:18px;overflow:auto;border:1px solid rgba(255,255,255,.08)}code{font-family:"Noto Sans Mono","Ubuntu Mono",monospace;font-size:.92em}:not(pre)>code{background:#ede4d4;border-radius:7px;padding:.08rem .35rem}.copy-btn{position:absolute;top:10px;right:10px;border:1px solid rgba(255,255,255,.2);border-radius:10px;background:rgba(255,255,255,.1);color:#fff;padding:6px 9px;cursor:pointer}table{width:100%;border-collapse:collapse;display:block;overflow:auto}th,td{border:1px solid #e6dcc8;padding:10px;vertical-align:top}th{background:#f4ead6}.search-results{position:absolute;right:12px;top:58px;width:min(520px,calc(100vw - 36px));background:#fffaf0;color:#111827;border:1px solid #e7d7b8;border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.28);padding:8px;display:none}.search-results.open{display:grid;gap:6px}.result{border:0;background:#fff;color:#111827;text-align:left;border-radius:12px;padding:10px;cursor:pointer}.result:hover{background:#f8edd7}body.dark{--panel:#111827;--ink:#f8fafc;--line:#334155;background:#050816}body.dark .page{background:#111827;color:#f8fafc}body.dark p,body.dark li{color:#dbe4ef}body.dark h3{color:#93c5fd}body.dark :not(pre)>code{background:#243044;color:#fde68a}body.dark blockquote{background:#1f2937}body.dark th{background:#1f2937}body.dark td,body.dark th{border-color:#334155}.overlay{display:none}@media (max-width:860px){.shell{display:block}.sidebar{position:fixed;left:0;top:0;transform:translateX(-105%);width:min(86vw,330px);z-index:20;transition:transform .2s ease}.sidebar.is-open{transform:none}.overlay.open{display:block;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:15}.main{padding:16px}.topbar{top:8px;flex-wrap:wrap}.search{width:100%;order:3}.manual-hero{padding:28px}}@media print{body{background:#fff;color:#000}.sidebar,.topbar,.overlay,.copy-btn{display:none!important}.shell{display:block}.main{padding:0}.manual-hero{box-shadow:none;color:#000;background:#fff;border:1px solid #ccc}.page{display:block!important;box-shadow:none;border:0;page-break-inside:avoid}}
+</style></head><body><div class="overlay" id="overlay"></div><div class="shell"><aside class="sidebar" id="sidebar"><div class="brand"><div class="brand-mark"></div><div><h1>Podcast Visual Storyboard</h1><p>Interactive Reference Manual</p></div></div><nav class="nav-list" aria-label="สารบัญ"><button class="nav-item" data-page="overview" type="button"><span class="nav-kicker">01</span><span>ภาพรวม</span></button>
+<button class="nav-item" data-page="mission" type="button"><span class="nav-kicker">02</span><span>ภารกิจและหลักคิด</span></button>
+<button class="nav-item" data-page="inputs" type="button"><span class="nav-kicker">03</span><span>ข้อมูลนำเข้าและค่าเริ่มต้น</span></button>
+<button class="nav-item" data-page="style-rules" type="button"><span class="nav-kicker">04</span><span>Negative prompt และการเลือกสไตล์</span></button>
+<button class="nav-item" data-page="styles-01-06" type="button"><span class="nav-kicker">05</span><span>ชุดสไตล์ 01–06</span></button>
+<button class="nav-item" data-page="styles-07-13" type="button"><span class="nav-kicker">06</span><span>ชุดสไตล์ 07–13</span></button>
+<button class="nav-item" data-page="styles-14-20" type="button"><span class="nav-kicker">07</span><span>ชุดสไตล์ 14–20</span></button>
+<button class="nav-item" data-page="styles-21-27" type="button"><span class="nav-kicker">08</span><span>ชุดสไตล์ 21–27</span></button>
+<button class="nav-item" data-page="schemas" type="button"><span class="nav-kicker">09</span><span>Output schema และ prompt template</span></button>
+<button class="nav-item" data-page="quality" type="button"><span class="nav-kicker">10</span><span>Quality checklist</span></button></nav></aside><main class="main"><div class="topbar"><button id="menuBtn" type="button" aria-expanded="false">☰ สารบัญ</button><div><button id="themeBtn" type="button">โหมดสี</button><button id="fontDown" type="button">A−</button><button id="fontUp" type="button">A+</button></div><input class="search" id="search" type="search" placeholder="ค้นหาในคู่มือ" aria-label="ค้นหาในคู่มือ"><div class="search-results" id="searchResults"></div></div><div class="content"><header class="manual-hero"><h2>Podcast Visual Storyboard<br>& AI Image Prompting</h2><p>คู่มือทำ storyboard จากบทพอดแคสต์ให้เป็นระบบภาพสำหรับ AI Agent ครอบคลุม style bible, shot list, prompts, motion direction และ quality checklist</p><div class="badge-row"><span class="badge">Mega Skill</span><span class="badge">AI Agent</span><span class="badge">Video Workflow</span><span class="badge">Prompt Engineering</span></div></header><section class="page" id="overview" data-title="ภาพรวม Overview">
+<div class="page-eyebrow">Overview</div>
+<h2>คู่มือทำ Podcast Visual Storyboard &amp; AI Image Prompting</h2>
+<p>คู่มือ Interactive Reference Manual สำหรับเปลี่ยนบทพอดแคสต์ บทบรรยาย หรือ transcript ให้กลายเป็นระบบภาพเล่าเรื่องที่ใช้งานจริงได้ ตั้งแต่การแยก story beats การออกแบบ visual metaphors การทำ shot list การเขียน AI image prompts ไปจนถึงการเตรียม sequence สำหรับตัดต่อวิดีโอ</p>
+<blockquote>
+<p>เป้าหมายหลัก: ทุกภาพต้องช่วยให้ผู้ชมเข้าใจสาระในเสียง ไม่ใช่แค่สร้างภาพสวยแบบสุ่ม</p>
+</blockquote>
+<h3>โครงสร้างงาน</h3>
+<pre><code class="language-text">Narration/transcript → story beats → visual metaphors → shot list → consistent image prompts → generated image sequence → video timeline
+</code></pre>
+<h2>Podcast Visual Storyboard &amp; AI Image Prompting</h2>
+<p>Use this skill when a user supplies a podcast script, narration, transcript, article, or audio transcript and asks for a visual storyboard, AI image prompts, explainer-video scenes, or a prompt package for another AI system.</p>
+</section>
+<section class="page" id="mission" data-title="ภารกิจและหลักคิด Mission">
+<div class="page-eyebrow">Mission</div>
+<h2>Mission</h2>
+<p>Turn narration into a coherent visual storytelling system:</p>
+<pre><code class="language-text">Narration/transcript → story beats → visual metaphors → shot list → consistent image prompts → generated image sequence → video timeline
+</code></pre>
+<p>Do not make random beautiful images. Every image must answer:</p>
+<blockquote>
+<p>What idea in the narration does this visual help the viewer understand?</p>
+</blockquote>
+</section>
+<section class="page" id="inputs" data-title="ข้อมูลนำเข้าและค่าเริ่มต้น Inputs">
+<div class="page-eyebrow">Inputs</div>
+<h2>Inputs and defaults</h2>
+<p>Required or inferred:</p>
+<ul>
+<li>Narration, script, transcript, or article text.</li>
+<li>Target duration if known.</li>
+<li>Image frequency; default one image every 6–10 seconds.</li>
+<li>Audience and topic domain if inferable.</li>
+<li>Visual style; default to Style 01 unless the user selects another preset or supplies a custom style.</li>
+<li>Aspect ratio; default 16:9 for YouTube-style video.</li>
+<li>Character/location continuity needs.</li>
+<li>Text overlay policy; default avoid important generated text and add overlays later.</li>
+</ul>
+</section>
+<section class="page" id="style-rules" data-title="Negative prompt และการเลือกสไตล์ Style rules">
+<div class="page-eyebrow">Style rules</div>
+<h2>Default negative prompt</h2>
+<p>Use or adapt this negative prompt unless the selected production tool requires another format:</p>
+<pre><code class="language-text">photorealistic, 3D render, anime, childish cartoon, glossy, plastic, hyperreal, oversaturated colors, chaotic composition, unreadable text, misspelled text, fake letters, real brand logos, watermark, stock photo, cinematic action movie, distorted hands, extra fingers, deformed faces
+</code></pre>
+<h2>Style selection rule</h2>
+<p>The visual style is configurable. Select one of the numbered presets below, combine presets when useful, or create a custom style bible if the user asks for a direction not covered by the presets.</p>
+<p>When recommending styles, refer to styles by their stable number and name. Choose based on topic, audience, emotional arc, and desired channel identity.</p>
+<h2>Numbered preset style library</h2>
+</section>
+<section class="page" id="styles-01-06" data-title="ชุดสไตล์ 01–06 Styles 01–06">
+<div class="page-eyebrow">Styles 01–06</div>
+<h3>01. Default 2D Hand-Drawn Editorial Explainer</h3>
+<p>Best for: general narrated explainers, business stories, policy, everyday systems.
+Visual traits: clean ink outlines, muted pastel watercolor shading, soft paper texture, realistic but simplified people and objects.
+Avoid: photorealism, 3D render, anime, brand logos, clutter.
+Style bible: 2D hand-drawn editorial illustration for a narrated explainer video, clean ink outlines, muted pastel watercolor shading, soft paper texture, realistic but simplified people and objects, calm documentary tone, subtle cinematic composition, warm neutral lighting, low contrast, detailed but uncluttered environments, no photorealism, no 3D render, no anime, no brand logos, 16:9 frame.</p>
+<h3>02. Hand-Drawn Editorial Business Explainer</h3>
+<p>Best for: economics, business, logistics, policy, workplace systems.
+Visual traits: mature editorial drawing, office objects, invoices, charts as abstract shapes, supply-chain props.
+Avoid: childish cartoons, fake brands, tiny chart labels.
+Style bible: Hand-drawn editorial business explainer, clean ink lines, muted corporate watercolor palette, simplified realistic workers and business objects, calm analytical mood, subtle cinematic composition, no readable small text, no real logos, 16:9.</p>
+<h3>03. Flat Vector Explainer</h3>
+<p>Best for: SaaS, technical workflows, startup/process videos, product education.
+Visual traits: clean geometric shapes, simple icons, strong hierarchy, controlled palette.
+Avoid: over-detailed UI text, real product logos, generic stock-vector blandness.
+Style bible: Flat vector explainer illustration, clean geometric forms, restrained modern palette, simple symbolic people and interface-like shapes, clear process flow, generous negative space, no real logos, no tiny readable UI text, 16:9.</p>
+<h3>04. Cinematic Storyboard Frames</h3>
+<p>Best for: dramatic history, biography, geopolitics, crisis narratives.
+Visual traits: filmic composition, strong foreground/background staging, dramatic but restrained lighting.
+Avoid: action-movie excess, photorealistic celebrity likenesses, gore.
+Style bible: Cinematic storyboard frame illustration, painterly but non-photorealistic, dramatic composition, restrained color palette, realistic simplified people and places, documentary seriousness, soft film grain, no real logos, no copyrighted characters, 16:9.</p>
+<h3>05. Vintage Engraving / Newspaper</h3>
+<p>Best for: historical, legal, political, archival topics.
+Visual traits: engraving lines, old newspaper texture, archival composition, sepia/black palette.
+Avoid: readable real mastheads, copyrighted newspaper scans, fake exact quotes.
+Style bible: Vintage engraving and newspaper editorial style, etched linework, aged paper texture, sepia and black palette, archival documentary tone, symbolic documents and portraits, no readable real newspaper text, no logos, 16:9.</p>
+<h3>06. Isometric Infographic</h3>
+<p>Best for: systems, infrastructure, supply chains, cities, networks.
+Visual traits: isometric buildings/objects, network paths, tidy spatial systems.
+Avoid: dense labels, tiny arrows that cannot be read, game-like 3D gloss.
+Style bible: Isometric infographic illustration, clean angled perspective, simplified buildings, vehicles, routes and system nodes, muted professional palette, precise but uncluttered layout, no readable tiny labels, no brand logos, 16:9.</p>
+</section>
+<section class="page" id="styles-07-13" data-title="ชุดสไตล์ 07–13 Styles 07–13">
+<div class="page-eyebrow">Styles 07–13</div>
+<h3>07. Minimal Documentary Sketch</h3>
+<p>Best for: essays, philosophy, psychology, social commentary.
+Visual traits: sparse pencil/ink linework, large negative space, symbolic everyday objects.
+Avoid: decorative emptiness without metaphor, over-rendering.
+Style bible: Minimal documentary sketch, sparse black pencil and ink linework, soft gray shading, large negative space, simple symbolic objects and human gestures, contemplative mood, no logos, no text, 16:9.</p>
+<h3>08. Editorial Collage Documentary</h3>
+<p>Best for: investigative business, politics, corruption, historical explainers.
+Visual traits: layered paper cutouts, archival photo textures, annotation marks, muted beige and charcoal palette.
+Avoid: real newspaper mastheads, readable copyrighted text, actual logos.
+Style bible: Editorial documentary collage, layered paper cutouts, archival photo textures, handwritten annotation marks, muted beige and charcoal palette, investigative journalism mood, realistic but stylized, no real logos, no readable small text, 16:9.</p>
+<h3>09. Ink Wash Historical Chronicle</h3>
+<p>Best for: history, philosophy, biography, war, political memory.
+Visual traits: expressive black ink, aged paper, restrained sepia background, solemn scenes.
+Avoid: modern glossy effects, excessive fantasy, unreadable calligraphy.
+Style bible: Ink wash historical chronicle style, expressive black ink strokes, aged paper texture, sparse composition, muted sepia background, solemn documentary mood, cinematic framing, no modern logos, no readable text, 16:9.</p>
+<h3>10. Modern Museum Exhibit Illustration</h3>
+<p>Best for: science, history, economics, geopolitics, institutional explainers.
+Visual traits: curated exhibit-panel composition, refined flat shapes, elegant educational layout.
+Avoid: dense labels, real museum branding, overstuffed panels.
+Style bible: Modern museum exhibit illustration, clean educational display composition, refined flat shapes, subtle labels as abstract blocks only, calm neutral palette, elegant lighting, curated documentary tone, spacious layout, 16:9.</p>
+<h3>11. Soft Clay Editorial Diorama</h3>
+<p>Best for: complex or sensitive topics that need a tactile, approachable feeling.
+Visual traits: handmade miniature scenes, matte clay texture, warm soft lighting.
+Avoid: glossy 3D render, toy-like childish exaggeration.
+Style bible: Soft clay editorial diorama, handmade miniature scene, matte clay texture, warm soft lighting, simplified realistic objects, gentle documentary tone, tactile and approachable, no glossy 3D render, no logos, 16:9.</p>
+<h3>12. Blueprint Systems Visualization</h3>
+<p>Best for: infrastructure, AI, logistics, workflows, policy systems.
+Visual traits: dark navy background, cyan/white linework, elegant technical schematic objects.
+Avoid: technical labels that need to be accurate, cluttered wiring diagrams.
+Style bible: Blueprint systems visualization, dark navy background, fine cyan and white linework, schematic objects, flow arrows as simple shapes, technical but elegant, no tiny readable text, clean composition, 16:9.</p>
+<h3>13. Paper Theater Storybook</h3>
+<p>Best for: narrative podcast, history, culture, human stories.
+Visual traits: layered cut-paper foreground/background, warm handcrafted shadows, theatrical staging.
+Avoid: childish fairy-tale tone unless requested, excessive decorative flourishes.
+Style bible: Layered paper theater illustration, cut-paper foreground and background, handcrafted shadows, warm muted colors, storybook documentary tone, cinematic stage composition, gentle depth, no childish cartoon, 16:9.</p>
+</section>
+<section class="page" id="styles-14-20" data-title="ชุดสไตล์ 14–20 Styles 14–20">
+<div class="page-eyebrow">Styles 14–20</div>
+<h3>14. Noir Investigative Sketch</h3>
+<p>Best for: crime, grey-market business, corruption, mystery, crisis.
+Visual traits: black-and-white ink, strong shadows, desk lamps, rain-streaked windows, documents as abstract forms.
+Avoid: gore, sensationalism, readable sensitive documents.
+Style bible: Noir investigative sketch style, black and white ink drawing, strong shadows, rain-streaked windows, desk lamps, documents as abstract forms, tense journalistic mood, cinematic composition, no readable text, 16:9.</p>
+<h3>15. Warm Humanist Documentary Illustration</h3>
+<p>Best for: society, psychology, biography, education, family and community stories.
+Visual traits: empathetic simplified realistic people, soft pencil outlines, warm earth tones.
+Avoid: sentimental clichés, exaggerated cartoon expressions.
+Style bible: Warm humanist documentary illustration, simplified realistic people, soft pencil outlines, gentle watercolor shading, warm earth tones, natural gestures, empathetic mood, uncluttered background, no logos, 16:9.</p>
+<h3>16. Minimal Monochrome Explainer</h3>
+<p>Best for: philosophy, productivity, abstract ideas, essays.
+Visual traits: sparse black linework, grayscale palette, simple symbolic objects.
+Avoid: scenes so empty they fail to explain the narration.
+Style bible: Minimal monochrome explainer illustration, sparse black linework, large negative space, simple symbolic objects, grayscale palette, contemplative mood, clean editorial composition, no text, no logos, 16:9.</p>
+<h3>17. Data Journalism Editorial Graphics</h3>
+<p>Best for: economics, markets, public policy, number-heavy stories.
+Visual traits: abstract charts, symbolic numbers through objects, newspaper-quality visual explanation.
+Avoid: asking image models to render accurate axes, labels, or tables.
+Style bible: Data journalism editorial graphic style, clean charts represented as abstract shapes, restrained color palette, newspaper-quality visual explanation, symbolic numbers through objects, no accurate small labels, no readable text, 16:9.</p>
+<h3>18. Cinematic Watercolor Documentary</h3>
+<p>Best for: travel, history, biography, nature, geopolitics, opening and transition beats.
+Visual traits: wide atmospheric scenes, muted natural colors, painterly people/places, paper texture.
+Avoid: photorealistic travel-poster gloss, oversaturated sunsets.
+Style bible: Cinematic watercolor documentary frame, wide composition, soft atmospheric perspective, muted natural colors, subtle paper texture, realistic but painterly people and places, calm serious mood, no photorealism, 16:9.</p>
+<h3>19. Retro Public Information Film</h3>
+<p>Best for: policy, public health, economics, social systems, civic explainers.
+Visual traits: mid-century educational poster style, limited palette, print grain.
+Avoid: propaganda symbols, real agency seals, outdated stereotypes.
+Style bible: Retro public information film illustration, mid-century educational poster style, limited muted palette, simple geometric people and objects, grainy print texture, clear visual metaphor, no readable text, 16:9.</p>
+<h3>20. Architectural Cutaway Explainer</h3>
+<p>Best for: organizations, cities, companies, institutions, hidden systems.
+Visual traits: cross-section buildings or systems, layered rooms, pathways, small simplified figures.
+Avoid: tiny labels, overly busy dollhouse scenes.
+Style bible: Architectural cutaway explainer illustration, building or system shown in cross-section, small simplified human figures, layered rooms and pathways, clean editorial detail, muted colors, no labels, 16:9.</p>
+</section>
+<section class="page" id="styles-21-27" data-title="ชุดสไตล์ 21–27 Styles 21–27">
+<div class="page-eyebrow">Styles 21–27</div>
+<h3>21. Symbolic Surreal Editorial</h3>
+<p>Best for: philosophy, psychology, economics, hidden incentives, paradoxes.
+Visual traits: realistic simplified objects in impossible but calm scenes, metaphor-first composition.
+Avoid: horror, chaos, dream imagery unrelated to the narration.
+Style bible: Symbolic surreal editorial illustration, realistic simplified objects arranged in an impossible but calm scene, muted colors, soft shadows, metaphor-driven composition, thoughtful mood, no horror, no chaos, 16:9.</p>
+<h3>22. Courtroom / Legal Sketch Documentary</h3>
+<p>Best for: law, lawsuits, regulation, policy, contracts, institutional accountability.
+Visual traits: pencil and watercolor legal sketch, desks, folders, official silhouettes.
+Avoid: fake seals, readable case files, real judge/lawyer likenesses unless rights-safe.
+Style bible: Courtroom documentary sketch style, pencil and watercolor lines, legal desks, folders, silhouettes of officials, serious institutional mood, restrained beige and navy palette, no readable text, no real logos, 16:9.</p>
+<h3>23. Supply Chain Map Illustration</h3>
+<p>Best for: logistics, trade, manufacturing, agriculture, global economy.
+Visual traits: map-like routes connecting warehouses, ships, trucks, farms or factories.
+Avoid: real company logos, literal geographic precision unless supplied separately.
+Style bible: Supply chain map illustration, simplified map-like composition, routes connecting warehouses, ships, trucks, farms or factories, muted editorial colors, clean icons but hand-drawn texture, no real brand logos, 16:9.</p>
+<h3>24. Desk Objects Metaphor Series</h3>
+<p>Best for: business, finance, decision-making, productivity, personal risk.
+Visual traits: tabletop close-ups, coins, clocks, folders, keys, receipts, coffee cups as recurring motifs.
+Avoid: repetitive identical close-ups, readable sensitive documents.
+Style bible: Editorial desk-object metaphor style, close-up tabletop compositions, symbolic objects like coins, clocks, folders, keys, receipts and coffee cups, soft natural light, shallow but illustrated depth, muted palette, no readable text, 16:9.</p>
+<h3>25. Children's Book for Adults</h3>
+<p>Best for: explaining difficult subjects simply while keeping emotional warmth.
+Visual traits: gentle hand-drawn characters, textured gouache colors, simple symbolic scenes, mature tone.
+Avoid: childish exaggeration, cute mascots unless requested.
+Style bible: Sophisticated children's-book-for-adults illustration, gentle hand-drawn characters, textured gouache colors, simple symbolic scenes, warm but mature tone, emotionally clear, not childish, no cartoon exaggeration, 16:9.</p>
+<h3>26. High-Contrast Editorial Poster</h3>
+<p>Best for: hooks, opening frames, key claims, dramatic turns, thumbnail candidates.
+Visual traits: bold simplified shapes, limited palette, strong silhouette, print grain.
+Avoid: overcrowding, unreadable typographic posters generated by AI.
+Style bible: High-contrast editorial poster style, bold simplified shapes, limited color palette, strong silhouette, dramatic but clean composition, one clear visual idea, print grain texture, no readable text, no logos, 16:9.</p>
+<h3>27. Quiet Luxury Business Documentary</h3>
+<p>Best for: premium business, finance, leadership, strategy, markets.
+Visual traits: refined magazine-like editorial scenes, charcoal/ivory/brass/deep green palette, premium lighting.
+Avoid: luxury brand logos, stock-photo boardroom clichés, excessive gloss.
+Style bible: Quiet luxury business documentary illustration, elegant editorial composition, refined muted palette of charcoal, ivory, brass and deep green, soft premium lighting, simplified realistic people and office objects, calm analytical mood, no logos, 16:9.</p>
+</section>
+<section class="page" id="schemas" data-title="Output schema และ prompt template Schemas">
+<div class="page-eyebrow">Schemas</div>
+<h2>Shot-list schema</h2>
+<h2>Output schema</h2>
+<p>Each storyboard scene should include:</p>
+<pre><code class="language-json">{
+  &quot;scene_id&quot;: &quot;001&quot;,
+  &quot;timestamp_start&quot;: &quot;00:00&quot;,
+  &quot;timestamp_end&quot;: &quot;00:08&quot;,
+  &quot;narration_excerpt&quot;: &quot;...&quot;,
+  &quot;core_idea&quot;: &quot;...&quot;,
+  &quot;visual_function&quot;: &quot;concrete depiction | visual metaphor | process diagram | emotional scene | number visualization | contrast shot | establishing shot | transition shot&quot;,
+  &quot;visual_description&quot;: &quot;...&quot;,
+  &quot;selected_style&quot;: &quot;01. Default 2D Hand-Drawn Editorial Explainer&quot;,
+  &quot;image_prompt&quot;: &quot;...&quot;,
+  &quot;negative_prompt&quot;: &quot;...&quot;,
+  &quot;motion_direction&quot;: &quot;...&quot;,
+  &quot;text_overlay&quot;: &quot;...&quot;,
+  &quot;continuity_notes&quot;: &quot;...&quot;
+}
+</code></pre>
+<h2>Master prompt pattern</h2><p>Use this section as the reusable master prompt pattern for another AI system before filling the detailed scene template.</p><h2>Image prompt template</h2>
+<pre><code class="language-text">[SELECTED_STYLE_BIBLE]
+
+Scene: [specific location]
+Subject: [main object/person]
+Action / idea: [what this image communicates]
+Composition: [close-up / medium shot / wide shot / overhead / low angle]
+Details: [props, environment, symbolic objects, time of day]
+Mood: [calm / tense / analytical / reflective / urgent]
+Lighting: [soft office light / dusk / morning / warehouse fluorescent]
+Continuity: [same character/object/location notes]
+Constraints: no real logos, no important readable text, leave space for overlays, 16:9.
+</code></pre>
+</section>
+<section class="page" id="quality" data-title="Quality checklist Quality">
+<div class="page-eyebrow">Quality</div>
+<h2>Quality checklist</h2>
+<p>Before delivering a storyboard or prompt package, verify:</p>
+<ul>
+<li>The full narration is covered.</li>
+<li>Each scene maps to a specific beat and one core idea.</li>
+<li>Each prompt uses the selected numbered style bible or a clearly stated custom style bible.</li>
+<li>Exact text/numbers are separated into <code>text_overlay</code> where possible.</li>
+<li>Recurring characters, props, locations, and palette are consistent.</li>
+<li>No prompt asks for broken/unreadable text, real logos, watermarks, or copyrighted characters by default.</li>
+<li>Each image can be understood in 2–3 seconds.</li>
+<li>Motion suggestions are included.</li>
+<li>The result can be handed directly to an image-generation/editorial workflow.</li>
+</ul>
+</section></div></main></div><script>
+const pages=[...document.querySelectorAll('.page')];const nav=[...document.querySelectorAll('.nav-item')];const sidebar=document.getElementById('sidebar');const overlay=document.getElementById('overlay');const search=document.getElementById('search');const results=document.getElementById('searchResults');function showPage(id,push=true){const page=document.getElementById(id)||pages[0];pages.forEach(p=>p.classList.toggle('active',p===page));nav.forEach(b=>b.classList.toggle('active',b.dataset.page===page.id));if(push)history.replaceState(null,'','#'+page.id);closeMenu();window.scrollTo(0,0)}function openMenu(){sidebar.classList.add('is-open');overlay.classList.add('open');document.getElementById('menuBtn').setAttribute('aria-expanded','true')}function closeMenu(){sidebar.classList.remove('is-open');overlay.classList.remove('open');document.getElementById('menuBtn').setAttribute('aria-expanded','false')}nav.forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));document.getElementById('menuBtn').addEventListener('click',()=>sidebar.classList.contains('is-open')?closeMenu():openMenu());overlay.addEventListener('click',closeMenu);document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMenu();results.classList.remove('open')}});document.getElementById('themeBtn').addEventListener('click',()=>{document.body.classList.toggle('dark');localStorage.setItem('podcastStoryboardTheme',document.body.classList.contains('dark')?'dark':'light')});if(localStorage.getItem('podcastStoryboardTheme')==='dark')document.body.classList.add('dark');let scale=Number(localStorage.getItem('podcastStoryboardFont')||1);function setScale(v){scale=Math.min(1.25,Math.max(.9,v));document.documentElement.style.setProperty('--font',scale);localStorage.setItem('podcastStoryboardFont',scale)}setScale(scale);document.getElementById('fontUp').addEventListener('click',()=>setScale(scale+.05));document.getElementById('fontDown').addEventListener('click',()=>setScale(scale-.05));document.querySelectorAll('pre').forEach(pre=>{const btn=document.createElement('button');btn.className='copy-btn';btn.type='button';btn.textContent='Copy';btn.addEventListener('click',async()=>{await navigator.clipboard.writeText(pre.innerText.replace(/^Copy\n/,''));btn.textContent='Copied';setTimeout(()=>btn.textContent='Copy',900)});pre.appendChild(btn)});search.addEventListener('input',()=>{const q=search.value.trim().toLowerCase();results.innerHTML='';if(!q){results.classList.remove('open');return}pages.map(p=>({id:p.id,title:p.dataset.title,text:p.innerText})).filter(p=>(p.title+' '+p.text).toLowerCase().includes(q)).slice(0,8).forEach(p=>{const b=document.createElement('button');b.className='result';b.type='button';b.textContent=p.title;b.addEventListener('click',()=>{showPage(p.id);search.value='';results.classList.remove('open')});results.appendChild(b)});results.classList.toggle('open',results.children.length>0)});window.addEventListener('hashchange',()=>showPage(location.hash.slice(1),false));showPage(location.hash.slice(1)||pages[0].id,false);
+</script></body></html>

@@ -1,5 +1,16 @@
 [
   {
+    "id": "podcast-visual-storyboard-ai-prompting",
+    "title": "Podcast Visual Storyboard & AI Image Prompting",
+    "short_title": "Podcast Visual Storyboard",
+    "href": "Podcast_Visual_Storyboard_AI_Prompting_Manual.html",
+    "cover": "assets/covers/custom/podcast-visual-storyboard-ai-prompting.webp",
+    "category": "AI Design Workflow",
+    "summary": "คู่มือ Interactive Reference Manual สำหรับเปลี่ยน podcast, บทพอดแคสต์ หรือ transcript เป็น visual storyboard, shot list, style bible, AI image prompts, motion direction และ quality checklist สำหรับงานวิดีโอด้วย AI Agent",
+    "accent": "#D7A84D",
+    "published_at": "2026-09-02T00:36:37+07:00"
+  },
+  {
     "id": "human-ai-communication-framework",
     "title": "Human–AI Communication Framework",
     "short_title": "Human–AI Communication Framework",

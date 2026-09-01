@@ -28,7 +28,7 @@ class HumanAICommunicationFrameworkReadingTests(unittest.TestCase):
         self.assertEqual(book["published_at"], "2026-09-01T18:41:33+07:00")
         self.assertIn("กรอบการออกแบบการสื่อสารระหว่างมนุษย์กับ AI", book["summary"])
         self.assertIn("bilingual", book["summary"].lower())
-        self.assertEqual(books[0]["id"], BOOK_ID)
+        self.assertEqual(books[1]["id"], BOOK_ID)
 
     def test_html_is_byte_preserved_and_public_safe(self):
         self.assertTrue(HTML_PATH.is_file())
