@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BOOK_ID = "grokrouter-interactive-reference-manual"
 HTML_PATH = ROOT / "GrokRouter_Interactive_Reference_Manual_TH.html"
 COVER_PATH = ROOT / "assets" / "covers" / "custom" / f"{BOOK_ID}.webp"
-APPROVED_HTML_SHA256 = "4bb0416dfb7722956073a45ec88acba8183d689dab328372c5e618277c73f20d"
+APPROVED_HTML_SHA256 = "12ad8451b29c3b83003a3c037f76b9bdca4f2dd2fdb2377e5a3661c64510e64f"
 
 
 class GrokRouterReadingGuideTests(unittest.TestCase):
