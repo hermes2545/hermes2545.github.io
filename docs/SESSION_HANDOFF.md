@@ -1,6 +1,6 @@
 # The Knowledge Shelf — Session Handoff
 
-**Updated:** 2026-09-02
+**Updated:** 2026-09-02T01:24:02+07:00
 
 **Public site:** https://hermes2545.github.io/
 
@@ -45,15 +45,15 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with f
 
 ### Audio collection
 
-- 53 YouTube entries indexed from `data/audio-books.json`; the newest is **Grok AI ทางลัดสำหรับมือใหม่: ต่างจาก Claude, ChatGPT และ DeepSeek อย่างไร?** (`YivD8OO85TM`). It is Public, Not made for kids, 18:47, 1080p30, uses the approved Glass Spectrum Equalizer and owner-supplied custom thumbnail, includes five verified source URLs, and is verified at position 1 in the exact Public `tech (Ai)` playlist. Female speech drives the Purple/Pink left equalizer and male speech drives the Green/Cyan right equalizer. The original Hermes podcast `KtHYNnLM_Dk` remains Unlisted and is not referenced by the active catalog.
+- 54 YouTube entries indexed from `data/audio-books.json`; the newest is **เมื่อ AI ทำงานแทนจนเงินไร้ค่า: Demand Collapse และโลกหลังทุนนิยม** (`sKC0mlraNPo`). It is Unlisted, Not made for kids, about 11:41, uses the generated 25-scene editorial storyboard video and custom Thai thumbnail, and is catalogued at Audio Shelf position 1. The previous newest is **ระบบการสื่อสารระหว่างมนุษย์กับ Ai V1.0** (`AJ4cLr7A4Rc`).
 - Newest publication appears at the upper-left.
 - Local thumbnail assets are stored under `assets/audio-covers/`.
 - Each audio item uses a large iPod-style device at the existing book footprint: a full 4:3 thumbnail screen above a click wheel, with duration at the upper-right of the lower control panel and a PLAY label below.
 - Audio titles no longer show the redundant `AUDIO BOOK` kicker.
 - Each item and the playlist button open YouTube in a new tab.
 - The Audio room uses a light premium technology-retail theme inspired by Apple Fifth Avenue's architectural materials: a luminous glass-cube mark, circular skylights, pale stone/off-white terrazzo surfaces, stainless-steel details, translucent dark navigation, and maple display tables. Apple Blue is reserved for interactive controls.
-- The Audio room now uses the project-owner supplied bright retail/listening-room interior photograph as a local 1440×806 EXIF-free RGB WebP wallpaper at `assets/audio-room/owner-supplied-retail-listening-room.webp`. Navigation, header, search/tools, disclosure controls, the full bookshelf wall, and shelf planks use Audio-scoped iOS-style Liquid Glass surfaces (30px room blur, 24px shelf blur); all 53 iPods remain foreground content. Public-safe provenance is recorded in `docs/reports/AUDIO_ROOM_IMAGE_ATTRIBUTION.md`.
-- Audio uses progressive disclosure to keep the initial page short: JavaScript starts with the newest 10 entries, loads 10 more per click, can reveal all 52, or can collapse back to 10. A lightweight year archive is generated from existing `time[datetime]` values (currently 2026 and 2025) without changing catalog schema. Search always checks all 53 entries and clearing a query resets the newest-10 view; No-JS users still receive all 52 server-rendered cards.
+- The Audio room now uses the project-owner supplied bright retail/listening-room interior photograph as a local 1440×806 EXIF-free RGB WebP wallpaper at `assets/audio-room/owner-supplied-retail-listening-room.webp`. Navigation, header, search/tools, disclosure controls, the full bookshelf wall, and shelf planks use Audio-scoped iOS-style Liquid Glass surfaces (30px room blur, 24px shelf blur); all 54 iPods remain foreground content. Public-safe provenance is recorded in `docs/reports/AUDIO_ROOM_IMAGE_ATTRIBUTION.md`.
+- Audio uses progressive disclosure to keep the initial page short: JavaScript starts with the newest 10 entries, loads 10 more per click, can reveal all 54, or can collapse back to 10. A lightweight year archive is generated from existing `time[datetime]` values (currently 2026 and 2025) without changing catalog schema. Search always checks all 54 entries and clearing a query resets the newest-10 view; No-JS users still receive all 54 server-rendered cards.
 - The Audio collection header is titled **The Audio Shelf** while the Reading collection is titled **Coffee and Books**.
 
 ### App collection
@@ -120,7 +120,7 @@ python scripts/build_gallery.py --check
 git diff --check
 ```
 
-Expected verified result at close: **113 tests passed**, all four generated pages current, and no diff-check errors.
+Expected verified result at close: **119 tests passed**, all four generated pages current, and no diff-check errors.
 
 ## Publication workflow
 
@@ -140,8 +140,15 @@ Expected verified result at close: **113 tests passed**, all four generated page
 
 ## Next recommended step
 
-After the approved Audio wallpaper push, verify `audio-library.html`, the new wallpaper hash/dimensions, Audio count 52, and production desktop/mobile Liquid Glass readability. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
+After the latest Audio Shelf update, verify `audio-library.html`, the new first-card cover/hash, Audio count 54, and production desktop/mobile Liquid Glass readability. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
 
+
+## Latest close checkpoint — 2026-09-02
+
+- Produced the approved Drive-audio podcast visual storyboard video **เมื่อ AI ทำงานแทนจนเงินไร้ค่า: Demand Collapse และโลกหลังทุนนิยม** as YouTube video ID `sKC0mlraNPo` on channel **manny calavara** (`@twitty-bz2wu`).
+- Source audio duration was about 11:40; the rendered MP4 is H.264 1920×1080 30fps `yuv420p` with AAC 48kHz audio, duration `700.666667` seconds, size `87,292,409` bytes, SHA-256 `2ea9086ea0e500c084f15b9d021f0c78fc625f560e9b8270f640167412b13b49`. Full decode passed; source/final silence scans were recorded in the private workflow folder.
+- The workflow generated 25 hand-drawn editorial business/storyboard scenes plus storyboard Markdown/JSON, contact sheet, custom 1280×720 Thai thumbnail, YouTube description, and final MP4. These private production artifacts were uploaded back to the same project Drive folder and read back with correct parent membership.
+- YouTube Studio read-back showed the video published with Unlisted visibility, Not made for kids, custom thumbnail, and exact link `https://youtu.be/sKC0mlraNPo`. Public/oEmbed read-back returned the exact title, author **manny calavara**, and thumbnail endpoints returned HTTP 200. A follow-up owner instruction added it locally to Audio Shelf as position 1 with `assets/audio-covers/sKC0mlraNPo.jpg`, duration 701 seconds, publish timestamp `2026-09-02T01:24:02+07:00`, and regenerated `audio-library.html` with 54 entries.
 
 ## Latest close checkpoint — 2026-09-01
 
