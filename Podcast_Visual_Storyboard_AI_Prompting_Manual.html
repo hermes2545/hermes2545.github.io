@@ -1,67 +1,300 @@
-<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Podcast Visual Storyboard & AI Image Prompting — Interactive Reference Manual</title><meta name="description" content="Interactive Reference Manual สำหรับทำ Podcast Visual Storyboard และ AI Image Prompting"><style>
-:root{--panel:#fffaf0;--ink:#111827;--line:#e5dfd2;--gold:#d7a84d;--accent:#3dd6c6;--code:#0f172a;--font:1}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at top left,#27415f 0,#111827 35%,#0b1020 100%);color:var(--ink);font-family:"Noto Sans Thai","Noto Sans",system-ui,sans-serif;font-size:calc(16px * var(--font));line-height:1.72;overflow-x:hidden}button,input{font:inherit}a{color:#0f766e}.shell{min-height:100vh;display:grid;grid-template-columns:310px 1fr}.sidebar{position:sticky;top:0;height:100vh;padding:24px;background:linear-gradient(180deg,rgba(15,23,42,.98),rgba(15,23,42,.88));color:#f8fafc;border-right:1px solid rgba(255,255,255,.12);overflow:auto}.brand{display:flex;gap:14px;align-items:center;margin-bottom:24px}.brand-mark{width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,var(--gold),#fff4c2);box-shadow:0 14px 34px rgba(215,168,77,.25)}.brand h1{font-size:1.02rem;line-height:1.25;margin:0}.brand p{margin:.25rem 0 0;color:#cbd5e1;font-size:.82rem}.nav-list{display:grid;gap:10px}.nav-item{width:100%;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.055);color:#e2e8f0;text-align:left;padding:12px 14px;display:grid;grid-template-columns:42px 1fr;gap:10px;align-items:center;cursor:pointer}.nav-item:hover,.nav-item:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.nav-item.active{background:linear-gradient(135deg,rgba(215,168,77,.28),rgba(61,214,198,.16));border-color:rgba(215,168,77,.55);color:#fff}.nav-kicker{font:700 .74rem "Noto Sans",sans-serif;color:#facc15;letter-spacing:.12em}.main{padding:24px 28px 64px;min-width:0}.topbar{position:sticky;top:16px;z-index:5;display:flex;gap:10px;align-items:center;justify-content:space-between;margin:0 auto 22px;max-width:1100px;padding:12px;border:1px solid rgba(255,255,255,.18);border-radius:22px;background:rgba(15,23,42,.76);backdrop-filter:blur(20px);box-shadow:0 24px 80px rgba(0,0,0,.24)}.topbar button,.search{border:1px solid rgba(255,255,255,.18);border-radius:14px;background:rgba(255,255,255,.09);color:#f8fafc;padding:10px 12px}.search{width:min(42vw,360px)}.content{max-width:1100px;margin:auto}.manual-hero{position:relative;overflow:hidden;border-radius:32px;padding:42px;margin-bottom:22px;color:#fff;background:linear-gradient(135deg,rgba(15,23,42,.94),rgba(24,41,68,.86)),linear-gradient(45deg,rgba(215,168,77,.3),transparent);border:1px solid rgba(255,255,255,.14);box-shadow:0 30px 100px rgba(0,0,0,.35)}.manual-hero:after{content:"";position:absolute;right:-80px;top:-80px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(215,168,77,.36),transparent 65%)}.manual-hero h2{font-size:clamp(2rem,5vw,4.5rem);line-height:1.02;margin:0 0 16px;letter-spacing:-.05em}.manual-hero p{max-width:740px;color:#dbeafe;font-size:1.05rem}.badge-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.badge{border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 12px;background:rgba(255,255,255,.08);color:#fde68a;font-size:.86rem}.page{display:none;background:var(--panel);border:1px solid var(--line);border-radius:28px;padding:clamp(22px,4vw,44px);box-shadow:0 22px 70px rgba(0,0,0,.18);margin-bottom:22px}.page.active{display:block}.page-eyebrow{color:#a16207;font:800 .78rem "Noto Sans",sans-serif;letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}h2{font-size:clamp(1.6rem,3vw,2.5rem);line-height:1.16;margin:.2rem 0 1rem;letter-spacing:-.035em}h3{font-size:1.24rem;margin:1.7rem 0 .5rem;color:#1e3a5f}p,li{color:#263141}blockquote{margin:1.2rem 0;padding:1rem 1.2rem;border-left:5px solid var(--gold);background:#fff4d6;border-radius:0 18px 18px 0}pre{position:relative;background:var(--code);color:#e2e8f0;border-radius:18px;padding:18px;overflow:auto;border:1px solid rgba(255,255,255,.08)}code{font-family:"Noto Sans Mono","Ubuntu Mono",monospace;font-size:.92em}:not(pre)>code{background:#ede4d4;border-radius:7px;padding:.08rem .35rem}.copy-btn{position:absolute;top:10px;right:10px;border:1px solid rgba(255,255,255,.2);border-radius:10px;background:rgba(255,255,255,.1);color:#fff;padding:6px 9px;cursor:pointer}table{width:100%;border-collapse:collapse;display:block;overflow:auto}th,td{border:1px solid #e6dcc8;padding:10px;vertical-align:top}th{background:#f4ead6}.search-results{position:absolute;right:12px;top:58px;width:min(520px,calc(100vw - 36px));background:#fffaf0;color:#111827;border:1px solid #e7d7b8;border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.28);padding:8px;display:none}.search-results.open{display:grid;gap:6px}.result{border:0;background:#fff;color:#111827;text-align:left;border-radius:12px;padding:10px;cursor:pointer}.result:hover{background:#f8edd7}body.dark{--panel:#111827;--ink:#f8fafc;--line:#334155;background:#050816}body.dark .page{background:#111827;color:#f8fafc}body.dark p,body.dark li{color:#dbe4ef}body.dark h3{color:#93c5fd}body.dark :not(pre)>code{background:#243044;color:#fde68a}body.dark blockquote{background:#1f2937}body.dark th{background:#1f2937}body.dark td,body.dark th{border-color:#334155}.overlay{display:none}@media (max-width:860px){.shell{display:block}.sidebar{position:fixed;left:0;top:0;transform:translateX(-105%);width:min(86vw,330px);z-index:20;transition:transform .2s ease}.sidebar.is-open{transform:none}.overlay.open{display:block;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:15}.main{padding:16px}.topbar{top:8px;flex-wrap:wrap}.search{width:100%;order:3}.manual-hero{padding:28px}}@media print{body{background:#fff;color:#000}.sidebar,.topbar,.overlay,.copy-btn{display:none!important}.shell{display:block}.main{padding:0}.manual-hero{box-shadow:none;color:#000;background:#fff;border:1px solid #ccc}.page{display:block!important;box-shadow:none;border:0;page-break-inside:avoid}}
-</style></head><body><div class="overlay" id="overlay"></div><div class="shell"><aside class="sidebar" id="sidebar"><div class="brand"><div class="brand-mark"></div><div><h1>Podcast Visual Storyboard</h1><p>Interactive Reference Manual</p></div></div><nav class="nav-list" aria-label="สารบัญ"><button class="nav-item" data-page="overview" type="button"><span class="nav-kicker">01</span><span>ภาพรวม</span></button>
-<button class="nav-item" data-page="mission" type="button"><span class="nav-kicker">02</span><span>ภารกิจและหลักคิด</span></button>
-<button class="nav-item" data-page="inputs" type="button"><span class="nav-kicker">03</span><span>ข้อมูลนำเข้าและค่าเริ่มต้น</span></button>
-<button class="nav-item" data-page="style-rules" type="button"><span class="nav-kicker">04</span><span>Negative prompt และการเลือกสไตล์</span></button>
-<button class="nav-item" data-page="styles-01-06" type="button"><span class="nav-kicker">05</span><span>ชุดสไตล์ 01–06</span></button>
-<button class="nav-item" data-page="styles-07-13" type="button"><span class="nav-kicker">06</span><span>ชุดสไตล์ 07–13</span></button>
-<button class="nav-item" data-page="styles-14-20" type="button"><span class="nav-kicker">07</span><span>ชุดสไตล์ 14–20</span></button>
-<button class="nav-item" data-page="styles-21-27" type="button"><span class="nav-kicker">08</span><span>ชุดสไตล์ 21–27</span></button>
-<button class="nav-item" data-page="schemas" type="button"><span class="nav-kicker">09</span><span>Output schema และ prompt template</span></button>
-<button class="nav-item" data-page="quality" type="button"><span class="nav-kicker">10</span><span>Quality checklist</span></button></nav></aside><main class="main"><div class="topbar"><button id="menuBtn" type="button" aria-expanded="false">☰ สารบัญ</button><div><button id="themeBtn" type="button">โหมดสี</button><button id="fontDown" type="button">A−</button><button id="fontUp" type="button">A+</button></div><input class="search" id="search" type="search" placeholder="ค้นหาในคู่มือ" aria-label="ค้นหาในคู่มือ"><div class="search-results" id="searchResults"></div></div><div class="content"><header class="manual-hero"><h2>Podcast Visual Storyboard<br>& AI Image Prompting</h2><p>คู่มือทำ storyboard จากบทพอดแคสต์ให้เป็นระบบภาพสำหรับ AI Agent ครอบคลุม style bible, shot list, prompts, motion direction และ quality checklist</p><div class="badge-row"><span class="badge">Mega Skill</span><span class="badge">AI Agent</span><span class="badge">Video Workflow</span><span class="badge">Prompt Engineering</span></div></header><section class="page" id="overview" data-title="ภาพรวม Overview">
-<div class="page-eyebrow">Overview</div>
-<h2>คู่มือทำ Podcast Visual Storyboard &amp; AI Image Prompting</h2>
-<p>คู่มือ Interactive Reference Manual สำหรับเปลี่ยนบทพอดแคสต์ บทบรรยาย หรือ transcript ให้กลายเป็นระบบภาพเล่าเรื่องที่ใช้งานจริงได้ ตั้งแต่การแยก story beats การออกแบบ visual metaphors การทำ shot list การเขียน AI image prompts ไปจนถึงการเตรียม sequence สำหรับตัดต่อวิดีโอ</p>
-<blockquote>
-<p>เป้าหมายหลัก: ทุกภาพต้องช่วยให้ผู้ชมเข้าใจสาระในเสียง ไม่ใช่แค่สร้างภาพสวยแบบสุ่ม</p>
-</blockquote>
-<h3>โครงสร้างงาน</h3>
-<pre><code class="language-text">Narration/transcript → story beats → visual metaphors → shot list → consistent image prompts → generated image sequence → video timeline
-</code></pre>
-<h2>Podcast Visual Storyboard &amp; AI Image Prompting</h2>
-<p>Use this skill when a user supplies a podcast script, narration, transcript, article, or audio transcript and asks for a visual storyboard, AI image prompts, explainer-video scenes, or a prompt package for another AI system.</p>
-</section>
-<section class="page" id="mission" data-title="ภารกิจและหลักคิด Mission">
-<div class="page-eyebrow">Mission</div>
-<h2>Mission</h2>
-<p>Turn narration into a coherent visual storytelling system:</p>
-<pre><code class="language-text">Narration/transcript → story beats → visual metaphors → shot list → consistent image prompts → generated image sequence → video timeline
-</code></pre>
-<p>Do not make random beautiful images. Every image must answer:</p>
+<!doctype html>
+<html lang="th" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Podcast Visual Storyboard &amp; AI Image Prompting — Interactive Reference Manual</title>
+<style>
+:root{--bg:#f5f7fb;--panel:#ffffff;--panel2:#f0f4f8;--text:#182230;--muted:#667085;--line:#d8e0ea;--accent:#2f6fed;--accent-soft:#eaf1ff;--good:#0b806b;--warn:#a15c00;--danger:#b42318;--shadow:0 14px 40px rgba(23,43,77,.10);--sidebar:300px;--topbar:64px;--font-scale:1;--radius:18px}
+html[data-theme="dark"]{--bg:#0f141b;--panel:#171d26;--panel2:#202833;--text:#eef3f8;--muted:#a8b3c2;--line:#2d3745;--accent:#7ca8ff;--accent-soft:#1e3153;--good:#55d0b1;--warn:#e7aa50;--danger:#ff8c86;--shadow:0 14px 40px rgba(0,0,0,.28)}
+*{box-sizing:border-box}html,body{height:100%;margin:0}body{font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text);overflow:hidden;font-size:calc(16px * var(--font-scale));line-height:1.66}
+button,input{font:inherit}button{color:inherit}svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.app{height:100dvh;min-height:0;display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr);grid-template-rows:var(--topbar) minmax(0,1fr);overflow:hidden}
+.topbar{grid-column:1/-1;display:flex;align-items:center;gap:12px;padding:0 18px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--panel) 93%,transparent);backdrop-filter:blur(14px);z-index:50}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}.brand-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#76b4ff);display:grid;place-items:center;color:#fff;font-weight:800;box-shadow:0 6px 16px rgba(47,111,237,.25)}.brand-text{min-width:0}.brand-title{font-size:.92rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:440px}.brand-sub{font-size:.72rem;color:var(--muted)}
+.toolbar{margin-left:auto;display:flex;align-items:center;gap:7px}.icon-btn,.small-btn{border:1px solid var(--line);background:var(--panel);border-radius:11px;min-width:40px;height:40px;padding:0 10px;display:grid;place-items:center;cursor:pointer}.icon-btn:hover,.small-btn:hover{background:var(--panel2)}.small-btn{font-weight:800;font-size:.82rem}
+.menu-btn{display:none}.search-wrap{position:relative;width:min(34vw,360px)}.search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);width:17px}.search{width:100%;height:40px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--text);padding:0 12px 0 37px;outline:none}.search:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
+.sidebar{grid-row:2;min-height:0;border-right:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;overflow:hidden;z-index:40}.side-head{padding:18px 16px 12px}.side-kicker{font-size:.72rem;letter-spacing:.11em;text-transform:uppercase;color:var(--accent);font-weight:800}.side-desc{font-size:.8rem;color:var(--muted);margin-top:5px}.nav{padding:6px 10px 20px;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable}.nav-item{width:100%;border:0;background:transparent;border-radius:11px;padding:9px 10px;display:flex;gap:10px;align-items:flex-start;text-align:left;cursor:pointer;color:var(--muted);font-size:.84rem;line-height:1.3;margin:2px 0}.nav-item:hover{background:var(--panel2);color:var(--text)}.nav-item.active{background:var(--accent-soft);color:var(--accent);font-weight:750}.nav-num{min-width:28px;font-variant-numeric:tabular-nums;font-size:.72rem;padding-top:2px;color:inherit}
+.main{grid-row:2;min-width:0;min-height:0;overflow:hidden;position:relative}.view{position:absolute;inset:0;display:none;min-width:0;min-height:0}.view.active{display:block}.view-scroll{height:100%;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;outline:none}.content-page{width:min(1120px,calc(100% - 48px));margin:0 auto;padding:42px 0 54px}.eyebrow{font-size:.73rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:800}.content-page>h1{font-size:clamp(1.8rem,3vw,3.15rem);line-height:1.1;letter-spacing:-.035em;margin:.45rem 0 .75rem}.chapter-rule{height:1px;background:linear-gradient(90deg,var(--accent),var(--line) 28%,transparent);margin-bottom:28px}
+.markdown-body{max-width:980px}.markdown-body h2{font-size:1.42rem;margin:2rem 0 .7rem;line-height:1.25}.markdown-body h3{font-size:1.12rem;margin:1.55rem 0 .55rem;color:var(--text)}.markdown-body p{margin:.65rem 0 1rem}.markdown-body ul,.markdown-body ol{padding-left:1.35rem}.markdown-body li{margin:.26rem 0}.markdown-body blockquote{margin:1rem 0;padding:12px 16px;border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;color:var(--text)}.markdown-body strong{font-weight:800}.markdown-body hr{border:0;border-top:1px solid var(--line);margin:2rem 0}
+.table-wrap{width:100%;overflow:auto;border:1px solid var(--line);border-radius:14px;margin:1rem 0 1.35rem;background:var(--panel)}table{border-collapse:collapse;width:100%;min-width:650px;font-size:.9rem}th,td{padding:11px 13px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th{position:sticky;top:0;background:var(--panel2);font-weight:800}tr:last-child td{border-bottom:0}
+.code-wrap{position:relative;margin:1rem 0 1.35rem}pre{margin:0;background:#111827;color:#e5edf8;border-radius:14px;padding:18px 18px 18px;overflow:auto;max-height:540px;border:1px solid #253044;line-height:1.55;tab-size:2}code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:.86em}:not(pre)>code{background:var(--panel2);padding:.14em .38em;border-radius:6px;color:var(--accent)}.copy-btn{position:absolute;top:9px;right:9px;z-index:2;border:1px solid #3d495a;background:#1c2532;color:#dce6f3;border-radius:9px;padding:5px 9px;font-size:.72rem;cursor:pointer}.copy-btn:hover{background:#2a3544}
+.chapter-footer{margin-top:38px;padding-top:20px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:.82rem}.prev-next{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:8px 12px;cursor:pointer}.prev-next:hover{background:var(--panel2)}
+.cover{display:flex;align-items:center;min-height:calc(100dvh - var(--topbar));padding:48px}.cover-inner{width:min(1100px,100%);margin:auto;display:grid;grid-template-columns:1.15fr .85fr;gap:34px;align-items:center}.cover-card{background:var(--panel);border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow);padding:clamp(28px,5vw,64px);position:relative;overflow:hidden}.cover-card:before{content:"";position:absolute;inset:0 auto 0 0;width:8px;background:linear-gradient(var(--accent),#69a7ff)}.cover-kicker{font-size:.75rem;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);font-weight:850}.cover-title{font-size:clamp(2.2rem,5vw,5rem);line-height:.95;letter-spacing:-.055em;margin:14px 0 18px;max-width:820px}.cover-desc{font-size:clamp(1rem,1.6vw,1.25rem);color:var(--muted);max-width:720px}.cover-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}.pill{padding:7px 10px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);font-size:.78rem}.start-btn{margin-top:26px;border:0;background:var(--accent);color:#fff;border-radius:12px;padding:11px 16px;font-weight:800;cursor:pointer}.cover-aside{display:grid;gap:12px}.stat-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}.stat-card b{display:block;font-size:1.6rem;line-height:1.1}.stat-card span{color:var(--muted);font-size:.84rem}
+.search-panel{position:fixed;top:60px;right:18px;width:min(480px,calc(100vw - 36px));max-height:65vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);z-index:80;padding:8px;display:none}.search-panel.open{display:block}.search-result{width:100%;border:0;background:transparent;border-radius:10px;padding:11px;text-align:left;cursor:pointer}.search-result:hover{background:var(--panel2)}.search-result b{display:block;font-size:.88rem}.search-result small{display:block;color:var(--muted);margin-top:3px}.no-result{padding:15px;color:var(--muted);font-size:.86rem}
+.overlay{display:none}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,16px);opacity:0;pointer-events:none;background:#111827;color:#fff;border-radius:999px;padding:8px 13px;font-size:.8rem;transition:.2s;z-index:100}.toast.show{opacity:1;transform:translate(-50%,0)}
+img{max-width:100%;height:auto;border-radius:14px;cursor:zoom-in}.lightbox{position:fixed;inset:0;background:rgba(5,10,16,.86);display:none;place-items:center;z-index:120;padding:24px}.lightbox.open{display:grid}.lightbox img{max-width:96vw;max-height:92vh;object-fit:contain;cursor:zoom-out}
+@media (max-width:980px){:root{--sidebar:280px}.app{grid-template-columns:1fr}.menu-btn{display:grid}.sidebar{position:fixed;top:var(--topbar);left:0;bottom:0;width:min(86vw,320px);transform:translateX(-102%);transition:.22s ease;box-shadow:var(--shadow);border-right:1px solid var(--line)}.sidebar.open{transform:translateX(0)}.overlay{position:fixed;inset:var(--topbar) 0 0 0;background:rgba(3,10,18,.42);z-index:35;display:none}.overlay.open{display:block}.main{grid-column:1}.search-wrap{width:min(42vw,330px)}.brand-sub{display:none}.cover{padding:28px}.cover-inner{grid-template-columns:1fr}.cover-aside{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:640px){:root{--topbar:58px}.topbar{padding:0 10px;gap:7px}.brand-title{max-width:145px;font-size:.8rem}.brand-mark{width:32px;height:32px}.toolbar{gap:5px}.search-wrap{position:fixed;left:10px;right:10px;top:64px;width:auto;z-index:70;display:none}.search-wrap.mobile-open{display:block}.desktop-search{display:none}.mobile-search-btn{display:grid}.icon-btn,.small-btn{min-width:36px;height:36px;padding:0 8px}.content-page{width:min(100% - 28px,1120px);padding:28px 0 46px}.content-page>h1{font-size:1.85rem}.markdown-body h2{font-size:1.28rem}table{min-width:620px}pre{max-height:480px;padding:16px 14px;font-size:.84rem}.cover{padding:18px}.cover-inner{gap:16px}.cover-card{padding:28px 22px;border-radius:20px}.cover-title{font-size:2.55rem}.cover-aside{grid-template-columns:1fr 1fr 1fr;gap:8px}.stat-card{padding:13px}.stat-card b{font-size:1.25rem}.stat-card span{font-size:.72rem}.chapter-footer{gap:8px}.prev-next{padding:7px 9px}}
+@media (min-width:641px){.mobile-search-btn{display:none}}
+@media print{body{overflow:visible;background:white;color:black}.app{display:block;height:auto}.topbar,.sidebar,.overlay,.chapter-footer,.copy-btn,.search-panel{display:none!important}.main{overflow:visible}.view{display:block!important;position:static;page-break-after:always}.view-scroll{height:auto;overflow:visible}.content-page{width:100%;padding:20px}pre{white-space:pre-wrap;max-height:none}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="topbar">
+    <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="Open menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <div class="brand"><div class="brand-mark">PV</div><div class="brand-text"><div class="brand-title">Podcast Visual Storyboard</div><div class="brand-sub">Interactive Reference Manual v2.0</div></div></div>
+    <div class="toolbar">
+      <div class="search-wrap" id="searchWrap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><input class="search" id="searchInput" autocomplete="off" placeholder="Search this manual…" aria-label="Search manual"></div>
+      <button class="icon-btn mobile-search-btn" id="mobileSearchBtn" type="button" aria-label="Search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg></button>
+      <button class="small-btn" id="fontDown" type="button" aria-label="Decrease font size">A−</button>
+      <button class="small-btn" id="fontUp" type="button" aria-label="Increase font size">A+</button>
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="Toggle dark or light mode"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></button>
+    </div>
+  </header>
+  <aside class="sidebar" id="sidebar">
+    <div class="side-head"><div class="side-kicker">Reference Manual</div><div class="side-desc">เลือกหัวข้อเพื่อเปิดเป็นหน้าแยก ไม่ต้องเลื่อนยาวทั้งเอกสาร</div></div>
+    <nav class="nav" id="nav">
+      <button class="nav-item active" data-target="cover" type="button"><span class="nav-num">00</span><span>Overview</span></button>
+      <button class="nav-item" data-target="section-1" type="button"><span class="nav-num">01</span><span>1. Purpose and Mission</span></button>
+<button class="nav-item" data-target="section-2" type="button"><span class="nav-num">02</span><span>2. When to Use</span></button>
+<button class="nav-item" data-target="section-3" type="button"><span class="nav-num">03</span><span>3. Core Principle</span></button>
+<button class="nav-item" data-target="section-4" type="button"><span class="nav-num">04</span><span>4. Required Inputs and Defaults</span></button>
+<button class="nav-item" data-target="section-5" type="button"><span class="nav-num">05</span><span>5. Style System</span></button>
+<button class="nav-item" data-target="section-6" type="button"><span class="nav-num">06</span><span>6. Numbered Preset Style Library</span></button>
+<button class="nav-item" data-target="section-7" type="button"><span class="nav-num">07</span><span>7. Workflow Overview</span></button>
+<button class="nav-item" data-target="section-8" type="button"><span class="nav-num">08</span><span>8. Step-by-Step Procedure</span></button>
+<button class="nav-item" data-target="section-9" type="button"><span class="nav-num">09</span><span>9. Consistency System</span></button>
+<button class="nav-item" data-target="section-10" type="button"><span class="nav-num">10</span><span>10. Text and Numbers Policy</span></button>
+<button class="nav-item" data-target="section-11" type="button"><span class="nav-num">11</span><span>11. Motion Direction</span></button>
+<button class="nav-item" data-target="section-12" type="button"><span class="nav-num">12</span><span>12. Batch Generation Procedure</span></button>
+<button class="nav-item" data-target="section-13" type="button"><span class="nav-num">13</span><span>13. Quality Control Checklist</span></button>
+<button class="nav-item" data-target="section-14" type="button"><span class="nav-num">14</span><span>14. Output Format</span></button>
+<button class="nav-item" data-target="section-15" type="button"><span class="nav-num">15</span><span>15. Master Prompt to Give Another AI</span></button>
+<button class="nav-item" data-target="section-16" type="button"><span class="nav-num">16</span><span>16. Short Prompt Version</span></button>
+<button class="nav-item" data-target="section-17" type="button"><span class="nav-num">17</span><span>17. Example: Business Explainer Beat</span></button>
+<button class="nav-item" data-target="section-18" type="button"><span class="nav-num">18</span><span>18. Example Style Replacement</span></button>
+<button class="nav-item" data-target="section-19" type="button"><span class="nav-num">19</span><span>19. Common Pitfalls</span></button>
+<button class="nav-item" data-target="section-20" type="button"><span class="nav-num">20</span><span>20. Final Verification Checklist</span></button>
+<button class="nav-item" data-target="section-21" type="button"><span class="nav-num">21</span><span>21. Recommended Production Pipeline</span></button>
+<button class="nav-item" data-target="section-22" type="button"><span class="nav-num">22</span><span>22. One-Line Summary</span></button>
+    </nav>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+  <main class="main" id="main">
+    <section class="view active" id="cover" data-title="Overview">
+      <div class="view-scroll"><div class="cover"><div class="cover-inner">
+        <div class="cover-card">
+          <div class="cover-kicker">Interactive Reference Manual · v2.0.0</div>
+          <div class="cover-title">Podcast Visual Storyboard<br>& AI Image Prompting</div>
+          <div class="cover-desc">A practical system for turning narration into story beats, visual metaphors, consistent AI image prompts, motion directions, and production-ready storyboard packages.</div>
+          <div class="cover-meta"><span class="pill">27 style presets</span><span class="pill">Storyboard + JSON</span><span class="pill">16:9 default</span><span class="pill">6–10 sec / beat</span></div>
+          <button class="start-btn" type="button" data-target="section-1">Open the manual →</button>
+        </div>
+        <div class="cover-aside">
+          <div class="stat-card"><b>27</b><span>Numbered visual styles</span></div>
+          <div class="stat-card"><b>22</b><span>Manual chapters</span></div>
+          <div class="stat-card"><b>3</b><span>Final outputs: strategy, table, JSON</span></div>
+        </div>
+      </div></div></div>
+    </section>
+    <section class="view" id="section-1" data-title="1. Purpose and Mission">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 01</div>
+      <h1>1. Purpose and Mission</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><p>Use this skill when you want an AI system to turn a podcast script, narration, transcript, essay, documentary script, educational script, or business explainer into a sequence of image-generation prompts.</p>
+<p>The goal is not to create random beautiful images. The goal is to create a <strong>visual storytelling system</strong>:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-text">Narration/transcript → story beats → visual metaphors → shot list → consistent image prompts → generated image sequence → video timeline
+</code></pre></div>
+<p>Every image must answer one question:</p>
 <blockquote>
 <p>What idea in the narration does this visual help the viewer understand?</p>
 </blockquote>
+<p>The default visual direction is a hand-drawn editorial illustration look: calm, intelligent, documentary-like, muted colors, clean ink outlines, one idea per image. The style is a <strong>configurable parameter</strong> — the user may keep the default, pick another numbered preset, combine presets, or supply a fully custom style bible. The workflow never changes when the style changes.</p>
+<hr />
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>1 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
 </section>
-<section class="page" id="inputs" data-title="ข้อมูลนำเข้าและค่าเริ่มต้น Inputs">
-<div class="page-eyebrow">Inputs</div>
-<h2>Inputs and defaults</h2>
-<p>Required or inferred:</p>
+<section class="view" id="section-2" data-title="2. When to Use">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 02</div>
+      <h1>2. When to Use</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><p>Use this skill when the user wants to:</p>
 <ul>
-<li>Narration, script, transcript, or article text.</li>
-<li>Target duration if known.</li>
-<li>Image frequency; default one image every 6–10 seconds.</li>
-<li>Audience and topic domain if inferable.</li>
-<li>Visual style; default to Style 01 unless the user selects another preset or supplies a custom style.</li>
-<li>Aspect ratio; default 16:9 for YouTube-style video.</li>
-<li>Character/location continuity needs.</li>
-<li>Text overlay policy; default avoid important generated text and add overlays later.</li>
+<li>Generate images for a podcast video.</li>
+<li>Create a YouTube explainer video with voiceover and visuals.</li>
+<li>Convert a narration script or transcript into visual scenes.</li>
+<li>Create a consistent set of AI image prompts.</li>
+<li>Build a storyboard for business, economics, history, science, biography, politics, technology, or educational content.</li>
+<li>Produce still images that can later be animated with pan, zoom, parallax, or simple transitions.</li>
+<li>Give another AI system clear instructions for producing a full visual package.</li>
 </ul>
+<p>Do <strong>not</strong> use this skill when the user only wants:</p>
+<ul>
+<li>A single thumbnail image.</li>
+<li>A logo.</li>
+<li>A cinematic video prompt only.</li>
+<li>A fully animated scene without first creating a storyboard.</li>
+<li>Random decorative background images unrelated to the narration.</li>
+</ul>
+<hr />
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>2 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
 </section>
-<section class="page" id="style-rules" data-title="Negative prompt และการเลือกสไตล์ Style rules">
-<div class="page-eyebrow">Style rules</div>
-<h2>Default negative prompt</h2>
-<p>Use or adapt this negative prompt unless the selected production tool requires another format:</p>
-<pre><code class="language-text">photorealistic, 3D render, anime, childish cartoon, glossy, plastic, hyperreal, oversaturated colors, chaotic composition, unreadable text, misspelled text, fake letters, real brand logos, watermark, stock photo, cinematic action movie, distorted hands, extra fingers, deformed faces
-</code></pre>
-<h2>Style selection rule</h2>
+<section class="view" id="section-3" data-title="3. Core Principle">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 03</div>
+      <h1>3. Core Principle</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><p>A good visual is not merely attractive. It performs one of these functions:</p>
+<ol>
+<li><strong>Shows the concrete object</strong> being discussed.</li>
+<li><strong>Simplifies an abstract concept</strong> into a metaphor.</li>
+<li><strong>Creates emotional context</strong> for the listener.</li>
+<li><strong>Clarifies numbers, relationships, or tradeoffs.</strong></li>
+<li><strong>Gives the audience a memory hook</strong> for a key point.</li>
+</ol>
+<p>Bad visual direction:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-text">Make a beautiful image about trucking economics.
+</code></pre></div>
+<p>Good visual direction:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-text">Show a tired owner-operator sitting in a truck cab at night, looking at a clock and an unpaid detention invoice, while a warehouse loading dock glows outside the windshield. The image should communicate that waiting time destroys paid driving capacity.
+</code></pre></div>
+<hr />
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>3 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
+</section>
+<section class="view" id="section-4" data-title="4. Required Inputs and Defaults">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 04</div>
+      <h1>4. Required Inputs and Defaults</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><p>Collect these inputs from the user or infer them from the task:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+  <th>Input</th>
+  <th style="text-align:right">Required?</th>
+  <th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Narration / script / transcript</td>
+  <td style="text-align:right">Yes</td>
+  <td>Full podcast script, article, transcript, or outline.</td>
+</tr>
+<tr>
+  <td>Target duration</td>
+  <td style="text-align:right">Recommended</td>
+  <td>Example: 5 min, 10 min, 30 min.</td>
+</tr>
+<tr>
+  <td>Image frequency</td>
+  <td style="text-align:right">Recommended</td>
+  <td>Default: one image every 6–10 seconds.</td>
+</tr>
+<tr>
+  <td>Audience</td>
+  <td style="text-align:right">Recommended</td>
+  <td>General public, executives, children, technical audience, etc.</td>
+</tr>
+<tr>
+  <td>Topic domain</td>
+  <td style="text-align:right">Recommended</td>
+  <td>Business, history, science, health, AI, politics, etc.</td>
+</tr>
+<tr>
+  <td>Visual style</td>
+  <td style="text-align:right">Optional</td>
+  <td>Default to preset 01 unless another preset or custom style is given.</td>
+</tr>
+<tr>
+  <td>Aspect ratio</td>
+  <td style="text-align:right">Optional</td>
+  <td>Default: 16:9 for YouTube.</td>
+</tr>
+<tr>
+  <td>Character continuity</td>
+  <td style="text-align:right">Optional</td>
+  <td>Needed if recurring people appear.</td>
+</tr>
+<tr>
+  <td>Text overlay policy</td>
+  <td style="text-align:right">Optional</td>
+  <td>Default: avoid AI-rendered text; add text later in editing.</td>
+</tr>
+</tbody>
+</table></div>
+<p>If inputs are missing, proceed with these defaults:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-yaml">target_duration: infer from script length
+image_frequency: one image every 6-10 seconds
+aspect_ratio: 16:9
+style: &quot;01. Default 2D Hand-Drawn Editorial Explainer&quot;
+motion: slow pan, slow zoom, subtle parallax
+text_policy: avoid important text inside generated images
+</code></pre></div>
+<hr />
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>4 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
+</section>
+<section class="view" id="section-5" data-title="5. Style System">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 05</div>
+      <h1>5. Style System</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><h3>5.1 Style Selection Rule</h3>
 <p>The visual style is configurable. Select one of the numbered presets below, combine presets when useful, or create a custom style bible if the user asks for a direction not covered by the presets.</p>
-<p>When recommending styles, refer to styles by their stable number and name. Choose based on topic, audience, emotional arc, and desired channel identity.</p>
-<h2>Numbered preset style library</h2>
+<p>When recommending styles, refer to styles by their <strong>stable number and name</strong>. Choose based on topic, audience, emotional arc, and desired channel identity. Once chosen, the same style bible is copied into <strong>every</strong> image prompt in the sequence.</p>
+<h3>5.2 Style Slots (for custom styles)</h3>
+<p>If the user requests a style not in the library, fill this structure and use it as the style bible:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-yaml">STYLE_NAME: &quot;...&quot;
+MEDIUM: &quot;...&quot;
+LINEWORK: &quot;...&quot;
+COLOR: &quot;...&quot;
+TEXTURE: &quot;...&quot;
+MOOD: &quot;...&quot;
+COMPOSITION: &quot;clear focal point, uncluttered, 16:9&quot;
+EXCLUSIONS: &quot;no photorealism, no 3D render, no anime, no logos&quot;
+</code></pre></div>
+<h3>5.3 Default Visual Traits (preset 01)</h3>
+<ul>
+<li><strong>Format:</strong> horizontal 16:9 frame.</li>
+<li><strong>Mood:</strong> calm, analytical, documentary, reflective.</li>
+<li><strong>Linework:</strong> clean black or dark gray ink lines.</li>
+<li><strong>Color palette:</strong> muted cream, dusty blue, soft gray, warm brown, pale green, light ochre.</li>
+<li><strong>Texture:</strong> soft paper grain, watercolor wash, subtle hand-drawn imperfections.</li>
+<li><strong>Lighting:</strong> soft and natural, not dramatic unless the scene requires tension.</li>
+<li><strong>Composition:</strong> one clear focal point per frame.</li>
+<li><strong>Characters:</strong> simplified but adult and realistic; not cartoonish or childish.</li>
+<li><strong>Objects:</strong> desks, papers, maps, screens, clocks, invoices, tools, vehicles, rooms, charts.</li>
+<li><strong>Typography:</strong> avoid text inside AI images; use blank papers, generic labels, or overlays later.</li>
+</ul>
+<h3>5.4 Default Negative Prompt</h3>
+<p>Use or adapt this negative prompt unless the selected production tool requires another format:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-text">photorealistic, 3D render, anime, childish cartoon, glossy, plastic, hyperreal, oversaturated colors, chaotic composition, unreadable text, misspelled text, fake letters, real brand logos, watermark, stock photo, cinematic action movie, distorted hands, extra fingers, deformed faces
+</code></pre></div>
+<hr />
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>5 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
 </section>
-<section class="page" id="styles-01-06" data-title="ชุดสไตล์ 01–06 Styles 01–06">
-<div class="page-eyebrow">Styles 01–06</div>
-<h3>01. Default 2D Hand-Drawn Editorial Explainer</h3>
+<section class="view" id="section-6" data-title="6. Numbered Preset Style Library">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 06</div>
+      <h1>6. Numbered Preset Style Library</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><h3>01. Default 2D Hand-Drawn Editorial Explainer</h3>
 <p>Best for: general narrated explainers, business stories, policy, everyday systems.
 Visual traits: clean ink outlines, muted pastel watercolor shading, soft paper texture, realistic but simplified people and objects.
 Avoid: photorealism, 3D render, anime, brand logos, clutter.
@@ -91,9 +324,6 @@ Style bible: Vintage engraving and newspaper editorial style, etched linework, a
 Visual traits: isometric buildings/objects, network paths, tidy spatial systems.
 Avoid: dense labels, tiny arrows that cannot be read, game-like 3D gloss.
 Style bible: Isometric infographic illustration, clean angled perspective, simplified buildings, vehicles, routes and system nodes, muted professional palette, precise but uncluttered layout, no readable tiny labels, no brand logos, 16:9.</p>
-</section>
-<section class="page" id="styles-07-13" data-title="ชุดสไตล์ 07–13 Styles 07–13">
-<div class="page-eyebrow">Styles 07–13</div>
 <h3>07. Minimal Documentary Sketch</h3>
 <p>Best for: essays, philosophy, psychology, social commentary.
 Visual traits: sparse pencil/ink linework, large negative space, symbolic everyday objects.
@@ -129,9 +359,6 @@ Style bible: Blueprint systems visualization, dark navy background, fine cyan an
 Visual traits: layered cut-paper foreground/background, warm handcrafted shadows, theatrical staging.
 Avoid: childish fairy-tale tone unless requested, excessive decorative flourishes.
 Style bible: Layered paper theater illustration, cut-paper foreground and background, handcrafted shadows, warm muted colors, storybook documentary tone, cinematic stage composition, gentle depth, no childish cartoon, 16:9.</p>
-</section>
-<section class="page" id="styles-14-20" data-title="ชุดสไตล์ 14–20 Styles 14–20">
-<div class="page-eyebrow">Styles 14–20</div>
 <h3>14. Noir Investigative Sketch</h3>
 <p>Best for: crime, grey-market business, corruption, mystery, crisis.
 Visual traits: black-and-white ink, strong shadows, desk lamps, rain-streaked windows, documents as abstract forms.
@@ -167,9 +394,6 @@ Style bible: Retro public information film illustration, mid-century educational
 Visual traits: cross-section buildings or systems, layered rooms, pathways, small simplified figures.
 Avoid: tiny labels, overly busy dollhouse scenes.
 Style bible: Architectural cutaway explainer illustration, building or system shown in cross-section, small simplified human figures, layered rooms and pathways, clean editorial detail, muted colors, no labels, 16:9.</p>
-</section>
-<section class="page" id="styles-21-27" data-title="ชุดสไตล์ 21–27 Styles 21–27">
-<div class="page-eyebrow">Styles 21–27</div>
 <h3>21. Symbolic Surreal Editorial</h3>
 <p>Best for: philosophy, psychology, economics, hidden incentives, paradoxes.
 Visual traits: realistic simplified objects in impossible but calm scenes, metaphor-first composition.
@@ -205,13 +429,237 @@ Style bible: High-contrast editorial poster style, bold simplified shapes, limit
 Visual traits: refined magazine-like editorial scenes, charcoal/ivory/brass/deep green palette, premium lighting.
 Avoid: luxury brand logos, stock-photo boardroom clichés, excessive gloss.
 Style bible: Quiet luxury business documentary illustration, elegant editorial composition, refined muted palette of charcoal, ivory, brass and deep green, soft premium lighting, simplified realistic people and office objects, calm analytical mood, no logos, 16:9.</p>
+<hr />
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>6 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
 </section>
-<section class="page" id="schemas" data-title="Output schema และ prompt template Schemas">
-<div class="page-eyebrow">Schemas</div>
-<h2>Shot-list schema</h2>
-<h2>Output schema</h2>
-<p>Each storyboard scene should include:</p>
-<pre><code class="language-json">{
+<section class="view" id="section-7" data-title="7. Workflow Overview">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 07</div>
+      <h1>7. Workflow Overview</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><p>Follow this workflow every time:</p>
+<ol>
+<li>Read the full narration.</li>
+<li>Identify the topic, thesis, and emotional arc.</li>
+<li>Select the style preset (or custom style bible).</li>
+<li>Split the narration into beats every 6–10 seconds.</li>
+<li>Summarize each beat in one sentence.</li>
+<li>Choose a visual metaphor for each beat.</li>
+<li>Decide scene type: object close-up, character shot, environment shot, chart/diagram shot, transition shot.</li>
+<li>Write one image prompt per beat using the selected style bible.</li>
+<li>Add motion direction for video editing.</li>
+<li>Add text overlay separately if needed.</li>
+<li>Verify consistency across the whole sequence.</li>
+</ol>
+<hr />
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>7 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
+</section>
+<section class="view" id="section-8" data-title="8. Step-by-Step Procedure">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 08</div>
+      <h1>8. Step-by-Step Procedure</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><h3>Step 1: Analyze the Narration</h3>
+<p>Extract:</p>
+<ul>
+<li>Topic.</li>
+<li>Main thesis.</li>
+<li>Key characters or institutions.</li>
+<li>Repeated objects or motifs.</li>
+<li>Core conflict.</li>
+<li>Emotional tone.</li>
+<li>Important numbers.</li>
+<li>Places and time periods.</li>
+</ul>
+<p>Output:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-yaml">topic: &quot;...&quot;
+thesis: &quot;...&quot;
+main_characters: []
+institutions: []
+recurring_motifs: []
+key_numbers: []
+emotional_arc: &quot;...&quot;
+</code></pre></div>
+<p>Completion criterion: the AI can explain the video in 3–5 sentences before generating any image prompts.</p>
+<hr />
+<h3>Step 2: Select the Style</h3>
+<p>Recommend 2–3 numbered presets that fit the topic, audience, and emotional arc, then lock one:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-yaml">selected_style: &quot;01. Default 2D Hand-Drawn Editorial Explainer&quot;
+style_bible: &quot;...&quot;
+negative_prompt: &quot;...&quot;
+</code></pre></div>
+<p>If the user supplies a custom direction, fill the Style Slots in §5.2 instead. The rest of the workflow is unchanged.</p>
+<p>Completion criterion: exactly one style bible string is locked and will be copied into every prompt.</p>
+<hr />
+<h3>Step 3: Segment into Story Beats</h3>
+<p>Create one beat every 6–10 seconds by default.</p>
+<p>Rules:</p>
+<ul>
+<li>One beat = one visual idea.</li>
+<li>Do not create a new image for every sentence.</li>
+<li>Combine sentences when they express the same idea.</li>
+<li>Split when the narration introduces a new object, number, actor, location, or emotional turn.</li>
+</ul>
+<p>Recommended density:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+  <th style="text-align:right">Video length</th>
+  <th style="text-align:right">Typical images</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="text-align:right">3 minutes</td>
+  <td style="text-align:right">20–35 images</td>
+</tr>
+<tr>
+  <td style="text-align:right">5 minutes</td>
+  <td style="text-align:right">35–60 images</td>
+</tr>
+<tr>
+  <td style="text-align:right">10 minutes</td>
+  <td style="text-align:right">70–120 images</td>
+</tr>
+<tr>
+  <td style="text-align:right">20 minutes</td>
+  <td style="text-align:right">120–220 images</td>
+</tr>
+<tr>
+  <td style="text-align:right">30 minutes</td>
+  <td style="text-align:right">180–320 images</td>
+</tr>
+</tbody>
+</table></div>
+<p>Output fields:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-yaml">beat_id: 001
+timestamp_start: &quot;00:00&quot;
+timestamp_end: &quot;00:08&quot;
+narration_excerpt: &quot;...&quot;
+beat_summary: &quot;...&quot;
+</code></pre></div>
+<p>Completion criterion: every part of the narration belongs to exactly one beat.</p>
+<hr />
+<h3>Step 4: Choose a Visual Function</h3>
+<p>For each beat, choose one visual function:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+  <th>Function</th>
+  <th>Use When</th>
+  <th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Concrete depiction</td>
+  <td>The narration mentions a physical thing</td>
+  <td>truck, chair, document, phone</td>
+</tr>
+<tr>
+  <td>Visual metaphor</td>
+  <td>The concept is abstract</td>
+  <td>money leaking from a pipe</td>
+</tr>
+<tr>
+  <td>Process diagram</td>
+  <td>The narration explains a flow</td>
+  <td>shipper → broker → driver</td>
+</tr>
+<tr>
+  <td>Emotional scene</td>
+  <td>The beat is about stress, risk, unfairness</td>
+  <td>person waiting under a clock</td>
+</tr>
+<tr>
+  <td>Number visualization</td>
+  <td>The beat contains statistics</td>
+  <td>stack of coins, bars, gauges</td>
+</tr>
+<tr>
+  <td>Contrast shot</td>
+  <td>The beat compares two sides</td>
+  <td>broker office vs driver cab</td>
+</tr>
+<tr>
+  <td>Establishing shot</td>
+  <td>New location or chapter</td>
+  <td>warehouse, city, office</td>
+</tr>
+<tr>
+  <td>Transition shot</td>
+  <td>Bridge between sections</td>
+  <td>road at dusk, papers sliding</td>
+</tr>
+</tbody>
+</table></div>
+<p>Completion criterion: each beat has a clear visual function, not just a generic topic label.</p>
+<hr />
+<h3>Step 5: Create Visual Metaphors</h3>
+<p>For abstract concepts, use objects.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+  <th>Abstract idea</th>
+  <th>Visual metaphor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Hidden cost</td>
+  <td>invoice partly under a desk shadow</td>
+</tr>
+<tr>
+  <td>Waiting time</td>
+  <td>large wall clock over parked vehicle</td>
+</tr>
+<tr>
+  <td>Middleman spread</td>
+  <td>money split across two hands</td>
+</tr>
+<tr>
+  <td>Legal constraint</td>
+  <td>two overlapping clocks or gauges</td>
+</tr>
+<tr>
+  <td>Fragile profit margin</td>
+  <td>thin coin balancing on a ruler</td>
+</tr>
+<tr>
+  <td>Scale advantage</td>
+  <td>many routes converging into one hub</td>
+</tr>
+<tr>
+  <td>Unpaid labor</td>
+  <td>blank paycheck next to work gloves</td>
+</tr>
+<tr>
+  <td>Opportunity cost</td>
+  <td>road fading into a locked gate</td>
+</tr>
+<tr>
+  <td>Complexity</td>
+  <td>desk covered with forms and wires</td>
+</tr>
+<tr>
+  <td>Risk</td>
+  <td>storm cloud over a small business ledger</td>
+</tr>
+</tbody>
+</table></div>
+<p>Completion criterion: every abstract beat has a concrete imageable metaphor.</p>
+<hr />
+<h3>Step 6: Build the Shot List</h3>
+<p>For each beat, create a shot list entry with these fields:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-json">{
   &quot;scene_id&quot;: &quot;001&quot;,
   &quot;timestamp_start&quot;: &quot;00:00&quot;,
   &quot;timestamp_end&quot;: &quot;00:08&quot;,
@@ -226,9 +674,12 @@ Style bible: Quiet luxury business documentary illustration, elegant editorial c
   &quot;text_overlay&quot;: &quot;...&quot;,
   &quot;continuity_notes&quot;: &quot;...&quot;
 }
-</code></pre>
-<h2>Master prompt pattern</h2><p>Use this section as the reusable master prompt pattern for another AI system before filling the detailed scene template.</p><h2>Image prompt template</h2>
-<pre><code class="language-text">[SELECTED_STYLE_BIBLE]
+</code></pre></div>
+<p>Completion criterion: the shot list can be handed to an image model operator without further explanation.</p>
+<hr />
+<h3>Step 7: Write Image Prompts</h3>
+<p>Use this image prompt template:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-text">[SELECTED_STYLE_BIBLE]
 
 Scene: [specific location]
 Subject: [main object/person]
@@ -239,23 +690,602 @@ Mood: [calm / tense / analytical / reflective / urgent]
 Lighting: [soft office light / dusk / morning / warehouse fluorescent]
 Continuity: [same character/object/location notes]
 Constraints: no real logos, no important readable text, leave space for overlays, 16:9.
-</code></pre>
-</section>
-<section class="page" id="quality" data-title="Quality checklist Quality">
-<div class="page-eyebrow">Quality</div>
-<h2>Quality checklist</h2>
-<p>Before delivering a storyboard or prompt package, verify:</p>
+</code></pre></div>
+<p>Rules:</p>
 <ul>
-<li>The full narration is covered.</li>
-<li>Each scene maps to a specific beat and one core idea.</li>
-<li>Each prompt uses the selected numbered style bible or a clearly stated custom style bible.</li>
-<li>Exact text/numbers are separated into <code>text_overlay</code> where possible.</li>
-<li>Recurring characters, props, locations, and palette are consistent.</li>
-<li>No prompt asks for broken/unreadable text, real logos, watermarks, or copyrighted characters by default.</li>
-<li>Each image can be understood in 2–3 seconds.</li>
-<li>Motion suggestions are included.</li>
-<li>The result can be handed directly to an image-generation/editorial workflow.</li>
+<li>Be concrete. Name the objects in the frame.</li>
+<li>Avoid vague words like &quot;interesting&quot;, &quot;beautiful&quot;, or &quot;professional&quot; unless paired with specifics.</li>
+<li>Include camera composition.</li>
+<li>Include props that carry the meaning.</li>
+<li>Keep one focal idea per image.</li>
+<li>Avoid important text inside the image.</li>
+<li>Do not ask the image model to generate accurate charts or tiny labels. Add those later.</li>
 </ul>
-</section></div></main></div><script>
-const pages=[...document.querySelectorAll('.page')];const nav=[...document.querySelectorAll('.nav-item')];const sidebar=document.getElementById('sidebar');const overlay=document.getElementById('overlay');const search=document.getElementById('search');const results=document.getElementById('searchResults');function showPage(id,push=true){const page=document.getElementById(id)||pages[0];pages.forEach(p=>p.classList.toggle('active',p===page));nav.forEach(b=>b.classList.toggle('active',b.dataset.page===page.id));if(push)history.replaceState(null,'','#'+page.id);closeMenu();window.scrollTo(0,0)}function openMenu(){sidebar.classList.add('is-open');overlay.classList.add('open');document.getElementById('menuBtn').setAttribute('aria-expanded','true')}function closeMenu(){sidebar.classList.remove('is-open');overlay.classList.remove('open');document.getElementById('menuBtn').setAttribute('aria-expanded','false')}nav.forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));document.getElementById('menuBtn').addEventListener('click',()=>sidebar.classList.contains('is-open')?closeMenu():openMenu());overlay.addEventListener('click',closeMenu);document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMenu();results.classList.remove('open')}});document.getElementById('themeBtn').addEventListener('click',()=>{document.body.classList.toggle('dark');localStorage.setItem('podcastStoryboardTheme',document.body.classList.contains('dark')?'dark':'light')});if(localStorage.getItem('podcastStoryboardTheme')==='dark')document.body.classList.add('dark');let scale=Number(localStorage.getItem('podcastStoryboardFont')||1);function setScale(v){scale=Math.min(1.25,Math.max(.9,v));document.documentElement.style.setProperty('--font',scale);localStorage.setItem('podcastStoryboardFont',scale)}setScale(scale);document.getElementById('fontUp').addEventListener('click',()=>setScale(scale+.05));document.getElementById('fontDown').addEventListener('click',()=>setScale(scale-.05));document.querySelectorAll('pre').forEach(pre=>{const btn=document.createElement('button');btn.className='copy-btn';btn.type='button';btn.textContent='Copy';btn.addEventListener('click',async()=>{await navigator.clipboard.writeText(pre.innerText.replace(/^Copy\n/,''));btn.textContent='Copied';setTimeout(()=>btn.textContent='Copy',900)});pre.appendChild(btn)});search.addEventListener('input',()=>{const q=search.value.trim().toLowerCase();results.innerHTML='';if(!q){results.classList.remove('open');return}pages.map(p=>({id:p.id,title:p.dataset.title,text:p.innerText})).filter(p=>(p.title+' '+p.text).toLowerCase().includes(q)).slice(0,8).forEach(p=>{const b=document.createElement('button');b.className='result';b.type='button';b.textContent=p.title;b.addEventListener('click',()=>{showPage(p.id);search.value='';results.classList.remove('open')});results.appendChild(b)});results.classList.toggle('open',results.children.length>0)});window.addEventListener('hashchange',()=>showPage(location.hash.slice(1),false));showPage(location.hash.slice(1)||pages[0].id,false);
-</script></body></html>
+<p>Completion criterion: the prompt describes exactly what should appear in the image and why.</p>
+<hr />
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>8 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
+</section>
+<section class="view" id="section-9" data-title="9. Consistency System">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 09</div>
+      <h1>9. Consistency System</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><h3>9.1 Visual Motifs</h3>
+<p>Pick 5–10 recurring motifs for the whole video. For business explainer content, common motifs include:</p>
+<ul>
+<li>Desk with papers.</li>
+<li>Invoice or bill.</li>
+<li>Clock or timer.</li>
+<li>Map or route line.</li>
+<li>Computer dashboard.</li>
+<li>Hands pointing at documents.</li>
+<li>Coins, receipts, ledger books.</li>
+<li>Warehouse or office interiors.</li>
+<li>Vehicle, machine, factory, or infrastructure object.</li>
+<li>Whiteboard diagrams.</li>
+</ul>
+<p>Repeat these motifs across scenes so the video feels like one coherent world.</p>
+<h3>9.2 Character Continuity</h3>
+<p>If a recurring character appears, create a character bible <strong>before</strong> generating scenes.</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-yaml">character_name: &quot;Main narrator subject&quot;
+age: &quot;...&quot;
+body_type: &quot;...&quot;
+hair: &quot;...&quot;
+clothing: &quot;...&quot;
+accessories: &quot;...&quot;
+personality_visual: &quot;...&quot;
+recurring_expression: &quot;...&quot;
+do_not_change: [&quot;hair&quot;, &quot;clothing color&quot;, &quot;face shape&quot;, &quot;main accessory&quot;]
+</code></pre></div>
+<p>Prompt block:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-text">Recurring character: middle-aged independent truck driver, short brown hair, light stubble, navy work shirt, faded baseball cap, tired but focused expression, realistic simplified proportions, same character design in every scene.
+</code></pre></div>
+<p>If the image platform supports reference images, first generate:</p>
+<ol>
+<li>Character sheet.</li>
+<li>Object sheet.</li>
+<li>Color palette sheet.</li>
+<li>Key environment sheet.</li>
+</ol>
+<p>Then use those as references for the whole batch.</p>
+<h3>9.3 Location Continuity</h3>
+<p>For repeated locations, define them once:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-yaml">location_name: &quot;Driver cab at night&quot;
+visual_traits: &quot;dark dashboard, windshield view of warehouse lights, paper coffee cup, clipboard, soft blue-gray light&quot;
+recurring_props: [&quot;dashboard&quot;, &quot;clock&quot;, &quot;clipboard&quot;, &quot;coffee cup&quot;]
+</code></pre></div>
+<h3>9.4 Palette Continuity</h3>
+<p>Use one palette across the sequence:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-yaml">palette:
+  background: &quot;warm off-white&quot;
+  linework: &quot;dark charcoal&quot;
+  primary: &quot;dusty blue&quot;
+  secondary: &quot;muted ochre&quot;
+  accent: &quot;soft red for warnings&quot;
+  neutral: &quot;warm gray and brown&quot;
+</code></pre></div>
+<hr />
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>9 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
+</section>
+<section class="view" id="section-10" data-title="10. Text and Numbers Policy">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 10</div>
+      <h1>10. Text and Numbers Policy</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><p>AI image models often produce broken text. Therefore:</p>
+<ul>
+<li>Do not ask for exact text inside generated images unless the model is known to handle typography well.</li>
+<li>Use blank spaces, generic documents, empty charts, and symbolic numbers.</li>
+<li>Add exact text later in the video editor.</li>
+<li>Text overlays should be specified separately.</li>
+</ul>
+<p>Use this field:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-yaml">text_overlay: &quot;$250,000 revenue → $64,000 take-home&quot;
+</code></pre></div>
+<p>Instead of this inside the image prompt:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-text">Write the exact words &quot;$250,000 revenue → $64,000 take-home&quot; on the document.
+</code></pre></div>
+<p>If text must appear inside the image, keep it short:</p>
+<ul>
+<li>OK: &quot;RATE&quot;, &quot;TIME&quot;, &quot;FUEL&quot;, &quot;WAIT&quot;</li>
+<li>Avoid: long paragraphs, detailed tables, accurate forms, legal documents</li>
+</ul>
+<hr />
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>10 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
+</section>
+<section class="view" id="section-11" data-title="11. Motion Direction">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 11</div>
+      <h1>11. Motion Direction</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><p>Each generated still image should include a suggested motion for editing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+  <th>Motion</th>
+  <th>Use When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Slow push-in</td>
+  <td>Important realization or key statistic</td>
+</tr>
+<tr>
+  <td>Slow pull-back</td>
+  <td>Revealing a bigger system</td>
+</tr>
+<tr>
+  <td>Left-to-right pan</td>
+  <td>Travel, process, timeline</td>
+</tr>
+<tr>
+  <td>Right-to-left pan</td>
+  <td>Reversal, problem, regression</td>
+</tr>
+<tr>
+  <td>Vertical pan</td>
+  <td>Tall objects, stacks, hierarchy</td>
+</tr>
+<tr>
+  <td>Parallax foreground/background</td>
+  <td>Office, road, warehouse, layered scenes</td>
+</tr>
+<tr>
+  <td>Paper slide transition</td>
+  <td>Documents, invoices, financial explanations</td>
+</tr>
+<tr>
+  <td>Match cut</td>
+  <td>Similar shapes between scenes</td>
+</tr>
+<tr>
+  <td>Fade to diagram</td>
+  <td>Moving from story to explanation</td>
+</tr>
+<tr>
+  <td>Clock tick animation</td>
+  <td>Waiting, deadline, time pressure</td>
+</tr>
+</tbody>
+</table></div>
+<p>Output example:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-yaml">motion_direction: &quot;Slow push-in toward the clock, then fade to the invoice overlay.&quot;
+</code></pre></div>
+<hr />
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>11 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
+</section>
+<section class="view" id="section-12" data-title="12. Batch Generation Procedure">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 12</div>
+      <h1>12. Batch Generation Procedure</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><h3>12.1 First Pass</h3>
+<p>Generate only 5–8 test images first:</p>
+<ol>
+<li>Establishing shot.</li>
+<li>Character shot.</li>
+<li>Object close-up.</li>
+<li>Diagram-like scene.</li>
+<li>Emotional scene.</li>
+<li>Number/statistic scene.</li>
+<li>Transition shot.</li>
+<li>Final question shot.</li>
+</ol>
+<p>Review for style consistency, character consistency, prompt clarity, text mistakes, color palette, and whether the images feel like the same video.</p>
+<h3>12.2 Lock Style</h3>
+<p>Once the test batch works, lock:</p>
+<ul>
+<li>Style bible (with its preset number).</li>
+<li>Palette.</li>
+<li>Character references.</li>
+<li>Main environments.</li>
+<li>Negative prompt.</li>
+<li>Aspect ratio.</li>
+<li>Seed or style reference if available.</li>
+</ul>
+<h3>12.3 Generate Full Batch</h3>
+<p>Generate in chunks of 10–20 images. After each chunk, check:</p>
+<ul>
+<li>Does the style drift?</li>
+<li>Are characters changing faces or clothing?</li>
+<li>Are props accurate enough?</li>
+<li>Are any images too literal or too abstract?</li>
+<li>Are any images too cluttered?</li>
+<li>Is there unwanted text?</li>
+<li>Are there logos or copyrighted marks?</li>
+</ul>
+<p>Regenerate weak images immediately before continuing.</p>
+<hr />
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>12 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
+</section>
+<section class="view" id="section-13" data-title="13. Quality Control Checklist">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 13</div>
+      <h1>13. Quality Control Checklist</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><p>For each image, answer:</p>
+<ul>
+<li>Does it represent the assigned beat?</li>
+<li>Is there one clear focal point?</li>
+<li>Is the composition readable in 2–3 seconds?</li>
+<li>Does it match the selected style bible?</li>
+<li>Are the colors consistent with the series?</li>
+<li>Are recurring characters and objects consistent?</li>
+<li>Is there any broken text?</li>
+<li>Are there any brand logos or copyrighted marks?</li>
+<li>Are hands, faces, and object proportions acceptable?</li>
+<li>Does it leave room for subtitles or overlays if needed?</li>
+<li>Does the image support the narration rather than distract from it?</li>
+</ul>
+<p>Classify each image:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-yaml">status: pass | minor_fix | regenerate
+reason: &quot;...&quot;
+</code></pre></div>
+<hr />
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>13 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
+</section>
+<section class="view" id="section-14" data-title="14. Output Format">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 14</div>
+      <h1>14. Output Format</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><p>When generating the final plan, output all three:</p>
+<ol>
+<li>A short visual strategy summary (including the chosen style number and why).</li>
+<li>A human-readable table.</li>
+<li>A machine-readable JSON array.</li>
+</ol>
+<h3>14.1 Human Table</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+  <th style="text-align:right">Scene</th>
+  <th>Time</th>
+  <th>Narration Summary</th>
+  <th>Visual</th>
+  <th>Style</th>
+  <th>Prompt</th>
+  <th>Motion</th>
+  <th>Overlay</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="text-align:right">001</td>
+  <td>00:00–00:08</td>
+  <td>...</td>
+  <td>...</td>
+  <td>01</td>
+  <td>...</td>
+  <td>...</td>
+  <td>...</td>
+</tr>
+</tbody>
+</table></div>
+<h3>14.2 JSON Schema</h3>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-json">[
+  {
+    &quot;scene_id&quot;: &quot;001&quot;,
+    &quot;timestamp_start&quot;: &quot;00:00&quot;,
+    &quot;timestamp_end&quot;: &quot;00:08&quot;,
+    &quot;narration_excerpt&quot;: &quot;Exact or shortened narration excerpt.&quot;,
+    &quot;core_idea&quot;: &quot;The key idea this beat communicates.&quot;,
+    &quot;visual_function&quot;: &quot;visual metaphor&quot;,
+    &quot;visual_description&quot;: &quot;A concise description of the frame.&quot;,
+    &quot;selected_style&quot;: &quot;01. Default 2D Hand-Drawn Editorial Explainer&quot;,
+    &quot;image_prompt&quot;: &quot;Full image generation prompt including the style bible.&quot;,
+    &quot;negative_prompt&quot;: &quot;What to avoid.&quot;,
+    &quot;motion_direction&quot;: &quot;Suggested edit motion.&quot;,
+    &quot;text_overlay&quot;: &quot;Text to add later in editing, if any.&quot;,
+    &quot;continuity_notes&quot;: &quot;Character, object, color, or location continuity notes.&quot;
+  }
+]
+</code></pre></div>
+<hr />
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>14 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
+</section>
+<section class="view" id="section-15" data-title="15. Master Prompt to Give Another AI">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 15</div>
+      <h1>15. Master Prompt to Give Another AI</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-text">You are a visual director and AI image prompt engineer for narrated podcast and explainer videos.
+
+Your task is to convert the narration below into a complete visual storyboard and AI image generation plan.
+
+Core goal:
+Each image must support the narration. Do not create decorative images. Create clear visual metaphors, concrete scenes, and editorial illustrations that help the audience understand the story.
+
+Default style (preset 01):
+2D hand-drawn editorial illustration for a narrated explainer video, clean ink outlines, muted pastel watercolor shading, soft paper texture, realistic but simplified people and objects, calm documentary tone, subtle cinematic composition, warm neutral lighting, low contrast, detailed but uncluttered environments, no photorealism, no 3D render, no anime, no brand logos, 16:9 frame.
+
+Style flexibility:
+Visual style is a configurable parameter. If I select a numbered preset from the style library, combine presets, or provide a custom style, replace the style bible while keeping the same storyboard workflow. Always state the chosen style number and name.
+
+Instructions:
+1. Read the full narration first.
+2. Summarize the topic, thesis, emotional arc, key characters, institutions, recurring motifs, and important numbers.
+3. Recommend 2-3 style presets that fit, then lock one style bible for the whole sequence.
+4. Split the narration into story beats, normally one beat every 6-10 seconds.
+5. For each beat, identify the core idea.
+6. Choose a visual function: concrete depiction, visual metaphor, process diagram, emotional scene, number visualization, contrast shot, establishing shot, or transition shot.
+7. Create a visual description that can be understood without the narration.
+8. Write a full AI image prompt for each scene using the locked style bible.
+9. Include a negative prompt for each scene.
+10. Suggest simple video motion for each image: slow zoom, pan, parallax, paper slide, clock tick, fade, or match cut.
+11. Keep important text and numbers out of the generated image whenever possible. Put them in a separate text_overlay field for later editing.
+12. Maintain consistency across characters, props, locations, palette, and symbolic motifs.
+13. Avoid real brand logos, copyrighted characters, unreadable text, fake letters, and photorealistic output unless explicitly requested.
+
+Output requirements:
+First output a short visual strategy summary.
+Then output a human-readable shot list table.
+Then output a machine-readable JSON array with these fields:
+scene_id, timestamp_start, timestamp_end, narration_excerpt, core_idea, visual_function, visual_description, selected_style, image_prompt, negative_prompt, motion_direction, text_overlay, continuity_notes.
+
+Narration:
+[PASTE NARRATION HERE]
+</code></pre></div>
+<hr />
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>15 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
+</section>
+<section class="view" id="section-16" data-title="16. Short Prompt Version">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 16</div>
+      <h1>16. Short Prompt Version</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><p>Use this when the AI system has limited context:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-text">Convert this podcast narration into a visual storyboard and AI image prompts. Use one image every 6-10 seconds. Each image must explain one idea from the narration. Default style: 2D hand-drawn editorial explainer illustration, clean ink outlines, muted pastel watercolor, soft paper texture, documentary tone, 16:9, no photorealism, no 3D, no anime, no logos. Style can be replaced if I specify another one; state the style you used. For each scene output: timestamp, narration summary, core idea, visual metaphor, full image prompt, negative prompt, motion suggestion, and text overlay. Avoid important text inside the image; add text later as overlay. Keep characters, objects, palette, and locations consistent across the whole sequence.
+
+Narration:
+[PASTE SCRIPT]
+</code></pre></div>
+<hr />
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>16 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
+</section>
+<section class="view" id="section-17" data-title="17. Example: Business Explainer Beat">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 17</div>
+      <h1>17. Example: Business Explainer Beat</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><p>Narration excerpt:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-text">A truck only earns while it is moving, and a truck spends an enormous amount of time not moving.
+</code></pre></div>
+<p>Shot list entry:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-json">{
+  &quot;scene_id&quot;: &quot;014&quot;,
+  &quot;timestamp_start&quot;: &quot;00:38&quot;,
+  &quot;timestamp_end&quot;: &quot;00:46&quot;,
+  &quot;narration_excerpt&quot;: &quot;A truck only earns while it is moving...&quot;,
+  &quot;core_idea&quot;: &quot;Revenue depends on motion, but waiting consumes the workday.&quot;,
+  &quot;visual_function&quot;: &quot;visual metaphor&quot;,
+  &quot;visual_description&quot;: &quot;A parked truck at a warehouse dock with a large clock reflected in the windshield.&quot;,
+  &quot;selected_style&quot;: &quot;01. Default 2D Hand-Drawn Editorial Explainer&quot;,
+  &quot;image_prompt&quot;: &quot;2D hand-drawn editorial illustration for a narrated explainer video, clean ink outlines, muted pastel watercolor shading, soft paper texture, realistic but simplified people and objects, calm documentary tone, subtle cinematic composition, warm neutral lighting, low contrast, detailed but uncluttered environments, no photorealism, no 3D render, no anime, no brand logos, 16:9 frame. Scene: a warehouse loading dock at dusk. Subject: a semi-truck parked motionless outside the dock. Action / idea: the truck earns money only when moving, but it is stuck waiting. Composition: medium-wide shot from slightly above, the truck in the lower frame and a large analog clock reflection in the windshield. Details: muted blue-gray warehouse, soft orange dock lights, empty road, clipboard on dashboard, no readable text. Mood: quiet frustration, analytical documentary tone. Constraints: no logos, no important readable text, leave room for text overlay.&quot;,
+  &quot;negative_prompt&quot;: &quot;photorealistic, 3D render, anime, childish cartoon, glossy, oversaturated, fake text, logos, watermark, distorted hands&quot;,
+  &quot;motion_direction&quot;: &quot;Slow push-in toward the clock reflection, then fade to the next invoice scene.&quot;,
+  &quot;text_overlay&quot;: &quot;A truck only earns while moving&quot;,
+  &quot;continuity_notes&quot;: &quot;Use the same muted palette and truck design as earlier warehouse scenes.&quot;
+}
+</code></pre></div>
+<hr />
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>17 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
+</section>
+<section class="view" id="section-18" data-title="18. Example Style Replacement">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 18</div>
+      <h1>18. Example Style Replacement</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><p>If the user says:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-text">Change the style to preset 05, vintage newspaper engraving.
+</code></pre></div>
+<p>Replace the style bible with:</p>
+<div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-text">Vintage engraving and newspaper editorial style, etched linework, aged paper texture, sepia and black palette, archival documentary tone, symbolic documents and portraits, no readable real newspaper text, no logos, 16:9.
+</code></pre></div>
+<p>Keep the same scene structure, visual metaphors, timestamps, and output schema. Update <code>selected_style</code> in every JSON entry.</p>
+<hr />
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>18 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
+</section>
+<section class="view" id="section-19" data-title="19. Common Pitfalls">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 19</div>
+      <h1>19. Common Pitfalls</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><ol>
+<li><strong>Too decorative:</strong> The image is attractive but does not explain the narration.</li>
+<li><strong>Too literal:</strong> Every sentence becomes a direct object, making the video boring.</li>
+<li><strong>Style drift:</strong> Each generated image looks like a different project.</li>
+<li><strong>Character drift:</strong> The same person changes face, age, clothing, or body type.</li>
+<li><strong>Broken text:</strong> AI-generated documents contain unreadable fake writing.</li>
+<li><strong>Too much detail:</strong> The viewer cannot understand the image in a few seconds.</li>
+<li><strong>No visual rhythm:</strong> Every shot has the same distance and composition.</li>
+<li><strong>No recurring motifs:</strong> The sequence lacks identity.</li>
+<li><strong>Overuse of diagrams:</strong> The video feels like slides instead of a story.</li>
+<li><strong>Underuse of diagrams:</strong> Abstract financial or system concepts remain unclear.</li>
+<li><strong>Wrong mood:</strong> A serious documentary topic becomes too cute or flashy.</li>
+<li><strong>Ignoring edit needs:</strong> No room for subtitles, overlays, or motion.</li>
+<li><strong>Mixing presets accidentally:</strong> Different scenes silently use different style bibles.</li>
+</ol>
+<hr />
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>19 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
+</section>
+<section class="view" id="section-20" data-title="20. Final Verification Checklist">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 20</div>
+      <h1>20. Final Verification Checklist</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><p>Before delivering the storyboard and prompts, verify:</p>
+<ul>
+<li>[ ] The full narration is covered.</li>
+<li>[ ] Each scene maps to a specific beat.</li>
+<li>[ ] Each beat has one core idea.</li>
+<li>[ ] One style is locked and stated by number and name.</li>
+<li>[ ] Each image prompt includes the locked style bible.</li>
+<li>[ ] The style stayed configurable and was not hard-coded beyond the default.</li>
+<li>[ ] Important text is separated into <code>text_overlay</code>.</li>
+<li>[ ] Recurring characters have continuity notes.</li>
+<li>[ ] Recurring locations and objects are defined.</li>
+<li>[ ] The palette is consistent.</li>
+<li>[ ] Motion suggestions are included.</li>
+<li>[ ] No real logos or copyrighted characters are requested.</li>
+<li>[ ] Each image can be understood in 2–3 seconds.</li>
+<li>[ ] The output includes strategy summary, table, and JSON.</li>
+<li>[ ] The plan can be handed directly to an image generation workflow.</li>
+</ul>
+<hr />
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>20 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
+</section>
+<section class="view" id="section-21" data-title="21. Recommended Production Pipeline">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 21</div>
+      <h1>21. Recommended Production Pipeline</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><div class="code-wrap"><button class="copy-btn" type="button" aria-label="Copy code">Copy</button><pre><code class="language-text">1. Write or paste narration.
+2. Run this skill with an AI assistant.
+3. Pick a numbered style preset.
+4. Review the generated shot list.
+5. Generate 5-8 test images.
+6. Lock the style bible and references.
+7. Generate the full image batch.
+8. Regenerate weak images.
+9. Add voiceover to editing timeline.
+10. Place images according to timestamps.
+11. Add slow pan, zoom, parallax, and transitions.
+12. Add text overlays and subtitles manually.
+13. Export final podcast video.
+</code></pre></div>
+<hr />
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>21 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
+</section>
+<section class="view" id="section-22" data-title="22. One-Line Summary">
+  <div class="view-scroll" tabindex="0">
+    <div class="content-page">
+      <div class="eyebrow">Chapter 22</div>
+      <h1>22. One-Line Summary</h1>
+      <div class="chapter-rule"></div>
+      <div class="markdown-body"><p>Use this skill to transform narration into a consistent, configurable, story-driven set of AI image prompts for podcast and explainer videos, with 27 numbered style presets and a hand-drawn editorial default.</p>
+</div>
+      <div class="chapter-footer"><button class="prev-next prev" type="button">← Previous</button><span>22 / 22</span><button class="prev-next next" type="button">Next →</button></div>
+    </div>
+  </div>
+</section>
+  </main>
+</div>
+<div class="search-panel" id="searchPanel"></div>
+<div class="toast" id="toast">Copied</div>
+<div class="lightbox" id="lightbox"><img alt="Expanded view"></div>
+<script>
+(()=>{
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const app=$('#app'), sidebar=$('#sidebar'), overlay=$('#overlay'), menuBtn=$('#menuBtn');
+const searchInput=$('#searchInput'), searchPanel=$('#searchPanel'), searchWrap=$('#searchWrap');
+const views=$$('.view'), navItems=$$('.nav-item'), toast=$('#toast');
+const ordered=views.map(v=>v.id);
+let activeId='cover';
+function showToast(msg){toast.textContent=msg;toast.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>toast.classList.remove('show'),1300)}
+function closeDrawer(){sidebar.classList.remove('open');overlay.classList.remove('open')}
+function openDrawer(){sidebar.classList.add('open');overlay.classList.add('open')}
+function activate(id,push=true){
+  const target=document.getElementById(id); if(!target) return;
+  views.forEach(v=>v.classList.toggle('active',v.id===id)); navItems.forEach(n=>n.classList.toggle('active',n.dataset.target===id));
+  activeId=id; const sc=$('.view-scroll',target); if(sc) sc.scrollTop=0;
+  if(push) history.replaceState(null,'','#'+id);
+  document.title=(target.dataset.title||'Overview')+' — Podcast Visual Storyboard Manual';
+  closeDrawer(); searchPanel.classList.remove('open');
+}
+navItems.forEach(n=>n.addEventListener('click',()=>activate(n.dataset.target)));
+$$('[data-target]').filter(el=>!el.classList.contains('nav-item')).forEach(el=>el.addEventListener('click',()=>activate(el.dataset.target)));
+menuBtn.addEventListener('click',()=>sidebar.classList.contains('open')?closeDrawer():openDrawer()); overlay.addEventListener('click',closeDrawer);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();searchPanel.classList.remove('open');searchWrap.classList.remove('mobile-open')}});
+
+// Prev/next controls
+$$('.view').forEach((v)=>{
+ const idx=ordered.indexOf(v.id); const prev=$('.prev',v), next=$('.next',v);
+ if(prev){prev.disabled=idx<=0; prev.addEventListener('click',()=>activate(ordered[Math.max(0,idx-1)]))}
+ if(next){next.disabled=idx<0||idx>=ordered.length-1; next.addEventListener('click',()=>activate(ordered[Math.min(ordered.length-1,idx+1)]))}
+});
+
+// Theme + font scale persistence
+const store={get:(k)=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
+const savedTheme=store.get('pv-theme'); if(savedTheme) document.documentElement.dataset.theme=savedTheme;
+$('#themeBtn').addEventListener('click',()=>{const n=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=n;store.set('pv-theme',n)});
+let scale=parseFloat(store.get('pv-font-scale')||'1');
+function applyScale(){scale=Math.max(.88,Math.min(1.24,scale));document.documentElement.style.setProperty('--font-scale',scale);store.set('pv-font-scale',scale.toFixed(2))}
+applyScale(); $('#fontDown').addEventListener('click',()=>{scale-=.06;applyScale();showToast('Font size adjusted')}); $('#fontUp').addEventListener('click',()=>{scale+=.06;applyScale();showToast('Font size adjusted')});
+
+// Copy buttons with fallback for file:// contexts.
+$$('.copy-btn').forEach(btn=>btn.addEventListener('click',async()=>{const code=$('code',btn.parentElement).innerText;try{await navigator.clipboard.writeText(code)}catch(e){const ta=document.createElement('textarea');ta.value=code;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}showToast('Copied to clipboard')}));
+
+// Search across chapter text.
+const index=views.filter(v=>v.id!=='cover').map(v=>({id:v.id,title:v.dataset.title,text:v.innerText.replace(/\s+/g,' ').trim()}));
+function doSearch(q){q=q.trim().toLowerCase(); if(!q){searchPanel.classList.remove('open');searchPanel.innerHTML='';return}; const res=index.map(x=>{const p=x.text.toLowerCase().indexOf(q); return p<0?null:{...x,pos:p}}).filter(Boolean).slice(0,12); searchPanel.innerHTML=res.length?res.map(x=>{const st=Math.max(0,x.pos-55), sn=x.text.slice(st,x.pos+120);return `<button class="search-result" data-go="${x.id}"><b>${escapeHtml(x.title)}</b><small>${escapeHtml(sn)}…</small></button>`}).join(''):'<div class="no-result">No matching section found.</div>'; searchPanel.classList.add('open'); $$('.search-result',searchPanel).forEach(b=>b.addEventListener('click',()=>{activate(b.dataset.go); searchInput.value=''; searchPanel.classList.remove('open');searchWrap.classList.remove('mobile-open')}))}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+searchInput.addEventListener('input',e=>doSearch(e.target.value));
+$('#mobileSearchBtn').addEventListener('click',()=>{searchWrap.classList.toggle('mobile-open'); if(searchWrap.classList.contains('mobile-open')) setTimeout(()=>searchInput.focus(),30)});
+document.addEventListener('click',e=>{if(!searchPanel.contains(e.target)&&!searchWrap.contains(e.target)&&e.target.id!=='mobileSearchBtn')searchPanel.classList.remove('open')});
+
+// Image zoom support for future embedded images.
+const lightbox=$('#lightbox'), lightImg=$('img',lightbox); $$('.markdown-body img').forEach(img=>img.addEventListener('click',()=>{lightImg.src=img.src;lightImg.alt=img.alt||'Expanded image';lightbox.classList.add('open')})); lightbox.addEventListener('click',()=>lightbox.classList.remove('open'));
+
+// Hash routing.
+const initial=location.hash.slice(1); if(initial && document.getElementById(initial)) activate(initial,false);
+window.addEventListener('hashchange',()=>{const id=location.hash.slice(1); if(id&&document.getElementById(id))activate(id,false)});
+})();
+</script>
+</body></html>

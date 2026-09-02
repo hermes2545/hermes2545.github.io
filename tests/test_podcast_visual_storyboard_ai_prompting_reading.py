@@ -13,7 +13,25 @@ HTML_PATH = ROOT / "Podcast_Visual_Storyboard_AI_Prompting_Manual.html"
 COVER_PATH = ROOT / "assets" / "covers" / "custom" / f"{BOOK_ID}.webp"
 SOURCE_MD = ROOT / "docs" / "guides" / "PODCAST_VISUAL_STORYBOARD_AI_PROMPTING.md"
 SOURCE_SHA256 = "a866790b1b889bae2e0b6a4afa0e0940c08c7bf4dde614c33b1e6ee04dfb94ba"
+SUPPLIED_HTML_SHA256 = "145ffc4cf7d08a74b78ebb6ab8d11b41931a00533b49d04699c6ad5f066fc4fc"
 COVER_SOURCE_SHA256 = "473cd73f7637df4167369e98c82994115c31172534dfdc818bd19ae1549ad047"
+PROHIBITED_PUBLIC_RE = re.compile(
+    "|".join(
+        [
+            "/" + "home" + "/" + "p2544",
+            r"drive\.google",
+            "1RI" + "mkE1",
+            r"doc_[A-Za-z0-9]",
+            r"img_[A-Za-z0-9]",
+            "AI" + "za",
+            "ya" + r"29\.",
+            "gh" + "p_",
+            "github" + "_pat_",
+            "sk" + r"-[A-Za-z0-9]{16,}",
+            r"BEGIN [A-Z ]*PRIVATE KEY",
+        ]
+    )
+)
 
 
 class PodcastVisualStoryboardAIPromptingReadingTests(unittest.TestCase):
@@ -40,31 +58,36 @@ class PodcastVisualStoryboardAIPromptingReadingTests(unittest.TestCase):
         self.assertIn("Default negative prompt", source)
         self.assertIn("Numbered preset style library", source)
         self.assertIn("Style bible", source)
-        self.assertNotRegex(source, r"/home/p2544|drive\.google|1RImkE1|AIza|ya29\\.|ghp_|github_pat_|sk-[A-Za-z0-9]{16,}|BEGIN [A-Z ]*PRIVATE KEY")
+        self.assertNotRegex(source, PROHIBITED_PUBLIC_RE)
 
-    def test_html_uses_interactive_manual_pattern_and_keeps_key_content(self):
+    def test_html_uses_owner_supplied_interactive_manual_v2(self):
         self.assertTrue(HTML_PATH.is_file())
         html = HTML_PATH.read_text(encoding="utf-8")
-        self.assertEqual(html.count('<section class="page"'), 10)
-        self.assertEqual(html.count('<button class="nav-item"'), 10)
+        self.assertEqual(hashlib.sha256(HTML_PATH.read_bytes()).hexdigest(), SUPPLIED_HTML_SHA256)
+        self.assertEqual(html.count('<section class="view'), 23)
+        self.assertEqual(html.count('<button class="nav-item'), 23)
         for marker in (
+            "Interactive Reference Manual · v2.0.0",
             "Podcast Visual Storyboard",
             "AI Image Prompting",
-            "Interactive Reference Manual",
+            "27 style presets",
+            "Manual chapters",
             "Narration/transcript → story beats",
-            "Default negative prompt",
-            "Numbered preset style library",
+            "Default Negative Prompt",
+            "Numbered Preset Style Library",
             "Blueprint Systems Visualization",
             "Quiet Luxury Business Documentary",
-            "Shot-list schema",
-            "Master prompt pattern",
+            "Master Prompt to Give Another AI",
+            "Recommended Production Pipeline",
             "localStorage",
             "navigator.clipboard",
             "@media print",
         ):
             self.assertIn(marker, html)
+        self.assertIn('data-target="section-22"', html)
+        self.assertIn('id="mobileSearchBtn"', html)
         self.assertNotIn("ค่ะ", html)
-        self.assertNotRegex(html, r"/home/p2544|drive\.google|1RImkE1|doc_[A-Za-z0-9]|img_[A-Za-z0-9]|AIza|ya29\\.|ghp_|github_pat_|sk-[A-Za-z0-9]{16,}|BEGIN [A-Z ]*PRIVATE KEY")
+        self.assertNotRegex(html, PROHIBITED_PUBLIC_RE)
         scripts = "\n".join(re.findall(r"<script>(.*?)</script>", html, flags=re.S))
         result = subprocess.run(
             ["node", "--check"],
