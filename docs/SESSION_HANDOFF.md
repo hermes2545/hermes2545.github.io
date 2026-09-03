@@ -1,6 +1,6 @@
 # The Knowledge Shelf — Session Handoff
 
-**Updated:** 2026-09-02T12:20:24+07:00
+**Updated:** 2026-09-03T11:49:46+07:00
 
 **Public site:** https://hermes2545.github.io/
 
@@ -65,7 +65,7 @@ The site is a static GitHub Pages library branded **The Knowledge Shelf** with f
 - Lode Runner keeps its multi-file runtime under `app/loderunner/`; `app/loderunner.html` is a minimal same-origin fullscreen wrapper.
 - ตุ่มเงิน keeps its PWA runtime under `app/tumngern/`; the only Source modifications are deployment-base changes from `/tumngern/` to `/app/tumngern/` plus matching Workbox revisions. Its optional Sync feature is user-initiated, not enabled by default, and openly warns that server payloads are not yet end-to-end encrypted.
 - Development tools, executable files, source disk images, repository metadata, and unrelated README files are excluded from the imported Lode Runner runtime.
-- Every App appears as a CSS-rendered 3.5-inch diskette with a content-specific sticker label rather than a book cover.
+- Every App appears as a CSS-rendered 3.5-inch diskette with a content-specific sticker label rather than a book cover. Each App card now includes a small icon-only square HTML download control immediately after the publish date; it uses a real `download` link to the same single HTML launcher/source file while title and diskette links still open the App in a new tab.
 - Pac-Man, Battle Tank, Lode Runner, and ตุ่มเงิน carry local source-derived WebP stickers; Bakery and PDF Password Remover retain paper utility labels.
 - The App room uses the project-owner supplied bright monochrome Pantip Plaza / technology-mall photograph as a local 1672×941 EXIF-free RGB WebP wallpaper at `assets/app-room/owner-supplied-pantip-plaza-wallpaper.webp`. Navigation, header, footer, and the full App shelf wall use App-scoped translucent retail/glass surfaces. The `เลือก App จากชั้นดิสก์` tools/search area is a separate rounded glass retail panel with safe inset edges, a subtle cyan/gold top light strip, Windows 95-style search module, and no clipped side borders. Public-safe provenance is recorded in `docs/reports/APP_ROOM_IMAGE_ATTRIBUTION.md`.
 - The App header is branded **พันธุ์ทิพย์พลาซ่า** and uses the user-supplied Pantip Plaza logo at the upper-left instead of the former `3½` badge. Its long Thai LED shop message scrolls continuously from right to left at a restrained 28-second pace and changes red → green → yellow → blue on each completed loop.
@@ -142,6 +142,11 @@ Expected verified result at close: **119 tests passed**, all four generated page
 
 After the latest Audio Shelf update, verify `audio-library.html`, the new first-card cover/hash, Audio count 54, and production desktop/mobile Liquid Glass readability. Future Reading/Audio/App publications remain approval-gated unless the current user instruction explicitly approves push; qualifying original Gallery image uploads remain auto-publishable after full quality gates.
 
+
+## Latest close checkpoint — 2026-09-03
+
+- Locally added App Shelf single-HTML download controls for all six Apps. `scripts/build_app_library.py` now renders separate title/open links, diskette/open links, and a sibling icon-only square `<a download>` immediately after each publish date, avoiding nested anchors while preserving existing new-tab App launch behavior.
+- Added App regression coverage in `tests/test_app_library.py` for one square download button per App, href parity with the App launcher, after-date placement, no nested anchors, CSS markers, and updated App link counts. Regenerated `app-library.html`. Focused App tests and App generator check passed; Playwright desktop/mobile previews showed six cards, six download controls, zero horizontal overflow, no broken images, and no runtime console/page errors. Full suite is currently blocked by an unrelated pre-existing local `tests/test_audio_library.py` expectation for `sKC0mlraNPo` playlist URL versus the current `data/audio-books.json` URL. Public push remains pending explicit App push approval.
 
 ## Latest close checkpoint — 2026-09-02
 

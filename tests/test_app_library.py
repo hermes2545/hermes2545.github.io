@@ -2,6 +2,7 @@ import hashlib
 import html
 import json
 import unittest
+from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
@@ -9,6 +10,23 @@ from scripts.build_app_library import load_apps, render_app_library
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "data" / "apps.json"
+
+
+class AnchorNestingParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.anchor_depth = 0
+        self.nested_anchor_count = 0
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "a":
+            if self.anchor_depth:
+                self.nested_anchor_count += 1
+            self.anchor_depth += 1
+
+    def handle_endtag(self, tag):
+        if tag == "a" and self.anchor_depth:
+            self.anchor_depth -= 1
 
 
 class AppLibraryTests(unittest.TestCase):
@@ -219,13 +237,42 @@ class AppLibraryTests(unittest.TestCase):
         self.assertEqual(self.page.count('class="diskette-label'), 6)
         self.assertEqual(self.page.count('class="diskette-hub"'), 6)
         self.assertEqual(self.page.count('class="diskette-sticker"'), 4)
-        self.assertEqual(self.page.count('target="_blank"'), 7)
-        self.assertEqual(self.page.count('rel="noopener"'), 7)
+        self.assertEqual(self.page.count('target="_blank"'), 13)
+        self.assertEqual(self.page.count('rel="noopener"'), 13)
         self.assertIn('class="footer-facebook-link"', self.page)
         for app in self.apps:
-            self.assertEqual(self.page.count(f'href="{app["href"]}"'), 1)
+            self.assertEqual(self.page.count(f'href="{app["href"]}"'), 3)
             self.assertIn(html.escape(app["short_title"]), self.page)
             self.assertIn(html.escape(app["label"]["kicker"]), self.page)
+
+    def test_apps_render_square_html_download_buttons_after_date(self):
+        self.assertEqual(self.page.count('class="app-download-html app-download-html--square"'), len(self.apps))
+        self.assertEqual(self.page.count(" download "), len(self.apps))
+        self.assertEqual(self.page.count('title="ดาวน์โหลด HTML"'), len(self.apps))
+        parser = AnchorNestingParser()
+        parser.feed(self.page)
+        self.assertEqual(parser.nested_anchor_count, 0)
+
+        stylesheet = (ROOT / "assets" / "css" / "app-library.css").read_text(encoding="utf-8")
+        self.assertIn(".app-date-line", stylesheet)
+        self.assertIn(".app-download-html--square", stylesheet)
+        self.assertIn("border-radius: .42rem;", stylesheet)
+        self.assertIn("backdrop-filter: blur(12px) saturate(1.16);", stylesheet)
+
+        for app in self.apps:
+            href = html.escape(app["href"])
+            title = html.escape(app["title"])
+            card_start = self.page.index(f'data-app-id="{html.escape(app["id"])}"')
+            card_end = self.page.index("</article>", card_start)
+            card = self.page[card_start:card_end]
+            self.assertIn('class="app-date-line"', card)
+            self.assertIn(
+                f'<a class="app-download-html app-download-html--square" href="{href}" download '
+                f'aria-label="ดาวน์โหลด HTML: {title}" title="ดาวน์โหลด HTML">',
+                card,
+            )
+            self.assertLess(card.index('class="publish-date"'), card.index('class="app-download-html app-download-html--square"'))
+            self.assertLess(card.index('class="app-download-html app-download-html--square"'), card.index('class="app-summary"'))
 
     def test_diskette_design_and_responsive_shelves_are_present(self):
         stylesheet = (ROOT / "assets" / "css" / "app-library.css").read_text(encoding="utf-8")

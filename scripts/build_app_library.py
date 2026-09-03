@@ -37,12 +37,19 @@ def render_app(app: dict) -> str:
     )
     label_class = "diskette-label has-sticker" if sticker else "diskette-label"
     return f'''<article class="app-card" data-app-id="{esc(app["id"])}" data-category="{esc(app["category"])}" data-search="{esc(searchable)}" style="--label-primary:{esc(label["primary"])};--label-accent:{esc(label["accent"])};--label-ink:{esc(label["ink"])}">
-  <a class="app-link" href="{esc(app["href"])}" target="_blank" rel="noopener" aria-label="เปิด App {esc(app["title"])} ในแท็บใหม่">
-    <div class="app-meta">
-      <h3 class="app-title">{esc(app["short_title"])}</h3>
+  <div class="app-meta">
+    <h3 class="app-title"><a class="app-title-link" href="{esc(app["href"])}" target="_blank" rel="noopener" aria-label="เปิด App {esc(app["title"])} ในแท็บใหม่">{esc(app["short_title"])}</a></h3>
+    <div class="app-date-line">
       <time class="publish-date" datetime="{esc(app["published_at"])}">publish on {published}</time>
-      <p class="app-summary">{esc(app["summary"])}</p>
+      <a class="app-download-html app-download-html--square" href="{esc(app["href"])}" download aria-label="ดาวน์โหลด HTML: {esc(app["title"])}" title="ดาวน์โหลด HTML">
+        <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+          <path d="M12 3v11m0 0 4-4m-4 4-4-4M5 16v3h14v-3" />
+        </svg>
+      </a>
     </div>
+    <p class="app-summary">{esc(app["summary"])}</p>
+  </div>
+  <a class="app-link app-diskette-link" href="{esc(app["href"])}" target="_blank" rel="noopener" aria-label="เปิด App {esc(app["title"])} ในแท็บใหม่">
     <div class="diskette" aria-hidden="true">
       <div class="diskette-shutter"><span></span></div>
       <div class="{label_class}">
