@@ -5,7 +5,7 @@ Updated: 2026-09-05T02:39:31+07:00
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
-- Branch: `main...origin/main` before the scoped Audio Shelf publish commit.
+- Branch: `main...origin/main` after the scoped Audio Shelf publish commit.
 - User gave current-turn approval to render, upload YouTube, add to Audio Shelf, commit, and push.
 
 ## Completed this session
@@ -56,20 +56,22 @@ Updated: 2026-09-05T02:39:31+07:00
   - Public watch URL returned HTTP 200.
   - Thumbnail URL returned HTTP 200 image/jpeg.
 
-## Current working tree before final push
+## Publication completed
 
-Expected public files changed:
+- Commit: `4dd48bb08949d6ff00cf7a42958ef3acb566cb71` (`Add AI clone identity podcast to Audio Shelf`).
+- Pushed to public `origin main` and private `backup main`.
+- Remote read-back matched local HEAD on both remotes.
+- Production Audio Shelf verification:
+  - `audio-library.html` returned 56 audio cards.
+  - First card is `wTrLXC427hg` with title, playlist URL, cover, duration `23:34`, and date `publish on 05/09/2026`.
+  - Production HTML contained no local/private path markers.
+  - Production cover hash matched Local: `8358bf307d98b6ce5bc3075e88c07833746a16c4bb86a282a984e6d17bb7a79a`.
+- GitHub CLI is not authenticated in this environment, so run-list metadata was unavailable; production HTTP/hash read-back and remote HEAD equality were used instead.
 
-- `audio-library.html`
-- `data/audio-books.json`
-- `tests/test_audio_library.py`
-- `assets/audio-covers/wTrLXC427hg.jpg`
-- `docs/wiki/log.md`
-- `docs/wiki/index.md`
-- `docs/SESSION_HANDOFF.md`
+## Current working tree after publication
 
-Private untracked working files remain under the profile-private project metadata directory. Do not stage or commit private working files, source audio, rendered MP4, browser profiles, credentials, or project routing metadata.
+Only profile-private untracked working files remain under the project metadata directory. Do not stage or commit private working files, source audio, rendered MP4, browser profiles, credentials, or project routing metadata.
 
 ## Next step
 
-Run pre-share scan, stage only the expected public files, commit, push to `origin` and `backup`, then verify remote HEADs and live Audio Shelf production read-back.
+No further action is required for this scoped task unless the owner asks for a follow-up edit or playlist adjustment.
