@@ -24,7 +24,12 @@
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 .audio-page::before { opacity: .035; }
-.audio-page .ambient-light { background: radial-gradient(ellipse, rgba(255,255,255,.98), transparent 66%); }
+.audio-page .ambient-light {
+  left: 0;
+  width: 100%;
+  transform: none;
+  background: radial-gradient(ellipse, rgba(255,255,255,.98), transparent 66%);
+}
 
 /* Dark architectural glass navigation above the light retail floor. */
 .audio-page .site-nav {
