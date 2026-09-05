@@ -25,17 +25,17 @@ class AudioLibraryTests(unittest.TestCase):
             key=lambda item: (-item["published_epoch_ms"], item["playlist_position"]),
         )
         self.assertEqual(self.items, expected)
-        self.assertEqual(self.items[0]["video_id"], "wTrLXC427hg")
+        self.assertEqual(self.items[0]["video_id"], "WQMJBmgPSi8")
 
     def test_latest_ai_clone_identity_storyboard_podcast_metadata(self):
         item = self.items[0]
-        self.assertEqual(item["video_id"], "wTrLXC427hg")
-        self.assertEqual(item["title"], "เมื่อ AI โคลนตัวตนเรามาสวมรอย: บอทสแกมและโลกอินเทอร์เน็ตหลังความจริง")
-        self.assertEqual(item["youtube_url"], "https://www.youtube.com/watch?v=wTrLXC427hg&list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl")
-        self.assertEqual(item["cover"], "assets/audio-covers/wTrLXC427hg.jpg")
+        self.assertEqual(item["video_id"], "WQMJBmgPSi8")
+        self.assertEqual(item["title"], "เมื่อ AI โคลนตัวตนเรามาสวมรอย: บอทสแกมและโลกอินเทอร์เน็ตหลังความจริง | Clean Version")
+        self.assertEqual(item["youtube_url"], "https://www.youtube.com/watch?v=WQMJBmgPSi8&list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl")
+        self.assertEqual(item["cover"], "assets/audio-covers/WQMJBmgPSi8.jpg")
         self.assertEqual(item["duration_seconds"], 1414)
-        self.assertEqual(item["published_epoch_ms"], 1788550771986)
-        self.assertEqual(item["published_at"], "2026-09-05T02:39:31+07:00")
+        self.assertEqual(item["published_epoch_ms"], 1788581398000)
+        self.assertEqual(item["published_at"], "2026-09-05T11:09:58+07:00")
         self.assertEqual(item["playlist_position"], 1)
         self.assertEqual(item["uploader"], "manny calavara")
 
