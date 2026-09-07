@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HEIC Batch Converter</title>
+  <meta name="description" content="แปลงไฟล์ HEIC/HEIF เป็น JPG ทีละหลายไฟล์ พร้อมดาวน์โหลดทีละไฟล์หรือ ZIP เดียว" />
+  <!-- LIBRARY PRIVACY HARDENING: removed external Google Fonts requests; local shelf uses system Thai-capable fallbacks. -->
+  <link rel="stylesheet" href="./styles.css" />
+  <script defer src="./vendor/heic2any.min.js"></script>
+  <script defer src="./vendor/jszip.min.js"></script>
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero card">
+      <div>
+        <p class="eyebrow">แอปแปลงรูปแบบไฟล์</p>
+        <h1>HEIC / HEIF → JPG แบบทีละหลายไฟล์</h1>
+        <p class="lead">
+          ลากไฟล์ HEIC/HEIF มาวางได้เลย เลือกได้หลายไฟล์พร้อมกัน แล้วแปลงออกเป็น JPG ทีละไฟล์หรือกดดาวน์โหลดเป็น ZIP ทีเดียวค่ะ
+        </p>
+      </div>
+      <div class="hero-badges">
+        <span>Mobile friendly</span>
+        <span>Batch convert</span>
+        <span>ZIP export</span>
+      </div>
+    </section>
+
+    <section class="card upload-card">
+      <div id="dropzone" class="dropzone" aria-label="พื้นที่ลากไฟล์">
+        <input id="fileInput" type="file" accept=".heic,.heif,image/heic,image/heif" multiple hidden />
+        <div class="dropzone-icon">⬆</div>
+        <h2>ลากไฟล์ HEIC/HEIF มาวางตรงนี้</h2>
+        <p>หรือกดปุ่มเลือกไฟล์ด้านล่างได้ค่ะ</p>
+        <div class="actions">
+          <button id="pickFilesBtn" class="btn btn-primary" type="button">เลือกไฟล์</button>
+          <button id="clearBtn" class="btn btn-ghost" type="button" disabled>ล้างรายการ</button>
+          <button id="convertBtn" class="btn btn-accent" type="button" disabled>แปลงทั้งหมด</button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><strong id="countStat">0</strong><span>ไฟล์</span></div>
+        <div class="stat"><strong id="readyStat">0</strong><span>พร้อมแปลง</span></div>
+        <div class="stat"><strong id="doneStat">0</strong><span>แปลงแล้ว</span></div>
+      </div>
+
+      <div class="progress-wrap" aria-live="polite">
+        <div class="progress-bar"><div id="progressFill"></div></div>
+        <p id="statusText">ยังไม่ได้เลือกไฟล์ค่ะ</p>
+      </div>
+    </section>
+
+    <section class="card results-card">
+      <div class="results-head">
+        <div>
+          <h2>รายการไฟล์</h2>
+          <p>แต่ละไฟล์จะมีปุ่มดาวน์โหลด JPG แยกได้ และรวม ZIP ได้หลังแปลงเสร็จค่ะ</p>
+        </div>
+        <button id="downloadZipBtn" class="btn btn-dark" type="button" disabled>ดาวน์โหลด ZIP</button>
+      </div>
+
+      <div id="fileList" class="file-list empty">
+        <div class="empty-state">
+          <div class="empty-emoji">🖼️</div>
+          <h3>ยังไม่มีไฟล์</h3>
+          <p>เลือกรูป HEIC/HEIF หลายไฟล์ได้เลยค่ะ</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <template id="fileRowTemplate">
+    <article class="file-row">
+      <div class="file-meta">
+        <div class="file-thumb">HEIC</div>
+        <div>
+          <h3 class="file-name"></h3>
+          <p class="file-info"></p>
+          <p class="file-error hidden"></p>
+        </div>
+      </div>
+      <div class="file-actions">
+        <button class="btn btn-small btn-primary convert-one" type="button">แปลงไฟล์นี้</button>
+        <a class="btn btn-small btn-ghost download-one hidden" download>ดาวน์โหลด JPG</a>
+      </div>
+    </article>
+  </template>
+</body>
+</html>

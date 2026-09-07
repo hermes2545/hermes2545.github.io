@@ -34,18 +34,18 @@ class AppLibraryTests(unittest.TestCase):
         self.apps = load_apps(CATALOG)
         self.page = render_app_library(self.apps)
 
-    def test_catalog_has_six_unique_apps_with_required_metadata(self):
+    def test_catalog_has_seven_unique_apps_with_required_metadata(self):
         required = {
             "id", "title", "short_title", "href", "category", "summary",
             "published_at", "source_repository", "source_commit", "source_sha256",
             "import_mode", "sticker", "label",
         }
-        self.assertEqual(len(self.apps), 6)
+        self.assertEqual(len(self.apps), 7)
         self.assertEqual(
             {app["id"] for app in self.apps},
-            {"battle-tank", "bakery-center", "loderunner", "pacman", "pdf-password-remover", "tumngern"},
+            {"battle-tank", "bakery-center", "heic2jpg", "loderunner", "pacman", "pdf-password-remover", "tumngern"},
         )
-        self.assertEqual(len({app["href"] for app in self.apps}), 6)
+        self.assertEqual(len({app["href"] for app in self.apps}), 7)
         for app in self.apps:
             self.assertTrue(required <= app.keys(), app)
             self.assertRegex(app["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
@@ -59,7 +59,7 @@ class AppLibraryTests(unittest.TestCase):
             self.assertEqual(set(app["label"]), {"kicker", "mark", "version", "primary", "accent", "ink"})
             for color in ("primary", "accent", "ink"):
                 self.assertRegex(app["label"][color], r"^#[0-9A-Fa-f]{6}$")
-            if app["id"] in {"bakery-center", "pdf-password-remover"}:
+            if app["id"] in {"bakery-center", "heic2jpg", "pdf-password-remover"}:
                 self.assertIsNone(app["sticker"])
             else:
                 self.assertEqual(app["sticker"], f'assets/app-stickers/{app["id"]}.webp')
@@ -83,6 +83,11 @@ class AppLibraryTests(unittest.TestCase):
                 "app/loderunner.html",
                 "https://github.com/p2544/loderunner",
                 "cceca5d5a15a21f724836654a46bf2501968e142",
+            ),
+            "heic2jpg": (
+                "app/heic2jpg.html",
+                "https://github.com/starlink2569/heic2jpg",
+                "ee777bc671d7e5bb351ca31f4b9e7b7605a74207",
             ),
             "pacman": (
                 "app/pacman.html",
@@ -186,6 +191,35 @@ class AppLibraryTests(unittest.TestCase):
         self.assertIn("tumngern:sync-server", bundle_text)
         self.assertIn("ยังไม่ได้เข้ารหัสแบบ end-to-end", bundle_text)
 
+    def test_heic2jpg_imports_hardened_browser_runtime_with_local_vendor_libraries(self):
+        app = next(app for app in self.apps if app["id"] == "heic2jpg")
+        wrapper = (ROOT / app["href"]).read_text(encoding="utf-8")
+        runtime = ROOT / "app" / "heic2jpg"
+        source = (runtime / "index.html").read_text(encoding="utf-8")
+        script = (runtime / "app.js").read_text(encoding="utf-8")
+        upstream = (runtime / "UPSTREAM.md").read_text(encoding="utf-8")
+
+        self.assertEqual(app["import_mode"], "hardened-derivative")
+        self.assertEqual(app["source_sha256"], "15a05341a7125bfbc3bc77ea0da446efcdd00e1e840f9db211581033d45c2307")
+        self.assertIn('src="heic2jpg/index.html"', wrapper)
+        self.assertIn('title="HEIC to JPG Batch Converter"', wrapper)
+        self.assertIn('referrerpolicy="no-referrer"', wrapper)
+        self.assertIn('sandbox="allow-scripts allow-same-origin allow-downloads"', wrapper)
+        self.assertIn("LIBRARY PRIVACY HARDENING", source)
+        self.assertNotIn("fonts.googleapis.com", source)
+        self.assertNotIn("fonts.gstatic.com", source)
+        self.assertIn('src="./vendor/heic2any.min.js"', source)
+        self.assertIn('src="./vendor/jszip.min.js"', source)
+        self.assertIn("const MAX_FILE_SIZE_BYTES = 80 * 1024 * 1024;", script)
+        self.assertIn("HEIC/HEIF ใหญ่เกิน 80 MB", script)
+        for required in ("index.html", "styles.css", "app.js", "vendor/heic2any.min.js", "vendor/jszip.min.js", "UPSTREAM.md"):
+            self.assertTrue((runtime / required).is_file(), required)
+        for excluded in ("test-sample.heic", "server.cjs", "package-lock.json"):
+            self.assertFalse((runtime / excluded).exists(), excluded)
+        self.assertIn("No repository LICENSE file was present", upstream)
+        self.assertIn("heic2any 0.0.4 — MIT", upstream)
+        self.assertIn("JSZip 3.10.1 — MIT OR GPL-3.0-or-later", upstream)
+
     def test_loderunner_keeps_upstream_runtime_unchanged_behind_stable_wrapper(self):
         wrapper = (ROOT / "app" / "loderunner.html").read_text(encoding="utf-8")
         runtime = ROOT / "app" / "loderunner" / "lodeRunner.html"
@@ -207,7 +241,7 @@ class AppLibraryTests(unittest.TestCase):
     def test_apps_sort_newest_first(self):
         timestamps = [app["published_at"] for app in self.apps]
         self.assertEqual(timestamps, sorted(timestamps, reverse=True))
-        self.assertEqual(self.apps[0]["id"], "pdf-password-remover")
+        self.assertEqual(self.apps[0]["id"], "heic2jpg")
 
     def test_pacman_preserves_browser_runtime_and_gpl_license(self):
         app = next(app for app in self.apps if app["id"] == "pacman")
@@ -231,14 +265,14 @@ class AppLibraryTests(unittest.TestCase):
             self.assertFalse((ROOT / "assets" / "app-stickers" / f"{app_id}.webp").exists(), app_id)
 
     def test_page_renders_each_app_as_a_three_and_half_inch_diskette(self):
-        self.assertEqual(self.page.count('class="app-card"'), 6)
-        self.assertEqual(self.page.count('class="diskette"'), 6)
-        self.assertEqual(self.page.count('class="diskette-shutter"'), 6)
-        self.assertEqual(self.page.count('class="diskette-label'), 6)
-        self.assertEqual(self.page.count('class="diskette-hub"'), 6)
+        self.assertEqual(self.page.count('class="app-card"'), 7)
+        self.assertEqual(self.page.count('class="diskette"'), 7)
+        self.assertEqual(self.page.count('class="diskette-shutter"'), 7)
+        self.assertEqual(self.page.count('class="diskette-label'), 7)
+        self.assertEqual(self.page.count('class="diskette-hub"'), 7)
         self.assertEqual(self.page.count('class="diskette-sticker"'), 4)
-        self.assertEqual(self.page.count('target="_blank"'), 13)
-        self.assertEqual(self.page.count('rel="noopener"'), 13)
+        self.assertEqual(self.page.count('target="_blank"'), 15)
+        self.assertEqual(self.page.count('rel="noopener"'), 15)
         self.assertIn('class="footer-facebook-link"', self.page)
         for app in self.apps:
             self.assertEqual(self.page.count(f'href="{app["href"]}"'), 3)

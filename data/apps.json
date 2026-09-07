@@ -130,5 +130,27 @@
       "accent": "#B5502E",
       "ink": "#3A2418"
     }
+  },
+  {
+    "id": "heic2jpg",
+    "title": "HEIC to JPG Batch Converter",
+    "short_title": "HEIC→JPG",
+    "href": "app/heic2jpg.html",
+    "category": "Utility",
+    "summary": "เครื่องมือแปลงไฟล์ HEIC/HEIF เป็น JPG แบบหลายไฟล์ ทำงานในเบราว์เซอร์ ใช้ไลบรารี local และดาวน์โหลดผลลัพธ์แยกไฟล์หรือ ZIP ได้",
+    "published_at": "2026-09-07T16:54:49+07:00",
+    "source_repository": "https://github.com/starlink2569/heic2jpg",
+    "source_commit": "ee777bc671d7e5bb351ca31f4b9e7b7605a74207",
+    "source_sha256": "15a05341a7125bfbc3bc77ea0da446efcdd00e1e840f9db211581033d45c2307",
+    "import_mode": "hardened-derivative",
+    "sticker": null,
+    "label": {
+      "kicker": "PHOTO CONVERTER",
+      "mark": "HEIC",
+      "version": "JPG · BATCH",
+      "primary": "#FFF1F8",
+      "accent": "#EC4899",
+      "ink": "#4A1230"
+    }
   }
 ]
