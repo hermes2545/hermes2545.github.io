@@ -87,7 +87,7 @@ class AppLibraryTests(unittest.TestCase):
             "heic2jpg": (
                 "app/heic2jpg.html",
                 "https://github.com/starlink2569/heic2jpg",
-                "ee777bc671d7e5bb351ca31f4b9e7b7605a74207",
+                "05b42790a39316d0232a25650b9940b757de8916",
             ),
             "pacman": (
                 "app/pacman.html",
@@ -200,7 +200,7 @@ class AppLibraryTests(unittest.TestCase):
         upstream = (runtime / "UPSTREAM.md").read_text(encoding="utf-8")
 
         self.assertEqual(app["import_mode"], "hardened-derivative")
-        self.assertEqual(app["source_sha256"], "15a05341a7125bfbc3bc77ea0da446efcdd00e1e840f9db211581033d45c2307")
+        self.assertEqual(app["source_sha256"], "925e0b4a6952c459546f43f8c6fb917ccc1d87c845502646e7dffdca0a6c86c5")
         self.assertIn('src="heic2jpg/index.html"', wrapper)
         self.assertIn('title="HEIC to JPG Batch Converter"', wrapper)
         self.assertIn('referrerpolicy="no-referrer"', wrapper)
@@ -208,12 +208,16 @@ class AppLibraryTests(unittest.TestCase):
         self.assertIn("LIBRARY PRIVACY HARDENING", source)
         self.assertNotIn("fonts.googleapis.com", source)
         self.assertNotIn("fonts.gstatic.com", source)
+        self.assertIn('rel="icon" href="./assets/app-icon.png"', source)
+        self.assertIn('class="brand-row"', source)
+        self.assertIn('class="app-icon" src="./assets/app-icon.png"', source)
         self.assertIn('src="./vendor/heic2any.min.js"', source)
         self.assertIn('src="./vendor/jszip.min.js"', source)
         self.assertIn("const MAX_FILE_SIZE_BYTES = 80 * 1024 * 1024;", script)
         self.assertIn("HEIC/HEIF ใหญ่เกิน 80 MB", script)
-        for required in ("index.html", "styles.css", "app.js", "vendor/heic2any.min.js", "vendor/jszip.min.js", "UPSTREAM.md"):
+        for required in ("index.html", "styles.css", "app.js", "assets/app-icon.png", "vendor/heic2any.min.js", "vendor/jszip.min.js", "UPSTREAM.md"):
             self.assertTrue((runtime / required).is_file(), required)
+        self.assertGreater((runtime / "assets" / "app-icon.png").stat().st_size, 1000000)
         for excluded in ("test-sample.heic", "server.cjs", "package-lock.json"):
             self.assertFalse((runtime / excluded).exists(), excluded)
         self.assertIn("No repository LICENSE file was present", upstream)

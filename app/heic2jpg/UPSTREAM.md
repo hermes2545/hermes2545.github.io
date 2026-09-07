@@ -1,15 +1,17 @@
 # HEIC to JPG Batch Converter upstream provenance
 
 - Source repository: https://github.com/starlink2569/heic2jpg
-- Source commit: ee777bc671d7e5bb351ca31f4b9e7b7605a74207
-- Commit date: 2026-09-07 16:54:49 +0700
-- Upstream index.html SHA-256: 15a05341a7125bfbc3bc77ea0da446efcdd00e1e840f9db211581033d45c2307
+- Source commit: 05b42790a39316d0232a25650b9940b757de8916
+- Commit date: 2026-09-07 17:07:09 +0700
+- Upstream index.html SHA-256: 925e0b4a6952c459546f43f8c6fb917ccc1d87c845502646e7dffdca0a6c86c5
+- Upstream app icon SHA-256: 46de51a2ecdac7bfa4acdbf9f9de0ea2e9c4b68c36c8ff80df54505cd2b58dda
 - Import mode: hardened-derivative
 
 ## Library changes
 
 - Removed external Google Fonts requests from `index.html` for public-site privacy and offline-friendly loading.
-- Added an 80 MB per-file input guard before HEIC conversion to reduce browser memory blow-ups on the shared Library origin.
+- Kept the upstream app icon at `assets/app-icon.png` and referenced it from the runtime HTML.
+- Retained the existing Library 80 MB per-file input guard before HEIC conversion to reduce browser memory blow-ups on the shared Library origin.
 - Kept vendor libraries local under `vendor/`.
 - Excluded non-runtime files such as `test-sample.heic`, `server.cjs`, `package.json`, `package-lock.json`, and `.git`.
 

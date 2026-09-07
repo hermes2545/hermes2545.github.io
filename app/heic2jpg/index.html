@@ -6,6 +6,7 @@
   <title>HEIC Batch Converter</title>
   <meta name="description" content="แปลงไฟล์ HEIC/HEIF เป็น JPG ทีละหลายไฟล์ พร้อมดาวน์โหลดทีละไฟล์หรือ ZIP เดียว" />
   <!-- LIBRARY PRIVACY HARDENING: removed external Google Fonts requests; local shelf uses system Thai-capable fallbacks. -->
+  <link rel="icon" href="./assets/app-icon.png" />
   <link rel="stylesheet" href="./styles.css" />
   <script defer src="./vendor/heic2any.min.js"></script>
   <script defer src="./vendor/jszip.min.js"></script>
@@ -14,16 +15,19 @@
 <body>
   <main class="shell">
     <section class="hero card">
-      <div>
-        <p class="eyebrow">แอปแปลงรูปแบบไฟล์</p>
-        <h1>HEIC / HEIF → JPG แบบทีละหลายไฟล์</h1>
-        <p class="lead">
-          ลากไฟล์ HEIC/HEIF มาวางได้เลย เลือกได้หลายไฟล์พร้อมกัน แล้วแปลงออกเป็น JPG ทีละไฟล์หรือกดดาวน์โหลดเป็น ZIP ทีเดียวค่ะ
-        </p>
+      <div class="brand-row">
+        <img class="app-icon" src="./assets/app-icon.png" alt="ไอคอน HEIC Batch Converter" />
+        <div>
+          <p class="eyebrow">แอปแปลงรูปแบบไฟล์</p>
+          <h1>HEIC / HEIF → JPG แบบทีละหลายไฟล์</h1>
+        </div>
       </div>
+      <p class="lead">
+        ลากไฟล์ HEIC/HEIF มาวางได้เลย เลือกได้หลายไฟล์พร้อมกัน แล้วแปลงออกเป็น JPG ทีละไฟล์หรือกดดาวน์โหลดเป็น ZIP ทีเดียว
+      </p>
       <div class="hero-badges">
-        <span>Mobile friendly</span>
         <span>Batch convert</span>
+        <span>Portable</span>
         <span>ZIP export</span>
       </div>
     </section>
@@ -33,7 +37,7 @@
         <input id="fileInput" type="file" accept=".heic,.heif,image/heic,image/heif" multiple hidden />
         <div class="dropzone-icon">⬆</div>
         <h2>ลากไฟล์ HEIC/HEIF มาวางตรงนี้</h2>
-        <p>หรือกดปุ่มเลือกไฟล์ด้านล่างได้ค่ะ</p>
+        <p>หรือกดปุ่มเลือกไฟล์ด้านล่าง</p>
         <div class="actions">
           <button id="pickFilesBtn" class="btn btn-primary" type="button">เลือกไฟล์</button>
           <button id="clearBtn" class="btn btn-ghost" type="button" disabled>ล้างรายการ</button>
@@ -49,7 +53,7 @@
 
       <div class="progress-wrap" aria-live="polite">
         <div class="progress-bar"><div id="progressFill"></div></div>
-        <p id="statusText">ยังไม่ได้เลือกไฟล์ค่ะ</p>
+        <p id="statusText">ยังไม่ได้เลือกไฟล์</p>
       </div>
     </section>
 
@@ -57,7 +61,7 @@
       <div class="results-head">
         <div>
           <h2>รายการไฟล์</h2>
-          <p>แต่ละไฟล์จะมีปุ่มดาวน์โหลด JPG แยกได้ และรวม ZIP ได้หลังแปลงเสร็จค่ะ</p>
+          <p>แต่ละไฟล์จะมีปุ่มดาวน์โหลด JPG แยกได้ และรวม ZIP ได้หลังแปลงเสร็จ</p>
         </div>
         <button id="downloadZipBtn" class="btn btn-dark" type="button" disabled>ดาวน์โหลด ZIP</button>
       </div>
@@ -66,7 +70,7 @@
         <div class="empty-state">
           <div class="empty-emoji">🖼️</div>
           <h3>ยังไม่มีไฟล์</h3>
-          <p>เลือกรูป HEIC/HEIF หลายไฟล์ได้เลยค่ะ</p>
+          <p>เลือกรูป HEIC/HEIF หลายไฟล์ได้เลย</p>
         </div>
       </div>
     </section>
