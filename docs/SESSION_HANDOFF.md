@@ -1,13 +1,13 @@
 # Library Session Handoff
 
-Updated: 2026-09-08T00:24:00+07:00
+Updated: 2026-09-08T00:31:00+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
-- Branch: `main` has local Audio Shelf changes for the NotebookLM podcast **สับสวิตช์ดับทุกข์ด้วยฟิสิกส์ควอนตัม: ไตรลักษณ์ใน Quantum Physics**.
+- Branch: `main` published to both Library remotes at `32c8f7c9b1d00dbb9d464eb3555dd08d878453ff` for the NotebookLM podcast **สับสวิตช์ดับทุกข์ด้วยฟิสิกส์ควอนตัม: ไตรลักษณ์ใน Quantum Physics**.
 - YouTube upload is published as Public video `IrGtonl70Ng`: `https://www.youtube.com/watch?v=IrGtonl70Ng`.
-- Audio Shelf catalog now has 57 audio books locally; newest/first item is `IrGtonl70Ng`.
+- Public Audio Shelf now has 57 audio books; newest/first item is `IrGtonl70Ng`.
 - Private production files remain in the local `.hermes/` workspace and must not be staged.
 - One extra draft upload was created during automation troubleshooting and remained private/unpublished; do not delete it without explicit owner approval.
 
@@ -28,7 +28,7 @@ Updated: 2026-09-08T00:24:00+07:00
 - The audio, transcript draft, storyboard setup, final storyboard Markdown/JSON, final MP4, thumbnail, and YouTube upload report were mirrored to the dedicated private project Drive workspace with exact-name upload and read-back verification.
 - Keep Drive file IDs, OAuth/session details, browser profile paths, and other private routing data out of public commits.
 
-## Local public files changed
+## Public files changed in commit `32c8f7c`
 
 - `data/audio-books.json` — adds `IrGtonl70Ng` as the newest Audio Shelf entry.
 - `assets/audio-covers/IrGtonl70Ng.jpg` — 480×360 public cover derived from the clean visual storyboard thumbnail.
@@ -36,7 +36,7 @@ Updated: 2026-09-08T00:24:00+07:00
 - `tests/test_audio_library.py` — updates audio counts and locks the new podcast metadata.
 - `docs/wiki/log.md` and this handoff document — continuity notes.
 
-## Verification completed locally before push
+## Verification completed
 
 - Focused Audio tests initially failed on expected count/latest-item assertions, then were updated to lock the new catalog state.
 - Full local gates passed:
@@ -48,8 +48,13 @@ Updated: 2026-09-08T00:24:00+07:00
   - `git diff --check` → OK.
 - Local Playwright desktop/mobile preview of `audio-library.html` showed 57 cards, the new podcast first, zero horizontal overflow, and the new cover loading on the first card.
 - Public-safety scan over intended public files found no credentials, private absolute paths, EXIF markers in the new cover, or leaked home-directory bytes.
+- Pushed `main` to both remotes; public and private remote HEADs matched `32c8f7c9b1d00dbb9d464eb3555dd08d878453ff`.
+- Production HTTP hash read-back matched Local:
+  - `audio-library.html`: `79685342133b46e6836a3ade6aa87cf0c19e307ee32dce040f501fa4e002fd15`.
+  - `assets/audio-covers/IrGtonl70Ng.jpg`: `321c3292a53f209bc387cdab3b239889d9098aff4cd8b3e39622cb1161c5f68f`.
+- Production Playwright desktop/mobile preview showed 57 cards, new item first, first cover complete at 480px natural width, and zero horizontal overflow.
 
 ## Remaining local state
 
 - `.hermes/` remains untracked private workspace/cache and must not be staged.
-- Temporary local HTTP server and headless Chromium CDP processes should be killed before final close after push verification.
+- Temporary local HTTP server and headless Chromium CDP processes were used during the session and should be checked/killed before final close.
