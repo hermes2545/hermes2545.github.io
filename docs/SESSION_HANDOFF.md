@@ -5,7 +5,7 @@ Updated: 2026-09-08T00:31:00+07:00
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
-- Branch: `main` published to both Library remotes at `724f6059a43859166c11d823898385cb871a16af`; the public Audio Shelf content change is commit `32c8f7c9b1d00dbb9d464eb3555dd08d878453ff`, followed by a handoff verification note.
+- Branch: `main` is published to both Library remotes; the public Audio Shelf content change is commit `32c8f7c9b1d00dbb9d464eb3555dd08d878453ff`, followed by handoff verification note commits.
 - YouTube upload is published as Public video `IrGtonl70Ng`: `https://www.youtube.com/watch?v=IrGtonl70Ng`.
 - Public Audio Shelf now has 57 audio books; newest/first item is `IrGtonl70Ng`.
 - Private production files remain in the local `.hermes/` workspace and must not be staged.
