@@ -1,5 +1,16 @@
 [
   {
+    "id": "grok-bot-interactive-manual",
+    "title": "17 ขั้นตอนการใช้ Grok Bot อย่างมืออาชีพ — Interactive Reference Manual",
+    "short_title": "ใช้ Grok Bot อย่างมืออาชีพ",
+    "href": "grok-bot-interactive-manual.html",
+    "cover": "assets/covers/custom/grok-bot-interactive-manual.webp",
+    "category": "Grok Bot",
+    "summary": "คู่มือ Interactive Reference Manual สองภาษา สำหรับฝึกใช้ Grok Bot อย่างเป็นระบบใน 17 ขั้นตอน ครอบคลุม delegation, persistent roles, shared cloud computer, knowledge base, skills, routines, approvals, AI teamwork, security และ workflow จาก prompt สู่ผลลัพธ์จริง",
+    "accent": "#7FBFFF",
+    "published_at": "2026-09-07T18:56:56+07:00"
+  },
+  {
     "id": "hermes-bot-mode-interactive-manual",
     "title": "Hermes Bot Mode · Interactive Reference Manual",
     "short_title": "Hermes Bot Mode",

@@ -45,6 +45,7 @@ tags: [library, index]
 - [คู่มือ Gemini Live API — สร้าง Voice Agent แบบ Real-Time](../guides/GEMINI_LIVE_API_GUIDE_TH.md)
 - [คู่มือย้าย Hermes Profile ไปยัง Linux Server เครื่องใหม่](../guides/HERMES_PROFILE_MIGRATION_LINUX_SERVER_GUIDE_TH.md)
 - [Visual Art Director Agent — Interactive Reference Manual](../../Visual_Art_Director_Agent_Interactive_Manual.html)
+- [Grok Bot — Bilingual Interactive Reference Manual](../../grok-bot-interactive-manual.html)
 - [Hermes Bot Mode · Interactive Reference Manual](../../hermes-bot-mode-interactive-manual.html)
 
 ## Reports
