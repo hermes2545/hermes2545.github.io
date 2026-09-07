@@ -34,18 +34,18 @@ class AppLibraryTests(unittest.TestCase):
         self.apps = load_apps(CATALOG)
         self.page = render_app_library(self.apps)
 
-    def test_catalog_has_seven_unique_apps_with_required_metadata(self):
+    def test_catalog_has_eight_unique_apps_with_required_metadata(self):
         required = {
             "id", "title", "short_title", "href", "category", "summary",
             "published_at", "source_repository", "source_commit", "source_sha256",
             "import_mode", "sticker", "label",
         }
-        self.assertEqual(len(self.apps), 7)
+        self.assertEqual(len(self.apps), 8)
         self.assertEqual(
             {app["id"] for app in self.apps},
-            {"battle-tank", "bakery-center", "heic2jpg", "loderunner", "pacman", "pdf-password-remover", "tumngern"},
+            {"battle-tank", "bakery-center", "heic2jpg", "loderunner", "pacman", "pdf-password-remover", "travis-pocket", "tumngern"},
         )
-        self.assertEqual(len({app["href"] for app in self.apps}), 7)
+        self.assertEqual(len({app["href"] for app in self.apps}), 8)
         for app in self.apps:
             self.assertTrue(required <= app.keys(), app)
             self.assertRegex(app["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
@@ -59,7 +59,7 @@ class AppLibraryTests(unittest.TestCase):
             self.assertEqual(set(app["label"]), {"kicker", "mark", "version", "primary", "accent", "ink"})
             for color in ("primary", "accent", "ink"):
                 self.assertRegex(app["label"][color], r"^#[0-9A-Fa-f]{6}$")
-            if app["id"] in {"bakery-center", "heic2jpg", "pdf-password-remover"}:
+            if app["id"] in {"bakery-center", "heic2jpg", "pdf-password-remover", "travis-pocket"}:
                 self.assertIsNone(app["sticker"])
             else:
                 self.assertEqual(app["sticker"], f'assets/app-stickers/{app["id"]}.webp')
@@ -98,6 +98,11 @@ class AppLibraryTests(unittest.TestCase):
                 "app/pdf-password-remover.html",
                 None,
                 None,
+            ),
+            "travis-pocket": (
+                "app/travis-pocket.html",
+                "https://github.com/p2544/travis-picking",
+                "093c364f7b94d402e43a7335f4eb7ff64a5dd675",
             ),
             "tumngern": (
                 "app/tumngern.html",
@@ -224,6 +229,22 @@ class AppLibraryTests(unittest.TestCase):
         self.assertIn("heic2any 0.0.4 — MIT", upstream)
         self.assertIn("JSZip 3.10.1 — MIT OR GPL-3.0-or-later", upstream)
 
+    def test_travis_pocket_preserves_standalone_guitar_practice_app(self):
+        app = next(app for app in self.apps if app["id"] == "travis-pocket")
+        source_path = ROOT / app["href"]
+        source = source_path.read_text(encoding="utf-8")
+
+        self.assertEqual(app["import_mode"], "preserved")
+        self.assertEqual(app["source_sha256"], "f7e69325cdbeff6f0a64c50a237457f673f0b47bc66e505272ff5e548ef06701")
+        self.assertEqual(hashlib.sha256(source_path.read_bytes()).hexdigest(), app["source_sha256"])
+        self.assertIn("Travis Pocket • ฝึกกีตาร์ออฟไลน์", source)
+        self.assertIn("Dust in the Wind", source)
+        self.assertIn("localStorage.getItem(`travis-pocket-v1`)", source)
+        self.assertIn("AudioContext", source)
+        self.assertIn("TheGuitarLesson", source)
+        self.assertEqual(source.count("<script"), 2)
+        self.assertNotIn("<script src=", source)
+
     def test_loderunner_keeps_upstream_runtime_unchanged_behind_stable_wrapper(self):
         wrapper = (ROOT / "app" / "loderunner.html").read_text(encoding="utf-8")
         runtime = ROOT / "app" / "loderunner" / "lodeRunner.html"
@@ -245,7 +266,7 @@ class AppLibraryTests(unittest.TestCase):
     def test_apps_sort_newest_first(self):
         timestamps = [app["published_at"] for app in self.apps]
         self.assertEqual(timestamps, sorted(timestamps, reverse=True))
-        self.assertEqual(self.apps[0]["id"], "heic2jpg")
+        self.assertEqual(self.apps[0]["id"], "travis-pocket")
 
     def test_pacman_preserves_browser_runtime_and_gpl_license(self):
         app = next(app for app in self.apps if app["id"] == "pacman")
@@ -269,14 +290,14 @@ class AppLibraryTests(unittest.TestCase):
             self.assertFalse((ROOT / "assets" / "app-stickers" / f"{app_id}.webp").exists(), app_id)
 
     def test_page_renders_each_app_as_a_three_and_half_inch_diskette(self):
-        self.assertEqual(self.page.count('class="app-card"'), 7)
-        self.assertEqual(self.page.count('class="diskette"'), 7)
-        self.assertEqual(self.page.count('class="diskette-shutter"'), 7)
-        self.assertEqual(self.page.count('class="diskette-label'), 7)
-        self.assertEqual(self.page.count('class="diskette-hub"'), 7)
+        self.assertEqual(self.page.count('class="app-card"'), 8)
+        self.assertEqual(self.page.count('class="diskette"'), 8)
+        self.assertEqual(self.page.count('class="diskette-shutter"'), 8)
+        self.assertEqual(self.page.count('class="diskette-label'), 8)
+        self.assertEqual(self.page.count('class="diskette-hub"'), 8)
         self.assertEqual(self.page.count('class="diskette-sticker"'), 4)
-        self.assertEqual(self.page.count('target="_blank"'), 15)
-        self.assertEqual(self.page.count('rel="noopener"'), 15)
+        self.assertEqual(self.page.count('target="_blank"'), 17)
+        self.assertEqual(self.page.count('rel="noopener"'), 17)
         self.assertIn('class="footer-facebook-link"', self.page)
         for app in self.apps:
             self.assertEqual(self.page.count(f'href="{app["href"]}"'), 3)

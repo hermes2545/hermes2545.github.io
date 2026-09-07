@@ -1,5 +1,27 @@
 [
   {
+    "id": "travis-pocket",
+    "title": "Travis Pocket — ฝึกกีตาร์ออฟไลน์",
+    "short_title": "Travis Pocket",
+    "href": "app/travis-pocket.html",
+    "category": "Music Practice",
+    "summary": "แอปฝึกกีตาร์ภาษาไทยสำหรับ Travis picking พร้อมแผนภาพนิ้วซ้าย อินโทร Dust in the Wind การวนช่วง ปรับ BPM เสียงสังเคราะห์ และชุดคอร์ดที่ตั้งเอง",
+    "published_at": "2026-09-07T20:29:53+07:00",
+    "source_repository": "https://github.com/p2544/travis-picking",
+    "source_commit": "093c364f7b94d402e43a7335f4eb7ff64a5dd675",
+    "source_sha256": "f7e69325cdbeff6f0a64c50a237457f673f0b47bc66e505272ff5e548ef06701",
+    "import_mode": "preserved",
+    "sticker": null,
+    "label": {
+      "kicker": "GUITAR PRACTICE",
+      "mark": "TP",
+      "version": "TRAVIS · BPM",
+      "primary": "#F1E7D0",
+      "accent": "#2A9D8F",
+      "ink": "#102724"
+    }
+  },
+  {
     "id": "battle-tank",
     "title": "Tank Battle — Classic Arcade",
     "short_title": "Battle Tank",
