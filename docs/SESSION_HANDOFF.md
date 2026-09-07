@@ -1,56 +1,55 @@
 # Library Session Handoff
 
-Updated: 2026-09-07T21:10:00+07:00
+Updated: 2026-09-08T00:24:00+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
-- Branch: `main` published to both Library remotes at `82c4f9182b01008cde5f0f5d763b836617e1e92d` for the Travis Pocket App addition.
-- Public App Shelf now contains 8 apps; the newest/first card is `travis-pocket`.
-- Private local work cache `.hermes/` remains untracked; do not stage private workspace files.
-- No background processes remain running from this task.
+- Branch: `main` has local Audio Shelf changes for the NotebookLM podcast **สับสวิตช์ดับทุกข์ด้วยฟิสิกส์ควอนตัม: ไตรลักษณ์ใน Quantum Physics**.
+- YouTube upload is published as Public video `IrGtonl70Ng`: `https://www.youtube.com/watch?v=IrGtonl70Ng`.
+- Audio Shelf catalog now has 57 audio books locally; newest/first item is `IrGtonl70Ng`.
+- Private production files remain in the local `.hermes/` workspace and must not be staged.
+- One extra draft upload was created during automation troubleshooting and remained private/unpublished; do not delete it without explicit owner approval.
 
-## App addition published
+## Podcast/storyboard production completed
 
-- Added **Travis Pocket — ฝึกกีตาร์ออฟไลน์** from `https://github.com/p2544/travis-picking`.
-- Source commit pinned: `093c364f7b94d402e43a7335f4eb7ff64a5dd675`.
-- Imported the browser-ready single-file build byte-for-byte from upstream `docs/index.html` to `app/travis-pocket.html`.
-- Stable Library URL: `app/travis-pocket.html`.
-- SHA-256: `f7e69325cdbeff6f0a64c50a237457f673f0b47bc66e505272ff5e548ef06701`.
-- Catalog record added at the top of `data/apps.json` with `import_mode: preserved`, category `Music Practice`, no sticker, and diskette label `TP / GUITAR PRACTICE / TRAVIS · BPM`.
-- Regenerated `app-library.html`; App Shelf renders 8 apps with Travis Pocket first/newest.
-- Source review notes: the app uses same-origin browser storage key `travis-pocket-v1`, Web Audio `AudioContext`, no external script source tags, and one public reference link to TheGuitarLesson PDF.
+- Source Notebook: `The Three Marks of Existence in Quantum Physics`.
+- Source Notebook document observed: `1.1 E-book ไตรลักษณ์ในควอนตัม สิรวิชญ์ รัตน์จินดา.pdf`.
+- Downloaded/validated audio file: `สับสวิตช์ดับทุกข์ด้วยฟิสิกส์ควอนตัม.m4a`.
+- Audio technical validation: M4A/AAC LC stereo 44.1 kHz, `20:14.171`, `19,650,825` bytes, full decode passed, no silence segments >= 2 seconds, loudness `-18.19 LUFS`, true peak `-2.91 dBTP`.
+- Visual direction selected by owner: Style 12 Blueprint Systems Visualization + Style 21 Symbolic Surreal Editorial + Style 10 Modern Museum Exhibit Illustration.
+- Storyboard output: 24 timed scenes in private Markdown/JSON package.
+- Final video QA: H.264/AAC 1080p MP4, `20:14.171`, full decode passed; frame-sheet visual QA confirmed no black/broken frames, no text overlay, no lower-third, and no border/frame overlay.
+- YouTube Studio read-back: title `สับสวิตช์ดับทุกข์ด้วยฟิสิกส์ควอนตัม: ไตรลักษณ์ใน Quantum Physics`, video link `https://youtu.be/IrGtonl70Ng`, checks complete/no issues, Public, published Sep 8 2026.
+- Public watch-page browser read-back returned title `สับสวิตช์ดับทุกข์ด้วยฟิสิกส์ควอนตัม: ไตรลักษณ์ใน Quantum Physics - YouTube`.
 
-## Verification completed before publication
+## Private archive
 
-- RED test before implementation:
-  - Focused App tests failed because `travis-pocket` was absent.
-- Focused GREEN:
-  - Same focused App tests passed after import.
-- Full local gates before push:
+- The audio, transcript draft, storyboard setup, final storyboard Markdown/JSON, final MP4, thumbnail, and YouTube upload report were mirrored to the dedicated private project Drive workspace with exact-name upload and read-back verification.
+- Keep Drive file IDs, OAuth/session details, browser profile paths, and other private routing data out of public commits.
+
+## Local public files changed
+
+- `data/audio-books.json` — adds `IrGtonl70Ng` as the newest Audio Shelf entry.
+- `assets/audio-covers/IrGtonl70Ng.jpg` — 480×360 public cover derived from the clean visual storyboard thumbnail.
+- `audio-library.html` — regenerated from the audio catalog.
+- `tests/test_audio_library.py` — updates audio counts and locks the new podcast metadata.
+- `docs/wiki/log.md` and this handoff document — continuity notes.
+
+## Verification completed locally before push
+
+- Focused Audio tests initially failed on expected count/latest-item assertions, then were updated to lock the new catalog state.
+- Full local gates passed:
   - `python -m unittest discover -s tests -v` → OK, 130 tests.
   - `python scripts/build_catalog.py --check` → current, 33 books.
-  - `python scripts/build_audio_library.py --check` → current, 56 audio books.
+  - `python scripts/build_audio_library.py --check` → current, 57 audio books.
   - `python scripts/build_app_library.py --check` → current, 8 apps.
   - `python scripts/build_gallery.py --check` → current, 8 artworks.
   - `git diff --check` → OK.
-- Local HTTP read-back returned 200 for `app-library.html` and `app/travis-pocket.html`.
-- Static DOM parse confirmed 8 App cards; first card is `travis-pocket` and its title/open/download links all point to `app/travis-pocket.html`.
-- Public-safety scan over intended public App files found no real credentials, tokens, or private local path/URL findings in the catalog, generated App page, or Travis HTML.
-- Browser-tool local navigation and temporary Playwright execution were unavailable in this environment, so browser visual QA was substituted with tests, HTTP read-back, static DOM checks, and production hash read-back.
-
-## Publication verification completed
-
-- Commit: `82c4f9182b01008cde5f0f5d763b836617e1e92d` (`Add Travis Pocket app`).
-- Pushed `main` to both remotes:
-  - `origin/main`: `82c4f9182b01008cde5f0f5d763b836617e1e92d`
-  - `backup/main`: `82c4f9182b01008cde5f0f5d763b836617e1e92d`
-- GitHub CLI Actions metadata was unavailable because `gh` is not authenticated in this environment; verification used remote HEAD equality plus production HTTP read-back.
-- Production hash read-back matched Local:
-  - `app-library.html`: `07cb6619c4399c3991f5a611870c4ff8d7bd9b4f9ac840c297c7c9238d3bf440`
-  - `app/travis-pocket.html`: `f7e69325cdbeff6f0a64c50a237457f673f0b47bc66e505272ff5e548ef06701`
+- Local Playwright desktop/mobile preview of `audio-library.html` showed 57 cards, the new podcast first, zero horizontal overflow, and the new cover loading on the first card.
+- Public-safety scan over intended public files found no credentials, private absolute paths, EXIF markers in the new cover, or leaked home-directory bytes.
 
 ## Remaining local state
 
-- A documentation follow-up commit may be needed for this updated handoff after publication verification.
 - `.hermes/` remains untracked private workspace/cache and must not be staged.
+- Temporary local HTTP server and headless Chromium CDP processes should be killed before final close after push verification.
