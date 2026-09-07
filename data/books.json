@@ -1,5 +1,16 @@
 [
   {
+    "id": "hermes-bot-mode-interactive-manual",
+    "title": "Hermes Bot Mode · Interactive Reference Manual",
+    "short_title": "Hermes Bot Mode",
+    "href": "hermes-bot-mode-interactive-manual.html",
+    "cover": "assets/covers/custom/hermes-bot-mode-interactive-manual.webp",
+    "category": "Hermes Guide",
+    "summary": "คู่มือ Interactive Reference Manual สรุปแนวคิด Hermes Bot Mode สำหรับออกแบบทีมบอทแบบ Orchestrator, Researcher และ Librarian พร้อมแนวทาง communication modes, research experiment, best practices, risk analysis, setup checklist และ ideal architecture",
+    "accent": "#8A7A5A",
+    "published_at": "2026-09-07T14:29:47+07:00"
+  },
+  {
     "id": "podcast-visual-storyboard-ai-prompting",
     "title": "Podcast Visual Storyboard & AI Image Prompting",
     "short_title": "Podcast Visual Storyboard",

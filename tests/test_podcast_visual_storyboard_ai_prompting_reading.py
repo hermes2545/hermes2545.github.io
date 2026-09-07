@@ -48,7 +48,7 @@ class PodcastVisualStoryboardAIPromptingReadingTests(unittest.TestCase):
         self.assertRegex(book["published_at"], r"^2026-09-0[12]T\d{2}:\d{2}:\d{2}\+07:00$")
         self.assertIn("podcast", book["summary"].lower())
         self.assertIn("storyboard", book["summary"].lower())
-        self.assertEqual(books[0]["id"], BOOK_ID)
+        self.assertEqual(books[1]["id"], BOOK_ID)
 
     def test_source_markdown_is_public_safe_and_preserved(self):
         self.assertTrue(SOURCE_MD.is_file())
