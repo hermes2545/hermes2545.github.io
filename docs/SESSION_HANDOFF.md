@@ -1,11 +1,11 @@
 # Library Session Handoff
 
-Updated: 2026-09-09T22:56:57+07:00
+Updated: 2026-09-09T23:54:27+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
-- Branch: `main` is published to both Library remotes. Latest content commit: `1bb731e6d61aecf8318de8f2aa02b98677877cb0` (`Add CSS 3D reading cover peek`).
+- Branch: `main` is published to both Library remotes. Latest content commit: `d65bd703c044ab939356823f77e2fb7382a40bd6` (`Lower reading books closer to shelf`).
 - Public Reading Shelf has 34 books; every generated Reading card now uses the CSS 3D front-cover peek effect.
 - Newest/first item remains **งานของผม** at `WHAT-I-DO-final.html`.
 - Private production files and browser/tool caches remain in the local private workspace and must not be staged.
@@ -33,6 +33,13 @@ Updated: 2026-09-09T22:56:57+07:00
 - Pushed `main` to `origin` and `backup`; both remote HEADs matched `1bb731e6d61aecf8318de8f2aa02b98677877cb0`.
 - Production HTTP hash read-back matched Local for `index.html` and `assets/css/reading-library.css` on the first cache-busted attempt.
 - Production Playwright desktop/mobile checks confirmed the same 34-card/34-volume shape, hover behavior, reduced-motion behavior, and zero horizontal overflow.
+
+## Reading Shelf 3px clearance adjustment
+
+- Commit `d65bd703c044ab939356823f77e2fb7382a40bd6` lowers all Reading Shelf books closer to the shelf after owner review.
+- The Reading-specific CSS keeps the cover wrapper at `padding: 16px 16px 0` and sets `.reading-page .book-grid { padding-bottom: .875rem; }`, which measured as a 3px book-to-shelf gap on both desktop and 390px mobile.
+- The adjustment does not change the CSS 3D front-cover hinge: real cover images still rotate from the left spine, paper blocks stay behind, cards do not pop upward, and reduced-motion behavior remains intact.
+- Verification passed 134 tests, all generated-page checks, `git diff --check`, pre-share scan, local Playwright desktop/mobile geometry, Production hash read-back, and Production Playwright desktop/mobile geometry (`firstGapPx`, `minGapPx`, and `maxGapPx` all 3px).
 
 ## Recent What I Do publication context
 
