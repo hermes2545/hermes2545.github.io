@@ -11,8 +11,8 @@ ROOT = Path(__file__).resolve().parents[1]
 BOOK_ID = "what-i-do"
 HTML_PATH = ROOT / "WHAT-I-DO-final.html"
 COVER_PATH = ROOT / "assets" / "covers" / "custom" / f"{BOOK_ID}.webp"
-SUPPLIED_HTML_SHA256 = "d81ba5282a99e4089e57721f0e3e5b5524d653cf05ba1ec4da4644bbe5389051"
-COVER_SOURCE_SHA256 = "4c2192a83b4162ba169bc99046c00a7ecd7f828976024e3c06b6acb123a5714c"
+SUPPLIED_HTML_SHA256 = "98d44ad1f69aede0b8015cd343984485461f2b67971338e774e0c02eddef3e0a"
+COVER_SOURCE_SHA256 = "564754b2107b58f864b14bf429fea22e29104f66116cdc985193c7ee33084014"
 PROHIBITED_PUBLIC_RE = re.compile(
     "|".join(
         [
@@ -112,7 +112,8 @@ class WhatIDoReadingTests(unittest.TestCase):
         template_text = template.read_text(encoding="utf-8")
         self.assertIn(COVER_SOURCE_SHA256, template_text)
         self.assertIn("owner-supplied", template_text)
-        self.assertIn("no added white padding", template_text)
+        self.assertIn("no padding", template_text)
+        self.assertIn("no added white border", template_text)
 
 
 if __name__ == "__main__":
