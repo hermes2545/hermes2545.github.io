@@ -1,11 +1,11 @@
 # Library Session Handoff
 
-Updated: 2026-09-09T20:55:00+07:00
+Updated: 2026-09-09T21:20:00+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
-- Branch: `main` is published to both Library remotes. Latest content commit: `a71657666edeafaf0006d498bca2645168202d8a` (`Improve What I Do cover crop`).
+- Branch: `main` is published to both Library remotes. Latest content commit: `d260006ce549e80c6d562bed8e12858502de368a` (`Replace What I Do guide and cover`).
 - Public Reading Shelf now has 34 books; newest/first item is **งานของผม** at `WHAT-I-DO-final.html`.
 - Private production files and browser/tool caches remain in the local `.hermes/` workspace and must not be staged.
 
@@ -47,3 +47,11 @@ Updated: 2026-09-09T20:55:00+07:00
 - Local verification passed `python -m unittest tests.test_what_i_do_reading -v`, 133 full tests, all four generated-page drift checks, `git diff --check`, pre-share scan, and Playwright desktop/mobile cover preview.
 - Pushed the correction to both remotes; Production cover/template hashes matched Local after cache-busted read-back.
 - Production Playwright desktop/mobile confirmed 34 Reading cards, **งานของผม** first, `WHAT-I-DO-final.html` href, cover natural size 600×900, and zero horizontal overflow.
+
+## Replacement mobile-fixed HTML and final cover
+
+- Owner supplied replacement HTML `WHAT-I-DO-mobile-fixed.html` and a new physical-book-style cover; both were used to replace the existing **งานของผม** item at the stable public URL/path.
+- Commit `d260006ce549e80c6d562bed8e12858502de368a` replaced `WHAT-I-DO-final.html`, `assets/covers/custom/what-i-do.webp`, `templates/what-i-do-cover.template.md`, and updated `tests/test_what_i_do_reading.py`.
+- Current deployed HTML SHA-256: `98d44ad1f69aede0b8015cd343984485461f2b67971338e774e0c02eddef3e0a`.
+- Current deployed cover SHA-256: `113629318f32a35fd328b2090388fc0270cf50c54a5fd73470cea3845916d549`; normalized from a 1024×1536 RGBA PNG to a 600×900 RGB WebP with no crop, no padding, and no added border because the supplied art was already 2:3.
+- Local and Production verification passed: 133 tests, generated page checks, pre-share scan, desktop/mobile shelf/manual DOM checks, production hash read-back for `index.html`, `WHAT-I-DO-final.html`, and cover, with zero horizontal overflow.
