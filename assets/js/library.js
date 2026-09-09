@@ -147,6 +147,7 @@
       const matchesQuery = !query || normalize(card.dataset.search).includes(query);
       const matchesDisclosure = !isAudio || Boolean(query) || matchesAudioDisclosure(card, index);
       card.hidden = !(matchesCategory && matchesQuery && matchesDisclosure);
+      if (card.hidden) card.classList.remove("is-open");
       if (!card.hidden) visible += 1;
     });
 
@@ -198,6 +199,21 @@
     activeCategory = activeCategory === selected ? "" : selected;
     updateCatalog();
   });
+
+  function bindReadingCoverHoverFallback() {
+    if (isAudio) return;
+
+    cards.forEach((card) => {
+      const setOpen = (open) => card.classList.toggle("is-open", open);
+      card.addEventListener("pointerenter", () => setOpen(true));
+      card.addEventListener("mouseenter", () => setOpen(true));
+      card.addEventListener("mousemove", () => setOpen(true));
+      card.addEventListener("pointerleave", () => setOpen(false));
+      card.addEventListener("mouseleave", () => setOpen(false));
+      card.addEventListener("focusin", () => setOpen(true));
+      card.addEventListener("focusout", () => setOpen(false));
+    });
+  }
 
   if (isAudio && audioControls) {
     audioShowMore.addEventListener("click", () => {
@@ -255,5 +271,6 @@
     buildAudioYearFilters();
     audioControls.hidden = false;
   }
+  bindReadingCoverHoverFallback();
   layoutShelves();
 })();

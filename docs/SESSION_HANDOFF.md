@@ -1,12 +1,13 @@
 # Library Session Handoff
 
-Updated: 2026-09-10T00:23:41+07:00
+Updated: 2026-09-10T01:05:46+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
 - Branch: `main` is published to both Library remotes. Latest content commit: `4a50a418ada63a54df2c6b848f4773b98a861046` (`Fix reading cover hover perspective`).
 - Public Reading Shelf has 34 books; every generated Reading card now uses the CSS 3D front-cover peek effect.
+- Local working tree has an unpushed Reading Shelf hover fallback update prepared after the owner confirmed the standalone v2 hover/JS test worked.
 - Newest/first item remains **งานของผม** at `WHAT-I-DO-final.html`.
 - Private production files and browser/tool caches remain in the local private workspace and must not be staged.
 
@@ -49,6 +50,17 @@ Updated: 2026-09-10T00:23:41+07:00
 - The fix preserves the owner-approved contract: only the front cover rotates, `cardTransform` remains `none`, the shelf clearance stays at 3px, keyboard focus still opens the cover, and reduced-motion users get no transform.
 - Production Playwright verified desktop/mobile: 34 cards, 34 cover volumes, `volumePerspective: 1100px`, hover `coverTransform: matrix3d(...)`, `cardTransform: none`, gap/minGap/maxGap all 3px, reduced-motion transform `none`, and zero horizontal overflow.
 
+## Reading Shelf hover fallback v3 — local, not pushed yet
+
+- Owner tested the standalone v2 HTML proof and reported it works; the real shelf now mirrors that fallback pattern without the test buttons.
+- `assets/css/reading-library.css` now removes the hover media-query gate for the cover reveal and also opens from `.reading-page .book-card.is-open .book-cover`.
+- `assets/js/library.js` now binds Reading-only `pointerenter`, `mouseenter`, `mousemove`, `pointerleave`, `mouseleave`, `focusin`, and `focusout` events to toggle `.is-open` on `.book-card`; hidden cards clear the state.
+- `templates/index.template.html` and regenerated `index.html` now cache-bust both `reading-library.css` and `library.js` with `v=reading-cover-hover-v3` so the owner does not receive stale assets.
+- TDD evidence: focused tests were first made to fail for the missing `.is-open` fallback and v3 cache-bust, then passed after the source changes.
+- Verification passed locally: `python -m unittest discover -s tests -v` → OK, 134 tests; all four generated-page checks current; `git diff --check` OK; pre-share scan of touched public files clean.
+- Local Playwright verified the actual Reading page on desktop and 390px mobile: v3 CSS/JS loaded, `.is-open=true` after hover, cover `matrix3d(...)`, `cardTransform: none`, `perspective: 1100px`, zero horizontal overflow, and no console/page errors.
+- Preview screenshots remain private/untracked and must not be staged.
+
 ## Recent What I Do publication context
 
 - Owner supplied replacement HTML `WHAT-I-DO-mobile-fixed.html` and a final physical-book-style cover; both replaced the existing **งานของผม** item at the stable public URL/path in commit `d260006ce549e80c6d562bed8e12858502de368a`.
@@ -59,3 +71,4 @@ Updated: 2026-09-10T00:23:41+07:00
 
 - Local private workspace/cache files remain untracked and must not be staged.
 - No local preview HTTP server should remain running after close.
+- Unpushed public/source files currently modified for the v3 hover fallback: `assets/css/reading-library.css`, `assets/js/library.js`, `templates/index.template.html`, `index.html`, `tests/test_build_catalog.py`, plus this log/handoff documentation.
