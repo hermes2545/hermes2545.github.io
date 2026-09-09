@@ -1,5 +1,16 @@
 [
   {
+    "id": "what-i-do",
+    "title": "งานของผม",
+    "short_title": "งานของผม",
+    "href": "WHAT-I-DO-final.html",
+    "cover": "assets/covers/custom/what-i-do.webp",
+    "category": "Work System",
+    "summary": "คู่มือภาพรวมงานที่ดูแลในองค์กร ตั้งแต่งานขาย ใบเสนอราคา จัดซื้อ โลจิสติกส์ เอกสารการเงิน คลังสินค้า Support, process improvement, AI Agent, automation, project management, software, research, infrastructure, security, visual design, media และ content communication",
+    "accent": "#E53935",
+    "published_at": "2026-09-09T00:00:00+07:00"
+  },
+  {
     "id": "grok-bot-interactive-manual",
     "title": "17 ขั้นตอนการใช้ Grok Bot อย่างมืออาชีพ — Interactive Reference Manual",
     "short_title": "ใช้ Grok Bot อย่างมืออาชีพ",

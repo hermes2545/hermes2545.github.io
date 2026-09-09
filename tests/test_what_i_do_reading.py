@@ -8,11 +8,11 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-BOOK_ID = "hermes-bot-mode-interactive-manual"
-HTML_PATH = ROOT / "hermes-bot-mode-interactive-manual.html"
+BOOK_ID = "what-i-do"
+HTML_PATH = ROOT / "WHAT-I-DO-final.html"
 COVER_PATH = ROOT / "assets" / "covers" / "custom" / f"{BOOK_ID}.webp"
-SUPPLIED_HTML_SHA256 = "c7724865fe16653fe4156810138693e4e836ece4d45636be38e1f8d50db12258"
-COVER_SOURCE_SHA256 = "bd21f0264d1b57277c643dae8f5550dcf10c7a5aca801b89972cdea763b7cc2a"
+SUPPLIED_HTML_SHA256 = "d81ba5282a99e4089e57721f0e3e5b5524d653cf05ba1ec4da4644bbe5389051"
+COVER_SOURCE_SHA256 = "4c2192a83b4162ba169bc99046c00a7ecd7f828976024e3c06b6acb123a5714c"
 PROHIBITED_PUBLIC_RE = re.compile(
     "|".join(
         [
@@ -30,46 +30,50 @@ PROHIBITED_PUBLIC_RE = re.compile(
 )
 
 
-class HermesBotModeReadingTests(unittest.TestCase):
-    def test_catalog_contains_hermes_bot_mode_manual_once(self):
+class WhatIDoReadingTests(unittest.TestCase):
+    def test_catalog_contains_what_i_do_once_as_newest(self):
         books = json.loads((ROOT / "data" / "books.json").read_text(encoding="utf-8"))
         matches = [book for book in books if book["id"] == BOOK_ID]
         self.assertEqual(len(matches), 1)
         book = matches[0]
-        self.assertEqual(book["title"], "Hermes Bot Mode · Interactive Reference Manual")
-        self.assertEqual(book["short_title"], "Hermes Bot Mode")
-        self.assertEqual(book["href"], "hermes-bot-mode-interactive-manual.html")
+        self.assertEqual(book["title"], "งานของผม")
+        self.assertEqual(book["short_title"], "งานของผม")
+        self.assertEqual(book["href"], "WHAT-I-DO-final.html")
         self.assertEqual(book["cover"], f"assets/covers/custom/{BOOK_ID}.webp")
-        self.assertEqual(book["category"], "Hermes Guide")
-        self.assertEqual(book["published_at"], "2026-09-07T14:29:47+07:00")
-        self.assertIn("Bot Mode", book["summary"])
-        self.assertEqual(books[2]["id"], BOOK_ID)
+        self.assertEqual(book["category"], "Work System")
+        self.assertEqual(book["published_at"], "2026-09-09T00:00:00+07:00")
+        self.assertIn("งานขาย", book["summary"])
+        self.assertIn("AI Agent", book["summary"])
+        self.assertEqual(books[0]["id"], BOOK_ID)
 
-    def test_owner_supplied_html_is_preserved_byte_for_byte(self):
+    def test_owner_supplied_html_content_is_preserved(self):
         self.assertTrue(HTML_PATH.is_file())
         html = HTML_PATH.read_text(encoding="utf-8")
         self.assertEqual(hashlib.sha256(HTML_PATH.read_bytes()).hexdigest(), SUPPLIED_HTML_SHA256)
-        self.assertIn("Hermes Bot Mode · Interactive Reference Manual", html)
-        self.assertIn("Research Note: “Is Hermes Bot Mode Worth It?", html)
-        self.assertEqual(html.count("<h2"), 14)
-        self.assertEqual(html.count("<h3"), 23)
-        self.assertEqual(html.count("<section"), 15)
+        self.assertIn("<title>งานของผม</title>", html)
+        self.assertIn("งานที่ดูแลในองค์กร", html)
+        self.assertIn("AI Agent และระบบ Multi-Agent", html)
+        self.assertIn("Storyboard, Podcast, Audio และ Video", html)
+        self.assertEqual(html.count('<section class="page-section'), 21)
+        self.assertEqual(html.count('<button class="nav-item"'), 20)
+        self.assertEqual(html.count('<article class="detail-card"'), 60)
         for marker in (
-            "Bot Mode คืออะไร",
-            "Team Design ในคลิป",
-            "Orchestrator",
-            "Researcher",
-            "Librarian",
-            "Communication Modes",
-            "Practical Setup Checklist",
-            "Suggested “Ideal Architecture”",
+            "mobile-menu",
+            "langToggle",
+            "searchBtn",
+            "fontUp",
+            "themeBtn",
+            "coverArtBtn",
             "localStorage",
-            "navigator.clipboard",
             "@media print",
         ):
             self.assertIn(marker, html)
         self.assertNotRegex(html, PROHIBITED_PUBLIC_RE)
-        scripts = "\n".join(re.findall(r"<script[^>]*>(.*?)</script>", html, flags=re.S))
+        scripts = "\n".join(
+            body
+            for attrs, body in re.findall(r"<script([^>]*)>(.*?)</script>", html, flags=re.S | re.I)
+            if "application/json" not in attrs
+        )
         result = subprocess.run(
             ["node", "--check"],
             input=scripts,
@@ -90,9 +94,11 @@ class HermesBotModeReadingTests(unittest.TestCase):
             self.assertEqual(getattr(image, "n_frames", 1), 1)
             self.assertEqual(len(image.getexif()), 0)
         self.assertGreater(COVER_PATH.stat().st_size, 30_000)
-        template = ROOT / "templates" / "hermes-bot-mode-interactive-manual-cover.template.md"
+        template = ROOT / "templates" / "what-i-do-cover.template.md"
         self.assertTrue(template.is_file())
-        self.assertIn(COVER_SOURCE_SHA256, template.read_text(encoding="utf-8"))
+        template_text = template.read_text(encoding="utf-8")
+        self.assertIn(COVER_SOURCE_SHA256, template_text)
+        self.assertIn("owner-supplied", template_text)
 
 
 if __name__ == "__main__":
