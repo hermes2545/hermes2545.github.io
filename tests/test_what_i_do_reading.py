@@ -93,12 +93,26 @@ class WhatIDoReadingTests(unittest.TestCase):
             self.assertEqual(image.mode, "RGB")
             self.assertEqual(getattr(image, "n_frames", 1), 1)
             self.assertEqual(len(image.getexif()), 0)
+            pixels = image.convert("RGB")
         self.assertGreater(COVER_PATH.stat().st_size, 30_000)
+        bg = pixels.getpixel((0, 0))
+        def changed_fraction(y: int) -> float:
+            changed = 0
+            for x in range(pixels.width):
+                px = pixels.getpixel((x, y))
+                if sum((px[channel] - bg[channel]) ** 2 for channel in range(3)) ** 0.5 > 18:
+                    changed += 1
+            return changed / pixels.width
+        first_content_row = next(y for y in range(pixels.height) if changed_fraction(y) > 0.05)
+        last_content_row = next(y for y in range(pixels.height - 1, -1, -1) if changed_fraction(y) > 0.05)
+        self.assertLess(first_content_row, 45)
+        self.assertEqual(last_content_row, 899)
         template = ROOT / "templates" / "what-i-do-cover.template.md"
         self.assertTrue(template.is_file())
         template_text = template.read_text(encoding="utf-8")
         self.assertIn(COVER_SOURCE_SHA256, template_text)
         self.assertIn("owner-supplied", template_text)
+        self.assertIn("no added white padding", template_text)
 
 
 if __name__ == "__main__":
