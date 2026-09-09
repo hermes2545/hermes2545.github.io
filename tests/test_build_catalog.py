@@ -75,6 +75,29 @@ class HomepageBuildTests(unittest.TestCase):
         for card in cards:
             self.assertLess(card.index('class="book-meta"'), card.index('class="book-cover-wrap"'))
 
+    def test_reading_book_cover_uses_stable_css_3d_front_cover_peek(self):
+        cards = self.html.split('<article class="book-card"')[1:]
+        self.assertEqual(len(cards), len(self.books))
+        for card in cards:
+            self.assertIn('class="book-cover-volume"', card)
+            self.assertLess(card.index('class="book-cover-volume"'), card.index('class="book-cover"'))
+        stylesheet = (ROOT / "assets" / "css" / "reading-library.css").read_text(encoding="utf-8")
+        self.assertIn(".reading-page .book-cover-wrap", stylesheet)
+        self.assertIn("perspective: 1100px;", stylesheet)
+        self.assertIn("isolation: isolate;", stylesheet)
+        self.assertIn(".reading-page .book-cover-volume::before", stylesheet)
+        self.assertIn("repeating-linear-gradient", stylesheet)
+        self.assertIn("transform-origin: left center;", stylesheet)
+        self.assertIn("rotateY(-24deg)", stylesheet)
+        self.assertIn("1.05s cubic-bezier(.42, 0, .2, 1)", stylesheet)
+        self.assertIn("@media (hover: hover)", stylesheet)
+        self.assertIn(".reading-page .book-cover-link:hover .book-cover", stylesheet)
+        self.assertIn(".reading-page .book-cover-link:focus-visible .book-cover", stylesheet)
+        self.assertIn("pointer-events: none;", stylesheet)
+        self.assertIn("@media (prefers-reduced-motion: reduce)", stylesheet)
+        self.assertIn("transform: none;", stylesheet)
+        self.assertNotIn(".reading-page .book-card:hover { z-index: 2; transform: translateY(-12px)", stylesheet)
+
     def test_reading_categories_are_metal_plaques_on_shelf_edges(self):
         self.assertNotIn('class="book-category"', self.html)
         self.assertNotIn('class="filters"', self.html)

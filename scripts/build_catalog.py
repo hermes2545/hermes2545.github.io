@@ -44,7 +44,9 @@ def render_book(book: dict) -> str:
   </div>
   <a class="book-link book-cover-link" href="{esc(book["href"])}" target="_blank" rel="noopener" aria-label="เปิดอ่าน {esc(book["title"])} ในแท็บใหม่">
     <div class="book-cover-wrap">
-      <img class="book-cover" src="{esc(book["cover"])}" alt="ปกหนังสือ {esc(book["short_title"])}" width="600" height="900" loading="lazy">
+      <div class="book-cover-volume">
+        <img class="book-cover" src="{esc(book["cover"])}" alt="ปกหนังสือ {esc(book["short_title"])}" width="600" height="900" loading="lazy" draggable="false">
+      </div>
     </div>
   </a>
 </article>'''
