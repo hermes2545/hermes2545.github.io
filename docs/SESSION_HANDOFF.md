@@ -1,18 +1,18 @@
 # Library Session Handoff
 
-Updated: 2026-09-09T20:18:00+07:00
+Updated: 2026-09-09T20:55:00+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
-- Branch: `main` is published to both Library remotes. Latest content commit: `31c6756317e8bed0b1310b9348ec29cf8fd4e1d7` (`Add What I Do reading guide`).
+- Branch: `main` is published to both Library remotes. Latest content commit: `a71657666edeafaf0006d498bca2645168202d8a` (`Improve What I Do cover crop`).
 - Public Reading Shelf now has 34 books; newest/first item is **งานของผม** at `WHAT-I-DO-final.html`.
 - Private production files and browser/tool caches remain in the local `.hermes/` workspace and must not be staged.
 
 ## Reading addition completed
 
 - Owner supplied final HTML: `WHAT-I-DO-final.html`; deployed file is byte-preserved at SHA-256 `d81ba5282a99e4089e57721f0e3e5b5524d653cf05ba1ec4da4644bbe5389051`.
-- Owner supplied cover PNG was normalized only for shelf delivery: EXIF-free RGB WebP, 600×900, aspect-preserving contain/padding, no visible redesign/crop/recolor/text edit. Deployed cover: `assets/covers/custom/what-i-do.webp`, SHA-256 `5fbff9c45c3cb861752fada07d0765bf479bf28288ab4b93b6a89c2b33e34c4c`.
+- Owner supplied cover PNG was first normalized with contain/padding, then corrected after owner feedback because the white margins did not look like a real book on the shelf. Current deployed cover is EXIF-free RGB WebP, 600×900, full-height scale plus narrow center crop, no added white padding/border, and no text/color/design edits. Deployed cover: `assets/covers/custom/what-i-do.webp`, SHA-256 `ef849089b23ef5e13c0065b8bfce8ce5aa6b597e9e44eb481a57595ab4075bba`.
 - Catalog record: `id` `what-i-do`, category `Work System`, published `2026-09-09T00:00:00+07:00`, accent `#E53935`.
 - Generated `index.html` from `data/books.json`; no generated page was hand-edited independently.
 
@@ -33,10 +33,17 @@ Updated: 2026-09-09T20:18:00+07:00
 - Production HTTP hash read-back matched Local:
   - `index.html`: `f723dd089eca04f8e377e06e3f59f1b95abe2d51e1256f801f59ebd4678e777d`.
   - `WHAT-I-DO-final.html`: `d81ba5282a99e4089e57721f0e3e5b5524d653cf05ba1ec4da4644bbe5389051`.
-  - `assets/covers/custom/what-i-do.webp`: `5fbff9c45c3cb861752fada07d0765bf479bf28288ab4b93b6a89c2b33e34c4c`.
+  - `assets/covers/custom/what-i-do.webp`: `ef849089b23ef5e13c0065b8bfce8ce5aa6b597e9e44eb481a57595ab4075bba`.
 - Production Playwright desktop/mobile checks confirmed the same shelf/manual counts, search result, 600×900 cover, and zero horizontal overflow.
 
 ## Remaining local state
 
 - `.hermes/` remains untracked private workspace/cache and must not be staged.
 - Temporary local HTTP server `proc_6673c4bee384` was used for preview and should be killed before final close.
+
+## Cover correction verification
+
+- Commit `a71657666edeafaf0006d498bca2645168202d8a` replaced only `assets/covers/custom/what-i-do.webp`, `templates/what-i-do-cover.template.md`, and the focused regression test.
+- Local verification passed `python -m unittest tests.test_what_i_do_reading -v`, 133 full tests, all four generated-page drift checks, `git diff --check`, pre-share scan, and Playwright desktop/mobile cover preview.
+- Pushed the correction to both remotes; Production cover/template hashes matched Local after cache-busted read-back.
+- Production Playwright desktop/mobile confirmed 34 Reading cards, **งานของผม** first, `WHAT-I-DO-final.html` href, cover natural size 600×900, and zero horizontal overflow.
