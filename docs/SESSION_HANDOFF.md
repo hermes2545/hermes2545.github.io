@@ -1,11 +1,11 @@
 # Library Session Handoff
 
-Updated: 2026-09-09T23:54:27+07:00
+Updated: 2026-09-10T00:23:41+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
-- Branch: `main` is published to both Library remotes. Latest content commit: `d65bd703c044ab939356823f77e2fb7382a40bd6` (`Lower reading books closer to shelf`).
+- Branch: `main` is published to both Library remotes. Latest content commit: `4a50a418ada63a54df2c6b848f4773b98a861046` (`Fix reading cover hover perspective`).
 - Public Reading Shelf has 34 books; every generated Reading card now uses the CSS 3D front-cover peek effect.
 - Newest/first item remains **งานของผม** at `WHAT-I-DO-final.html`.
 - Private production files and browser/tool caches remain in the local private workspace and must not be staged.
@@ -40,6 +40,14 @@ Updated: 2026-09-09T23:54:27+07:00
 - The Reading-specific CSS keeps the cover wrapper at `padding: 16px 16px 0` and sets `.reading-page .book-grid { padding-bottom: .875rem; }`, which measured as a 3px book-to-shelf gap on both desktop and 390px mobile.
 - The adjustment does not change the CSS 3D front-cover hinge: real cover images still rotate from the left spine, paper blocks stay behind, cards do not pop upward, and reduced-motion behavior remains intact.
 - Verification passed 134 tests, all generated-page checks, `git diff --check`, pre-share scan, local Playwright desktop/mobile geometry, Production hash read-back, and Production Playwright desktop/mobile geometry (`firstGapPx`, `minGapPx`, and `maxGapPx` all 3px).
+
+## Reading Shelf hover visibility fix
+
+- Commit `4a50a418ada63a54df2c6b848f4773b98a861046` fixes the owner-reported issue where mousing over a book did not visibly reveal the front cover.
+- Production reproduction confirmed hover was firing, but the perspective context was too far out in the DOM; the fix adds `perspective: 1100px` directly to `.reading-page .book-cover-volume`, the direct parent of `.book-cover`.
+- The hover selector now also includes `.reading-page .book-card:hover .book-cover`, so hovering the physical card area triggers the same cover-only reveal as hovering the cover link.
+- The fix preserves the owner-approved contract: only the front cover rotates, `cardTransform` remains `none`, the shelf clearance stays at 3px, keyboard focus still opens the cover, and reduced-motion users get no transform.
+- Production Playwright verified desktop/mobile: 34 cards, 34 cover volumes, `volumePerspective: 1100px`, hover `coverTransform: matrix3d(...)`, `cardTransform: none`, gap/minGap/maxGap all 3px, reduced-motion transform `none`, and zero horizontal overflow.
 
 ## Recent What I Do publication context
 
