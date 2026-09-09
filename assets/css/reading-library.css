@@ -217,6 +217,9 @@ h1 { color: #18372a; text-shadow: 0 1px rgba(255,255,255,.65); }
   background: transparent;
   box-shadow: none;
 }
+.reading-page .book-grid {
+  padding-bottom: .875rem;
+}
 .reading-page .book-card,
 .reading-page .book-card:nth-child(4n+1),
 .reading-page .book-card:nth-child(4n+3) {
@@ -237,7 +240,7 @@ h1 { color: #18372a; text-shadow: 0 1px rgba(255,255,255,.65); }
   width: 100%;
   max-width: 145px;
   margin: 0 auto;
-  padding: 16px;
+  padding: 16px 16px 0;
   aspect-ratio: auto;
   box-sizing: content-box;
   background: transparent;

@@ -93,6 +93,8 @@ class HomepageBuildTests(unittest.TestCase):
         self.assertIn("@media (hover: hover)", stylesheet)
         self.assertIn(".reading-page .book-cover-link:hover .book-cover", stylesheet)
         self.assertIn(".reading-page .book-cover-link:focus-visible .book-cover", stylesheet)
+        self.assertIn("padding-bottom: .875rem;", stylesheet)
+        self.assertIn("padding: 16px 16px 0;", stylesheet)
         self.assertIn("pointer-events: none;", stylesheet)
         self.assertIn("@media (prefers-reduced-motion: reduce)", stylesheet)
         self.assertIn("transform: none;", stylesheet)
