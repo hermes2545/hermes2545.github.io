@@ -1,5 +1,16 @@
 [
   {
+    "video_id": "LmGIx3NT4tQ",
+    "title": "งานของผม",
+    "youtube_url": "https://www.youtube.com/watch?v=LmGIx3NT4tQ&list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl",
+    "cover": "assets/audio-covers/LmGIx3NT4tQ.jpg",
+    "duration_seconds": 2025,
+    "published_epoch_ms": 1788974439000,
+    "published_at": "2026-09-10T01:20:39+07:00",
+    "playlist_position": 1,
+    "uploader": "manny calavara"
+  },
+  {
     "video_id": "IrGtonl70Ng",
     "title": "สับสวิตช์ดับทุกข์ด้วยฟิสิกส์ควอนตัม: ไตรลักษณ์ใน Quantum Physics",
     "youtube_url": "https://www.youtube.com/watch?v=IrGtonl70Ng&list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl",
