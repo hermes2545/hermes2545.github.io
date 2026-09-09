@@ -1,13 +1,13 @@
 # Library Session Handoff
 
-Updated: 2026-09-10T01:05:46+07:00
+Updated: 2026-09-10T01:18:00+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
-- Branch: `main` is published to both Library remotes. Latest content commit: `4a50a418ada63a54df2c6b848f4773b98a861046` (`Fix reading cover hover perspective`).
+- Branch: `main` is published to both Library remotes. Latest content commit: `4ea0432f433ca5b2a51280b1c1f27369e0874aa1` (`Fix reading shelf hover fallback`).
 - Public Reading Shelf has 34 books; every generated Reading card now uses the CSS 3D front-cover peek effect.
-- Local working tree has an unpushed Reading Shelf hover fallback update prepared after the owner confirmed the standalone v2 hover/JS test worked.
+- Public Reading Shelf now includes the v3 JavaScript fallback after the owner confirmed the standalone v2 hover/JS test worked and approved push.
 - Newest/first item remains **งานของผม** at `WHAT-I-DO-final.html`.
 - Private production files and browser/tool caches remain in the local private workspace and must not be staged.
 
@@ -50,15 +50,16 @@ Updated: 2026-09-10T01:05:46+07:00
 - The fix preserves the owner-approved contract: only the front cover rotates, `cardTransform` remains `none`, the shelf clearance stays at 3px, keyboard focus still opens the cover, and reduced-motion users get no transform.
 - Production Playwright verified desktop/mobile: 34 cards, 34 cover volumes, `volumePerspective: 1100px`, hover `coverTransform: matrix3d(...)`, `cardTransform: none`, gap/minGap/maxGap all 3px, reduced-motion transform `none`, and zero horizontal overflow.
 
-## Reading Shelf hover fallback v3 — local, not pushed yet
+## Reading Shelf hover fallback v3
 
-- Owner tested the standalone v2 HTML proof and reported it works; the real shelf now mirrors that fallback pattern without the test buttons.
+- Commit `4ea0432f433ca5b2a51280b1c1f27369e0874aa1` publishes the real-shelf version of the fallback pattern after the owner tested the standalone v2 HTML proof and approved push.
 - `assets/css/reading-library.css` now removes the hover media-query gate for the cover reveal and also opens from `.reading-page .book-card.is-open .book-cover`.
 - `assets/js/library.js` now binds Reading-only `pointerenter`, `mouseenter`, `mousemove`, `pointerleave`, `mouseleave`, `focusin`, and `focusout` events to toggle `.is-open` on `.book-card`; hidden cards clear the state.
 - `templates/index.template.html` and regenerated `index.html` now cache-bust both `reading-library.css` and `library.js` with `v=reading-cover-hover-v3` so the owner does not receive stale assets.
 - TDD evidence: focused tests were first made to fail for the missing `.is-open` fallback and v3 cache-bust, then passed after the source changes.
 - Verification passed locally: `python -m unittest discover -s tests -v` → OK, 134 tests; all four generated-page checks current; `git diff --check` OK; pre-share scan of touched public files clean.
 - Local Playwright verified the actual Reading page on desktop and 390px mobile: v3 CSS/JS loaded, `.is-open=true` after hover, cover `matrix3d(...)`, `cardTransform: none`, `perspective: 1100px`, zero horizontal overflow, and no console/page errors.
+- Production verification: public/private remote HEADs matched `4ea0432f433ca5b2a51280b1c1f27369e0874aa1`; Production HTTP hash read-back matched Local for `index.html`, `assets/css/reading-library.css`, and `assets/js/library.js`; Production Playwright desktop/mobile checks confirmed 34 cards, v3 assets loaded, `.is-open=true` after hover, cover `matrix3d(...)`, `cardTransform: none`, `perspective: 1100px`, zero horizontal overflow, and no console/page errors.
 - Preview screenshots remain private/untracked and must not be staged.
 
 ## Recent What I Do publication context
@@ -71,4 +72,4 @@ Updated: 2026-09-10T01:05:46+07:00
 
 - Local private workspace/cache files remain untracked and must not be staged.
 - No local preview HTTP server should remain running after close.
-- Unpushed public/source files currently modified for the v3 hover fallback: `assets/css/reading-library.css`, `assets/js/library.js`, `templates/index.template.html`, `index.html`, `tests/test_build_catalog.py`, plus this log/handoff documentation.
+- After the follow-up documentation commit, only local private workspace/cache files should remain untracked.
