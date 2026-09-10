@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <!-- LIBRARY IMPORT HARDENING: local system fonts replace upstream Google Fonts; runtime links are validated in app.js. -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>ธรรมะจากท่านพุทธทาส</title>
+  <meta name="description" content="ธรรมะจากท่านพุทธทาส ค้นหา หมวดหมู่ รายการโปรด สุ่มเล่น และแชร์ตอนเสียงได้" />
+  <meta name="theme-color" content="#9a5b26" />
+  <meta property="og:title" content="ธรรมะจากท่านพุทธทาส" />
+  <meta property="og:description" content="ค้นหาและฟังธรรมะจากท่านพุทธทาสจาก OneDrive แบบ mobile responsive" />
+  <meta property="og:image" content="./assets/icon-1024.jpg" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./assets/icon-1024.jpg" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <nav class="topbar">
+        <div class="brand"><img src="./assets/icon-circle.svg" alt="ลายเส้นท่านพุทธทาส" /><span>ธรรมะจากท่านพุทธทาส</span></div>
+        <button id="installBtn" class="ghost">ติดตั้งแอป</button>
+      </nav>
+      <section class="hero-grid">
+        <div>
+          <p class="eyebrow">Buddhadasa Audio Archive</p>
+          <h1>ธรรมะจากท่านพุทธทาส</h1>
+          <p class="lead">ค้นหา ฟัง แชร์ และเก็บรายการโปรดของเสียงธรรมะได้ง่ายบนมือถือ ในรูปแบบแอปเพลงที่เรียบ สวย และใช้งานง่าย</p>
+          <div class="hero-actions">
+            <a class="primary" href="#library">เริ่มค้นหาเสียงธรรมะ</a>
+            <button class="secondary" id="randomHero">สุ่มตอนน่าฟัง</button>
+          </div>
+        </div>
+        <div class="cover-card">
+          <img src="./assets/icon-circle.svg" alt="ลายเส้นประกอบแอป" />
+          <div><strong id="statTracks">กำลังโหลด...</strong><span>รายการเสียง</span></div>
+          <div><strong id="statAlbums">-</strong><span>อัลบั้ม / หมวด</span></div>
+        </div>
+      </section>
+    </header>
+
+    <main>
+      <section class="tabs" aria-label="เมนูหลัก">
+        <button class="tab active" data-view="library">คลังเสียง</button>
+        <button class="tab" data-view="favorites">รายการโปรด</button>
+        <button class="tab" data-view="guide">คู่มือ</button>
+      </section>
+
+      <section id="library" class="view active">
+        <div class="search-panel">
+          <label class="searchbox"><span>🔎</span><input id="searchInput" placeholder="ค้นหาชื่อตอน หมวดหมู่ เลขตอน เช่น อานาปานสติ" autocomplete="off" /></label>
+          <div class="filters"><select id="albumFilter"><option value="">ทุกแผ่น</option></select><select id="categoryFilter"><option value="">ทุกหมวดหมู่</option></select></div>
+          <div class="quick-actions"><button id="clearBtn" class="icon-btn" title="ล้างตัวกรอง" aria-label="ล้างตัวกรอง"><span class="material-symbols-rounded">×</span></button><button id="shuffleBtn" class="icon-btn" title="สุ่มตอน" aria-label="สุ่มตอน"><span class="material-symbols-rounded">🔀</span></button><button id="repeatBtn" class="icon-btn" data-mode="off" title="Repeat: off" aria-label="Repeat: off"><span class="material-symbols-rounded">🔁</span></button><button id="shareAppBtn" class="icon-btn" title="แชร์แอป" aria-label="แชร์แอป"><span class="material-symbols-rounded">↗</span></button></div>
+        </div>
+        <div id="chips" class="chips"></div>
+        <div class="section-head"><h2>รายการเสียง</h2><span id="resultCount"></span></div>
+        <div id="trackList" class="track-list"></div>
+      </section>
+
+      <section id="favorites" class="view">
+        <div class="section-head"><h2>รายการโปรด</h2><span>เก็บในเครื่องของผู้ใช้</span></div>
+        <div id="favoriteList" class="track-list"></div>
+      </section>
+
+      <section id="guide" class="view prose">
+        <h2>คู่มือใช้งานภาษาไทย</h2>
+        <ol>
+          <li>พิมพ์คำค้น เช่น ชื่อตอน เลขตอน หรือหมวดหมู่ในช่องค้นหา</li>
+          <li>กดปุ่ม ▶ เพื่อเปิดฟังตอนนั้นใน OneDrive preview</li>
+          <li>กด ♡ เพื่อบันทึกเป็นรายการโปรดในเครื่องนี้</li>
+          <li>ใช้ Shuffle เพื่อสุ่มตอน และ Repeat เพื่อวนซ้ำโหมดเล่น</li>
+          <li>กด Share เพื่อส่งลิงก์แอปหรือคลิปเสียงให้เพื่อนทาง Line/Facebook/Telegram</li>
+          <li>กด “ติดตั้งแอป” หรือ Add to Home Screen บน iOS/Android เพื่อใช้เหมือนแอป</li>
+        </ol>
+        <h3>หมายเหตุเรื่องการเล่นเสียง</h3>
+        <p>ไฟล์เสียงเก็บอยู่บน OneDrive แบบ public share แอปนี้เปิดไฟล์ผ่าน OneDrive preview โดยตรง เพื่อให้ลิงก์เสียงไม่หมดอายุและไม่ต้องฝัง token ชั่วคราวลงใน GitHub Pages</p>
+      </section>
+
+
+    </main>
+  </div>
+
+  <footer class="player" id="player">
+    <div class="now"><img src="./assets/icon-circle.svg" alt="" /><div><strong id="nowTitle">ยังไม่ได้เลือกตอน</strong><span id="nowMeta">เลือกเสียงธรรมะเพื่อเปิดฟัง</span></div></div>
+    <div class="controls">
+      <button id="prevBtn" title="ก่อนหน้า">⏮</button>
+      <button id="playBtn" class="big" title="เปิดฟัง">▶</button>
+      <button id="nextBtn" title="ถัดไป">⏭</button>
+      <button id="openOneDrive" title="เปิดใน OneDrive" aria-label="เปิดใน OneDrive">☁️</button>
+      <button id="shareTrackBtn" title="แชร์ตอนนี้" aria-label="แชร์ตอนนี้">📤</button>
+    </div>
+  </footer>
+  <script src="./app.js"></script>
+</body>
+</html>

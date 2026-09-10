@@ -34,18 +34,18 @@ class AppLibraryTests(unittest.TestCase):
         self.apps = load_apps(CATALOG)
         self.page = render_app_library(self.apps)
 
-    def test_catalog_has_eight_unique_apps_with_required_metadata(self):
+    def test_catalog_has_nine_unique_apps_with_required_metadata(self):
         required = {
             "id", "title", "short_title", "href", "category", "summary",
             "published_at", "source_repository", "source_commit", "source_sha256",
             "import_mode", "sticker", "label",
         }
-        self.assertEqual(len(self.apps), 8)
+        self.assertEqual(len(self.apps), 9)
         self.assertEqual(
             {app["id"] for app in self.apps},
-            {"battle-tank", "bakery-center", "heic2jpg", "loderunner", "pacman", "pdf-password-remover", "travis-pocket", "tumngern"},
+            {"battle-tank", "bakery-center", "buddhadasa-audio", "heic2jpg", "loderunner", "pacman", "pdf-password-remover", "travis-pocket", "tumngern"},
         )
-        self.assertEqual(len({app["href"] for app in self.apps}), 8)
+        self.assertEqual(len({app["href"] for app in self.apps}), 9)
         for app in self.apps:
             self.assertTrue(required <= app.keys(), app)
             self.assertRegex(app["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
@@ -103,6 +103,11 @@ class AppLibraryTests(unittest.TestCase):
                 "app/travis-pocket.html",
                 "https://github.com/p2544/travis-picking",
                 "093c364f7b94d402e43a7335f4eb7ff64a5dd675",
+            ),
+            "buddhadasa-audio": (
+                "app/buddhadasa-audio.html",
+                "https://github.com/starlink2569/starlink2569.github.io",
+                "0ee4efbdf8f9137b24e60cd3a86cfa0c46f57f0e",
             ),
             "tumngern": (
                 "app/tumngern.html",
@@ -245,6 +250,45 @@ class AppLibraryTests(unittest.TestCase):
         self.assertEqual(source.count("<script"), 2)
         self.assertNotIn("<script src=", source)
 
+    def test_buddhadasa_audio_imports_pinned_static_audio_archive_with_owner_label(self):
+        app = next(app for app in self.apps if app["id"] == "buddhadasa-audio")
+        wrapper = (ROOT / app["href"]).read_text(encoding="utf-8")
+        runtime = ROOT / "app" / "buddhadasa-audio"
+        source = (runtime / "index.html").read_text(encoding="utf-8")
+        script = (runtime / "app.js").read_text(encoding="utf-8")
+        styles = (runtime / "styles.css").read_text(encoding="utf-8")
+        catalog = json.loads((runtime / "audio-index.json").read_text(encoding="utf-8"))
+        sticker = ROOT / "assets" / "app-stickers" / "buddhadasa-audio.webp"
+
+        self.assertEqual(app["import_mode"], "path-adjusted-derivative")
+        self.assertEqual(app["source_repository"], "https://github.com/starlink2569/starlink2569.github.io")
+        self.assertEqual(app["source_commit"], "0ee4efbdf8f9137b24e60cd3a86cfa0c46f57f0e")
+        self.assertEqual(app["source_sha256"], "f90e3036f3cbe031e71955b5e0e1672cf5482e39319d2e97cafc0c05e08cebd3")
+        self.assertIn('location.replace("buddhadasa-audio/index.html")', wrapper)
+        self.assertIn('<title>ธรรมะจากท่านพุทธทาส</title>', wrapper)
+        self.assertNotIn('<iframe', wrapper)
+        self.assertIn("LIBRARY IMPORT HARDENING", source)
+        self.assertIn('href="./assets/icon-1024.jpg"', source)
+        self.assertNotIn("fonts.googleapis.com", styles)
+        self.assertNotIn("fonts.gstatic.com", styles)
+        self.assertIn("function safeTrackUrl(", script)
+        self.assertIn("function safeJsString(", script)
+        self.assertIn("safeTrackUrl(t)", script)
+        self.assertIn("เลือกเสียงธรรมะเพื่อเปิดฟัง", source)
+        self.assertEqual(len(catalog["tracks"]), 1493)
+        self.assertEqual(catalog["generatedAt"], "2026-08-12T21:31:35.439Z")
+        self.assertTrue(all(track["onedriveUrl"].startswith("https://onedrive.live.com/") for track in catalog["tracks"]))
+        for required in ("index.html", "styles.css", "app.js", "manifest.webmanifest", "sw.js", "audio-index.json", "README.md"):
+            self.assertTrue((runtime / required).is_file(), required)
+        self.assertTrue((runtime / "assets" / "icon-circle.svg").is_file())
+        self.assertTrue((runtime / "assets" / "icon-1024.jpg").is_file())
+        self.assertTrue(sticker.is_file())
+        sticker_bytes = sticker.read_bytes()
+        self.assertGreater(len(sticker_bytes), 10000)
+        self.assertEqual(sticker_bytes[:4], b"RIFF")
+        self.assertEqual(sticker_bytes[8:12], b"WEBP")
+        self.assertNotIn(b"EXIF", sticker_bytes.upper())
+
     def test_loderunner_keeps_upstream_runtime_unchanged_behind_stable_wrapper(self):
         wrapper = (ROOT / "app" / "loderunner.html").read_text(encoding="utf-8")
         runtime = ROOT / "app" / "loderunner" / "lodeRunner.html"
@@ -266,7 +310,7 @@ class AppLibraryTests(unittest.TestCase):
     def test_apps_sort_newest_first(self):
         timestamps = [app["published_at"] for app in self.apps]
         self.assertEqual(timestamps, sorted(timestamps, reverse=True))
-        self.assertEqual(self.apps[0]["id"], "travis-pocket")
+        self.assertEqual(self.apps[0]["id"], "buddhadasa-audio")
 
     def test_pacman_preserves_browser_runtime_and_gpl_license(self):
         app = next(app for app in self.apps if app["id"] == "pacman")
@@ -290,14 +334,14 @@ class AppLibraryTests(unittest.TestCase):
             self.assertFalse((ROOT / "assets" / "app-stickers" / f"{app_id}.webp").exists(), app_id)
 
     def test_page_renders_each_app_as_a_three_and_half_inch_diskette(self):
-        self.assertEqual(self.page.count('class="app-card"'), 8)
-        self.assertEqual(self.page.count('class="diskette"'), 8)
-        self.assertEqual(self.page.count('class="diskette-shutter"'), 8)
-        self.assertEqual(self.page.count('class="diskette-label'), 8)
-        self.assertEqual(self.page.count('class="diskette-hub"'), 8)
-        self.assertEqual(self.page.count('class="diskette-sticker"'), 4)
-        self.assertEqual(self.page.count('target="_blank"'), 17)
-        self.assertEqual(self.page.count('rel="noopener"'), 17)
+        self.assertEqual(self.page.count('class="app-card"'), 9)
+        self.assertEqual(self.page.count('class="diskette"'), 9)
+        self.assertEqual(self.page.count('class="diskette-shutter"'), 9)
+        self.assertEqual(self.page.count('class="diskette-label'), 9)
+        self.assertEqual(self.page.count('class="diskette-hub"'), 9)
+        self.assertEqual(self.page.count('class="diskette-sticker"'), 5)
+        self.assertEqual(self.page.count('target="_blank"'), 19)
+        self.assertEqual(self.page.count('rel="noopener"'), 19)
         self.assertIn('class="footer-facebook-link"', self.page)
         for app in self.apps:
             self.assertEqual(self.page.count(f'href="{app["href"]}"'), 3)

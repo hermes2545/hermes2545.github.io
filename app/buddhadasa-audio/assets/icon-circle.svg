@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="ลายเส้นท่านพุทธทาส">
+  <defs><clipPath id="circle"><circle cx="512" cy="512" r="512"/></clipPath></defs>
+  <rect width="1024" height="1024" fill="#f8f2d8"/>
+  <image href="icon-1024.jpg" width="1024" height="1024" preserveAspectRatio="xMidYMid slice" clip-path="url(#circle)"/>
+  <circle cx="512" cy="512" r="500" fill="none" stroke="#8a5a24" stroke-width="20" opacity=".55"/>
+</svg>

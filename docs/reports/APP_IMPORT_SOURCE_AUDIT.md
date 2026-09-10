@@ -4,12 +4,13 @@ type: report
 status: active
 visibility: public
 created: 2026-08-25
-updated: 2026-08-27
+updated: 2026-09-10
 sources:
   - https://github.com/p2544/battle-tank
   - https://github.com/p2544/bakery-center
   - https://github.com/p2544/loderunner
   - https://github.com/p2544/tumngern
+  - https://github.com/starlink2569/starlink2569.github.io
 tags: [library, app, import, provenance, privacy]
 ---
 
@@ -25,6 +26,7 @@ tags: [library, app, import, provenance, privacy]
 - Pac-Man
 - PDF Password Remover
 - ตุ่มเงิน
+- ธรรมะจากท่านพุทธทาส — Buddhadasa Audio Archive
 
 Metadata และ Commit ที่ใช้จริงอยู่ใน `data/apps.json` ซึ่งเป็น Source of truth; รายงานนี้อธิบายผลตรวจและเหตุผลการนำเข้าโดยไม่สร้าง Inventory ซ้ำ
 
@@ -69,12 +71,21 @@ Metadata และ Commit ที่ใช้จริงอยู่ใน `data
 - ข้อมูลหลักใช้ Browser storage และไม่มี network request อัตโนมัติบน splash/onboarding; ระบบ Sync เป็นทางเลือกที่ผู้ใช้ต้องตั้ง server และยืนยันเอง
 - Runtime แสดงคำเตือนว่า Sync payload ยังไม่เข้ารหัสแบบ end-to-end และไม่เปิดใช้งาน Sync โดยปริยาย
 
+### ธรรมะจากท่านพุทธทาส — Buddhadasa Audio Archive
+
+- Source เผยแพร่เป็น static GitHub Pages ใต้ `starlink2569/starlink2569.github.io/buddhadasa-audio/`; บันทึก commit `0ee4efbdf8f9137b24e60cd3a86cfa0c46f57f0e` และ upstream `index.html` SHA-256 `f90e3036f3cbe031e71955b5e0e1672cf5482e39319d2e97cafc0c05e08cebd3` ใน `data/apps.json`
+- Runtime มี `index.html`, `styles.css`, `app.js`, `manifest.webmanifest`, `sw.js`, local artwork และ `audio-index.json` จำนวน 1,493 tracks / 202 folders; ไฟล์เสียงเปิดผ่าน OneDrive public preview link ที่อยู่ใน catalog ต้นทาง
+- นำเข้าเป็น `path-adjusted-derivative`: stable launcher `app/buddhadasa-audio.html` ส่งต่อไปยัง runtime ใต้ `app/buddhadasa-audio/`; runtime path เดิมเป็น relative อยู่แล้ว จึงไม่ต้องแก้ asset graph หลัก
+- ทำ hardening เฉพาะเพื่อ public Library: ตัด Google Fonts network dependency, แทน Material Symbols ด้วยตัวอักษร/emoji ในตัวระบบ, เพิ่ม `safeTrackUrl` ให้ยอมเฉพาะ `https://onedrive.live.com/`, escape string ID ก่อนใช้ใน inline handlers, และ strip metadata ของ public runtime images
+- ใช้ภาพพอร์ตเทรตท่านพุทธทาสที่เจ้าของส่งให้เป็น diskette sticker โดยแปลงเป็น RGB WebP แบบไม่แก้ visible content และไม่มี EXIF
+
 
 ## Privacy and metadata scan
 
 - ไม่พบ API key, token, password, private key, OAuth credential, Telegram token, local absolute path หรือ private service ID ใน Public App runtime
 - ตุ่มเงินมี Email ติดต่อผู้สร้างหนึ่งรายการในหน้า About; เป็นข้อมูลติดต่อที่เจ้าของเผยแพร่ไว้แล้วใน Public upstream และคงไว้ตามคำสั่งนำเข้า
 - ภาพ Runtime จำนวน 74 ไฟล์ไม่มี EXIF metadata
+- ภาพ Runtime/Sticker ของ Buddhadasa Audio ที่นำเข้าไม่มี EXIF metadata หลัง public-web normalization
 - Raw binary scan พบ Email-like byte sequence ใน GIF หนึ่งไฟล์ แต่การตรวจ GIF metadata พบเฉพาะ Animation control data และไม่มี Comment/Author field จึงจัดเป็น Compressed-binary false positive
 
 ## License note
@@ -84,10 +95,11 @@ GitHub License API ไม่พบ License file ที่ประกาศช�
 - Battle Tank มี Embedded MP3 metadata ระบุ “Gamemaster Audio”; ต้องยืนยันสิทธิ์เสียงหรือเปลี่ยน/ตัดเสียงก่อน Public push หากไม่มีหลักฐานสิทธิ์
 - Lode Runner upstream, game source, sprites, audio และ level data ไม่มี Redistribution license ที่ตรวจพบ แม้ CreateJS vendor files จะมี MIT headers; Public push ต้องอาศัยการยืนยันฐานสิทธิ์จากผู้ใช้
 - Pac-Man มี GPL-3.0 และนำ License/Corresponding browser source ไปพร้อม Runtime
+- Buddhadasa Audio อยู่ใน repository ที่ตรวจไม่พบ License file เฉพาะของ app ณ commit ที่นำเข้า; การนำเข้าครั้งนี้ทำตามคำสั่งตรงของเจ้าของโครงการและรักษา source provenance เดิม
 
 ## Decision
 
 - Local preparation: approved by current user instruction
-- Public push: approved by the current user instruction for the scoped Agent Reach and Tumngern additions
+- Public push: pending explicit approval for Buddhadasa Audio App addition
 - Imported scope: runtime-only, source-provenance recorded, no destructive change to source repositories
 - Withdrawn scope: Galaga, RL Battle City, and New Rally-X are no longer present in the active catalog or public runtime tree

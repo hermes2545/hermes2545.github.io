@@ -1,5 +1,27 @@
 [
   {
+    "id": "buddhadasa-audio",
+    "title": "ธรรมะจากท่านพุทธทาส — Buddhadasa Audio Archive",
+    "short_title": "พุทธทาส Audio",
+    "href": "app/buddhadasa-audio.html",
+    "category": "Dhamma Audio",
+    "summary": "แอปฟังเสียงธรรมะจากท่านพุทธทาส ค้นหาตอนเสียง แยกแผ่น/หมวด เก็บรายการโปรด สุ่มเล่น แชร์ตอน และเปิดไฟล์ผ่าน OneDrive public preview",
+    "published_at": "2026-09-10T09:38:10+07:00",
+    "source_repository": "https://github.com/starlink2569/starlink2569.github.io",
+    "source_commit": "0ee4efbdf8f9137b24e60cd3a86cfa0c46f57f0e",
+    "source_sha256": "f90e3036f3cbe031e71955b5e0e1672cf5482e39319d2e97cafc0c05e08cebd3",
+    "import_mode": "path-adjusted-derivative",
+    "sticker": "assets/app-stickers/buddhadasa-audio.webp",
+    "label": {
+      "kicker": "DHAMMA AUDIO",
+      "mark": "พธ",
+      "version": "1493 TRACKS",
+      "primary": "#F8F2D8",
+      "accent": "#8A5A24",
+      "ink": "#1D1B16"
+    }
+  },
+  {
     "id": "travis-pocket",
     "title": "Travis Pocket — ฝึกกีตาร์ออฟไลน์",
     "short_title": "Travis Pocket",
