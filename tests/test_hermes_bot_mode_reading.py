@@ -12,7 +12,7 @@ BOOK_ID = "hermes-bot-mode-interactive-manual"
 HTML_PATH = ROOT / "hermes-bot-mode-interactive-manual.html"
 COVER_PATH = ROOT / "assets" / "covers" / "custom" / f"{BOOK_ID}.webp"
 SUPPLIED_HTML_SHA256 = "c7724865fe16653fe4156810138693e4e836ece4d45636be38e1f8d50db12258"
-COVER_SOURCE_SHA256 = "bd21f0264d1b57277c643dae8f5550dcf10c7a5aca801b89972cdea763b7cc2a"
+COVER_SOURCE_SHA256 = "4a18827d9bc397ad32ea09857f3b6c4bc7d935e5984f7e87416b9d1b753b231b"
 PROHIBITED_PUBLIC_RE = re.compile(
     "|".join(
         [
@@ -92,7 +92,12 @@ class HermesBotModeReadingTests(unittest.TestCase):
         self.assertGreater(COVER_PATH.stat().st_size, 30_000)
         template = ROOT / "templates" / "hermes-bot-mode-interactive-manual-cover.template.md"
         self.assertTrue(template.is_file())
-        self.assertIn(COVER_SOURCE_SHA256, template.read_text(encoding="utf-8"))
+        template_text = template.read_text(encoding="utf-8")
+        self.assertIn(COVER_SOURCE_SHA256, template_text)
+        self.assertIn("fill scale", template_text)
+        self.assertIn("center-crop", template_text)
+        self.assertIn("no padding", template_text)
+        self.assertIn("no added white border", template_text)
 
 
 if __name__ == "__main__":
