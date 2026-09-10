@@ -1,15 +1,16 @@
 # Library Session Handoff
 
-Updated: 2026-09-10T22:22:57+07:00
+Updated: 2026-09-10T22:43:17+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
-- Branch: `main`; latest published commit remains `f433e2af764b59d2da219e3b1fc758a84190c107` before the current local Reading cover-peek corrections.
-- Latest local prepared work: Reading Shelf cover-peek restored to the owner-supplied `message.txt` CSS 3D contract, then squared after owner feedback that the effect works but book corners should not be rounded.
+- Branch: `main`; latest published content commit is `5f6d761e57fa874c7c1cf9f586650f80023767f1`; a documentation follow-up may be newer.
+- Latest published work: Reading Shelf cover-peek restored to the owner-supplied `message.txt` CSS 3D contract, then squared after owner feedback that the effect works but book corners should not be rounded.
 - Prepared v8 removes the `.is-open` JavaScript hover fallback entirely and returns the effect to CSS-only hover/focus behavior.
 - Prepared v8 contract: stable `.book-cover-wrap` hover area, separate `.book-cover-volume::before` stationary paper block, only `.book-cover` rotates from the left spine by `rotateY(-24deg)`, `perspective: 1100px`, `1.05s cubic-bezier(.42, 0, .2, 1)` timing, square/no-radius book corners (`border-radius: 0` on visible cover, paper block, and cover-link focus outline), keyboard focus, and `prefers-reduced-motion` suppression.
 - Reading template/generated index cache-bust both `reading-library.css` and `library.js` with `v=reading-cover-hover-v8` so browsers drop the broken v5/v6/v7 assets.
+- Publication verification for commit `5f6d761`: public and private remote HEADs matched, Production HTTP hashes matched Local for `index.html`, `assets/css/reading-library.css`, and `assets/js/library.js`, and Production Playwright desktop/mobile confirmed square corners plus the working cover-peek animation.
 
 ## Verification completed this session
 
@@ -43,6 +44,6 @@ Updated: 2026-09-10T22:22:57+07:00
 
 ## Remaining local state
 
-- Current v8 square-corner correction is local only and not pushed yet; publication requires an explicit current-turn `push` instruction.
-- Temporary local HTTP server used for preview should be killed before final reporting.
+- Current v8 square-corner correction has been pushed and production-verified; documentation follow-up may need commit/push after this handoff update.
+- Temporary local HTTP server used for preview was killed.
 - Private workspace/cache directory remains untracked and must stay unstaged.
