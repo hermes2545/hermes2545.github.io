@@ -100,6 +100,6 @@ GitHub License API ไม่พบ License file ที่ประกาศช�
 ## Decision
 
 - Local preparation: approved by current user instruction
-- Public push: pending explicit approval for Buddhadasa Audio App addition
+- Public push: approved by the current user instruction and completed for the scoped Buddhadasa Audio App addition in commit `2e272ad5c17ee3eb29c3d58289c381277dd5c878`
 - Imported scope: runtime-only, source-provenance recorded, no destructive change to source repositories
 - Withdrawn scope: Galaga, RL Battle City, and New Rally-X are no longer present in the active catalog or public runtime tree
