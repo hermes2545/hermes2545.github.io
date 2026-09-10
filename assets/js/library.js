@@ -147,7 +147,6 @@
       const matchesQuery = !query || normalize(card.dataset.search).includes(query);
       const matchesDisclosure = !isAudio || Boolean(query) || matchesAudioDisclosure(card, index);
       card.hidden = !(matchesCategory && matchesQuery && matchesDisclosure);
-      if (card.hidden) card.classList.remove("is-open");
       if (!card.hidden) visible += 1;
     });
 
@@ -199,36 +198,6 @@
     activeCategory = activeCategory === selected ? "" : selected;
     updateCatalog();
   });
-
-  function bindReadingCoverHoverFallback() {
-    if (isAudio) return;
-
-    const setOpen = (card, open) => card.classList.toggle("is-open", open);
-
-    cards.forEach((card) => {
-      card.addEventListener("pointerenter", () => setOpen(card, true));
-      card.addEventListener("mouseenter", () => setOpen(card, true));
-      card.addEventListener("mousemove", () => setOpen(card, true));
-      card.addEventListener("pointerleave", () => setOpen(card, false));
-      card.addEventListener("mouseleave", () => setOpen(card, false));
-      card.addEventListener("focusin", () => setOpen(card, true));
-      card.addEventListener("focusout", () => setOpen(card, false));
-    });
-
-    const openCardUnderPointer = (event) => {
-      const eventTargetCard = event.target.closest(".book-card");
-      const target = eventTargetCard || document.elementFromPoint(event.clientX, event.clientY);
-      const card = target ? target.closest(".book-card") : null;
-      if (!card || card.hidden || !cards.includes(card)) return;
-      setOpen(card, true);
-    };
-
-    const detectorOptions = { capture: true };
-    document.addEventListener("mousemove", openCardUnderPointer, detectorOptions);
-    document.addEventListener("pointermove", openCardUnderPointer, detectorOptions);
-    document.addEventListener("mouseover", openCardUnderPointer, detectorOptions);
-    document.addEventListener("pointerover", openCardUnderPointer, detectorOptions);
-  }
 
   if (isAudio && audioControls) {
     audioShowMore.addEventListener("click", () => {
@@ -286,6 +255,5 @@
     buildAudioYearFilters();
     audioControls.hidden = false;
   }
-  bindReadingCoverHoverFallback();
   layoutShelves();
 })();
