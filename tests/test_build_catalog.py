@@ -89,7 +89,7 @@ class HomepageBuildTests(unittest.TestCase):
         self.assertIn(".reading-page .book-cover-volume::before", stylesheet)
         self.assertIn("repeating-linear-gradient", stylesheet)
         self.assertIn("transform-origin: left center;", stylesheet)
-        self.assertIn("rotateY(-24deg)", stylesheet)
+        self.assertIn("rotateY(-42deg)", stylesheet)
         self.assertIn("1.05s cubic-bezier(.42, 0, .2, 1)", stylesheet)
         self.assertIn(".reading-page .book-card:hover .book-cover", stylesheet)
         self.assertIn(".reading-page .book-card.is-open .book-cover", stylesheet)
