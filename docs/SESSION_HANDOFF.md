@@ -1,13 +1,13 @@
 # Library Session Handoff
 
-Updated: 2026-09-10T23:11:34+07:00
+Updated: 2026-09-10T23:25:11+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
-- Branch: `main`; latest published content commit remains `5f6d761e57fa874c7c1cf9f586650f80023767f1` unless a newer approved push happens after this handoff.
-- Latest local work: replaced the Reading Shelf cover for **Hermes Bot Mode · Interactive Reference Manual** using the owner-supplied PNG attachment.
-- Public push/publication has **not** been performed for this Reading cover replacement; explicit owner approval is still required.
+- Branch: `main`; latest published content commit is `42f2a610e336bc4833b2de3d3261eb410aa83ad3`.
+- Latest published work: replaced the Reading Shelf cover for **Hermes Bot Mode · Interactive Reference Manual** using the owner-supplied PNG attachment.
+- Publication verification completed by remote HEAD equality, production HTTP hash read-back, and production Playwright desktop/mobile DOM checks. GitHub CLI Actions metadata remains unavailable because `gh` is not authenticated.
 
 ## Hermes Bot Mode cover replacement details
 
@@ -29,7 +29,7 @@ Updated: 2026-09-10T23:11:34+07:00
   - `python -m unittest tests.test_hermes_bot_mode_reading -v` failed before template/cover replacement because the new owner-supplied cover SHA was absent from the provenance file.
 - Focused GREEN:
   - `python -m unittest tests.test_hermes_bot_mode_reading -v` → OK, 3 tests.
-- Full local gates:
+- Full local gates before push:
   - `python -m unittest discover -s tests -v` → OK, 136 tests.
   - `python scripts/build_catalog.py --check` → current, 34 books.
   - `python scripts/build_audio_library.py --check` → current, 58 audio books.
@@ -46,15 +46,18 @@ Updated: 2026-09-10T23:11:34+07:00
   - no horizontal overflow;
   - no console/page errors;
   - card transform remains `none`, perspective remains `1100px`.
+- Commit/push:
+  - Content commit: `42f2a610e336bc4833b2de3d3261eb410aa83ad3` (`Replace Hermes Bot Mode reading cover`).
+  - Pushed to public `origin/main` and private `backup/main`.
+  - Local/public/private remote HEADs matched `42f2a610e336bc4833b2de3d3261eb410aa83ad3`.
+- Production verification:
+  - Cache-busted production `index.html` hash matched Local: `02aac3bd0c17ce1cb56929c34dc8dac13b37068eb59aca940de1d5b3d59d1f5a`.
+  - Cache-busted production cover hash matched Local after propagation: `f92982e0a4e9f003a2a4a40b765b3b8a62a0ea22e9411ec7b5d6b5f5a86f0064`.
+  - Production Playwright desktop/mobile checks confirmed 34 Reading cards, Hermes Bot Mode card index 2, live cover natural dimensions 600×900, no horizontal overflow, and no console/page errors.
 
 ## Working tree / private artifacts
 
-- Modified public files:
-  - `assets/covers/custom/hermes-bot-mode-interactive-manual.webp`
-  - `templates/hermes-bot-mode-interactive-manual-cover.template.md`
-  - `tests/test_hermes_bot_mode_reading.py`
-  - `docs/wiki/log.md`
-  - `docs/SESSION_HANDOFF.md`
+- Documentation was updated after content publication; a small follow-up documentation commit may be needed if this handoff/log update is not yet pushed.
 - Untracked private workspace/cache directory remains present; do not stage it broadly.
 - Local preview screenshots/scripts were created in the private workspace for QA only and must remain private/untracked unless the owner asks to see them.
-- Temporary local HTTP server should be killed before final close if still running.
+- No background HTTP server is running.
