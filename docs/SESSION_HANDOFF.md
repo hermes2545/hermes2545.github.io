@@ -6,7 +6,7 @@ Updated: 2026-09-10T16:50:32+07:00
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
 - Branch: `main`; latest published commit before this handoff update is pending from the current approved Reading Shelf hover-angle hotfix.
-- Latest prepared work: Reading Shelf front-cover reveal angle increased from `rotateY(-24deg)` to `rotateY(-42deg)` so the deployed shelf matches the owner-approved standalone hover proof's visible opening strength.
+- Latest prepared work: Reading Shelf front-cover reveal angle increased from `rotateY(-24deg)` to `rotateY(-42deg)` and the Reading stylesheet URL cache-busted to `reading-library.css?v=reading-cover-hover-v4` so browsers fetch the visible stronger angle.
 - Existing Reading Shelf hover fallback remains active: CSS opens from stable book/card states including `.book-card:hover`, `.book-card.is-open`, and `.book-cover-link:hover`; JavaScript fallback toggles `.is-open` on pointer/mouse/focus events.
 - The hotfix preserves the stationary card (`cardTransform: none`), direct `perspective: 1100px`, keyboard focus reveal, reduced-motion suppression, and the 3px shelf clearance.
 
@@ -38,6 +38,6 @@ Updated: 2026-09-10T16:50:32+07:00
 
 ## Remaining local state
 
-- Push was explicitly approved in the current turn and should publish only the scoped Reading Shelf hover-angle hotfix plus this log/handoff record.
+- Push was explicitly approved in the current turn and should publish only the scoped Reading Shelf hover-angle/cache-bust hotfix plus this log/handoff record.
 - Temporary local HTTP server used for preview was killed.
 - Private workspace/cache directory remains untracked and must stay unstaged.
