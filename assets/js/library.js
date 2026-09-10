@@ -203,16 +203,31 @@
   function bindReadingCoverHoverFallback() {
     if (isAudio) return;
 
+    const setOpen = (card, open) => card.classList.toggle("is-open", open);
+
     cards.forEach((card) => {
-      const setOpen = (open) => card.classList.toggle("is-open", open);
-      card.addEventListener("pointerenter", () => setOpen(true));
-      card.addEventListener("mouseenter", () => setOpen(true));
-      card.addEventListener("mousemove", () => setOpen(true));
-      card.addEventListener("pointerleave", () => setOpen(false));
-      card.addEventListener("mouseleave", () => setOpen(false));
-      card.addEventListener("focusin", () => setOpen(true));
-      card.addEventListener("focusout", () => setOpen(false));
+      card.addEventListener("pointerenter", () => setOpen(card, true));
+      card.addEventListener("mouseenter", () => setOpen(card, true));
+      card.addEventListener("mousemove", () => setOpen(card, true));
+      card.addEventListener("pointerleave", () => setOpen(card, false));
+      card.addEventListener("mouseleave", () => setOpen(card, false));
+      card.addEventListener("focusin", () => setOpen(card, true));
+      card.addEventListener("focusout", () => setOpen(card, false));
     });
+
+    const openCardUnderPointer = (event) => {
+      const eventTargetCard = event.target.closest(".book-card");
+      const target = eventTargetCard || document.elementFromPoint(event.clientX, event.clientY);
+      const card = target ? target.closest(".book-card") : null;
+      if (!card || card.hidden || !cards.includes(card)) return;
+      setOpen(card, true);
+    };
+
+    const detectorOptions = { capture: true };
+    document.addEventListener("mousemove", openCardUnderPointer, detectorOptions);
+    document.addEventListener("pointermove", openCardUnderPointer, detectorOptions);
+    document.addEventListener("mouseover", openCardUnderPointer, detectorOptions);
+    document.addEventListener("pointerover", openCardUnderPointer, detectorOptions);
   }
 
   if (isAudio && audioControls) {

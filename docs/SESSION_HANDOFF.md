@@ -1,26 +1,26 @@
 # Library Session Handoff
 
-Updated: 2026-09-10T16:50:32+07:00
+Updated: 2026-09-10T17:04:17+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
-- Branch: `main`; latest published commit before this handoff update is pending from the current approved Reading Shelf hover-angle hotfix.
-- Latest prepared work: Reading Shelf front-cover reveal angle increased from `rotateY(-24deg)` to `rotateY(-42deg)` and the Reading stylesheet URL cache-busted to `reading-library.css?v=reading-cover-hover-v4` so browsers fetch the visible stronger angle.
-- Existing Reading Shelf hover fallback remains active: CSS opens from stable book/card states including `.book-card:hover`, `.book-card.is-open`, and `.book-cover-link:hover`; JavaScript fallback toggles `.is-open` on pointer/mouse/focus events.
-- The hotfix preserves the stationary card (`cardTransform: none`), direct `perspective: 1100px`, keyboard focus reveal, reduced-motion suppression, and the 3px shelf clearance.
+- Branch: `main`; latest published commit before the v5 push was `d639ef73479af6f263c4887160e62c49beea4c5c`; the current turn explicitly approves publishing the v5 hover adaptation.
+- Latest approved work: Reading Shelf hover behavior was adapted to match the owner-supplied `reading-cover-hover-test-v2.html` proof more closely.
+- The prepared v5 shelf keeps the stronger `rotateY(-42deg)` reveal and changes the real shelf toward the proof file's behavior: `.42s cubic-bezier(.2,.8,.2,1)` transition, absolute 100% cover layer, visible page-block/spine layer, CSS hover without a media gate, `.is-open` fallback, and document-level mouse/pointer detector.
+- The document-level fallback uses `event.target.closest(".book-card")` plus `elementFromPoint(event.clientX, event.clientY)` and listens with capture to `mousemove`, `pointermove`, `mouseover`, and `pointerover`.
+- Reading template/generated index now cache-bust both `reading-library.css` and `library.js` with `v=reading-cover-hover-v5`.
 
 ## Verification completed this session
 
-- Production diagnosis before the hotfix confirmed the v3 CSS/JS fallback was loaded and hover toggled `.is-open`, but the previous `-24deg` rotation was visually too subtle at shelf size.
-- TDD RED confirmed the regression test failed when expecting `rotateY(-42deg)` while CSS still used `-24deg`.
-- After changing the Reading CSS angle to `-42deg`, focused tests passed.
-- Local browser verification passed on desktop and mobile:
-  - 34 Reading cards.
-  - first card title `งานของผม`.
-  - cover natural size 600×900.
-  - hover/fallback produced `matrix3d(0.743145...)`, matching the stronger `-42deg` angle.
+- TDD RED confirmed the regression failed before v2-style transition/layer/document-detector markers were implemented.
+- Focused tests passed after the v5 CSS/JS/template updates.
+- Local browser verification passed:
+  - CSS hover opens the first Reading card to `matrix3d(0.743145...)`.
+  - JS fallback via dispatched `mousemove` on `.book-card` opens the same card to `matrix3d(0.743145...)`.
   - `cardTransform: none`.
+  - direct `perspective: 1100px`.
+  - CSS/JS v5 URLs loaded.
   - zero horizontal overflow and no console/page errors.
 - Full local gates passed:
   - `python -m unittest discover -s tests -v` → OK, 136 tests.
@@ -29,7 +29,7 @@ Updated: 2026-09-10T16:50:32+07:00
   - `python scripts/build_app_library.py --check` → current, 9 apps.
   - `python scripts/build_gallery.py --check` → current, 8 artworks.
   - `git diff --check` → OK.
-- Public-safety scan of the intended staged files found no private paths, cache IDs, token/private-key patterns, or other credential-like bytes.
+- Pre-share scan of intended public files found no private paths, cache IDs, token/private-key patterns, or other credential-like bytes.
 
 ## Private artifacts
 
@@ -38,6 +38,6 @@ Updated: 2026-09-10T16:50:32+07:00
 
 ## Remaining local state
 
-- Push was explicitly approved in the current turn and should publish only the scoped Reading Shelf hover-angle/cache-bust hotfix plus this log/handoff record.
-- Temporary local HTTP server used for preview was killed.
+- Current v5 hover adaptation has explicit push approval in this turn; publish the scoped files, then verify remote HEADs and production read-back.
+- Temporary local HTTP server used for preview should be killed before final reporting.
 - Private workspace/cache directory remains untracked and must stay unstaged.
