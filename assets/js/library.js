@@ -147,6 +147,7 @@
       const matchesQuery = !query || normalize(card.dataset.search).includes(query);
       const matchesDisclosure = !isAudio || Boolean(query) || matchesAudioDisclosure(card, index);
       card.hidden = !(matchesCategory && matchesQuery && matchesDisclosure);
+      if (card.hidden) card.classList.remove("is-hovering");
       if (!card.hidden) visible += 1;
     });
 
@@ -228,6 +229,42 @@
     });
   }
 
+  function bindReadingCoverHoverFallback() {
+    if (isAudio) return;
+
+    let activeCard = null;
+
+    function setActive(card) {
+      if (card && card.hidden) card = null;
+      if (activeCard === card) return;
+      if (activeCard) activeCard.classList.remove("is-hovering");
+      activeCard = card;
+      if (activeCard) activeCard.classList.add("is-hovering");
+    }
+
+    function cardFromPoint(event) {
+      const direct = event.target.closest?.(".book-card");
+      if (direct) return direct;
+      const element = document.elementFromPoint(event.clientX, event.clientY);
+      return element?.closest?.(".book-card") || null;
+    }
+
+    cards.forEach((card) => {
+      card.addEventListener("pointerenter", (event) => {
+        if (event.pointerType === "mouse") setActive(card);
+      });
+      card.addEventListener("mouseenter", () => setActive(card));
+      card.addEventListener("pointerleave", (event) => {
+        if (event.pointerType === "mouse") setActive(null);
+      });
+      card.addEventListener("mouseleave", () => setActive(null));
+    });
+
+    document.addEventListener("mousemove", (event) => {
+      setActive(cardFromPoint(event));
+    }, true);
+  }
+
 
   window.addEventListener("resize", () => {
     window.clearTimeout(resizeTimer);
@@ -255,5 +292,6 @@
     buildAudioYearFilters();
     audioControls.hidden = false;
   }
+  bindReadingCoverHoverFallback();
   layoutShelves();
 })();

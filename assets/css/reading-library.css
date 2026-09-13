@@ -293,12 +293,16 @@ h1 { color: #18372a; text-shadow: 0 1px rgba(255,255,255,.65); }
     transform 1.05s cubic-bezier(.42, 0, .2, 1),
     box-shadow 1.05s cubic-bezier(.42, 0, .2, 1);
 }
-@media (hover: hover) {
+@media (hover: hover), (any-hover: hover) {
   .reading-page .book-cover-link:hover .book-cover,
   .reading-page .book-cover-wrap:hover .book-cover {
     transform: rotateY(-24deg);
     box-shadow: 6px 2px 10px #0002;
   }
+}
+.reading-page .book-card.is-hovering .book-cover {
+  transform: rotateY(-24deg);
+  box-shadow: 6px 2px 10px #0002;
 }
 .reading-page .book-cover-link:focus-visible {
   outline: 2px solid #526757;
@@ -316,6 +320,7 @@ h1 { color: #18372a; text-shadow: 0 1px rgba(255,255,255,.65); }
 
   .reading-page .book-cover-link:hover .book-cover,
   .reading-page .book-cover-wrap:hover .book-cover,
+  .reading-page .book-card.is-hovering .book-cover,
   .reading-page .book-cover-link:focus-visible .book-cover {
     transform: none;
   }

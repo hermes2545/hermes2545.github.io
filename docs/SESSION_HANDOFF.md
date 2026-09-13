@@ -1,25 +1,28 @@
 # Library Session Handoff
 
-Updated: 2026-09-13T17:02:00+07:00
+Updated: 2026-09-13T17:26:44+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
 - Branch: `main`.
-- Latest functional Reading hover commit: `f89eaf0bd6745c35739711d5b7f1ce393ac87d19` (`Restore reading shelf CSS 3D cover contract`).
-- The owner-supplied `CSS_3D.txt` contract has been restored, committed, pushed to public and private remotes, and verified live on Production.
+- Latest pushed commit: `3094aaeffd307571a1c9c171a0daa80b6b02b012` (`Document reading hover v11 publication`).
+- A v12 hybrid-mouse hover fix is prepared locally but has not been committed or pushed.
 
-## Why v11 was needed
+## Why v12 was prepared
 
-- The owner supplied `CSS_3D.txt` again and asked why the shelf no longer followed the previous working CSS 3D sample.
-- Root cause: process drift from later hotfixes. v9 preserved `-24deg` but broadened triggers; v10 changed the accepted sample to a more visible `-42deg`, faster `.42s` timing, absolute front layer, and paper `z-index: 0`.
-- v11 restores the owner’s explicit CSS_3D contract and adds anti-drift regression tests so later visibility experiments do not silently replace it.
+- The owner reported that even after v11, mouse hover on the book cover still did not open the cover.
+- Production diagnosis on v11 showed:
+  - Default desktop browser: `hover=true`, `anyHover=true`, hover opened to `matrix3d(0.913545...)`.
+  - Touch/hybrid-emulated browser: `hover=false`, `anyHover=false`; the card/link/wrap still matched `:hover`, but the CSS-only `@media (hover: hover)` gate did not apply, so the cover stayed at identity transform.
+- This explains the owner-visible failure without changing the CSS_3D contract: some hybrid/touch-capable browser environments suppress hover media queries even while a real mouse hover is present.
 
-## v11 contract now published
+## Prepared v12 behavior
 
-Changed public source files in `f89eaf0`:
+Changed local files:
 
 - `assets/css/reading-library.css`
+- `assets/js/library.js`
 - `templates/index.template.html`
 - `index.html`
 - `tests/test_build_catalog.py`
@@ -27,60 +30,62 @@ Changed public source files in `f89eaf0`:
 - `docs/wiki/log.md`
 - `docs/SESSION_HANDOFF.md`
 
-Behavioral details locked by tests:
+v12 preserves the owner-supplied `CSS_3D.txt` visual contract:
 
-- The cover image and paper/page block are separate layers.
-- Stable hover target stays still; the card/book volume does not rotate or translate.
-- Only `.book-cover` rotates from the left spine.
-- Hover/focus angle is `rotateY(-24deg)`.
-- Perspective is `1100px` on the Reading book wrappers.
-- Transition is exactly `1.05s cubic-bezier(.42, 0, .2, 1)` for transform and shadow.
-- Stationary paper block uses layered page-edge gradient, subtle shadow, `inset: 2px -7px 0 3px`, and `z-index: -1`.
-- Cover is a relative real-image layer with `height: auto`, not the v10 absolute full front layer.
-- Sample corner radii from CSS_3D are restored: paper `1px 6px 6px 1px`, cover `1px 3px 3px 1px`, focus outline `4px`.
-- CSS hover is under `@media (hover: hover)` and Reading-scoped selectors only.
-- Keyboard focus reveal and `prefers-reduced-motion` suppression are preserved.
-- No `.is-open` JS fallback, click-open/PDF/page-turn system, or broad image selector change was added.
-- Reading template and generated index use `reading-cover-hover-v11` cache-busting.
-
-## Verification completed
-
-Pre-push gates:
-
-- `python -m unittest discover -s tests -v` → OK, 140 tests.
-- `python scripts/build_catalog.py --check` → current, 35 books.
-- `python scripts/build_audio_library.py --check` → current, 58 audio books.
-- `python scripts/build_app_library.py --check` → current, 9 apps.
-- `python scripts/build_gallery.py --check` → current, 8 artworks.
-- `git diff --check` → OK.
-- Pre-share scan over the seven changed public/test/doc files → no findings.
-
-Push verification:
-
-- Public origin and private backup both updated to `f89eaf0bd6745c35739711d5b7f1ce393ac87d19`.
-- Production HTTP hash read-back matched Local for:
-  - `index.html` SHA-256 `84597e3946424edde04f67614b8032be6a0b10ce2169c4a36baf0b39385f31b6`
-  - `assets/css/reading-library.css` SHA-256 `198bd842802c11837718f493e6280f45db80c7db2e8ff4dc5912e8efae19b10d`
-  - `assets/js/library.js` SHA-256 `7cbe8bbe095747109d7481bb3afd62fc83152810a0b9efaf1c6f9270df7ca186`
-
-Production Playwright QA:
-
-- 35 Reading cards.
-- First title: `One Project. Any AI.`
-- CSS/JS: `reading-cover-hover-v11`.
-- Hover transform: `matrix3d(0.913545, 0, 0.406737, ...)`, matching `-24deg`.
-- Transition: `transform 1.05s cubic-bezier(0.42, 0, 0.2, 1), box-shadow 1.05s cubic-bezier(0.42, 0, 0.2, 1)`.
+- `rotateY(-24deg)` only on `.book-cover`.
+- `1.05s cubic-bezier(.42, 0, .2, 1)` transition.
+- Relative real-image cover layer with `height: auto`.
+- Stationary paper block behind the cover at `z-index: -1`.
+- `perspective: 1100px` on cover wrappers/volume.
 - `cardTransform: none`.
-- `wrapPerspective: 1100px`, `volPerspective: 1100px`.
-- `coverPosition: relative`, `coverHeight: 217.5px`.
-- Cover radius: `1px 3px 3px 1px`; paper radius: `1px 6px 6px 1px`; paper z-index: `-1`.
-- Reduced-motion hover transform: `none`.
-- Cover natural size: 600×900.
-- Desktop/mobile horizontal overflow: 0.
-- Console/page errors: none.
+- Keyboard focus and `prefers-reduced-motion` preserved.
+- No click-open, PDF, page-turn, or `.is-open` behavior.
 
-## Publication follow-up
+v12 adds robust mouse-triggering for hybrid devices:
 
-- This handoff and `docs/wiki/log.md` were updated after Production verification and should be committed as a small documentation follow-up if not already committed.
+- CSS media query broadened to `@media (hover: hover), (any-hover: hover)`.
+- Reading-only JS function `bindReadingCoverHoverFallback()` toggles `.is-hovering` on the stable `.book-card` using:
+  - `pointerenter` for `pointerType === "mouse"`,
+  - `mouseenter`,
+  - capture-phase `document.addEventListener("mousemove", ...)`,
+  - `document.elementFromPoint(...)` fallback.
+- Hidden cards clear `.is-hovering` during search/filter updates.
+- Reduced-motion CSS includes `.book-card.is-hovering .book-cover` so the fallback does not animate when the user requests reduced motion.
+- CSS/JS cache-busted to `reading-cover-hover-v12`.
+
+## Verification completed locally
+
+- TDD RED confirmed v11 failed new hybrid expectations.
+- Focused tests passed after implementation.
+- Full gates:
+  - `python -m unittest discover -s tests -v` → OK, 140 tests.
+  - `python scripts/build_catalog.py --check` → current, 35 books.
+  - `python scripts/build_audio_library.py --check` → current, 58 audio books.
+  - `python scripts/build_app_library.py --check` → current, 9 apps.
+  - `python scripts/build_gallery.py --check` → current, 8 artworks.
+  - `git diff --check` → OK.
+- Pre-share scan over changed public/test/doc files → no findings.
+- Local browser QA at `http://127.0.0.1:8768/index.html`:
+  - 35 Reading cards.
+  - First title: `One Project. Any AI.`
+  - CSS/JS: `reading-cover-hover-v12`.
+  - Normal desktop: `hover=true`, `anyHover=true`, `.is-hovering=true`, transform `matrix3d(0.913545...)`.
+  - Touch/hybrid emulation: `hover=false`, `anyHover=false`, but `.is-hovering=true` and transform still `matrix3d(0.913545...)` from the fallback.
+  - Transition remains `1.05s cubic-bezier(0.42, 0, 0.2, 1)`.
+  - `cardTransform: none`.
+  - `wrapPerspective: 1100px`, `volPerspective: 1100px`.
+  - `coverPosition: relative`, paper `z-index: -1`.
+  - Reduced-motion transform remains identity.
+  - Desktop/mobile overflow: 0.
+  - Console/page errors: none.
+
+## Publication status
+
+- v12 is local only and has not been committed or pushed.
+- If the owner approves publication, use a scoped commit/push for the eight changed public/test/doc files above; do not stage `.hermes/`.
+- Suggested commit message: `Fix reading shelf hover on hybrid mouse devices`.
+
+## Private artifacts / processes
+
 - Private Playwright scripts/screenshots remain under `.hermes/` and must not be committed.
-- No background HTTP server remains active from v11 QA.
+- Local HTTP server `proc_3f94bb9a240b` was used for v12 QA and was stopped after verification.

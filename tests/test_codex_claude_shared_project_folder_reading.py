@@ -90,9 +90,9 @@ class CodexClaudeSharedProjectFolderReadingTests(unittest.TestCase):
     def test_reading_shelf_hover_reveal_has_hybrid_mouse_fallback_selector(self):
         stylesheet = (ROOT / "assets" / "css" / "reading-library.css").read_text(encoding="utf-8")
         template = (ROOT / "templates" / "index.template.html").read_text(encoding="utf-8")
-        self.assertIn("@media (hover: hover) {", stylesheet)
-        self.assertNotIn("@media (hover: hover), (any-hover: hover)", stylesheet)
+        self.assertIn("@media (hover: hover), (any-hover: hover) {", stylesheet)
         self.assertNotIn(".reading-page .book-card:hover .book-cover", stylesheet)
+        self.assertIn(".reading-page .book-card.is-hovering .book-cover", stylesheet)
         self.assertIn(".reading-page .book-cover-wrap:hover .book-cover", stylesheet)
         self.assertIn(".reading-page .book-cover-link:hover .book-cover", stylesheet)
         self.assertIn("rotateY(-24deg)", stylesheet)
@@ -103,8 +103,13 @@ class CodexClaudeSharedProjectFolderReadingTests(unittest.TestCase):
         self.assertIn("border-radius: 1px 6px 6px 1px;", stylesheet)
         self.assertIn("border-radius: 1px 3px 3px 1px;", stylesheet)
         self.assertNotIn("rotateY(-42deg)", stylesheet)
-        self.assertIn('href="assets/css/reading-library.css?v=reading-cover-hover-v11"', template)
-        self.assertIn('src="assets/js/library.js?v=reading-cover-hover-v11"', template)
+        script = (ROOT / "assets" / "js" / "library.js").read_text(encoding="utf-8")
+        self.assertIn("function bindReadingCoverHoverFallback", script)
+        self.assertIn("is-hovering", script)
+        self.assertNotIn("is-open", script)
+        self.assertIn('document.addEventListener("mousemove"', script)
+        self.assertIn('href="assets/css/reading-library.css?v=reading-cover-hover-v12"', template)
+        self.assertIn('src="assets/js/library.js?v=reading-cover-hover-v12"', template)
 
 
 if __name__ == "__main__":
