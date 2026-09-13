@@ -44,7 +44,7 @@ class WhatIDoReadingTests(unittest.TestCase):
         self.assertEqual(book["published_at"], "2026-09-09T00:00:00+07:00")
         self.assertIn("งานขาย", book["summary"])
         self.assertIn("AI Agent", book["summary"])
-        self.assertEqual(books[0]["id"], BOOK_ID)
+        self.assertEqual(books[1]["id"], BOOK_ID)
 
     def test_owner_supplied_html_content_is_preserved(self):
         self.assertTrue(HTML_PATH.is_file())

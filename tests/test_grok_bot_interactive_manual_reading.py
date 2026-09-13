@@ -43,7 +43,7 @@ class GrokBotInteractiveManualReadingTests(unittest.TestCase):
         self.assertEqual(book["category"], "Grok Bot")
         self.assertEqual(book["published_at"], "2026-09-07T18:56:56+07:00")
         self.assertIn("17 ขั้นตอน", book["summary"])
-        self.assertEqual(books[1]["id"], BOOK_ID)
+        self.assertEqual(books[2]["id"], BOOK_ID)
 
     def test_owner_supplied_html_content_is_preserved_with_mobile_overflow_containment(self):
         self.assertTrue(HTML_PATH.is_file())

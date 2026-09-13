@@ -1,0 +1,1339 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Shared Project Folder — Codex + Claude Manual</title>
+<meta name="description" content="คู่มือสร้าง Project Folder กลางให้ ChatGPT/Codex และ Claude Code ใช้ context, memory, files และ workflow ร่วมกัน">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+ --bg:#f4f6f8;--panel:#fff;--panel2:#eef2f5;--ink:#17202a;--muted:#617080;--line:#dbe2e8;
+ --brand:#243b53;--accent:#2f6f9f;--ok:#2f7d5c;--warn:#9a6a24;--bad:#a64444;
+ --shadow:0 14px 40px rgba(22,35,48,.08);--radius:18px;--code:#101820;--codeink:#e7edf3;
+ --sidebar:300px;--topbar:64px;
+}
+[data-theme="dark"]{
+ --bg:#101419;--panel:#171d23;--panel2:#202830;--ink:#eef3f7;--muted:#a5b1bd;--line:#2c3741;
+ --brand:#dce8f2;--accent:#69a8d5;--ok:#70c49d;--warn:#ddb76a;--bad:#e07e7e;
+ --shadow:0 18px 48px rgba(0,0,0,.28);--code:#0b0f13;--codeink:#e8eef4;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Sarabun",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.66}
+button,input{font:inherit}
+.topbar{position:fixed;inset:0 0 auto 0;height:var(--topbar);z-index:50;background:color-mix(in srgb,var(--panel) 90%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:0 20px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#243b53,#4f86aa);display:grid;place-items:center;color:white;font-weight:800;letter-spacing:-1px;box-shadow:var(--shadow)}
+.brand h1{font-size:15px;margin:0;line-height:1.2}.brand small{display:block;color:var(--muted);font-size:11px;font-weight:500}
+.spacer{flex:1}
+.iconbtn{border:1px solid var(--line);background:var(--panel);color:var(--ink);height:38px;min-width:38px;border-radius:11px;cursor:pointer;display:grid;place-items:center;padding:0 11px}
+.iconbtn:hover{border-color:var(--accent)}
+.searchwrap{position:relative;max-width:380px;width:36vw}
+.searchwrap input{width:100%;height:40px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:12px;padding:0 38px 0 13px;outline:none}
+.searchwrap input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 15%,transparent)}
+.kbd{font-family:"IBM Plex Mono";font-size:10px;border:1px solid var(--line);padding:1px 5px;border-radius:5px;color:var(--muted)}
+.sidebar{position:fixed;top:var(--topbar);bottom:0;left:0;width:var(--sidebar);border-right:1px solid var(--line);background:var(--panel);padding:18px 14px 30px;overflow-y:auto;z-index:40}
+.navgroup{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800;padding:12px 10px 7px}
+.navbtn{width:100%;border:0;background:transparent;color:var(--ink);display:flex;gap:10px;align-items:center;text-align:left;padding:10px 11px;border-radius:10px;cursor:pointer;font-weight:600;font-size:14px}
+.navbtn .n{min-width:24px;height:24px;border-radius:7px;background:var(--panel2);display:grid;place-items:center;color:var(--muted);font-size:11px}
+.navbtn:hover{background:var(--panel2)}.navbtn.active{background:color-mix(in srgb,var(--accent) 12%,var(--panel));color:var(--accent)}
+.navbtn.active .n{background:var(--accent);color:white}
+.main{margin-left:var(--sidebar);padding:calc(var(--topbar) + 26px) 28px 60px;min-height:100vh}
+.section{display:none;max-width:1180px;margin:0 auto}.section.active{display:block;animation:fade .22s ease}
+@keyframes fade{from{opacity:.45;transform:translateY(5px)}to{opacity:1;transform:none}}
+.hero{background:linear-gradient(135deg,#20364a,#315e7d 58%,#6f8fa3);color:#fff;border-radius:26px;padding:48px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.hero:after{content:"";position:absolute;width:420px;height:420px;border:80px solid rgba(255,255,255,.06);border-radius:50%;right:-150px;top:-170px}
+.eyebrow{font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:12px;opacity:.8}
+.hero h2{font-size:clamp(34px,5vw,66px);letter-spacing:-.04em;line-height:1.03;margin:12px 0 16px;max-width:850px}
+.hero p{font-size:18px;max-width:800px;color:#e7eff5;margin:0 0 26px}
+.badges{display:flex;gap:8px;flex-wrap:wrap}.badge{border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.09);border-radius:999px;padding:7px 12px;font-size:12px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px;margin-top:20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:0 8px 24px rgba(17,34,50,.035)}
+.c4{grid-column:span 4}.c6{grid-column:span 6}.c8{grid-column:span 8}.c12{grid-column:span 12}
+.card h3{margin:0 0 8px;font-size:19px}.card p{margin:6px 0;color:var(--muted)}
+.metric{font-size:40px;font-weight:800;letter-spacing:-.04em;line-height:1}.metric small{font-size:13px;color:var(--muted);letter-spacing:0}
+.sectionhead{margin:0 0 22px}.sectionhead .num{font-family:"IBM Plex Mono";font-size:12px;color:var(--accent);font-weight:700}.sectionhead h2{font-size:34px;line-height:1.15;margin:5px 0 8px;letter-spacing:-.025em}.sectionhead p{color:var(--muted);max-width:820px;margin:0}
+.callout{border-left:4px solid var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--panel));padding:16px 18px;border-radius:0 12px 12px 0;margin:16px 0}
+.callout.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 8%,var(--panel))}
+.callout.warn{border-color:var(--warn);background:color-mix(in srgb,var(--warn) 8%,var(--panel))}
+.callout.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 8%,var(--panel))}
+.callout strong{display:block;margin-bottom:3px}
+table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+th,td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th{background:var(--panel2);font-size:12px;text-transform:uppercase;letter-spacing:.04em}tr:last-child td{border-bottom:0}
+.codewrap{position:relative;margin:14px 0}.codehead{display:flex;justify-content:space-between;align-items:center;background:#17212a;color:#aebcc8;padding:8px 10px 8px 14px;border-radius:12px 12px 0 0;font-family:"IBM Plex Mono";font-size:11px}
+.copy{border:1px solid #46525e;background:#26323d;color:#e9eef2;border-radius:7px;padding:4px 9px;cursor:pointer;font-size:11px}
+pre{margin:0;background:var(--code);color:var(--codeink);padding:18px;border-radius:0 0 12px 12px;overflow:auto;font-family:"IBM Plex Mono",monospace;font-size:12.5px;line-height:1.65;white-space:pre}
+code{font-family:"IBM Plex Mono",monospace}
+.inline{font-family:"IBM Plex Mono";font-size:.88em;background:var(--panel2);border:1px solid var(--line);padding:2px 6px;border-radius:6px}
+.flow{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap;margin:18px 0}.node{flex:1 1 160px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px;min-width:150px}.node b{display:block;font-size:14px}.node span{color:var(--muted);font-size:12px}.arrow{align-self:center;color:var(--accent);font-weight:800}
+.tree{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;font-family:"IBM Plex Mono";font-size:12px;overflow:auto;white-space:pre;line-height:1.7}
+.steps{counter-reset:step}.step{counter-increment:step;position:relative;padding:0 0 24px 56px}.step:before{content:counter(step);position:absolute;left:0;top:0;width:36px;height:36px;border-radius:10px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:800}.step:after{content:"";position:absolute;left:17px;top:42px;bottom:4px;width:1px;background:var(--line)}.step:last-child:after{display:none}.step h3{margin:0 0 5px}.step p{margin:4px 0;color:var(--muted)}
+.checklist label{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px dashed var(--line)}.checklist input{margin-top:6px}
+.pill{display:inline-block;padding:3px 8px;border-radius:999px;background:var(--panel2);font-size:11px;font-weight:700;margin:2px}
+.src a{color:var(--accent);word-break:break-all}
+.searchhit{outline:3px solid color-mix(in srgb,var(--warn) 35%,transparent);border-radius:8px}
+.footer{color:var(--muted);font-size:12px;text-align:center;padding:35px 0 10px}
+.mobile-title{display:none}
+@media(max-width:900px){
+ :root{--sidebar:280px}.searchwrap{display:none}
+ .sidebar{transform:translateX(-105%);transition:.22s}.sidebar.open{transform:none;box-shadow:0 0 50px rgba(0,0,0,.24)}
+ .main{margin-left:0;padding:calc(var(--topbar) + 16px) 14px 40px}.mobile-title{display:block}
+ .hero{padding:30px 24px;border-radius:20px}.hero p{font-size:16px}
+ .c4,.c6,.c8{grid-column:span 12}.grid{gap:12px}.card{padding:18px}
+ .sectionhead h2{font-size:28px}.topbar{padding:0 12px}.brand small{display:none}
+ table{display:block;overflow-x:auto;white-space:normal}
+}
+@media(min-width:901px){#menuBtn{display:none}}
+@media(max-width:560px){
+ .brand h1{font-size:13px}.topbar{gap:7px}.iconbtn{padding:0 9px}
+ .hero h2{font-size:38px}.hero{padding:28px 20px}
+ .sectionhead h2{font-size:25px}.flow{display:grid}.arrow{transform:rotate(90deg);justify-self:center}
+ pre{font-size:11.5px;padding:14px}.tree{font-size:11px}
+}
+@media print{
+ .topbar,.sidebar{display:none}.main{margin:0;padding:0}.section{display:block!important;page-break-before:always}.section:first-child{page-break-before:auto}.hero{box-shadow:none}.copy{display:none}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+ <button class="iconbtn" id="menuBtn" aria-label="เปิดเมนู">☰</button>
+ <div class="brand"><div class="logo">AI²</div><div><h1>Shared Project Folder Manual</h1><small>Codex × Claude Code · Model-Agnostic AI Project</small></div></div>
+ <div class="spacer"></div>
+ <div class="searchwrap"><input id="search" placeholder="ค้นหาในคู่มือ…  เช่น AGENTS.md, Git, conflict"><span style="position:absolute;right:11px;top:9px;color:var(--muted)">⌕</span></div>
+ <button class="iconbtn" id="fontBtn" title="ปรับขนาดตัวอักษร">A±</button>
+ <button class="iconbtn" id="themeBtn" title="สลับ Dark/Light">☾</button>
+</header>
+
+<aside class="sidebar" id="sidebar">
+ <div class="navgroup">เริ่มต้น</div>
+ <button class="navbtn active" data-target="overview"><span class="n">00</span>ภาพรวมระบบ</button>
+ <button class="navbtn" data-target="concept"><span class="n">01</span>แนวคิดจากวิดีโอ</button>
+ <button class="navbtn" data-target="architecture"><span class="n">02</span>สถาปัตยกรรม Folder</button>
+ <div class="navgroup">ลงมือทำ</div>
+ <button class="navbtn" data-target="setup"><span class="n">03</span>ติดตั้งทีละขั้น</button>
+ <button class="navbtn" data-target="canonical"><span class="n">04</span>Canonical Context</button>
+ <button class="navbtn" data-target="adapters"><span class="n">05</span>AGENTS.md / CLAUDE.md</button>
+ <button class="navbtn" data-target="workflow"><span class="n">06</span>Workflow ใช้งานจริง</button>
+ <button class="navbtn" data-target="handoff"><span class="n">07</span>Handoff ระหว่าง AI</button>
+ <div class="navgroup">ความปลอดภัยและความเสถียร</div>
+ <button class="navbtn" data-target="conflict"><span class="n">08</span>Conflict & Locking</button>
+ <button class="navbtn" data-target="git"><span class="n">09</span>Git / Version Control</button>
+ <button class="navbtn" data-target="security"><span class="n">10</span>Security & Secrets</button>
+ <button class="navbtn" data-target="advanced"><span class="n">11</span>Advanced Patterns</button>
+ <div class="navgroup">พร้อมใช้งาน</div>
+ <button class="navbtn" data-target="templates"><span class="n">12</span>Template พร้อม Copy</button>
+ <button class="navbtn" data-target="troubleshoot"><span class="n">13</span>Troubleshooting</button>
+ <button class="navbtn" data-target="checklist"><span class="n">14</span>Checklist ตรวจระบบ</button>
+ <button class="navbtn" data-target="sources"><span class="n">15</span>แหล่งอ้างอิง</button>
+
+ <div class="navgroup">สำหรับ AI · Deployment</div>
+ <button class="navbtn" data-target="ai-readme"><span class="n">16</span>AI Read Me First</button>
+ <button class="navbtn" data-target="universal-prompt"><span class="n">17</span>Universal Migration Prompt</button>
+ <button class="navbtn" data-target="claude-prompt"><span class="n">18</span>Claude Code Adapter</button>
+ <button class="navbtn" data-target="chatgpt-prompt"><span class="n">19</span>ChatGPT / Codex Adapter</button>
+ <button class="navbtn" data-target="existing-projects"><span class="n">20</span>Migrating Existing Projects</button>
+ <button class="navbtn" data-target="model-agnostic"><span class="n">21</span>Model-Agnostic Implementation</button>
+
+</aside>
+
+<main class="main">
+
+<section class="section active" id="overview">
+ <div class="hero">
+  <div class="eyebrow">Interactive Reference Manual · 2026</div>
+  <h2>หนึ่ง Project Folder<br>ให้ Codex และ Claude ทำงานบนความจริงชุดเดียวกัน</h2>
+  <p>เปลี่ยนจาก “ย้าย prompt ไปมา” เป็นระบบที่ทั้งสอง AI อ่านไฟล์เดียวกัน เห็นสถานะเดียวกัน รู้กติกาเดียวกัน และส่งต่องานกันผ่านไฟล์ที่คุณเป็นเจ้าของเอง</p>
+  <div class="badges"><span class="badge">Shared Context</span><span class="badge">AGENTS.md</span><span class="badge">CLAUDE.md</span><span class="badge">Git-friendly</span><span class="badge">Human-readable</span></div>
+ </div>
+ <div class="grid">
+  <div class="card c4"><div class="metric">1 <small>Folder</small></div><h3>แหล่งข้อมูลหลักเพียงชุดเดียว</h3><p>ลดปัญหา ChatGPT กับ Claude จำข้อมูลคนละเวอร์ชัน</p></div>
+  <div class="card c4"><div class="metric">2 <small>Adapters</small></div><h3>ไฟล์คำสั่งเฉพาะแพลตฟอร์ม</h3><p><span class="inline">AGENTS.md</span> สำหรับ Codex และ <span class="inline">CLAUDE.md</span> สำหรับ Claude Code</p></div>
+  <div class="card c4"><div class="metric">0 <small>Copy/Paste</small></div><h3>ลดการย้าย context ด้วยมือ</h3><p>ใช้ไฟล์สถานะ งานค้าง และ decision log เป็นจุด handoff</p></div>
+ </div>
+ <div class="callout ok"><strong>เป้าหมายของระบบ</strong>AI ทั้งสองไม่จำเป็นต้อง “คิดเหมือนกัน” แต่ต้องเริ่มจากข้อเท็จจริง กติกา เป้าหมาย และสถานะงานชุดเดียวกัน แล้วให้ความแตกต่างของโมเดลช่วยตรวจสอบกันเอง</div>
+ <div class="card" style="margin-top:18px">
+  <h3>ภาพการไหลของงาน</h3>
+  <div class="flow"><div class="node"><b>คุณ</b><span>กำหนดเป้าหมาย/อนุมัติ</span></div><div class="arrow">→</div><div class="node"><b>Shared Folder</b><span>Context + Work + Decisions</span></div><div class="arrow">↔</div><div class="node"><b>ChatGPT / Codex</b><span>คิด วางแผน สร้าง ตรวจ</span></div><div class="arrow">↔</div><div class="node"><b>Claude Code</b><span>วิเคราะห์ ลงมือ ตรวจละเอียด</span></div></div>
+ </div>
+</section>
+
+<section class="section" id="concept">
+ <div class="sectionhead"><div class="num">SECTION 01</div><h2>แนวคิดหลัก: เลิกเลือกระหว่าง ChatGPT กับ Claude</h2><p>วิดีโอที่ส่งมามีชื่อ “I Stopped Choosing Between ChatGPT and Claude. Here's the Setup” — แก่นที่นำมาใช้ในคู่มือนี้คือการวาง AI หลายตัวบน project workspace เดียวกัน แทนการแยก project knowledge ไว้คนละแอป</p></div>
+ <div class="grid">
+  <div class="card c6"><h3>วิธีเดิม: Platform-centric</h3><p>ChatGPT มี project/context ของตัวเอง, Claude มี project/context ของตัวเอง แล้วคนต้องคอยคัดลอกข้อมูลระหว่างสองฝั่ง</p><div class="callout bad"><strong>ผลเสีย</strong>ข้อมูลเก่า, decision ไม่ตรงกัน, ไฟล์ซ้ำ, ไม่รู้ว่าอันไหนล่าสุด และ handoff พึ่งความจำของคน</div></div>
+  <div class="card c6"><h3>วิธีใหม่: Folder-centric</h3><p>ย้าย “ความจริงของโปรเจกต์” ออกจาก chat history มาอยู่ในไฟล์ Markdown และ source files ในโฟลเดอร์ที่ทั้งสอง agent เข้าถึงได้</p><div class="callout ok"><strong>ผลดี</strong>portable, audit ได้, backup ได้, Git ได้, เปลี่ยนโมเดลได้ และคนอ่านเองได้</div></div>
+ </div>
+ <h3>4 ชั้นของความรู้</h3>
+ <table><thead><tr><th>ชั้น</th><th>หน้าที่</th><th>ตัวอย่าง</th><th>ควรแก้บ่อยแค่ไหน</th></tr></thead><tbody>
+ <tr><td><b>Rules</b></td><td>กติกาถาวร</td><td>coding style, ห้ามแก้ไฟล์บางชนิด</td><td>น้อย</td></tr>
+ <tr><td><b>Context</b></td><td>ภาพรวม project</td><td>architecture, stakeholders, constraints</td><td>เป็นระยะ</td></tr>
+ <tr><td><b>State</b></td><td>สถานะปัจจุบัน</td><td>ทำถึงไหน, งานค้าง, blockers</td><td>ทุก session</td></tr>
+ <tr><td><b>Artifacts</b></td><td>ชิ้นงานจริง</td><td>source code, docs, assets, tests</td><td>ตลอดเวลา</td></tr>
+ </tbody></table>
+ <div class="callout warn"><strong>สิ่งที่ไม่ควรทำ</strong>อย่าใช้ chat history ของ AI ตัวใดตัวหนึ่งเป็น “ฐานข้อมูลหลัก” เพราะอีกตัวเข้าถึงไม่ได้ และข้อมูลมักตรวจสอบเวอร์ชันย้อนหลังได้ยาก</div>
+</section>
+
+<section class="section" id="architecture">
+ <div class="sectionhead"><div class="num">SECTION 02</div><h2>สถาปัตยกรรม Project Folder ที่แนะนำ</h2><p>โครงสร้างนี้ตั้งใจให้ใช้ได้ทั้งงานเขียน งานวิจัย เว็บไซต์ แอป และโปรเจกต์ทั่วไป ไม่ผูกกับ IDE หรือผู้ให้บริการรายเดียว</p></div>
+ <div class="tree">my-project/
+├── AGENTS.md                 # adapter สำหรับ ChatGPT/Codex
+├── CLAUDE.md                 # adapter สำหรับ Claude Code
+├── README.md                 # คนอ่าน: project overview
+├── .gitignore
+│
+├── context/
+│   ├── PROJECT.md            # canonical project context
+│   ├── RULES.md              # กติกากลางที่ทั้งสอง AI ต้องทำตาม
+│   ├── DECISIONS.md          # decision log แบบมีวันที่
+│   ├── STATUS.md             # snapshot สถานะล่าสุด
+│   ├── OPEN_LOOPS.md         # งานค้าง / next action / owner
+│   └── GLOSSARY.md           # คำศัพท์เฉพาะ
+│
+├── sessions/
+│   ├── chatgpt/
+│   ├── claude/
+│   └── handoffs/
+│
+├── docs/                     # เอกสารอ้างอิง
+├── src/                      # งานจริง / source code
+├── tests/
+├── assets/
+└── archive/</div>
+ <div class="grid">
+  <div class="card c4"><h3>Canonical</h3><p>ไฟล์ใน <span class="inline">context/</span> คือ source of truth ไม่สร้างสำเนาแยกตาม AI</p></div>
+  <div class="card c4"><h3>Adapter</h3><p><span class="inline">AGENTS.md</span> และ <span class="inline">CLAUDE.md</span> ควรสั้น เน้นบอกให้ไปอ่าน canonical files</p></div>
+  <div class="card c4"><h3>Session Log</h3><p>บันทึกสิ่งที่แต่ละ AI ทำเพื่อ trace, review และ handoff โดยไม่ทำให้ context หลักรก</p></div>
+ </div>
+ <div class="callout ok"><strong>หลัก Single Source of Truth</strong>ถ้าข้อมูลเดียวกันต้องเขียน 3 ที่ วันหนึ่งมันจะต่างกันแน่นอน จึงควรเขียนเนื้อหาจริงไว้ที่เดียว แล้วให้ adapter อ้างไปยังไฟล์นั้น</div>
+</section>
+
+<section class="section" id="setup">
+ <div class="sectionhead"><div class="num">SECTION 03</div><h2>ติดตั้งทีละขั้น</h2><p>ตัวอย่างใช้ Terminal แต่หลักการเดียวกันบน Windows, macOS และ Linux</p></div>
+ <div class="steps">
+  <div class="step"><h3>สร้างโฟลเดอร์ project</h3><p>เก็บไว้ใน local disk หรือโฟลเดอร์ที่ sync ได้ แต่ถ้าเป็น code project แนะนำ Git เป็นตัวหลัก ไม่ใช้ cloud sync เป็นตัวแก้ conflict</p>
+  <div class="codewrap"><div class="codehead">shell<button class="copy">Copy</button></div><pre>mkdir my-project
+cd my-project
+mkdir -p context sessions/chatgpt sessions/claude sessions/handoffs docs src tests assets archive</pre></div></div>
+  <div class="step"><h3>เริ่ม Git</h3><div class="codewrap"><div class="codehead">shell<button class="copy">Copy</button></div><pre>git init
+printf ".env\n*.key\nsecrets/\n.DS_Store\n" > .gitignore
+git add .
+git commit -m "Initialize shared AI project workspace"</pre></div></div>
+  <div class="step"><h3>สร้าง canonical context</h3><p>เริ่มอย่างน้อย 5 ไฟล์: PROJECT, RULES, STATUS, DECISIONS และ OPEN_LOOPS</p></div>
+  <div class="step"><h3>ตั้ง ChatGPT / Codex</h3><p>เปิด Codex ที่ root ของ project แล้วใช้ <span class="inline">/init</span> เพื่อสร้าง <span class="inline">AGENTS.md</span> จากนั้นปรับให้ชี้ไปยังไฟล์กลาง</p></div>
+  <div class="step"><h3>ตั้ง Claude Code</h3><p>เปิด <span class="inline">claude</span> ที่ root และใช้ <span class="inline">/init</span> เพื่อสร้าง <span class="inline">CLAUDE.md</span> แล้วใส่ import ไปที่ canonical files</p></div>
+  <div class="step"><h3>ทดสอบทั้งสองฝั่ง</h3><p>ถามทั้งสอง AI ด้วยคำถามเดียวกัน เช่น “สรุปเป้าหมาย project, decision ล่าสุด และ next action” คำตอบควรสอดคล้องกัน</p></div>
+ </div>
+</section>
+
+<section class="section" id="canonical">
+ <div class="sectionhead"><div class="num">SECTION 04</div><h2>ออกแบบ Canonical Context ให้ AI อ่านง่าย</h2><p>อย่าโยนทุกอย่างลงไฟล์เดียว เพราะ context จะโตจนใช้งานยาก ให้แยกตามอายุและหน้าที่ของข้อมูล</p></div>
+ <table><thead><tr><th>ไฟล์</th><th>ต้องมีอะไร</th><th>ห้ามใส่อะไร</th></tr></thead><tbody>
+ <tr><td><span class="inline">PROJECT.md</span></td><td>Goal, scope, architecture, constraints, deliverables</td><td>log รายวันยาวๆ</td></tr>
+ <tr><td><span class="inline">RULES.md</span></td><td>กติกาที่ invariant, style, approval boundaries</td><td>สถานะที่เปลี่ยนทุกวัน</td></tr>
+ <tr><td><span class="inline">STATUS.md</span></td><td>Now, done, doing, blocked, next</td><td>ประวัติทุกเวอร์ชัน</td></tr>
+ <tr><td><span class="inline">DECISIONS.md</span></td><td>วันที่, decision, เหตุผล, impact</td><td>brainstorm ที่ยังไม่อนุมัติ</td></tr>
+ <tr><td><span class="inline">OPEN_LOOPS.md</span></td><td>task, owner, priority, due/trigger</td><td>งานที่ปิดแล้วจำนวนมาก</td></tr>
+ </tbody></table>
+ <div class="codewrap"><div class="codehead">context/STATUS.md<button class="copy">Copy</button></div><pre># Project Status
+
+Last updated: 2026-09-13 14:00 +07:00
+Updated by: Claude Code
+
+## Current goal
+- ทำระบบ authentication ให้ผ่าน integration tests
+
+## Done
+- Database schema
+- Login endpoint
+- Password hashing
+
+## In progress
+- Refresh token rotation
+
+## Blocked
+- ยังไม่ได้ข้อสรุป session timeout
+
+## Next actions
+1. ChatGPT: review security assumptions
+2. Human: decide timeout 7d vs 30d
+3. Claude: implement after decision
+
+## Files changed in latest session
+- src/auth/token.ts
+- tests/auth/token.test.ts</pre></div>
+ <div class="callout"><strong>Context budget</strong><span class="inline">STATUS.md</span> ควรสั้นมาก อ่านทุก session ได้ ส่วนข้อมูลลึกให้ link ไปยัง docs เฉพาะเรื่องแทน</div>
+</section>
+
+<section class="section" id="adapters">
+ <div class="sectionhead"><div class="num">SECTION 05</div><h2>AGENTS.md และ CLAUDE.md: ทำเป็น Adapter ไม่ใช่ฐานข้อมูลอีกชุด</h2><p>หน้าที่คือบอก AI ว่า “ก่อนทำงาน อ่านอะไร เชื่ออะไร อัปเดตอะไร และห้ามทำอะไร”</p></div>
+ <div class="grid">
+  <div class="card c6"><h3>AGENTS.md — ChatGPT / Codex</h3>
+   <div class="codewrap"><div class="codehead">AGENTS.md<button class="copy">Copy</button></div><pre># Shared Project Instructions
+
+Before substantive work:
+1. Read context/PROJECT.md
+2. Read context/RULES.md
+3. Read context/STATUS.md
+4. Read context/OPEN_LOOPS.md
+5. Read relevant entries in context/DECISIONS.md
+
+Source of truth:
+- Canonical project knowledge lives under context/.
+- Do not duplicate canonical facts in this file.
+- Current user instruction overrides stale project notes.
+
+Working protocol:
+- Inspect before editing.
+- Prefer small reversible changes.
+- Run relevant tests after edits.
+- Never overwrite another agent's active session note.
+- If a decision is required, record it as PROPOSED, not APPROVED.
+
+End of session:
+- Update context/STATUS.md.
+- Update OPEN_LOOPS.md if tasks changed.
+- Add a handoff note under sessions/handoffs/.
+- Record approved decisions in DECISIONS.md.</pre></div>
+  </div>
+  <div class="card c6"><h3>CLAUDE.md — Claude Code</h3>
+   <div class="codewrap"><div class="codehead">CLAUDE.md<button class="copy">Copy</button></div><pre># Shared Project Instructions
+
+@context/PROJECT.md
+@context/RULES.md
+@context/STATUS.md
+@context/OPEN_LOOPS.md
+@context/DECISIONS.md
+
+## Claude-specific operating rules
+- Treat imported files as canonical project context.
+- Read relevant source files before editing.
+- Use small, testable changes.
+- Do not edit secrets or environment credentials.
+- Do not claim a task is complete until verification passes.
+- At the end, write a handoff note to sessions/handoffs/.
+- Update STATUS.md only with verified current state.</pre></div>
+  </div>
+ </div>
+ <div class="callout ok"><strong>ทำไมวิธีนี้ดีกว่าการ symlink AGENTS.md → CLAUDE.md</strong>สองระบบรองรับ semantics ไม่เหมือนกันทั้งหมด โดยเฉพาะ syntax import ของ Claude ดังนั้นเก็บ “กติกากลาง” ในไฟล์กลาง แล้วปล่อยให้ adapter แต่ละตัวใช้ syntax ของแพลตฟอร์มตัวเอง จะชัดและทนต่อการเปลี่ยนแปลงกว่า</div>
+</section>
+
+<section class="section" id="workflow">
+ <div class="sectionhead"><div class="num">SECTION 06</div><h2>Workflow ใช้งานจริงในหนึ่งวัน</h2><p>ใช้ ChatGPT และ Claude เป็นคนละบทบาทได้ แต่ห้ามให้บทบาทเป็นตัวกำหนด “ความจริง” คนละชุด</p></div>
+ <div class="flow"><div class="node"><b>1. Read</b><span>อ่าน Context + Status</span></div><div class="arrow">→</div><div class="node"><b>2. Claim</b><span>ระบุงานที่จะทำ</span></div><div class="arrow">→</div><div class="node"><b>3. Work</b><span>แก้ไฟล์ / วิเคราะห์</span></div><div class="arrow">→</div><div class="node"><b>4. Verify</b><span>tests / review / diff</span></div><div class="arrow">→</div><div class="node"><b>5. Handoff</b><span>อัปเดต state</span></div></div>
+ <div class="grid">
+  <div class="card c6"><h3>ตัวอย่าง: ChatGPT วางแผน → Claude ลงมือ</h3><p><b>ChatGPT:</b> อ่าน requirement, แตกงาน, อัปเดต proposed plan ใน handoff file โดยไม่แก้ source</p><p><b>Claude:</b> อ่าน plan + source files, implement, test, อัปเดต status และ diff summary</p></div>
+  <div class="card c6"><h3>ตัวอย่าง: Claude ทำ → ChatGPT Review</h3><p><b>Claude:</b> implement และทดสอบ</p><p><b>ChatGPT:</b> อ่าน git diff + decision constraints, ทำ independent review และเขียน findings ลง review note</p></div>
+ </div>
+ <div class="callout warn"><strong>กติกาสำคัญ</strong>อย่าให้ agent สองตัวแก้ไฟล์เดียวกันพร้อมกันโดยไม่ใช้ branch/worktree หรือ ownership rule เพราะ “shared folder” ไม่ได้แปลว่า “safe parallel editing”</div>
+</section>
+
+<section class="section" id="handoff">
+ <div class="sectionhead"><div class="num">SECTION 07</div><h2>Handoff Protocol: ส่งต่องานโดยไม่ต้องเล่าใหม่</h2><p>ทุกครั้งที่หยุดหรือสลับ AI ให้เขียน handoff note สั้นๆ ที่อธิบายเฉพาะสิ่งที่อีกตัวต้องรู้เพื่อทำต่อ</p></div>
+ <div class="codewrap"><div class="codehead">sessions/handoffs/2026-09-13-claude-to-chatgpt.md<button class="copy">Copy</button></div><pre># Handoff: Claude → ChatGPT
+
+Timestamp: 2026-09-13 14:05 +07:00
+Task: Refresh token rotation
+Status: IMPLEMENTED, NEEDS SECURITY REVIEW
+
+## What changed
+- Added token family id
+- Revokes family after reuse detection
+- Added 7 tests
+
+## Files
+- src/auth/token.ts
+- src/auth/session-store.ts
+- tests/auth/token.test.ts
+
+## Verification
+- Unit tests: PASS (42/42)
+- Typecheck: PASS
+- Integration: NOT RUN
+
+## Assumptions to challenge
+1. Reuse detection revokes all sessions in family.
+2. Clock skew allowance = 30 seconds.
+
+## Request to next agent
+Perform independent security review only.
+Do not modify code unless a critical issue is found.
+
+## Canonical state updated
+- context/STATUS.md: yes
+- context/OPEN_LOOPS.md: yes
+- context/DECISIONS.md: no new approved decision</pre></div>
+ <h3>Start-of-session prompt ที่ใช้กับทั้งสอง AI</h3>
+ <div class="codewrap"><div class="codehead">Prompt<button class="copy">Copy</button></div><pre>ก่อนเริ่มงาน:
+1. อ่านไฟล์ project instructions ของคุณ
+2. อ่าน canonical context ที่อ้างถึง
+3. สรุป Current Goal, Latest Decision, Open Loops และ Blockers ไม่เกิน 8 บรรทัด
+4. ตรวจว่ามี handoff ล่าสุดสำหรับคุณหรือไม่
+5. ถ้าพบข้อมูลขัดแย้ง ให้หยุดที่การวิเคราะห์และระบุ conflict ก่อนแก้ไฟล์
+6. ห้ามสมมุติว่าคุณรู้สิ่งที่เกิดใน chat ของ AI อีกตัว ถ้าไม่มีเขียนไว้ใน shared folder</pre></div>
+</section>
+
+<section class="section" id="conflict">
+ <div class="sectionhead"><div class="num">SECTION 08</div><h2>Conflict, Locking และ Parallel Agents</h2><p>ส่วนนี้คือความต่างระหว่าง “แชร์ folder ได้” กับ “ทำงานร่วมกันได้อย่างปลอดภัย”</p></div>
+ <table><thead><tr><th>สถานการณ์</th><th>วิธีที่แนะนำ</th><th>ระดับความปลอดภัย</th></tr></thead><tbody>
+ <tr><td>สลับกันทำทีละตัว</td><td>Shared folder เดียว + handoff</td><td><span class="pill">สูง</span></td></tr>
+ <tr><td>ทำคนละไฟล์พร้อมกัน</td><td>กำหนด file ownership ใน ACTIVE_WORK.md</td><td><span class="pill">สูง</span></td></tr>
+ <tr><td>แก้ codebase พร้อมกัน</td><td>Git branches / worktrees แยก agent</td><td><span class="pill">สูงสุด</span></td></tr>
+ <tr><td>Dropbox/Drive sync พร้อมกัน</td><td>ไม่แนะนำสำหรับไฟล์เดียวกัน</td><td><span class="pill">เสี่ยง</span></td></tr>
+ </tbody></table>
+ <div class="codewrap"><div class="codehead">context/ACTIVE_WORK.md<button class="copy">Copy</button></div><pre># Active Work
+
+| Agent   | Task                  | Files / Area              | Started | Status |
+|---------|-----------------------|---------------------------|---------|--------|
+| Claude  | auth-token-rotation   | src/auth/*                | 14:00   | ACTIVE |
+| ChatGPT | security-review       | READ-ONLY: src/auth/*     | 14:10   | ACTIVE |
+
+Rules:
+- ACTIVE owner is the only writer for listed files.
+- Reviewers are read-only unless ownership is explicitly transferred.
+- Clear row immediately after merge/handoff.</pre></div>
+ <div class="callout bad"><strong>อย่าใช้ “last save wins” เป็น workflow</strong>ถ้า AI สองตัวเขียน STATUS.md พร้อมกัน อันที่ save ทีหลังอาจลบข้อมูลของอีกตัวแบบเงียบๆ ใช้ single-writer หรือ merge ผ่าน Git</div>
+</section>
+
+<section class="section" id="git">
+ <div class="sectionhead"><div class="num">SECTION 09</div><h2>Git / Version Control: ชั้นความปลอดภัยที่ควรมี</h2><p>Git ทำให้ย้อนกลับได้ ดู diff ได้ และแยกพื้นที่ทำงาน agent แต่ละตัวได้</p></div>
+ <h3>แบบง่าย: commit ก่อนสลับ AI</h3>
+ <div class="codewrap"><div class="codehead">shell<button class="copy">Copy</button></div><pre>git status
+git diff
+git add -A
+git commit -m "Claude: implement refresh token rotation"
+
+# แล้วค่อยเปิด ChatGPT/Codex มา review ต่อ</pre></div>
+ <h3>แบบ advanced: Git worktree แยก agent</h3>
+ <div class="codewrap"><div class="codehead">shell<button class="copy">Copy</button></div><pre># ที่ repository หลัก
+git branch ai/chatgpt-review
+git branch ai/claude-implementation
+
+git worktree add ../my-project-chatgpt ai/chatgpt-review
+git worktree add ../my-project-claude ai/claude-implementation
+
+# เปิด Codex ใน ../my-project-chatgpt
+# เปิด Claude Code ใน ../my-project-claude</pre></div>
+ <div class="callout ok"><strong>ข้อดีของ worktree</strong>ทั้งสอง agent เห็น repository เดียวกัน แต่มี working directory แยกกัน จึงไม่เหยียบไฟล์กันระหว่างทำงาน แล้วคุณค่อย merge/review ผ่าน Git</div>
+</section>
+
+<section class="section" id="security">
+ <div class="sectionhead"><div class="num">SECTION 10</div><h2>Security: Shared Context ไม่ควรกลายเป็น Shared Secrets</h2><p>AI อ่านได้มากขึ้นเท่าไร ก็ต้องแบ่ง “ข้อมูลที่ควรรู้” กับ “credentials ที่ไม่ควรโหลดเข้าบริบท” ให้ชัดขึ้น</p></div>
+ <div class="grid">
+  <div class="card c4"><h3>ห้าม commit</h3><p><span class="inline">.env</span>, API keys, private keys, production credentials, cookies, tokens</p></div>
+  <div class="card c4"><h3>ใช้ placeholders</h3><p>ใน docs ให้เขียน <span class="inline">DATABASE_URL=&lt;secret&gt;</span> ไม่ใส่ค่าจริง</p></div>
+  <div class="card c4"><h3>Least privilege</h3><p>ให้ agent เข้าถึงเฉพาะ folder/tools ที่จำเป็นกับ task</p></div>
+ </div>
+ <div class="codewrap"><div class="codehead">.gitignore<button class="copy">Copy</button></div><pre>.env
+.env.*
+!.env.example
+secrets/
+*.pem
+*.key
+*.p12
+credentials.json
+service-account*.json
+node_modules/
+.DS_Store</pre></div>
+ <div class="callout warn"><strong>Cloud-sync caveat</strong>ถ้า project อยู่ใน Google Drive/Dropbox/iCloud ให้คิดว่าไฟล์ canonical ถูก sync ขึ้น cloud ด้วย อย่าเก็บ secret เพียงเพราะ “มันอยู่ในเครื่องเรา”</div>
+</section>
+
+<section class="section" id="advanced">
+ <div class="sectionhead"><div class="num">SECTION 11</div><h2>Advanced Patterns สำหรับ project ใหญ่</h2><p>เมื่อระบบโต ให้เพิ่มโครงสร้างโดยไม่ทำลายหลัก canonical + thin adapter</p></div>
+ <div class="grid">
+  <div class="card c6"><h3>A. Hierarchical Context</h3><p>มี root context สำหรับทั้ง project และไฟล์ context เฉพาะ subfolder เช่น <span class="inline">src/backend/CLAUDE.md</span> หรือ AGENTS.md ระดับย่อยเมื่อเครื่องมือรองรับ เพื่อเพิ่มคำสั่งเฉพาะพื้นที่</p></div>
+  <div class="card c6"><h3>B. Role Separation</h3><p>กำหนด Agent A = Implementer, Agent B = Reviewer โดย reviewer เป็น read-only จนกว่าจะพบ critical defect</p></div>
+  <div class="card c6"><h3>C. Proposed vs Approved</h3><p>AI เขียนข้อเสนอใน <span class="inline">PROPOSALS.md</span>; เฉพาะสิ่งที่คนอนุมัติแล้วจึงย้ายเข้า <span class="inline">DECISIONS.md</span></p></div>
+  <div class="card c6"><h3>D. Machine-readable State</h3><p>ถ้าจะทำ automation เพิ่ม <span class="inline">state.json</span> หรือ YAML สำหรับ status ที่ script อ่านได้ แต่ยังมี Markdown สำหรับคน</p></div>
+ </div>
+ <h3>Three-tier memory pattern</h3>
+ <div class="flow"><div class="node"><b>Hot</b><span>STATUS / OPEN_LOOPS<br>อ่านทุก session</span></div><div class="arrow">→</div><div class="node"><b>Warm</b><span>PROJECT / RULES / DECISIONS<br>อ่านตาม task</span></div><div class="arrow">→</div><div class="node"><b>Cold</b><span>archive / old sessions<br>ค้นเมื่อจำเป็น</span></div></div>
+</section>
+
+<section class="section" id="templates">
+ <div class="sectionhead"><div class="num">SECTION 12</div><h2>Template พร้อม Copy</h2><p>ชุดขั้นต่ำที่เอาไปสร้าง project ใหม่ได้ทันที</p></div>
+ <div class="codewrap"><div class="codehead">context/PROJECT.md<button class="copy">Copy</button></div><pre># Project
+
+## Objective
+[ผลลัพธ์สุดท้ายที่ต้องการ]
+
+## Success criteria
+- [วัดอย่างไรว่าเสร็จ]
+- [คุณภาพขั้นต่ำ]
+
+## Scope
+### In
+- ...
+
+### Out
+- ...
+
+## Architecture / Structure
+- ...
+
+## Constraints
+- ...
+
+## Canonical sources
+- docs/...
+- src/...
+
+## Human approval required for
+- production deployment
+- destructive changes
+- new paid services
+- changes to security policy</pre></div>
+
+ <div class="codewrap"><div class="codehead">context/RULES.md<button class="copy">Copy</button></div><pre># Shared Rules
+
+1. Read before edit.
+2. Do not invent project facts.
+3. Current human instruction overrides stale notes.
+4. Keep canonical facts under context/.
+5. Do not store secrets in Markdown.
+6. Prefer reversible changes.
+7. Verify before marking DONE.
+8. Do not silently change approved decisions.
+9. Log unresolved conflicts.
+10. End every work session with a handoff or status update.</pre></div>
+
+ <div class="codewrap"><div class="codehead">context/DECISIONS.md<button class="copy">Copy</button></div><pre># Decisions
+
+## DEC-001 — [Title]
+Date: YYYY-MM-DD
+Status: APPROVED
+Owner: Human
+
+### Decision
+...
+
+### Why
+...
+
+### Alternatives rejected
+- ...
+
+### Consequences
+- ...
+
+### Supersedes
+- none</pre></div>
+</section>
+
+<section class="section" id="troubleshoot">
+ <div class="sectionhead"><div class="num">SECTION 13</div><h2>Troubleshooting</h2><p>อาการที่พบบ่อยเมื่อสอง AI ใช้ workspace เดียวกัน</p></div>
+ <table><thead><tr><th>อาการ</th><th>สาเหตุที่เป็นไปได้</th><th>วิธีแก้</th></tr></thead><tbody>
+ <tr><td>Claude ตอบไม่ตรงกับ context</td><td>CLAUDE.md ไม่ import หรือเปิดจาก working directory ผิด</td><td>เช็ก root, ใช้ <span class="inline">/memory</span>, ตรวจ path</td></tr>
+ <tr><td>Codex ไม่รู้กติกา project</td><td>ไม่มี/อ่าน AGENTS.md ไม่ถูก scope</td><td>รัน <span class="inline">/init</span>, วาง AGENTS.md ที่ project root</td></tr>
+ <tr><td>STATUS ถูกเขียนทับ</td><td>สอง agent เขียนพร้อมกัน</td><td>single-writer / ACTIVE_WORK / Git worktree</td></tr>
+ <tr><td>ข้อมูลสองไฟล์ขัดกัน</td><td>มี canonical fact ซ้ำ</td><td>เลือก source of truth เดียว แล้วเปลี่ยนไฟล์อื่นเป็น link/reference</td></tr>
+ <tr><td>AI บอก DONE แต่ของพัง</td><td>ไม่มี verification gate</td><td>บังคับ tests/build/check และบันทึกผลใน handoff</td></tr>
+ <tr><td>Context ใหญ่เกิน</td><td>โหลด archive/session logs ทุกครั้ง</td><td>ใช้ hot/warm/cold และอ่าน deep docs on-demand</td></tr>
+ <tr><td>Cloud sync conflict copy</td><td>แก้ไฟล์เดียวกันคนละเครื่อง</td><td>Git เป็น authority; cloud sync ใช้ backup/transport</td></tr>
+ </tbody></table>
+</section>
+
+<section class="section" id="checklist">
+ <div class="sectionhead"><div class="num">SECTION 14</div><h2>Checklist ตรวจระบบก่อนใช้จริง</h2><p>ติ๊กให้ครบก่อนปล่อยสอง agent ทำงานใน project เดียวกัน</p></div>
+ <div class="card checklist">
+  <label><input type="checkbox"> มี <b>canonical project context</b> เพียงชุดเดียว</label>
+  <label><input type="checkbox"> <span class="inline">AGENTS.md</span> ชี้ไปยังกติกาและ context กลาง</label>
+  <label><input type="checkbox"> <span class="inline">CLAUDE.md</span> import context ที่จำเป็น</label>
+  <label><input type="checkbox"> มี <span class="inline">STATUS.md</span> และ timestamp ล่าสุด</label>
+  <label><input type="checkbox"> มี <span class="inline">OPEN_LOOPS.md</span> ระบุ owner/next action</label>
+  <label><input type="checkbox"> Decision แยก <b>PROPOSED</b> กับ <b>APPROVED</b></label>
+  <label><input type="checkbox"> มี handoff protocol เมื่อสลับ AI</label>
+  <label><input type="checkbox"> ห้ามสอง agent เขียนไฟล์เดียวพร้อมกัน หรือมี worktree แยก</label>
+  <label><input type="checkbox"> เปิด Git และ commit ก่อน handoff สำคัญ</label>
+  <label><input type="checkbox"> Secrets ถูก exclude ด้วย <span class="inline">.gitignore</span></label>
+  <label><input type="checkbox"> แต่ละ agent ต้อง verify ก่อนบอกว่า DONE</label>
+  <label><input type="checkbox"> ทดสอบถาม “Goal / Latest decision / Next action” แล้วทั้งสองตอบตรงกัน</label>
+ </div>
+ <div class="callout ok"><strong>ถ้าครบทั้งหมด</strong>ตอนนี้ ChatGPT/Codex และ Claude Code สามารถทำงานบน shared project workspace เดียวกันได้อย่างเป็นระบบ โดย context เป็นของคุณ ไม่ติดอยู่กับ chat history ของแพลตฟอร์มใดแพลตฟอร์มหนึ่ง</div>
+</section>
+
+<section class="section" id="sources">
+ <div class="sectionhead"><div class="num">SECTION 15</div><h2>แหล่งอ้างอิงและข้อสังเกต</h2><p>คู่มือนี้ใช้แนวคิดจากวิดีโอที่ผู้ใช้ส่งมา ผสมกับเอกสารผลิตภัณฑ์ปัจจุบัน เพื่อให้ขั้นตอนนำไปใช้จริงได้ในปี 2026</p></div>
+ <div class="card src">
+  <h3>วิดีโอต้นทาง</h3>
+  <p><b>I Stopped Choosing Between ChatGPT and Claude. Here's the Setup</b><br><a href="https://youtu.be/WssrZ1SoPO0" target="_blank">https://youtu.be/WssrZ1SoPO0</a></p>
+  <h3>OpenAI — Codex</h3>
+  <p>OpenAI Help Center ระบุว่าสามารถใช้ <span class="inline">/init</span> ใน Codex เพื่อสร้าง project instructions แบบ <span class="inline">AGENTS.md</span>.</p>
+  <p><a href="https://help.openai.com/en/articles/11369540" target="_blank">Using Codex with your ChatGPT plan</a></p>
+  <h3>Anthropic — Claude Code</h3>
+  <p>Claude Code ใช้ <span class="inline">CLAUDE.md</span> เป็น project memory/instructions และรองรับการ import ไฟล์อื่นด้วย syntax <span class="inline">@path</span>; มี <span class="inline">/init</span> และ <span class="inline">/memory</span> สำหรับจัดการ project memory.</p>
+  <p><a href="https://docs.anthropic.com/en/docs/claude-code/" target="_blank">Claude Code Documentation</a></p>
+  <h3>หมายเหตุเรื่อง transcript</h3>
+  <p>หน้า YouTube ที่เข้าถึงจากระบบให้ metadata/title ของวิดีโอ แต่ไม่ได้เปิด transcript แบบเต็มให้ดึงโดยตรง ดังนั้นคู่มือนี้ไม่อ้างว่าเป็น transcript แบบคำต่อคำ แต่เป็นคู่มือเชิงปฏิบัติที่ต่อยอดจากแนวคิดของวิดีโอและตรวจรายละเอียดทางเทคนิคกับเอกสารปัจจุบันของ OpenAI/Anthropic.</p>
+ </div>
+ <div class="footer">Shared Project Folder Manual · Codex × Claude Code · Model-Agnostic, Git-based, portable AI collaboration</div>
+</section>
+
+
+<section class="section" id="ai-readme">
+ <div class="sectionhead"><div class="num">SECTION 16 · FOR AI</div><h2>AI Read Me First — วิธีใช้คู่มือเล่มนี้อย่างถูกต้อง</h2><p>ส่วนนี้เขียนไว้ให้ทั้งมนุษย์และ AI เข้าใจตรงกันว่า HTML เล่มนี้มีหน้าที่อะไร และควรนำไปใช้กับ Project จริงอย่างไร</p></div>
+
+ <div class="callout ok"><strong>คำสั่งสำคัญสำหรับ AI</strong>เอกสาร HTML นี้คือ <b>Reference Architecture + Implementation Manual</b> ไม่ใช่ Canonical Project Context ของ Project ที่กำลังตรวจสอบ และไม่ควรถูกใช้แทน AGENTS.md, CLAUDE.md หรือไฟล์ใน context/</div>
+
+ <div class="grid">
+   <div class="card c4"><h3>1. Study</h3><p>อ่าน Manual เพื่อทำความเข้าใจแนวคิด Shared Project Folder, Single Source of Truth, Handoff, Status และ Version Control</p></div>
+   <div class="card c4"><h3>2. Inspect</h3><p>สำรวจ Project จริงก่อน อย่าสร้างโครงใหม่ทับของเดิมโดยอัตโนมัติ</p></div>
+   <div class="card c4"><h3>3. Adapt</h3><p>นำหลักการไปปรับกับโครงสร้างที่มีอยู่ โดยเปลี่ยนแปลงให้น้อยที่สุดและรักษาข้อมูลเดิม</p></div>
+ </div>
+
+ <h3>บทบาทของไฟล์แต่ละชนิด</h3>
+ <div class="flow">
+   <div class="node"><b>HTML Manual</b><span>เรียนรู้ architecture / วิธีติดตั้ง</span></div><div class="arrow">→</div>
+   <div class="node"><b>Migration Prompt</b><span>สั่ง AI ตรวจและวางแผน</span></div><div class="arrow">→</div>
+   <div class="node"><b>AGENTS.md / CLAUDE.md</b><span>Platform adapter</span></div><div class="arrow">→</div>
+   <div class="node"><b>context/</b><span>Single Source of Truth</span></div>
+ </div>
+
+ <div class="callout warn"><strong>อย่าทำแบบนี้</strong>อย่าให้ AI คัดลอกเนื้อหาทั้ง Manual เข้าไปใน AGENTS.md หรือ CLAUDE.md เพราะจะสร้าง context ซ้ำและทำให้คำสั่งดูแลยาก</div>
+
+ <h3>ลำดับการใช้งานที่ถูกต้อง</h3>
+ <div class="steps">
+   <div class="step"><h3>อ่าน Manual</h3><p>AI อ่าน HTML นี้เพื่อเข้าใจหลักการและโครงสร้างเป้าหมาย</p></div>
+   <div class="step"><h3>อ่าน Universal Migration Prompt</h3><p>ใช้เป็นคำสั่งหลักเหมือนกันสำหรับ AI ทุกตัว</p></div>
+   <div class="step"><h3>อ่าน Adapter เฉพาะตัว</h3><p>Claude อ่าน Claude Adapter; ChatGPT/Codex อ่าน ChatGPT/Codex Adapter</p></div>
+   <div class="step"><h3>Inspect ก่อน Modify</h3><p>สำรวจ project, เปรียบเทียบกับ manual, แล้วเสนอ migration plan ก่อนแก้ไขจริง</p></div>
+   <div class="step"><h3>สร้าง Shared Context</h3><p>หลังอนุมัติแล้วจึงสร้างหรือปรับ canonical files และ adapters</p></div>
+   <div class="step"><h3>Verify</h3><p>ทดสอบให้ทั้งสอง AI ตอบ Goal, Status, Decisions, Open Loops และ Next Action จาก source เดียวกัน</p></div>
+ </div>
+</section>
+
+<section class="section" id="universal-prompt">
+ <div class="sectionhead"><div class="num">SECTION 17 · UNIVERSAL</div><h2>Universal Project Migration Prompt</h2><p>Prompt หลักนี้ออกแบบให้ใช้เหมือนกันกับ Claude Code, ChatGPT/Codex หรือ AI Agent อื่นที่สามารถเข้าถึง Project Folder ได้</p></div>
+
+ <div class="callout"><strong>วิธีใช้</strong>ส่ง HTML Manual นี้พร้อม Project Folder ให้ AI แล้วใช้ Prompt ด้านล่างเป็นคำสั่งหลัก โดยยังไม่ต้องแก้ไข Project จนกว่าจะได้ Migration Plan ก่อน</div>
+
+ <div class="codewrap"><div class="codehead">UNIVERSAL MIGRATION PROMPT<button class="copy">Copy</button></div><pre>คุณได้รับเอกสาร HTML ชื่อ Shared Project Folder Manual ซึ่งอธิบายแนวทางการจัด Project Folder เพื่อให้ ChatGPT/Codex และ Claude Code สามารถทำงานบน Project เดียวกัน โดยใช้ข้อมูลกลางชุดเดียวกัน
+
+ให้ใช้เอกสารนี้เป็น “Reference Architecture และ Implementation Guide” สำหรับตรวจสอบและปรับโครงสร้าง Project ปัจจุบัน
+
+เป้าหมาย:
+ทำให้ Project นี้สามารถใช้งานร่วมกันระหว่าง ChatGPT/Codex และ Claude Code ได้ โดยไม่ต้องคัดลอก Context ไปมาระหว่าง AI และให้ Project Folder เป็น Single Source of Truth
+
+PHASE 1 — STUDY
+1. อ่าน HTML Manual ทั้งหมดก่อน
+2. แยกให้ออกว่าอะไรคือหลักการ อะไรคือตัวอย่าง และอะไรคือคำสั่งนำไปใช้จริง
+3. อย่าคัดลอกเนื้อหาทั้ง Manual เข้า AGENTS.md หรือ CLAUDE.md
+
+PHASE 2 — INSPECT
+1. สำรวจโครงสร้าง Project ปัจจุบันทั้งหมด
+2. ตรวจ README, docs, instructions, memory files, task/state files และ source code ที่เกี่ยวข้อง
+3. ห้ามแก้ไขไฟล์ทันที
+4. ระบุ:
+   - มีอะไรอยู่แล้ว
+   - ขาดอะไร
+   - มีอะไรซ้ำซ้อน
+   - Context ใดกระจัดกระจาย
+   - ไฟล์ใดควรเป็น Canonical Context
+   - มี instruction conflict หรือไม่
+   - มีความเสี่ยงที่ AI สองตัวจะเขียนไฟล์ชนกันหรือไม่
+   - มี Secrets/Credentials ปะปนในไฟล์ที่ AI จะอ่านหรือไม่
+
+PHASE 3 — DESIGN
+เปรียบเทียบโครงสร้างปัจจุบันกับ Manual และเสนอ “Migration Plan” โดยแบ่งเป็น:
+
+A. Current Structure
+B. Problems Found
+C. Proposed Structure
+D. Files to Create
+E. Files to Modify
+F. Files to Move
+G. Files to Keep Unchanged
+H. Context to Consolidate
+I. Risks
+J. Migration Steps
+K. Rollback Plan
+
+หลักการที่ต้องรักษา:
+- Project Folder เป็น Single Source of Truth
+- ChatGPT/Codex และ Claude ใช้ Canonical Project Context ชุดเดียวกัน
+- หลีกเลี่ยงการเก็บ Project Facts ซ้ำใน AGENTS.md และ CLAUDE.md
+- Canonical Context ควรอยู่ใน context/ หรือพื้นที่กลางที่เหมาะสมกับ Project เดิม
+- AGENTS.md เป็น Adapter สำหรับ ChatGPT/Codex
+- CLAUDE.md เป็น Adapter สำหรับ Claude Code
+- Adapter ต้องบางและชี้ไปยังข้อมูลกลาง
+- ต้องมี Current Status, Decisions, Open Loops และ Handoff
+- ห้ามเก็บ Secrets หรือ Credentials ใน Shared Context
+- Preserve Git history ถ้ามี
+- หลีกเลี่ยง destructive changes
+- อย่าลบไฟล์เดิมจนตรวจสอบแล้วว่า migrate ข้อมูลครบ
+- อย่าเปลี่ยน architecture ที่ไม่เกี่ยวข้องกับ Shared AI Context โดยไม่มีเหตุผล
+- ถ้า Project ปัจจุบันมีโครงสร้างที่ดีกว่า Manual ให้รักษาโครงเดิมและ Adapt แนวคิดเข้าไปแทน
+
+โครงสร้างอ้างอิงพื้นฐาน:
+
+project-root/
+├── AGENTS.md
+├── CLAUDE.md
+├── README.md
+├── context/
+│   ├── PROJECT.md
+│   ├── RULES.md
+│   ├── STATUS.md
+│   ├── DECISIONS.md
+│   ├── OPEN_LOOPS.md
+│   └── GLOSSARY.md
+├── sessions/
+│   ├── chatgpt/
+│   ├── claude/
+│   └── handoffs/
+├── docs/
+├── src/
+├── tests/
+├── assets/
+└── archive/
+
+โครงสร้างนี้เป็น Reference เท่านั้น ไม่ใช่ข้อบังคับตายตัว
+
+PHASE 4 — STOP FOR REVIEW
+ก่อนดำเนินการจริง:
+- แสดง Proposed Migration Plan
+- แสดง Files Impacted
+- แสดง Risks
+- แสดงสิ่งที่ต้องให้มนุษย์ตัดสินใจ
+- ยังไม่แก้ไขไฟล์จนกว่าจะได้รับคำสั่งให้ดำเนินการ
+
+PHASE 5 — IMPLEMENT
+หลังได้รับอนุญาต:
+1. สร้างหรือแก้ไฟล์ที่จำเป็น
+2. Preserve เนื้อหาเดิม
+3. Consolidate Context ที่ซ้ำกัน
+4. สร้าง/ปรับ AGENTS.md และ CLAUDE.md ให้เป็น Thin Adapter
+5. สร้าง Shared Context ที่จำเป็น
+6. สร้าง Handoff mechanism
+7. ตรวจ links และ paths
+8. ตรวจ .gitignore / secrets handling
+9. Run relevant validation/tests
+10. สรุป diff และสิ่งที่เปลี่ยนแปลง
+
+PHASE 6 — VERIFY SHARED CONTEXT
+ทดสอบว่า AI ทั้งสองสามารถตอบคำถามต่อไปนี้จาก Source เดียวกัน:
+
+1. Project นี้มีเป้าหมายอะไร
+2. Current Goal คืออะไร
+3. งานล่าสุดทำถึงไหน
+4. Decision ล่าสุดคืออะไร
+5. มี Open Loops อะไร
+6. Next Action คืออะไร
+7. มี Blocker อะไร
+8. กติกาสำคัญของ Project คืออะไร
+
+Expected result:
+คำตอบของ ChatGPT/Codex และ Claude ควรสอดคล้องกันในข้อเท็จจริง แม้วิธีวิเคราะห์หรือรูปแบบคำตอบจะแตกต่างกันได้
+
+หากพบข้อมูลขัดแย้ง:
+- ห้ามเดา
+- ระบุไฟล์ที่ขัดแย้งกัน
+- ระบุว่า Source ไหนน่าจะเป็น Canonical
+- ขอการตัดสินใจจากมนุษย์หากไม่สามารถตัดสินได้จาก Project เอง</pre></div>
+</section>
+
+<section class="section" id="claude-prompt">
+ <div class="sectionhead"><div class="num">SECTION 18 · CLAUDE CODE</div><h2>Claude Code Adapter Prompt</h2><p>ใช้ส่วนนี้ต่อท้าย Universal Migration Prompt เมื่อ AI ที่กำลังทำงานคือ Claude Code</p></div>
+
+ <div class="callout ok"><strong>หลักการ</strong>ไม่ต้องสร้าง Prompt ใหม่ทั้งชุด ใช้ Universal Prompt เป็นฐาน แล้วเพิ่มเฉพาะพฤติกรรมที่เกี่ยวข้องกับ CLAUDE.md และ Claude Project Memory</div>
+
+ <div class="codewrap"><div class="codehead">CLAUDE CODE ADAPTER<button class="copy">Copy</button></div><pre>CLAUDE CODE ADAPTER
+
+คุณกำลังทำงานในฐานะ Claude Code
+
+นอกเหนือจาก Universal Migration Prompt ให้ปฏิบัติดังนี้:
+
+1. ตรวจสอบ CLAUDE.md ที่ Project root และ CLAUDE.md ระดับย่อยถ้ามี
+2. ตรวจสอบว่า CLAUDE.md เดิมมี Project-specific instructions อะไรที่ต้อง Preserve
+3. ห้ามเขียนทับ CLAUDE.md เดิมทันที
+4. ถ้ามีข้อมูลที่ควรเป็น Canonical Project Context ให้ย้ายแนวคิดนั้นไปไว้ใน Shared Context แล้วให้ CLAUDE.md อ้างถึงแทน
+5. ใช้ @path import เมื่อเหมาะสม เพื่อหลีกเลี่ยงการ duplicate เนื้อหา
+6. CLAUDE.md ควรเป็น Thin Adapter:
+   - วิธีเริ่ม session
+   - ไฟล์ canonical ที่ควรอ่าน
+   - Claude-specific operational rules
+   - วิธี update status/handoff
+7. อย่าเก็บ current status ที่เปลี่ยนบ่อยไว้ซ้ำใน CLAUDE.md
+8. ตรวจ path ของ imported files ว่าใช้ได้จริงจากตำแหน่ง CLAUDE.md
+9. ถ้ามี Claude memory/instruction hierarchy เดิม ให้รายงานก่อนว่าจะกระทบอย่างไร
+10. หลัง migration ให้ทดสอบว่า Claude สามารถอ่าน:
+    - Project goal
+    - Rules
+    - Current status
+    - Decisions
+    - Open loops
+    - Latest handoff
+   ได้โดยไม่ต้องพึ่ง chat history เก่า
+
+อย่าสมมุติว่า Claude สามารถรู้สิ่งที่เกิดใน ChatGPT conversation ได้
+ข้อมูลข้าม AI ต้องมาจาก Shared Project Folder เท่านั้น</pre></div>
+
+ <h3>รูปแบบ CLAUDE.md ที่ต้องการหลัง Migration</h3>
+ <div class="codewrap"><div class="codehead">REFERENCE PATTERN<button class="copy">Copy</button></div><pre># Shared Project Instructions
+
+@context/PROJECT.md
+@context/RULES.md
+@context/STATUS.md
+@context/OPEN_LOOPS.md
+@context/DECISIONS.md
+
+## Claude-specific rules
+- Inspect before editing.
+- Preserve project-specific architecture.
+- Verify changes before marking work complete.
+- Do not write secrets into shared context.
+- Use handoff notes when transferring work.
+- If canonical sources conflict, report the conflict instead of guessing.</pre></div>
+</section>
+
+<section class="section" id="chatgpt-prompt">
+ <div class="sectionhead"><div class="num">SECTION 19 · CHATGPT / CODEX</div><h2>ChatGPT / Codex Adapter Prompt</h2><p>ใช้ส่วนนี้ต่อท้าย Universal Migration Prompt เมื่อ AI ที่กำลังทำงานคือ ChatGPT หรือ Codex ที่เข้าถึง Project Folder ได้</p></div>
+
+ <div class="callout ok"><strong>หลักการ</strong>Universal Prompt และ Canonical Context ต้องเหมือนกับ Claude ส่วน AGENTS.md ทำหน้าที่เพียง adapter สำหรับพฤติกรรมของ ChatGPT/Codex</div>
+
+ <div class="codewrap"><div class="codehead">CHATGPT / CODEX ADAPTER<button class="copy">Copy</button></div><pre>CHATGPT / CODEX ADAPTER
+
+คุณกำลังทำงานในฐานะ ChatGPT/Codex
+
+นอกเหนือจาก Universal Migration Prompt ให้ปฏิบัติดังนี้:
+
+1. ตรวจสอบ AGENTS.md ที่ Project root และ AGENTS.md ระดับย่อยถ้ามี
+2. Preserve project-specific instructions ที่มีอยู่เดิม
+3. ห้ามเขียนทับ AGENTS.md เดิมทันที
+4. ถ้ามีข้อมูล Project Facts ซ้ำใน AGENTS.md ให้เสนอการย้ายไปยัง Shared Context
+5. ทำให้ AGENTS.md เป็น Thin Adapter ที่บอก:
+   - Canonical context ที่ต้องอ่าน
+   - กติกาก่อนแก้ไฟล์
+   - verification requirements
+   - วิธี update status/handoff
+6. อย่าใช้ AGENTS.md เป็นที่เก็บ current status หรือ decision log ถาวร
+7. ตรวจ scope ของ AGENTS.md ให้สอดคล้องกับโครงสร้าง Project
+8. ถ้ามี instructions หลายระดับ ให้ระบุ precedence/conflict ก่อนแก้ไข
+9. หลัง migration ให้ทดสอบว่า ChatGPT/Codex สามารถอ่าน:
+   - Project goal
+   - Rules
+   - Current status
+   - Decisions
+   - Open loops
+   - Latest handoff
+   ได้จาก Shared Project Folder
+10. อย่าสมมุติว่าคุณรู้สิ่งที่เกิดใน Claude conversation ถ้าไม่มีเขียนไว้ใน Shared Context
+
+ข้อมูลข้าม AI ต้องมาจาก Shared Project Folder เท่านั้น</pre></div>
+
+ <h3>รูปแบบ AGENTS.md ที่ต้องการหลัง Migration</h3>
+ <div class="codewrap"><div class="codehead">REFERENCE PATTERN<button class="copy">Copy</button></div><pre># Shared Project Instructions
+
+Before substantive work:
+1. Read context/PROJECT.md
+2. Read context/RULES.md
+3. Read context/STATUS.md
+4. Read context/OPEN_LOOPS.md
+5. Read relevant entries in context/DECISIONS.md
+
+Source of truth:
+- Canonical project knowledge lives under context/.
+- Do not duplicate canonical project facts in this file.
+- Current human instructions override stale project notes.
+
+Working protocol:
+- Inspect before editing.
+- Prefer small reversible changes.
+- Run relevant validation/tests.
+- Never overwrite another agent's active work silently.
+- Report conflicts instead of guessing.
+
+End of session:
+- Update context/STATUS.md.
+- Update context/OPEN_LOOPS.md when tasks change.
+- Write a handoff note when transferring work.
+- Record only approved decisions in DECISIONS.md.</pre></div>
+
+ <div class="callout"><strong>ผลลัพธ์ที่ต้องการ</strong>Claude และ ChatGPT/Codex อาจใช้ Adapter คนละไฟล์ แต่ต้องอ่าน “ข้อเท็จจริงของ Project” จาก Canonical Context ชุดเดียวกัน</div>
+</section>
+
+
+<section class="section" id="existing-projects">
+ <div class="sectionhead">
+   <div class="num">SECTION 20 · EXISTING PROJECT SAFETY PROTOCOL</div>
+   <h2>Migrating Existing AI Projects</h2>
+   <p>บทนี้ใช้เมื่อ Project ไม่ได้เริ่มจากศูนย์ แต่เคยถูกสร้างหรือพัฒนามาแล้วด้วย Claude, ChatGPT/Codex หรือทั้งสองฝั่งแยกกัน จุดประสงค์คือย้ายเข้าสู่ Shared Project Folder โดยไม่ทำข้อมูลเดิมสูญหาย ไม่เลือก version ผิด และไม่ทำให้ AI ฝั่งหนึ่งกลายเป็น Source of Truth โดยอัตโนมัติ</p>
+ </div>
+
+ <div class="callout bad">
+   <strong>กฎสูงสุดของ Existing Project Migration</strong>
+   ห้ามถือว่า Project ฝั่ง Claude, ChatGPT/Codex, chat history, memory, timestamp ล่าสุด หรือไฟล์ที่ดู “ใหม่กว่า” เป็นฝ่ายถูกโดยอัตโนมัติ หากข้อมูลขัดแย้งกัน ต้องเข้าสู่ Reconciliation ก่อน และต้องขอ Human Approval เมื่อไม่สามารถพิสูจน์ได้จากหลักฐานใน Project
+ </div>
+
+ <div class="grid">
+   <div class="card c6">
+     <h3>ทำไม Project เดิมเสี่ยงกว่าการเริ่มใหม่</h3>
+     <p>Project เดิมอาจมีคำสั่งซ้อนกัน, Context ซ้ำ, Decision คนละเวอร์ชัน, ไฟล์ source ต่าง revision, memory ที่ยังไม่เคยถูกเขียนลงไฟล์ และกติกาที่ถูกฝังอยู่ใน chat history ของ AI แต่ละตัว</p>
+   </div>
+   <div class="card c6">
+     <h3>เป้าหมายที่ถูกต้อง</h3>
+     <p>ไม่ใช่ “ทำให้ทุกอย่างเหมือน Manual” แต่คือค้นหาและรักษาความรู้ที่ถูกต้องของ Project เดิม จากนั้นค่อย consolidate ให้มี Canonical Context ชุดเดียว โดย preserve history และ provenance เท่าที่ทำได้</p>
+   </div>
+ </div>
+
+ <h3>4 สถานการณ์ที่ต้องแยกให้ออกก่อนเริ่ม</h3>
+ <table>
+   <thead><tr><th>กรณี</th><th>สถานะ</th><th>แนวทาง</th><th>ความเสี่ยง</th></tr></thead>
+   <tbody>
+     <tr>
+       <td><b>A. Existing Claude Project</b></td>
+       <td>เคยใช้ Claude เป็นหลัก</td>
+       <td>ตรวจ CLAUDE.md, memory, docs, status และ source เดิม แล้วเพิ่ม Shared Context โดย preserve instruction เดิม</td>
+       <td>กลาง</td>
+     </tr>
+     <tr>
+       <td><b>B. Existing ChatGPT/Codex Project</b></td>
+       <td>เคยใช้ ChatGPT/Codex เป็นหลัก</td>
+       <td>ตรวจ AGENTS.md, project notes, instructions, source และ task state ก่อน consolidate</td>
+       <td>กลาง</td>
+     </tr>
+     <tr>
+       <td><b>C. Claude + ChatGPT แยก Project กัน</b></td>
+       <td>มีสอง workspace หรือสอง version</td>
+       <td>ต้อง Reconcile ก่อน Merge เสมอ ห้ามเลือกฝั่งใดฝั่งหนึ่งอัตโนมัติ</td>
+       <td><b>สูงมาก</b></td>
+     </tr>
+     <tr>
+       <td><b>D. มี Chat History / Memory / Uploaded Knowledge เดิม</b></td>
+       <td>ความรู้บางส่วนอยู่นอก Project Folder</td>
+       <td>สกัดเฉพาะข้อมูลสำคัญที่ยังใช้จริง แล้วนำเข้าสู่ Canonical Context พร้อมระบุ provenance</td>
+       <td>สูง</td>
+     </tr>
+   </tbody>
+ </table>
+
+ <h3>สิ่งที่ AI ต้องห้ามทำ</h3>
+ <div class="grid">
+   <div class="card c4"><h3>ห้ามเลือกจาก Timestamp อย่างเดียว</h3><p>ไฟล์ใหม่กว่าอาจเป็น draft, experiment หรือ regression ไม่ได้แปลว่าถูกกว่า</p></div>
+   <div class="card c4"><h3>ห้าม Merge Decision เอง</h3><p>ถ้า Decision A และ B ขัดกัน ต้องแสดง conflict และรอ Human Approval</p></div>
+   <div class="card c4"><h3>ห้ามลบ Project เก่าทันที</h3><p>ต้องเก็บไว้เป็น rollback/reference จน Shared Project ผ่าน verification แล้ว</p></div>
+   <div class="card c4"><h3>ห้าม Promote Memory เป็น Fact โดยไม่ตรวจ</h3><p>AI memory หรือ chat recap อาจ stale หรือไม่ครบ ต้อง corroborate กับไฟล์จริง</p></div>
+   <div class="card c4"><h3>ห้ามเขียนทับ Adapter เดิมทันที</h3><p>CLAUDE.md และ AGENTS.md อาจมี instruction เฉพาะ Project ที่ยังจำเป็น</p></div>
+   <div class="card c4"><h3>ห้ามรวม Secrets เข้าสู่ Shared Context</h3><p>การย้ายข้อมูลต้องกรอง credentials, tokens และ private configuration ออกก่อน</p></div>
+ </div>
+
+ <h3>Reconciliation Workflow — เมื่อ Claude และ ChatGPT มี Project คนละชุด</h3>
+ <div class="flow">
+   <div class="node"><b>Claude Project</b><span>Files · Memory · Decisions · Status</span></div>
+   <div class="arrow">↘</div>
+   <div class="node"><b>Inventory</b><span>List facts, files, revisions, provenance</span></div>
+   <div class="arrow">→</div>
+   <div class="node"><b>Compare</b><span>Same · Different · Missing · Conflict</span></div>
+   <div class="arrow">→</div>
+   <div class="node"><b>Human Review</b><span>Approve unresolved conflicts</span></div>
+   <div class="arrow">→</div>
+   <div class="node"><b>Shared Project</b><span>Canonical Context + Thin Adapters</span></div>
+   <div class="arrow">↖</div>
+   <div class="node"><b>ChatGPT Project</b><span>Files · Instructions · Decisions · Status</span></div>
+ </div>
+
+ <h3>Conflict Classification ที่ AI ต้องรายงาน</h3>
+ <table>
+   <thead><tr><th>ประเภท</th><th>ตัวอย่าง</th><th>AI ทำอะไรได้</th><th>ต้องให้คนตัดสินหรือไม่</th></tr></thead>
+   <tbody>
+     <tr><td><b>Exact duplicate</b></td><td>เนื้อหาเดียวกันคนละไฟล์</td><td>เสนอ consolidate</td><td>ไม่จำเป็น ถ้า checksum/content ตรง</td></tr>
+     <tr><td><b>Newer verified artifact</b></td><td>source ใหม่ + tests ผ่าน + commit ชัด</td><td>เสนอเป็น candidate canonical</td><td>บางกรณี</td></tr>
+     <tr><td><b>Competing decisions</b></td><td>Claude เลือก A, ChatGPT เลือก B</td><td>ห้ามเลือกเอง</td><td><b>ต้อง</b></td></tr>
+     <tr><td><b>Memory-only fact</b></td><td>มีใน chat/memory แต่ไม่มีในไฟล์</td><td>จัดเป็น UNVERIFIED จน corroborate</td><td>ถ้าสำคัญ</td></tr>
+     <tr><td><b>Source divergence</b></td><td>code คนละ branch / revision</td><td>ใช้ Git diff/tests/commit history ช่วยวิเคราะห์</td><td>ถ้าทั้งสองฝั่ง valid</td></tr>
+     <tr><td><b>Instruction conflict</b></td><td>CLAUDE.md สั่งอย่างหนึ่ง AGENTS.md สั่งอีกอย่าง</td><td>รายงาน precedence issue</td><td>ถ้ามีผลต่อ behavior</td></tr>
+   </tbody>
+ </table>
+
+ <h3>Decision State ที่ต้องใช้ระหว่าง Migration</h3>
+ <div class="codewrap"><div class="codehead">Decision status model<button class="copy">Copy</button></div><pre>PROPOSED
+- AI หรือมนุษย์เสนอ แต่ยังไม่อนุมัติ
+
+APPROVED
+- มนุษย์หรือ authority ที่กำหนดไว้ยืนยันแล้ว
+
+SUPERSEDED
+- เคย Approved แต่ถูกแทนด้วย Decision ใหม่
+
+REJECTED
+- พิจารณาแล้วและไม่ใช้
+
+UNVERIFIED
+- มาจาก memory/chat/history แต่ยังไม่มีหลักฐานเพียงพอ
+
+CONFLICTED
+- มี source มากกว่าหนึ่งชุดที่ขัดแย้งและยังหาข้อสรุปไม่ได้</pre></div>
+
+ <div class="callout warn">
+   <strong>สำคัญมาก: Chat History และ AI Memory ไม่ใช่ Canonical Source โดยอัตโนมัติ</strong>
+   ถ้ามีข้อมูลสำคัญอยู่เฉพาะใน ChatGPT Project, Claude Project, memory หรือบทสนทนาเก่า ให้ AI สกัดออกมาเป็น Candidate Context ก่อน แล้วจัดสถานะเป็น UNVERIFIED จนกว่าจะตรวจเทียบกับ Project files, commits, docs หรือการยืนยันจากมนุษย์
+ </div>
+
+ <h3>Existing Project Migration Prompt</h3>
+ <p>ใช้ Prompt นี้หลัง Universal Migration Prompt เมื่อ Project มีประวัติเดิม หรือมี Project แยกกันมากกว่าหนึ่งชุด</p>
+
+ <div class="codewrap"><div class="codehead">EXISTING PROJECT MIGRATION SAFETY PROMPT<button class="copy">Copy</button></div><pre>EXISTING PROJECT MIGRATION SAFETY PROTOCOL
+
+Project นี้มีประวัติการใช้งานมาก่อน อาจเคยทำงานด้วย Claude, ChatGPT/Codex หรือทั้งสองฝั่งแยกกัน
+
+ให้ถือว่าการย้ายครั้งนี้เป็น “Reconciliation + Migration” ไม่ใช่การสร้าง Project ใหม่
+
+NON-DESTRUCTIVE RULES
+1. ห้ามลบ ย้าย เขียนทับ หรือ rename ไฟล์เดิมใน Phase แรก
+2. ห้ามถือว่า Project ของ AI ฝั่งที่คุณกำลังรันอยู่เป็น Source of Truth โดยอัตโนมัติ
+3. ห้ามเลือก version จาก timestamp ล่าสุดเพียงอย่างเดียว
+4. ห้าม merge Decision ที่ขัดแย้งกันเอง
+5. ห้ามถือ AI memory, chat history หรือ summary เก่าเป็น verified fact โดยไม่ตรวจหลักฐาน
+6. ห้าม overwrite CLAUDE.md หรือ AGENTS.md เดิมก่อนทำ instruction inventory
+7. ห้ามนำ secrets, tokens, credentials หรือ private keys เข้าสู่ Shared Context
+8. ห้ามลบ Project เดิมหลัง migration จนกว่าจะผ่าน final verification และได้รับ Human Approval
+
+PHASE A — INVENTORY
+สำรวจทุก source ที่เกี่ยวข้อง:
+- Project folders
+- CLAUDE.md
+- AGENTS.md
+- README / docs
+- STATUS / TODO / task files
+- DECISIONS / ADR / architecture docs
+- source code
+- tests
+- Git branches / tags / commits ถ้ามี
+- session notes / handoffs
+- exported chat summaries หรือ memory ที่ผู้ใช้ให้มา
+- uploaded knowledge ที่ยังมีผลกับ Project
+
+สร้าง Inventory โดยระบุ:
+- path/source
+- ประเภทข้อมูล
+- last modified / commit ถ้ามี
+- provenance
+- confidence
+- duplicate with
+- conflict with
+- candidate canonical source
+
+PHASE B — CLASSIFY
+จัดข้อมูลแต่ละรายการเป็น:
+- CANONICAL CANDIDATE
+- DUPLICATE
+- STALE
+- SUPERSEDED
+- UNVERIFIED
+- CONFLICTED
+- SECRET / DO NOT MIGRATE
+- ARCHIVE ONLY
+
+อย่าเปลี่ยนสถานะเป็น CANONICAL เพียงเพราะ source นั้นใหม่กว่า
+
+PHASE C — COMPARE PROJECT VERSIONS
+ถ้ามี Project มากกว่าหนึ่งชุด:
+1. เปรียบเทียบ directory structure
+2. เปรียบเทียบ relevant source files
+3. เปรียบเทียบ Git history / branches ถ้ามี
+4. เปรียบเทียบ tests และ build status
+5. เปรียบเทียบ project instructions
+6. เปรียบเทียบ decisions
+7. เปรียบเทียบ current status / open work
+8. เปรียบเทียบ assumptions และ constraints
+
+สร้าง Reconciliation Matrix:
+- SAME
+- ONLY IN CLAUDE SIDE
+- ONLY IN CHATGPT SIDE
+- DIFFERENT BUT COMPATIBLE
+- CONFLICT
+- UNKNOWN
+
+PHASE D — HUMAN DECISION GATE
+ต้องหยุดและขอ Human Approval หากพบ:
+- competing APPROVED decisions
+- source revisions ที่ทั้งสองฝั่งดู valid
+- architecture choices ที่ขัดกัน
+- deletion of historically important files
+- changes to security policy
+- ambiguous ownership
+- memory-only facts ที่มีผลต่อ Project
+- migration ที่อาจทำให้ backward compatibility เสีย
+
+แสดง conflict แบบเป็นกลาง:
+- Source A says...
+- Source B says...
+- Evidence for A...
+- Evidence for B...
+- Impact if choosing A...
+- Impact if choosing B...
+- Recommended choice (ถ้ามี) พร้อมเหตุผล
+- Human decision required: YES
+
+PHASE E — MIGRATION PLAN
+ก่อนแก้ไฟล์ ให้เสนอ:
+1. Canonical structure
+2. Canonical files
+3. Adapter changes
+4. Context consolidation map
+5. Archive plan
+6. Files to preserve unchanged
+7. Files to deprecate later
+8. Conflict resolutions already approved
+9. Unresolved items
+10. Rollback strategy
+11. Verification strategy
+
+PHASE F — IMPLEMENT AFTER APPROVAL
+หลังได้รับอนุมัติ:
+- ทำ migration แบบ incremental
+- preserve original content
+- ใช้ Git commits/checkpoints ถ้ามี
+- ทำ backup/archive ของ instruction/context files ที่สำคัญก่อน replace
+- สร้าง Shared Context
+- ปรับ CLAUDE.md และ AGENTS.md เป็น Thin Adapters
+- ย้ายเฉพาะ verified facts เข้าสู่ Canonical Context
+- เก็บ UNVERIFIED/CONFLICTED items แยก ไม่ปะปนกับ approved facts
+- update provenance หรือ decision history เมื่อเหมาะสม
+
+PHASE G — VERIFY
+ทดสอบทั้ง Claude และ ChatGPT/Codex แยกกัน โดยให้ตอบจาก Shared Project Folder:
+- Project goal
+- Current goal
+- Latest approved decision
+- Current status
+- Open loops
+- Next action
+- Blockers
+- Critical project rules
+
+จากนั้นเปรียบเทียบคำตอบ:
+- Factual consistency ต้องตรงกัน
+- Differences in style/reasoning ยอมรับได้
+- ถ้าข้อเท็จจริงต่างกัน ให้ถือว่า migration ยังไม่ผ่าน
+
+FINAL SAFETY RULE
+อย่าลบ Project เดิม, memory export, old adapters หรือ archive จนกว่า:
+1. Shared Context verification ผ่าน
+2. tests/build ที่เกี่ยวข้องผ่าน
+3. unresolved conflicts ถูกปิด
+4. Human ได้ตรวจ migration summary
+5. Human อนุมัติการ retire/archive ของ source เดิม</pre></div>
+
+ <h3>ตัวอย่าง Reconciliation Matrix</h3>
+ <div class="codewrap"><div class="codehead">context/MIGRATION_RECONCILIATION.md<button class="copy">Copy</button></div><pre># Migration Reconciliation
+
+| Topic | Claude Side | ChatGPT Side | Classification | Evidence | Action |
+|---|---|---|---|---|---|
+| Auth architecture | JWT | Session cookie | CONFLICTED | ADRs differ | HUMAN DECISION |
+| API endpoint | /v2/login | /v2/login | SAME | source matches | KEEP |
+| Timeout | 7 days | 30 days | CONFLICTED | memory only on GPT side | VERIFY |
+| Coding style | RULE A | RULE A | SAME | both adapters | MOVE TO RULES.md |
+| Old TODO | completed | still open | STALE candidate | git commit proves done | ARCHIVE |
+
+Rules:
+- Do not resolve CONFLICTED rows silently.
+- Record who approved each resolution.
+- Preserve evidence links/paths where practical.</pre></div>
+
+ <h3>Rollback / Archive Pattern</h3>
+ <div class="tree">project-root/
+├── AGENTS.md
+├── CLAUDE.md
+├── context/
+│   ├── PROJECT.md
+│   ├── RULES.md
+│   ├── STATUS.md
+│   ├── DECISIONS.md
+│   ├── OPEN_LOOPS.md
+│   └── MIGRATION_RECONCILIATION.md
+│
+├── archive/
+│   └── pre-shared-migration/
+│       ├── claude/
+│       │   └── original-instructions-and-notes/
+│       └── chatgpt/
+│           └── original-instructions-and-notes/
+│
+└── sessions/
+    └── handoffs/</div>
+
+ <div class="callout ok">
+   <strong>เงื่อนไขที่ถือว่า Migration สำเร็จ</strong>
+   ไม่ใช่แค่ “ไฟล์ถูกย้ายครบ” แต่ต้องพิสูจน์ได้ว่า Claude และ ChatGPT/Codex อ่าน Project เดียวกันแล้วตอบข้อเท็จจริงหลักตรงกัน, ไม่มี unresolved conflict สำคัญซ่อนอยู่, และสามารถย้อนกลับไปดูข้อมูลต้นทางเดิมได้หากต้องตรวจสอบ
+ </div>
+
+ <h3>Final Existing-Project Checklist</h3>
+ <div class="card checklist">
+   <label><input type="checkbox"> ระบุแล้วว่า Project เดิมเป็นกรณี A, B, C หรือ D</label>
+   <label><input type="checkbox"> ทำ inventory ของ instructions, context, source, decisions และ state แล้ว</label>
+   <label><input type="checkbox"> ไม่มีการเลือก Source of Truth จาก timestamp อย่างเดียว</label>
+   <label><input type="checkbox"> Memory/chat-only facts ถูกจัดเป็น UNVERIFIED จนกว่าจะ corroborate</label>
+   <label><input type="checkbox"> Conflicting decisions ถูกแยกเป็น CONFLICTED และไม่ merge เงียบๆ</label>
+   <label><input type="checkbox"> CLAUDE.md และ AGENTS.md เดิมถูก preserve ก่อนปรับ</label>
+   <label><input type="checkbox"> มี Reconciliation Matrix สำหรับ Project หลายชุด</label>
+   <label><input type="checkbox"> มี Human Approval สำหรับ conflict ที่มีผลต่อ architecture/security/business rules</label>
+   <label><input type="checkbox"> มี backup/archive หรือ Git checkpoint ก่อน destructive migration</label>
+   <label><input type="checkbox"> Shared Context มีเฉพาะ verified canonical facts</label>
+   <label><input type="checkbox"> Claude และ ChatGPT/Codex ตอบ factual verification set ตรงกัน</label>
+   <label><input type="checkbox"> Project เดิมยังไม่ถูกลบจนกว่าจะได้รับ Human Approval ให้ retire/archive</label>
+ </div>
+</section>
+
+
+<section class="section" id="model-agnostic">
+ <div class="sectionhead">
+   <div class="num">SECTION 21 · MODEL-AGNOSTIC IMPLEMENTATION</div>
+   <h2>Project เป็นของคุณ ไม่ใช่ของ AI ตัวใดตัวหนึ่ง</h2>
+   <p>Shared Project Folder ที่ดีต้องทำให้ Project สามารถถูกอ่าน พัฒนา ตรวจสอบ และส่งต่องานโดย AI Agent ที่รองรับ Project Folder ได้ โดยไม่ผูกความต่อเนื่องของงานไว้กับโมเดลหรือผู้ให้บริการที่เป็นผู้เริ่ม Project</p>
+ </div>
+
+ <div class="callout ok">
+   <strong>Core Principle</strong>
+   Claude สร้าง Project → Codex ต้องสามารถทำต่อได้<br>
+   Codex สร้าง Project → Claude Code ต้องสามารถทำต่อได้<br>
+   ผู้สร้างเดิมไม่ควรเป็นตัวกำหนดว่าใครต้องเป็นผู้ Implement งานถัดไป
+ </div>
+
+ <div class="grid">
+   <div class="card c4"><h3>Model-Agnostic</h3><p>Project knowledge, decisions และ state อยู่ใน Project Folder ไม่ได้ติดอยู่ใน memory ของโมเดลใดโมเดลหนึ่ง</p></div>
+   <div class="card c4"><h3>Role-Aware</h3><p>เลือก AI ตามความเหมาะสมของงาน เช่น implement, review, architecture หรือ research ไม่ใช่ตามว่าใครสร้าง Project</p></div>
+   <div class="card c4"><h3>Cross-Model Verification</h3><p>เมื่อเหมาะสม ให้ AI คนละตัวกับผู้ implement ทำ independent review เพื่อลด model-specific blind spots</p></div>
+ </div>
+
+ <h3>Implementation Strategy ที่แนะนำ</h3>
+ <table>
+   <thead><tr><th>Project เดิม</th><th>ผู้ Implement ถัดไป</th><th>ผู้ Review</th><th>เหตุผล</th></tr></thead>
+   <tbody>
+     <tr><td>Claude เป็นผู้สร้าง</td><td><b>Codex</b> หรือ Claude</td><td>Claude หรือ Codex ที่ไม่ได้ implement</td><td>ใช้เป็นการพิสูจน์ portability และ cross-check ได้</td></tr>
+     <tr><td>Codex เป็นผู้สร้าง</td><td><b>Claude Code</b> หรือ Codex</td><td>Codex หรือ Claude ที่ไม่ได้ implement</td><td>พิสูจน์ว่า Project ไม่ผูกกับ AGENTS.md/chat history ฝั่งเดียว</td></tr>
+     <tr><td>Shared Project พร้อมแล้ว</td><td>เลือก AI ตาม task</td><td>อีก AI เมื่อ risk สูง</td><td>ไม่จำเป็นต้องสลับค่ายทุกครั้ง</td></tr>
+     <tr><td>Architecture / Security สำคัญ</td><td>AI หนึ่งตัวเสนอ/implement</td><td><b>Independent cross-model review</b></td><td>ลด blind spot และ confirmation bias</td></tr>
+   </tbody>
+ </table>
+
+ <div class="callout warn">
+   <strong>การสลับ AI ไม่ใช่กฎบังคับ</strong>
+   จุดประสงค์ไม่ใช่ “Claude ทำแล้วต้องให้ Codex ทำต่อเสมอ” หรือกลับกัน แต่คือ Project ต้องเปิดโอกาสให้เลือกเครื่องมือที่เหมาะกับงานได้โดยไม่สูญเสีย Context ความต่อเนื่อง หรือข้อเท็จจริงของ Project
+ </div>
+
+ <h3>First Cross-Model Implementation Workflow</h3>
+ <div class="flow">
+   <div class="node"><b>Existing Project</b><span>สร้างโดย AI ตัวเดิม</span></div><div class="arrow">→</div>
+   <div class="node"><b>Other AI · Read Only</b><span>อ่าน instructions, context, source, Git</span></div><div class="arrow">→</div>
+   <div class="node"><b>Comprehension Check</b><span>Goal · Status · Decisions · Open Loops</span></div><div class="arrow">→</div>
+   <div class="node"><b>Plan</b><span>เสนอ implementation/migration plan</span></div><div class="arrow">→</div>
+   <div class="node"><b>Human Approval</b><span>อนุมัติก่อนเปลี่ยนสำคัญ</span></div><div class="arrow">→</div>
+   <div class="node"><b>Implement + Verify</b><span>แก้ · test · handoff</span></div>
+ </div>
+
+ <h3>ก่อนให้ AI ต่างตัวเข้ามา Implement</h3>
+ <div class="card checklist">
+   <label><input type="checkbox"> AI ใหม่อ่าน Adapter ของตัวเองแล้ว เช่น AGENTS.md หรือ CLAUDE.md</label>
+   <label><input type="checkbox"> AI ใหม่อ่าน Canonical Context ชุดเดียวกับ AI เดิม</label>
+   <label><input type="checkbox"> AI ใหม่สรุป Project Goal, Current Status, Latest Approved Decision และ Open Loops ได้ถูกต้อง</label>
+   <label><input type="checkbox"> ไม่มี unresolved instruction conflict ระหว่าง adapters</label>
+   <label><input type="checkbox"> ตรวจ Git status / branch / active work ก่อนเขียนไฟล์</label>
+   <label><input type="checkbox"> ถ้าเป็น Project เดิมที่ยังไม่ migrate ให้ใช้ Existing Project Safety Protocol ก่อน</label>
+   <label><input type="checkbox"> AI ใหม่ไม่อ้างว่ารู้ chat history ของ AI เดิมหากไม่มีข้อมูลนั้นใน Shared Folder</label>
+ </div>
+
+ <h3>Recommended Cross-Model Pattern</h3>
+ <div class="codewrap"><div class="codehead">PATTERN<button class="copy">Copy</button></div><pre>Feature A
+Claude Code implements
+        ↓
+Codex independently reviews
+        ↓
+Verified result → Shared Context / Status updated
+
+Feature B
+Codex implements
+        ↓
+Claude Code independently reviews
+        ↓
+Verified result → Shared Context / Status updated
+
+Architecture Decision
+Claude and Codex analyze independently
+        ↓
+Compare assumptions / trade-offs
+        ↓
+Human decides
+        ↓
+Record APPROVED decision in context/DECISIONS.md</pre></div>
+
+ <h3>AI Handoff Rule</h3>
+ <div class="codewrap"><div class="codehead">MODEL-AGNOSTIC HANDOFF RULE<button class="copy">Copy</button></div><pre>When taking over work created by another AI:
+
+1. Do not assume the previous AI was correct.
+2. Do not assume the previous AI was wrong.
+3. Read the canonical project context first.
+4. Inspect the actual files, tests, Git state, and approved decisions.
+5. Treat previous-agent notes as evidence, not unquestionable truth.
+6. Identify unresolved assumptions before editing.
+7. Preserve existing architecture unless the task requires changing it.
+8. If you disagree with an approved decision, report the concern; do not silently reverse it.
+9. Verify your own changes before updating STATUS.md.
+10. Leave a handoff that another capable AI can continue without needing your private chat history.</pre></div>
+
+ <div class="callout">
+   <strong>Portability Test</strong>
+   Shared Project Architecture ถือว่าผ่านในระดับสำคัญเมื่อ AI ที่ไม่ได้สร้าง Project สามารถเปิด Project Folder, อ่าน instructions/context, อธิบายสถานะปัจจุบันได้ถูกต้อง และทำ task ต่อได้โดยไม่ต้องให้มนุษย์เล่าประวัติ Project ใหม่ทั้งหมด
+ </div>
+
+ <h3>ชื่อของระบบ: Codex × Claude แต่แนวคิดกว้างกว่านั้น</h3>
+ <p>ในคู่มือฉบับนี้ใช้ <b>Codex × Claude Code</b> เป็นคู่หลัก เพราะทั้งสองเป็น coding agents ที่ทำงานกับ Project Folder โดยตรง แต่สถาปัตยกรรมควรออกแบบให้ <b>Model-Agnostic</b> ตั้งแต่ต้น หากในอนาคตมี AI Agent ตัวอื่นที่สามารถอ่าน Project instructions, files และ Shared Context ได้ ก็ควรสามารถเข้าร่วม workflow เดียวกันโดยเพิ่ม adapter ที่เหมาะสม แทนการสร้างฐานความรู้ของ Project ใหม่อีกชุด</p>
+</section>
+
+</main>
+<script>
+const nav=[...document.querySelectorAll('.navbtn')], sections=[...document.querySelectorAll('.section')];
+function show(id){
+ sections.forEach(s=>s.classList.toggle('active',s.id===id));
+ nav.forEach(b=>b.classList.toggle('active',b.dataset.target===id));
+ window.scrollTo({top:0,behavior:'instant'});
+ history.replaceState(null,'','#'+id);
+ document.getElementById('sidebar').classList.remove('open');
+}
+nav.forEach(b=>b.onclick=()=>show(b.dataset.target));
+if(location.hash && document.querySelector(location.hash)) show(location.hash.slice(1));
+
+const sidebar=document.getElementById('sidebar');
+document.getElementById('menuBtn').onclick=()=>sidebar.classList.toggle('open');
+document.addEventListener('click',e=>{if(innerWidth<=900 && sidebar.classList.contains('open') && !sidebar.contains(e.target) && e.target.id!=='menuBtn') sidebar.classList.remove('open')});
+
+const themeBtn=document.getElementById('themeBtn');
+function setTheme(t){document.documentElement.dataset.theme=t;themeBtn.textContent=t==='dark'?'☀':'☾';localStorage.setItem('manualTheme',t)}
+setTheme(localStorage.getItem('manualTheme')||'light');
+themeBtn.onclick=()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
+
+let fs=Number(localStorage.getItem('manualFont')||100);
+function applyFs(){document.body.style.fontSize=fs+'%';localStorage.setItem('manualFont',fs)}
+applyFs();
+document.getElementById('fontBtn').onclick=()=>{fs=fs>=120?90:fs+10;applyFs()};
+
+document.querySelectorAll('.copy').forEach(btn=>btn.onclick=async()=>{
+ const pre=btn.closest('.codewrap').querySelector('pre');
+ await navigator.clipboard.writeText(pre.innerText);
+ const old=btn.textContent;btn.textContent='Copied';setTimeout(()=>btn.textContent=old,1000);
+});
+
+const search=document.getElementById('search');
+search.addEventListener('keydown',e=>{
+ if(e.key!=='Enter')return;
+ document.querySelectorAll('.searchhit').forEach(x=>x.classList.remove('searchhit'));
+ const q=search.value.trim().toLowerCase(); if(!q)return;
+ let target=null, hit=null;
+ for(const s of sections){
+   const elems=[...s.querySelectorAll('h2,h3,p,td,pre,.tree')];
+   const found=elems.find(el=>el.innerText.toLowerCase().includes(q));
+   if(found){target=s.id;hit=found;break}
+ }
+ if(target){show(target);setTimeout(()=>{hit.classList.add('searchhit');hit.scrollIntoView({behavior:'smooth',block:'center'})},80)}
+});
+document.addEventListener('keydown',e=>{
+ if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();search.focus()}
+ if(e.key==='Escape')sidebar.classList.remove('open');
+});
+</script>
+</body>
+</html>

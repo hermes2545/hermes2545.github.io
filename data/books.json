@@ -1,5 +1,16 @@
 [
   {
+    "id": "codex-claude-shared-project-folder-manual",
+    "title": "One Project. Any AI. — คู่มือใช้ Codex และ Claude ร่วมกัน",
+    "short_title": "One Project. Any AI.",
+    "href": "codex-claude-shared-project-folder-manual-th-v4-complete.html",
+    "cover": "assets/covers/custom/codex-claude-shared-project-folder-manual.webp",
+    "category": "AI Collaboration",
+    "summary": "คู่มือภาษาไทยสำหรับจัด Codex และ Claude ให้ทำงานร่วมกันใน Project Folder เดียว ใช้ AGENTS.md, CLAUDE.md, PROJECT.md, RULES, STATUS, DECISIONS และ OPEN_LOOPS เป็นระบบบริบทกลาง เพื่อลดการเล่าซ้ำและส่งต่องานระหว่าง AI ได้ตรวจสอบได้",
+    "accent": "#0B5ED7",
+    "published_at": "2026-09-13T15:15:48+07:00"
+  },
+  {
     "id": "what-i-do",
     "title": "งานของผม",
     "short_title": "งานของผม",
