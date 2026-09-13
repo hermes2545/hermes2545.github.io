@@ -4,7 +4,7 @@ type: meta
 status: active
 visibility: public
 created: 2026-08-23
-updated: 2026-09-10
+updated: 2026-09-13
 sources: [PROJECT.md, AGENTS.md]
 tags: [library, index]
 ---
@@ -47,6 +47,7 @@ tags: [library, index]
 - [Visual Art Director Agent — Interactive Reference Manual](../../Visual_Art_Director_Agent_Interactive_Manual.html)
 - [Grok Bot — Bilingual Interactive Reference Manual](../../grok-bot-interactive-manual.html)
 - [Hermes Bot Mode · Interactive Reference Manual](../../hermes-bot-mode-interactive-manual.html)
+- [ใช้ Grok Bot ให้คุ้มกว่าเดิม — CLI Usage Router](../../grok-bot-cli-usage-router-manual.html)
 
 ## Reports
 
