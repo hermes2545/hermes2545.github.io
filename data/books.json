@@ -1,5 +1,16 @@
 [
   {
+    "id": "grok-bot-cli-usage-router-manual",
+    "title": "ใช้ Grok Bot ให้คุ้มกว่าเดิม — CLI Usage Router",
+    "short_title": "ใช้ Grok Bot ให้คุ้มกว่าเดิม",
+    "href": "grok-bot-cli-usage-router-manual.html",
+    "cover": "assets/covers/custom/grok-bot-cli-usage-router-manual.webp",
+    "category": "Grok Bot",
+    "summary": "คู่มือ Interactive Reference Manual สำหรับใช้ Grok Build CLI และ CLI Workers ช่วยรับงานหนักจาก Grok Bot ด้วย CLI Usage Router ตั้ง routing policy, approval boundary, RESULT contract, verification และ reusable skill เพื่อใช้ Grok Bot เป็น orchestrator ได้คุ้มกว่าเดิม",
+    "accent": "#0B5ED7",
+    "published_at": "2026-09-13T20:57:04+07:00"
+  },
+  {
     "id": "codex-claude-shared-project-folder-manual",
     "title": "One Project. Any AI. — คู่มือใช้ Codex และ Claude ร่วมกัน",
     "short_title": "One Project. Any AI.",

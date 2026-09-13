@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="description" content="Grok Bot CLI Usage Router — คู่มือสำหรับคนอ่านและ AI ใช้ Grok Build CLI เพื่อย้ายงานหนักออกจาก Grok Bot, ตั้ง routing policy, verify และสร้าง reusable skill" />
+  <meta name="ai-entrypoint" content="#ai-execution-instructions" />
+  <meta name="ai-target" content="Grok Bot" />
+  <meta name="ai-mode" content="bootstrap-configure-verify" />
+  <title>Grok Bot CLI Usage Router — Interactive Reference Manual</title>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"TechArticle",
+    "headline":"Grok Bot CLI Usage Router",
+    "alternativeHeadline":"คู่มือใช้ Grok Build CLI เพื่อลดภาระ Usage ของ Grok Bot",
+    "inLanguage":["th","en"],
+    "dateModified":"2026-09-13",
+    "about":["Grok Bot","Grok Build CLI","AI orchestration","usage routing","agent workflow"]
+  }
+  </script>
+  <style>
+    :root{
+      --bg:#f5f6f8; --surface:#ffffff; --surface2:#eef1f5; --text:#15171a; --muted:#66707b;
+      --line:#dfe3e8; --accent:#111318; --accent2:#4b5563; --good:#146c43; --warn:#8a5a00; --danger:#9f2d2d;
+      --shadow:0 18px 50px rgba(15,23,42,.09); --radius:18px; --sidebar:286px; --topbar:64px;
+      --code:#111318; --codeText:#eef2f6; --focus:#6b7280;
+    }
+    html[data-theme="dark"]{
+      --bg:#0d0f12; --surface:#15181d; --surface2:#1d2127; --text:#f3f4f6; --muted:#a2aab4;
+      --line:#2a3038; --accent:#f3f4f6; --accent2:#c5cbd3; --good:#5bd39a; --warn:#f4c05e; --danger:#ff8e8e;
+      --shadow:0 18px 50px rgba(0,0,0,.35); --code:#070809; --codeText:#f2f3f4; --focus:#aab2bd;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:"Sarabun","Noto Sans Thai","Segoe UI",Arial,sans-serif;font-size:16px;line-height:1.72;overflow-x:hidden}
+    button,input{font:inherit}
+    a{color:inherit}
+    .app{min-height:100dvh}
+    .topbar{position:fixed;z-index:50;top:0;left:var(--sidebar);right:0;height:var(--topbar);display:flex;align-items:center;gap:10px;padding:0 22px;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+    .topbar .titlemini{font-weight:800;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .topbar .spacer{flex:1}
+    .iconbtn,.pillbtn{border:1px solid var(--line);background:var(--surface);color:var(--text);height:38px;border-radius:12px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:.18s ease}
+    .iconbtn{width:40px}.pillbtn{padding:0 12px;gap:7px;font-weight:700;font-size:.88rem}
+    .iconbtn:hover,.pillbtn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.08)}
+    .menuBtn{display:none}
+    .sidebar{position:fixed;z-index:60;inset:0 auto 0 0;width:var(--sidebar);background:var(--surface);border-right:1px solid var(--line);padding:22px 16px 18px;overflow-y:auto;overscroll-behavior:contain}
+    .brand{display:flex;align-items:center;gap:12px;padding:4px 8px 18px;border-bottom:1px solid var(--line);margin-bottom:14px}
+    .brandmark{position:relative;width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:#090a0c;color:#fff;box-shadow:0 10px 25px rgba(0,0,0,.2);overflow:hidden;flex:0 0 auto}
+    .brandmark img{width:100%;height:100%;object-fit:cover;background:#090a0c}
+    .brandmark .fallback{position:absolute;inset:0;display:grid;place-items:center;font-size:20px;font-weight:900;letter-spacing:-.08em}
+    .brandmark img:not([src=""]){position:relative;z-index:2}
+    .brandtext b{display:block;font-size:1rem;letter-spacing:.06em}.brandtext small{color:var(--muted);font-size:.72rem}
+    .searchbox{position:relative;margin:10px 3px 14px}.searchbox input{width:100%;height:42px;border:1px solid var(--line);border-radius:13px;background:var(--surface2);color:var(--text);padding:0 38px 0 12px;outline:none}.searchbox input:focus{border-color:var(--focus);box-shadow:0 0 0 3px color-mix(in srgb,var(--focus) 18%,transparent)}
+    .searchicon{position:absolute;right:12px;top:9px;color:var(--muted)}
+    .searchresults{display:none;margin:0 3px 12px;padding:8px;background:var(--surface2);border-radius:12px;border:1px solid var(--line);max-height:240px;overflow:auto}.searchresults.show{display:block}.searchresult{display:block;width:100%;text-align:left;border:0;background:transparent;color:var(--text);padding:9px;border-radius:8px;cursor:pointer;font-size:.86rem}.searchresult:hover{background:var(--surface)}
+    nav{display:grid;gap:4px}.navbtn{display:flex;align-items:center;gap:10px;width:100%;border:0;background:transparent;color:var(--muted);padding:10px 11px;border-radius:11px;cursor:pointer;text-align:left;font-weight:650}.navbtn .n{width:25px;height:25px;border-radius:8px;background:var(--surface2);display:grid;place-items:center;font-size:.7rem;flex:0 0 auto}.navbtn.active{background:var(--accent);color:var(--bg)}html[data-theme="dark"] .navbtn.active{color:#0d0f12}.navbtn.active .n{background:color-mix(in srgb,var(--bg) 20%,transparent)}
+    .sidefoot{margin-top:16px;padding:12px 9px;border-top:1px solid var(--line);font-size:.73rem;color:var(--muted)}
+    .main{margin-left:var(--sidebar);padding:calc(var(--topbar) + 30px) 34px 60px;min-height:100dvh}
+    .chapter{display:none;max-width:1120px;margin:0 auto;animation:fade .2s ease}.chapter.active{display:block}@keyframes fade{from{opacity:.3;transform:translateY(4px)}to{opacity:1;transform:none}}
+    .hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#08090b 0%,#161a20 58%,#2b313a 100%);color:white;border-radius:28px;padding:56px 54px;min-height:520px;box-shadow:var(--shadow);display:flex;flex-direction:column;justify-content:flex-end}
+    .hero:before{content:"";position:absolute;inset:-20% -10% auto auto;width:520px;height:520px;border:1px solid rgba(255,255,255,.12);border-radius:50%;box-shadow:0 0 0 70px rgba(255,255,255,.025),0 0 0 150px rgba(255,255,255,.018)}
+    .hero:after{content:"";position:absolute;right:55px;top:60px;width:210px;height:210px;background:radial-gradient(circle at 36% 36%,rgba(255,255,255,.18),transparent 56%);border:1px solid rgba(255,255,255,.17);border-radius:52px;transform:rotate(12deg)}
+    .heroLogo{position:absolute;top:42px;left:48px;display:flex;align-items:center;gap:12px;z-index:2}.heroLogo .brandmark{width:54px;height:54px;border:1px solid rgba(255,255,255,.25)}.heroLogo span{font-weight:850;letter-spacing:.12em}.hero .kicker{position:relative;z-index:2;text-transform:uppercase;letter-spacing:.17em;font-size:.75rem;opacity:.72;font-weight:800;margin-bottom:12px}.hero h1{position:relative;z-index:2;font-size:clamp(2.4rem,6vw,5.7rem);line-height:.93;letter-spacing:-.055em;margin:0;max-width:850px}.hero h1 em{font-style:normal;color:#bac3ce}.hero .subtitle{position:relative;z-index:2;max-width:780px;margin:24px 0 0;font-size:clamp(1rem,2vw,1.35rem);color:#d8dde4}.heroMeta{position:relative;z-index:2;margin-top:32px;display:flex;gap:10px;flex-wrap:wrap}.tag{border:1px solid rgba(255,255,255,.18);padding:7px 11px;border-radius:999px;font-size:.74rem;color:#dce1e7;background:rgba(255,255,255,.05)}
+    .sectionHead{margin:4px 0 26px}.eyebrow{text-transform:uppercase;font-weight:850;letter-spacing:.14em;color:var(--muted);font-size:.74rem}.sectionHead h2{font-size:clamp(2rem,4vw,3.5rem);line-height:1.05;letter-spacing:-.04em;margin:8px 0 10px}.sectionHead p{max-width:820px;color:var(--muted);font-size:1.04rem;margin:0}
+    .grid{display:grid;gap:16px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:0 3px 10px rgba(0,0,0,.025)}.card h3{margin:0 0 9px;font-size:1.03rem}.card p{margin:0;color:var(--muted)}.card .big{font-size:2rem;font-weight:900;letter-spacing:-.04em;margin-bottom:5px}.card.good{border-left:5px solid var(--good)}.card.warn{border-left:5px solid var(--warn)}.card.dark{background:#101216;color:#f3f4f6;border-color:#252a31}.card.dark p{color:#aeb6c0}
+    .lead{font-size:1.18rem;line-height:1.9;color:var(--text);max-width:900px}.quote{padding:18px 20px;border-left:4px solid var(--accent);background:var(--surface2);border-radius:0 14px 14px 0;margin:22px 0;font-weight:700}
+    .callout{padding:16px 18px;border-radius:14px;background:color-mix(in srgb,var(--good) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--good) 28%,var(--line));margin:18px 0}.callout.warn{background:color-mix(in srgb,var(--warn) 9%,var(--surface));border-color:color-mix(in srgb,var(--warn) 30%,var(--line))}
+    .flow{display:flex;align-items:stretch;gap:10px;overflow-x:auto;padding:10px 2px 18px}.node{min-width:155px;flex:1;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;text-align:center;box-shadow:0 4px 13px rgba(0,0,0,.035)}.node b{display:block}.node small{display:block;color:var(--muted);margin-top:4px}.arrow{display:grid;place-items:center;color:var(--muted);font-size:1.5rem;min-width:28px}.node.parent{background:#101216;color:#fff;border-color:#101216}.node.worker{border-top:4px solid var(--accent2)}
+    .usagePools{display:grid;grid-template-columns:1fr 1fr;gap:18px}.pool{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px}.poolHeader{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px}.bar{height:16px;border-radius:999px;background:var(--surface2);overflow:hidden}.bar>span{height:100%;display:block;border-radius:inherit;background:var(--accent)}.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.legend span{font-size:.72rem;padding:5px 8px;border-radius:999px;background:var(--surface2);color:var(--muted)}
+    table{width:100%;border-collapse:separate;border-spacing:0;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}th,td{padding:14px 15px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:var(--surface2);font-size:.82rem;text-transform:uppercase;letter-spacing:.05em}tr:last-child td{border-bottom:0}td{color:var(--muted)}td strong{color:var(--text)}
+    .tablewrap{overflow-x:auto;border-radius:16px}
+    .steps{counter-reset:step;display:grid;gap:14px}.step{counter-increment:step;position:relative;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px 20px 20px 72px}.step:before{content:counter(step);position:absolute;left:19px;top:18px;width:36px;height:36px;border-radius:11px;background:var(--accent);color:var(--bg);display:grid;place-items:center;font-weight:900}html[data-theme="dark"] .step:before{color:#0b0c0e}.step h3{margin:0 0 7px}.step p{margin:0;color:var(--muted)}
+    .codebox{position:relative;margin:14px 0 18px}.codebox pre{margin:0;background:var(--code);color:var(--codeText);border-radius:16px;padding:44px 18px 18px;overflow:auto;font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:.84rem;line-height:1.65;white-space:pre-wrap;word-break:break-word;border:1px solid #2a2d31}.copybtn{position:absolute;right:9px;top:9px;border:1px solid #343a42;background:#181b20;color:#dfe4ea;border-radius:9px;padding:6px 9px;font-size:.72rem;cursor:pointer}.copybtn.done{background:#164c35}
+    .aiPanel{border:1px solid var(--line);background:var(--surface);border-radius:20px;overflow:hidden}.aiPanel summary{list-style:none;cursor:pointer;padding:20px 22px;display:flex;gap:12px;align-items:center;font-weight:850}.aiPanel summary::-webkit-details-marker{display:none}.statusdot{width:10px;height:10px;border-radius:50%;background:var(--good);box-shadow:0 0 0 5px color-mix(in srgb,var(--good) 15%,transparent)}.aiPanel .inside{border-top:1px solid var(--line);padding:18px}.machineNote{font-size:.82rem;color:var(--muted);margin:0 0 12px}.machineMeta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.machineMeta span{font-size:.7rem;border:1px solid var(--line);border-radius:999px;padding:5px 8px;background:var(--surface2)}
+    .ref{display:grid;grid-template-columns:42px 1fr;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:17px;margin-bottom:10px}.refnum{width:38px;height:38px;border-radius:12px;background:var(--surface2);display:grid;place-items:center;font-weight:900}.ref b{display:block}.ref p{margin:3px 0 7px;color:var(--muted);font-size:.9rem}.ref a{word-break:break-all;color:var(--accent2)}
+    .youtube{background:linear-gradient(135deg,#17191d,#262b32);color:white;border:0}.youtube p{color:#c4cad2}.youtube .refnum{background:#ff0033;color:white}
+    .disclaimer{font-size:.78rem;color:var(--muted);padding:14px 16px;background:var(--surface2);border-radius:13px;margin-top:20px}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.action{border:0;border-radius:12px;padding:10px 13px;background:var(--accent);color:var(--bg);font-weight:800;cursor:pointer}html[data-theme="dark"] .action{color:#0b0c0e}.action.secondary{background:var(--surface);color:var(--text);border:1px solid var(--line)}
+    .lang-en{display:none}html[data-lang="en"] .lang-th{display:none}html[data-lang="en"] .lang-en{display:inline}html[data-lang="en"] div.lang-en,html[data-lang="en"] p.lang-en,html[data-lang="en"] section.lang-en{display:block}
+    .overlay{display:none}
+    .footerline{margin-top:24px;padding-top:16px;border-top:1px solid var(--line);font-size:.76rem;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    @media (max-width:980px){
+      :root{--sidebar:0px}.sidebar{width:min(86vw,320px);transform:translateX(-102%);transition:.22s ease;box-shadow:var(--shadow)}.sidebar.open{transform:none}.overlay{display:block;position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.38);opacity:0;pointer-events:none;transition:.2s}.overlay.show{opacity:1;pointer-events:auto}.topbar{left:0;padding:0 12px}.menuBtn{display:inline-flex}.main{margin-left:0;padding:calc(var(--topbar) + 18px) 16px 45px}.g3,.g4{grid-template-columns:1fr 1fr}.hero{padding:44px 26px 34px;min-height:560px}.heroLogo{left:24px;top:25px}.hero:after{right:-40px;top:70px}.usagePools{grid-template-columns:1fr}.titlemini{max-width:44vw}}
+    @media (max-width:640px){
+      body{font-size:15px}.g2,.g3,.g4{grid-template-columns:1fr}.hero{min-height:610px;border-radius:20px;padding:38px 20px 28px}.hero h1{font-size:clamp(2.45rem,15vw,4.3rem)}.hero .subtitle{font-size:1rem}.heroLogo{left:18px;top:18px}.heroLogo .brandmark{width:46px;height:46px}.hero:after{width:155px;height:155px;right:-65px;top:66px}.main{padding-left:11px;padding-right:11px}.sectionHead h2{font-size:2.15rem}.card{padding:18px}.flow{gap:7px}.node{min-width:142px}.arrow{min-width:20px}.step{padding-left:62px}.step:before{left:15px}.topbar .pillbtn .wide{display:none}.pillbtn{padding:0 9px}.topbar{gap:6px}.topbar .titlemini{font-size:.82rem}.ref{grid-template-columns:35px 1fr;padding:14px}.refnum{width:33px;height:33px}.actions .action{width:100%}}
+    @media print{.sidebar,.topbar,.overlay,.copybtn,.actions{display:none!important}.main{margin:0;padding:20px}.chapter{display:block!important;page-break-after:always}.hero{box-shadow:none}.aiPanel{break-inside:avoid}body{background:white;color:black}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brandmark" aria-label="Grok">
+        <svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true" style="position:relative;z-index:2"><circle cx="24" cy="24" r="13" fill="none" stroke="currentColor" stroke-width="5"/><path d="M29 9L13 25M35 15L19 31" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/><path d="M24 24h12" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="brandtext"><b>GROK BOT</b><small>CLI Usage Router Manual</small></div>
+    </div>
+    <div class="searchbox">
+      <input id="searchInput" type="search" placeholder="ค้นหาในคู่มือ / Search" aria-label="Search manual" />
+      <span class="searchicon">⌕</span>
+    </div>
+    <div class="searchresults" id="searchResults"></div>
+    <nav id="nav">
+      <button class="navbtn active" data-target="cover"><span class="n">00</span><span class="lang-th">หน้าปก</span><span class="lang-en">Cover</span></button>
+      <button class="navbtn" data-target="preface"><span class="n">01</span><span class="lang-th">คำนำและประโยชน์</span><span class="lang-en">Preface & Benefits</span></button>
+      <button class="navbtn" data-target="concept"><span class="n">02</span><span class="lang-th">แนวคิดหลัก</span><span class="lang-en">Core Concept</span></button>
+      <button class="navbtn" data-target="architecture"><span class="n">03</span><span class="lang-th">สถาปัตยกรรม</span><span class="lang-en">Architecture</span></button>
+      <button class="navbtn" data-target="routing"><span class="n">04</span><span class="lang-th">Routing Policy</span><span class="lang-en">Routing Policy</span></button>
+      <button class="navbtn" data-target="setup"><span class="n">05</span><span class="lang-th">ติดตั้งและตั้งค่า</span><span class="lang-en">Setup</span></button>
+      <button class="navbtn" data-target="security"><span class="n">06</span><span class="lang-th">ความปลอดภัย</span><span class="lang-en">Safety</span></button>
+      <button class="navbtn" data-target="verify"><span class="n">07</span><span class="lang-th">ทดสอบและ Verify</span><span class="lang-en">Verification</span></button>
+      <button class="navbtn" data-target="ai-mode"><span class="n">08</span><span class="lang-th">AI Setup Mode</span><span class="lang-en">AI Setup Mode</span></button>
+      <button class="navbtn" data-target="operation"><span class="n">09</span><span class="lang-th">วิธีใช้งานจริง</span><span class="lang-en">Operation</span></button>
+      <button class="navbtn" data-target="references"><span class="n">10</span><span class="lang-th">แหล่งอ้างอิง</span><span class="lang-en">References</span></button>
+    </nav>
+    <div class="sidefoot">
+      <div>Interactive Reference Manual v1.0</div>
+      <div>Updated 13 Sep 2026</div>
+    </div>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+
+  <header class="topbar">
+    <button class="iconbtn menuBtn" id="menuBtn" aria-label="Menu">☰</button>
+    <div class="titlemini">Grok Bot CLI Usage Router</div>
+    <div class="spacer"></div>
+    <button class="iconbtn" id="fontDown" title="Font smaller">A−</button>
+    <button class="iconbtn" id="fontUp" title="Font larger">A+</button>
+    <button class="pillbtn" id="langBtn" title="Switch language"><span id="langFlag">🇬🇧</span><span class="wide" id="langLabel">EN</span></button>
+    <button class="iconbtn" id="themeBtn" title="Light/Dark">☾</button>
+  </header>
+
+  <main class="main" id="main">
+    <section class="chapter active" id="cover" data-title-th="หน้าปก Grok Bot CLI Usage Router" data-title-en="Cover Grok Bot CLI Usage Router">
+      <div class="hero">
+        <div class="heroLogo">
+          <div class="brandmark"><svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true" style="position:relative;z-index:2"><circle cx="24" cy="24" r="13" fill="none" stroke="currentColor" stroke-width="5"/><path d="M29 9L13 25M35 15L19 31" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/><path d="M24 24h12" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/></svg></div>
+          <span>GROK BOT</span>
+        </div>
+        <div class="kicker">Human + AI Executable Manual</div>
+        <h1>CLI Usage<br><em>Router</em></h1>
+        <p class="subtitle lang-th">คู่มือใช้ Grok Build CLI เพื่อย้ายงานหนักออกจาก Grok Bot ให้ Bot ทำหน้าที่เป็น Orchestrator พร้อมคำสั่งแบบ Machine‑Readable ที่ Grok Bot สามารถอ่านแล้วตั้งค่าระบบให้ตัวเองได้</p>
+        <p class="subtitle lang-en">A practical guide for moving heavy work out of Grok Bot into Grok Build CLI, turning the Bot into an orchestrator, with machine-readable instructions the Bot can execute to configure itself.</p>
+        <div class="heroMeta"><span class="tag">Single HTML</span><span class="tag">Thai / English</span><span class="tag">Grok Build CLI</span><span class="tag">AI Bootstrap</span><span class="tag">Usage Routing</span></div>
+      </div>
+      <div class="footerline"><span>Interactive Reference Manual v1.0</span><span>13 September 2026</span></div>
+    </section>
+
+    <section class="chapter" id="preface" data-title-th="คำนำ ประโยชน์ วัตถุประสงค์" data-title-en="Preface Benefits Purpose">
+      <div class="sectionHead">
+        <div class="eyebrow">01 — Preface</div>
+        <h2><span class="lang-th">คำนำ: คู่มือนี้ช่วยอะไรเรา?</span><span class="lang-en">Preface: What does this manual give you?</span></h2>
+        <p class="lang-th">คู่มือนี้เกิดจากแนวคิดง่าย ๆ ว่า Grok Bot ไม่จำเป็นต้องลงมือทำทุกอย่างด้วยตัวเอง งานที่กินเวลาและบริบทมากสามารถส่งต่อให้ Grok Build CLI หรือ CLI worker อื่นทำ แล้วให้ Grok Bot เหลือหน้าที่คิดภาพรวม ตัดสินใจ ประสานงาน และตรวจผล</p>
+        <p class="lang-en">This manual starts from a simple idea: Grok Bot does not need to perform every task itself. Heavy work can be delegated to Grok Build CLI or other CLI workers, while Grok Bot focuses on orchestration, decisions, coordination, and review.</p>
+      </div>
+      <p class="lead lang-th">จุดประสงค์ของเอกสารนี้ไม่ใช่แค่ “ประหยัด Usage” แต่คือการเปลี่ยนวิธีทำงานจาก <strong>AI ตัวเดียวทำทุกอย่าง</strong> ไปเป็น <strong>AI Manager + Worker</strong> ที่แบ่งงานตามความเหมาะสม มีขอบเขต มีผลลัพธ์มาตรฐาน และสามารถตรวจสอบย้อนหลังได้</p>
+      <p class="lead lang-en">The goal is not merely to “save usage.” It is to move from <strong>one AI doing everything</strong> to an <strong>AI manager + workers</strong> model with clear boundaries, standardized outputs, and auditable execution.</p>
+      <div class="quote"><span class="lang-th">“ให้ Grok Bot ใช้ความฉลาดกับการตัดสินใจ — ไม่ใช่เสีย Usage ไปกับการอ่าน log ยาว ๆ, scan repo, run test และแก้โค้ดซ้ำ ๆ”</span><span class="lang-en">“Use Grok Bot intelligence for decisions — not for rereading huge logs, scanning repositories, running tests, and repeating implementation work.”</span></div>
+      <div class="grid g3">
+        <div class="card good"><div class="big">01</div><h3><span class="lang-th">ลดภาระ Grok Bot</span><span class="lang-en">Reduce Bot workload</span></h3><p class="lang-th">ย้าย repo analysis, coding, testing, debugging และงานบริบทใหญ่ไปให้ CLI worker</p><p class="lang-en">Move repo analysis, coding, testing, debugging and large-context work to CLI workers.</p></div>
+        <div class="card good"><div class="big">02</div><h3><span class="lang-th">ใช้ Usage ที่มีให้คุ้ม</span><span class="lang-en">Use existing allowances better</span></h3><p class="lang-th">กระจายงานไปยัง usage pool ของเครื่องมือที่มีอยู่ แทนการเผา pool เดียว</p><p class="lang-en">Distribute compute across available product allowances instead of burning one pool.</p></div>
+        <div class="card good"><div class="big">03</div><h3><span class="lang-th">ลดงานซ้ำ</span><span class="lang-en">Reduce duplicated work</span></h3><p class="lang-th">Worker สรุปผลเป็น RESULT.md แล้ว Bot อ่านเฉพาะผลสำคัญ ไม่ต้องวิเคราะห์งานเดิมใหม่ทั้งหมด</p><p class="lang-en">Workers return RESULT.md so the Bot reads conclusions instead of redoing the whole analysis.</p></div>
+        <div class="card"><div class="big">04</div><h3><span class="lang-th">ทำงานเป็นระบบ</span><span class="lang-en">Standardize execution</span></h3><p class="lang-th">Routing Policy บอกชัดว่างานแบบไหนให้ Bot ทำเอง และงานแบบไหนต้อง delegate</p><p class="lang-en">A routing policy defines which work stays with the Bot and which work must be delegated.</p></div>
+        <div class="card"><div class="big">05</div><h3><span class="lang-th">ปลอดภัยกว่า</span><span class="lang-en">Safer automation</span></h3><p class="lang-th">ล็อก approval boundary เรื่อง login, secret, delete, publish และ production change</p><p class="lang-en">Explicit approval boundaries protect login, secrets, deletion, publishing and production changes.</p></div>
+        <div class="card"><div class="big">06</div><h3><span class="lang-th">ใช้ซ้ำได้</span><span class="lang-en">Reusable workflow</span></h3><p class="lang-th">เมื่อ verify ผ่าน สามารถให้ Grok Bot บันทึกขั้นตอนเป็น Skill เพื่อใช้ต่อในงานใหม่</p><p class="lang-en">After verification, Grok Bot can save the proven process as a reusable Skill.</p></div>
+      </div>
+      <div class="callout warn"><strong><span class="lang-th">สิ่งที่คู่มือนี้ไม่ได้ทำ:</span><span class="lang-en">What this does not do:</span></strong> <span class="lang-th">มันไม่ได้ทำให้ computation หรือ token หายไป แต่เป็นการ <b>route งานไปยังเครื่องมือ/usage pool ที่เหมาะกว่า</b> ดังนั้น Grok Build หรือบริการอื่นยังมี quota และค่าใช้จ่ายของตัวเอง</span><span class="lang-en">It does not make compute or tokens disappear. It <b>routes work to a more appropriate tool/usage pool</b>; Grok Build and other services still have their own limits and costs.</span></div>
+    </section>
+
+    <section class="chapter" id="concept" data-title-th="แนวคิดหลัก usage routing Grok Bot Grok Build" data-title-en="Core concept usage routing">
+      <div class="sectionHead"><div class="eyebrow">02 — Core Concept</div><h2><span class="lang-th">จาก Worker ให้กลายเป็น Orchestrator</span><span class="lang-en">Turn the Bot from worker into orchestrator</span></h2><p class="lang-th">หัวใจของเทคนิคนี้คือ “อย่าให้ Grok Bot ทำ heavy work เอง ถ้ามี CLI worker ที่ทำแทนได้”</p><p class="lang-en">The key rule: do not let Grok Bot do heavy work itself when a CLI worker can do it.</p></div>
+      <div class="flow">
+        <div class="node"><b>YOU</b><small>Goal / approval</small></div><div class="arrow">→</div>
+        <div class="node parent"><b>GROK BOT</b><small>Plan · route · decide</small></div><div class="arrow">→</div>
+        <div class="node worker"><b>GROK BUILD CLI</b><small>Analyze · code · test</small></div><div class="arrow">→</div>
+        <div class="node"><b>RESULT.md</b><small>Compact contract</small></div><div class="arrow">→</div>
+        <div class="node parent"><b>GROK BOT</b><small>Review · report</small></div>
+      </div>
+      <div class="usagePools">
+        <div class="pool"><div class="poolHeader"><div><strong>Grok Bot Usage</strong><div style="color:var(--muted);font-size:.82rem">Coordination / decisions / review</div></div><strong>↓</strong></div><div class="bar"><span style="width:28%"></span></div><div class="legend"><span>Plan</span><span>Delegate</span><span>Approve</span><span>Summarize</span></div></div>
+        <div class="pool"><div class="poolHeader"><div><strong>Grok / Build Weekly Pool</strong><div style="color:var(--muted);font-size:.82rem">Heavy CLI work runs here</div></div><strong>↑</strong></div><div class="bar"><span style="width:67%"></span></div><div class="legend"><span>Repo</span><span>Code</span><span>Tests</span><span>Debug</span><span>Research</span></div></div>
+      </div>
+      <div class="callout"><span class="lang-th">ข้อมูลทางการ ณ 13 ก.ย. 2026: xAI ระบุว่า <strong>Grok Bot มี usage แยกจาก Grok และ Cursor plans</strong> ขณะที่ SuperGrok ใช้ weekly pool ร่วมกันข้ามผลิตภัณฑ์ เช่น Chat, Imagine, Voice และ Build ดังนั้นเทคนิคนี้คือการทำ <strong>usage routing / load balancing</strong> ไม่ใช่การสร้าง usage ฟรี</span><span class="lang-en">As of Sep 13, 2026, xAI states that <strong>Grok Bot has its own usage separate from Grok and Cursor plans</strong>, while SuperGrok uses a shared weekly pool across products such as Chat, Imagine, Voice and Build. This is therefore <strong>usage routing / load balancing</strong>, not free compute.</span></div>
+    </section>
+
+    <section class="chapter" id="architecture" data-title-th="สถาปัตยกรรม parent orchestrator CLI workers RESULT" data-title-en="Architecture parent orchestrator workers">
+      <div class="sectionHead"><div class="eyebrow">03 — Architecture</div><h2><span class="lang-th">โครงสร้างที่แนะนำ</span><span class="lang-en">Recommended architecture</span></h2><p class="lang-th">เริ่มจาก Grok Build ตัวเดียวก่อน แล้วค่อยเพิ่ม Herdr, Codex, Claude Code หรือ Cursor CLI ภายหลังเมื่อจำเป็น</p><p class="lang-en">Start with Grok Build only. Add Herdr, Codex, Claude Code, or Cursor CLI later when needed.</p></div>
+      <div class="card dark">
+        <div class="codebox"><button class="copybtn">Copy</button><pre>YOU
+ │
+ ▼
+GROK BOT  ← Parent Orchestrator
+ │
+ ├─ Read goal + constraints
+ ├─ Choose worker
+ ├─ Set approval boundary
+ └─ Avoid heavy execution
+ │
+ ▼
+ROUTING_POLICY.md
+ │
+ ▼
+GROK BUILD CLI  ← Default heavy worker
+ │
+ ├─ repository analysis
+ ├─ coding / editing
+ ├─ testing
+ ├─ debugging
+ └─ long-running CLI work
+ │
+ ▼
+RESULT.md
+ │
+ ▼
+GROK BOT
+ │
+ ├─ validate outcome
+ ├─ ask for approval if needed
+ └─ summarize to user
+ ▼
+YOU</pre></div>
+      </div>
+      <div class="grid g2" style="margin-top:16px">
+        <div class="card"><h3>Layer 1 — Grok Bot</h3><p class="lang-th">เป็นสมองกลาง: เข้าใจเป้าหมาย แบ่งงาน เลือก worker กำหนดข้อห้าม และประเมินผลลัพธ์</p><p class="lang-en">The control plane: understand goals, break down work, select workers, set boundaries, evaluate results.</p></div>
+        <div class="card"><h3>Layer 2 — Routing Policy</h3><p class="lang-th">เป็นกติกาถาวร ช่วยไม่ให้ Bot ตัดสินใจใหม่ทุกครั้งว่าจะทำเองหรือ delegate</p><p class="lang-en">Persistent rules so the Bot does not have to reinvent delegation decisions each time.</p></div>
+        <div class="card"><h3>Layer 3 — CLI Worker</h3><p class="lang-th">ลงมือทำงานหนักใน terminal ด้วย headless mode เช่น <code>grok -p</code></p><p class="lang-en">Executes heavy terminal work using headless mode such as <code>grok -p</code>.</p></div>
+        <div class="card"><h3>Layer 4 — Result Contract</h3><p class="lang-th">ส่งกลับเฉพาะ STATUS, SUMMARY, FILES, TESTS, PROBLEMS, NEXT ACTION เพื่อลดข้อมูลที่ Bot ต้องอ่าน</p><p class="lang-en">Returns only STATUS, SUMMARY, FILES, TESTS, PROBLEMS and NEXT ACTION to minimize Bot context.</p></div>
+      </div>
+    </section>
+
+    <section class="chapter" id="routing" data-title-th="routing policy งานอะไร bot ทำเอง งานอะไร grok build cli" data-title-en="Routing policy bot worker tasks">
+      <div class="sectionHead"><div class="eyebrow">04 — Routing Policy</div><h2><span class="lang-th">งานไหนให้ใครทำ?</span><span class="lang-en">Who should do what?</span></h2><p class="lang-th">Rule ที่ดีควรเรียบง่ายจน Bot ใช้ได้โดยไม่ต้องตีความมาก</p><p class="lang-en">Good routing rules are simple enough to apply without ambiguity.</p></div>
+      <div class="tablewrap"><table>
+        <thead><tr><th><span class="lang-th">ประเภทงาน</span><span class="lang-en">Task</span></th><th><span class="lang-th">ตัวหลัก</span><span class="lang-en">Primary</span></th><th><span class="lang-th">เหตุผล</span><span class="lang-en">Why</span></th></tr></thead>
+        <tbody>
+          <tr><td><strong>Conversation / clarify goal</strong></td><td>Grok Bot</td><td><span class="lang-th">ต้องคุยกับผู้ใช้โดยตรง</span><span class="lang-en">Direct user interaction</span></td></tr>
+          <tr><td><strong>Planning / decomposition</strong></td><td>Grok Bot</td><td><span class="lang-th">ใช้ judgment และ context ระดับโปรเจกต์</span><span class="lang-en">Needs project-level judgment</span></td></tr>
+          <tr><td><strong>Repository exploration</strong></td><td>Grok Build</td><td><span class="lang-th">บริบทใหญ่และใช้ terminal เยอะ</span><span class="lang-en">Large context and terminal-heavy</span></td></tr>
+          <tr><td><strong>Implementation & refactor</strong></td><td>Grok Build</td><td><span class="lang-th">งานลงมือที่กิน turn จำนวนมาก</span><span class="lang-en">Execution-heavy, many turns</span></td></tr>
+          <tr><td><strong>Test / lint / debug</strong></td><td>Grok Build</td><td><span class="lang-th">ผลลัพธ์ยาวและวนซ้ำได้</span><span class="lang-en">Long, iterative outputs</span></td></tr>
+          <tr><td><strong>Long research / data extraction</strong></td><td>CLI worker</td><td><span class="lang-th">ลดการใช้บริบทหลักของ Bot</span><span class="lang-en">Keeps the Bot context compact</span></td></tr>
+          <tr><td><strong>Approval / publish / destructive action</strong></td><td>User + Grok Bot</td><td><span class="lang-th">ต้องมี human-in-the-loop</span><span class="lang-en">Human-in-the-loop required</span></td></tr>
+          <tr><td><strong>Final review & report</strong></td><td>Grok Bot</td><td><span class="lang-th">รวมผลและตัดสินใจขั้นต่อไป</span><span class="lang-en">Synthesis and next decision</span></td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout"><strong>Default delegation trigger:</strong> <span class="lang-th">ถ้างานต้องสำรวจ repository, เปลี่ยนมากกว่า 3 ไฟล์, run test/debug, ทำ terminal หลายรอบ, หรือคาดว่าจะกินเวลามากกว่าไม่กี่นาที ให้ delegate ก่อน เว้นแต่มีเหตุผลชัดเจนที่ต้องทำใน Bot</span><span class="lang-en">If work requires repository exploration, changes to more than 3 files, tests/debugging, repeated terminal operations, or more than a few minutes of execution, delegate by default unless there is a clear reason not to.</span></div>
+    </section>
+
+    <section class="chapter" id="setup" data-title-th="ติดตั้ง grok build cli login device auth inspect headless" data-title-en="Install Grok Build CLI login device auth inspect headless">
+      <div class="sectionHead"><div class="eyebrow">05 — Setup</div><h2><span class="lang-th">ติดตั้งแบบ “ตรวจสอบก่อน เปลี่ยนทีหลัง”</span><span class="lang-en">Setup with “inspect first, change second”</span></h2><p class="lang-th">ให้ Grok Bot เริ่มจาก preflight ทุกครั้ง ห้าม reinstall เครื่องมือที่ทำงานดีอยู่แล้ว</p><p class="lang-en">Always begin with preflight. Do not reinstall tools that already work.</p></div>
+      <div class="steps">
+        <div class="step"><h3>Preflight</h3><p class="lang-th">ตรวจ OS, shell, PATH, git, Grok Build, authentication และ workspace ก่อนแตะระบบ</p><p class="lang-en">Inspect OS, shell, PATH, git, Grok Build, authentication and workspace before changes.</p><div class="codebox"><button class="copybtn">Copy</button><pre>uname -a 2&gt;/dev/null || ver
+command -v git || true
+command -v grok || true
+grok --version 2&gt;/dev/null || true
+grok inspect --json 2&gt;/dev/null || true</pre></div></div>
+        <div class="step"><h3><span class="lang-th">ติดตั้งเฉพาะเมื่อไม่มี Grok Build</span><span class="lang-en">Install only if Grok Build is missing</span></h3><p class="lang-th">ใช้คำสั่งจากเอกสาร xAI ทางการสำหรับ macOS / Linux / WSL</p><p class="lang-en">Use the official xAI installer for macOS / Linux / WSL.</p><div class="codebox"><button class="copybtn">Copy</button><pre>curl -fsSL https://x.ai/cli/install.sh | bash</pre></div></div>
+        <div class="step"><h3>Authentication</h3><p class="lang-th">บน remote/headless ให้ใช้ device authentication และให้ผู้ใช้เป็นคนยืนยันเอง</p><p class="lang-en">On remote/headless systems, use device authentication and hand confirmation to the user.</p><div class="codebox"><button class="copybtn">Copy</button><pre>grok login --device-auth</pre></div></div>
+        <div class="step"><h3><span class="lang-th">สร้าง workspace สำหรับ routing</span><span class="lang-en">Create routing workspace</span></h3><p class="lang-th">HTML นี้จะสั่ง Bot ให้สร้างไฟล์ runtime ที่จำเป็นเอง จึงไม่ต้องส่งไฟล์อื่นพร้อมกัน</p><p class="lang-en">This HTML instructs the Bot to create required runtime files itself, so no extra attachment is needed.</p><div class="codebox"><button class="copybtn">Copy</button><pre>mkdir -p "$HOME/grok-cli-router"
+cd "$HOME/grok-cli-router"
+# Bot will create:
+# AGENTS.md
+# ROUTING_POLICY.md
+# RESULT_TEMPLATE.md
+# SETUP_REPORT.md</pre></div></div>
+        <div class="step"><h3><span class="lang-th">ทดสอบ headless worker</span><span class="lang-en">Test the headless worker</span></h3><p class="lang-th">ใช้ task เล็กและไม่แก้ไฟล์ก่อน เพื่อยืนยันว่า CLI ทำงานและ auth ผ่าน</p><p class="lang-en">Use a small, non-destructive task first to confirm CLI and authentication.</p><div class="codebox"><button class="copybtn">Copy</button><pre>grok --no-auto-update -p "Return exactly: GROK_BUILD_OK" \
+  --output-format plain \
+  --max-turns 2</pre></div></div>
+      </div>
+    </section>
+
+    <section class="chapter" id="security" data-title-th="security approval secrets always approve production" data-title-en="Security approvals secrets">
+      <div class="sectionHead"><div class="eyebrow">06 — Safety</div><h2><span class="lang-th">Automation ที่ดีต้องมีจุดหยุด</span><span class="lang-en">Good automation must know when to stop</span></h2><p class="lang-th">เป้าหมายคือให้ Bot ทำงานได้มาก แต่ไม่ข้ามขอบเขตที่ควรเป็นการตัดสินใจของคน</p><p class="lang-en">The goal is high autonomy without crossing decisions that should remain human.</p></div>
+      <div class="grid g2">
+        <div class="card good"><h3><span class="lang-th">ทำได้เอง</span><span class="lang-en">May do automatically</span></h3><p class="lang-th">ตรวจ version, read-only inspection, สร้างไฟล์ใน workspace ใหม่, run test ที่ไม่ทำลายข้อมูล, สรุปผล</p><p class="lang-en">Version checks, read-only inspection, files inside a new workspace, non-destructive tests, summaries.</p></div>
+        <div class="card warn"><h3><span class="lang-th">ต้องหยุดขออนุมัติ</span><span class="lang-en">Must stop for approval</span></h3><p class="lang-th">login, password/API key, permission change, delete/overwrite, publish/send, purchase, production change และการเปิด always-approve แบบกว้าง</p><p class="lang-en">Login, passwords/API keys, permission changes, delete/overwrite, publish/send, purchases, production changes, broad always-approve.</p></div>
+      </div>
+      <div class="quote"><span class="lang-th">กฎสำคัญ: <strong>อย่าฝัง secret ลงใน HTML, Markdown, AGENTS.md หรือ shell history</strong> ให้ใช้ secure/device authentication และ human handoff</span><span class="lang-en">Key rule: <strong>Never embed secrets in HTML, Markdown, AGENTS.md or shell history.</strong> Use secure/device authentication and human handoff.</span></div>
+      <div class="callout warn"><span class="lang-th">ไม่แนะนำให้ใช้ <code>--always-approve</code> เป็นค่าเริ่มต้น แม้ Grok Build รองรับ เพราะจะลดชั้นการตรวจสอบ tool execution โดยไม่จำเป็น ให้ค่อย ๆ อนุญาตตาม scope ที่แน่นอนแทน</span><span class="lang-en">Do not make <code>--always-approve</code> the default. Grok Build supports it, but it removes useful execution checks. Prefer narrowly scoped permissions.</span></div>
+    </section>
+
+    <section class="chapter" id="verify" data-title-th="verify checklist grok inspect test result skill" data-title-en="Verify checklist inspect result skill">
+      <div class="sectionHead"><div class="eyebrow">07 — Verification</div><h2><span class="lang-th">ถือว่าสำเร็จเมื่อ “พิสูจน์แล้ว” เท่านั้น</span><span class="lang-en">Success means verified, not merely installed</span></h2><p class="lang-th">หลัง setup ต้องมีหลักฐานว่า CLI พร้อม, routing file ถูกสร้าง, worker ทำงานได้ และผลกลับมาถูก format</p><p class="lang-en">After setup, prove the CLI works, routing files exist, worker delegation succeeds, and output follows the contract.</p></div>
+      <div class="grid g4">
+        <div class="card"><div class="big">PASS</div><h3>CLI</h3><p><code>grok --version</code></p></div>
+        <div class="card"><div class="big">PASS</div><h3>Inspect</h3><p><code>grok inspect</code></p></div>
+        <div class="card"><div class="big">PASS</div><h3>Headless</h3><p>GROK_BUILD_OK</p></div>
+        <div class="card"><div class="big">PASS</div><h3>Contract</h3><p>RESULT.md</p></div>
+      </div>
+      <div class="codebox"><button class="copybtn">Copy</button><pre>SETUP STATUS: PASS | PARTIAL | FAIL
+
+Grok Build:      PASS / FAIL
+Authentication:  PASS / NEED USER
+Routing Policy:  PASS / FAIL
+AGENTS.md:       PASS / FAIL
+Headless Test:   PASS / FAIL
+Delegation Test: PASS / FAIL
+Skill Saved:     YES / NO
+
+Changes made:
+- ...
+
+Issues:
+- ...
+
+Next action:
+- ...</pre></div>
+      <div class="callout"><span class="lang-th">หลังทุกอย่าง PASS แล้ว ค่อยให้ Grok Bot บันทึก workflow เป็น Skill ชื่อ <strong>CLI Usage Router</strong> เพื่อให้ครั้งต่อไปเรียกใช้ policy เดิมได้ โดยไม่ต้อง setup ใหม่ทั้งชุด</span><span class="lang-en">Only after everything passes should Grok Bot save the workflow as a reusable Skill named <strong>CLI Usage Router</strong>.</span></div>
+    </section>
+
+    <section class="chapter" id="ai-mode" data-title-th="AI setup mode embedded markdown machine readable grok bot execute" data-title-en="AI setup mode embedded markdown machine readable">
+      <div class="sectionHead"><div class="eyebrow">08 — AI Setup Mode</div><h2><span class="lang-th">ส่วนนี้คือคำสั่งที่ Grok Bot ใช้ลงมือจริง</span><span class="lang-en">This is the machine-executable instruction layer</span></h2><p class="lang-th">ข้อความด้านล่างฝังอยู่ใน HTML จริง ไม่ได้ซ่อนใน JavaScript เพื่อให้ parser ของ AI อ่านได้ง่ายและแยกจากเนื้อหาสำหรับคนอย่างชัดเจน</p><p class="lang-en">The Markdown below is real DOM text, not hidden in JavaScript, so AI parsers can read it and distinguish execution instructions from human documentation.</p></div>
+      <div class="actions">
+        <button class="action" id="copyKickoff"><span class="lang-th">คัดลอก Prompt ส่งให้ Grok Bot</span><span class="lang-en">Copy Grok Bot kickoff prompt</span></button>
+        <button class="action secondary" id="copyMarkdown"><span class="lang-th">คัดลอก Embedded Markdown</span><span class="lang-en">Copy embedded Markdown</span></button>
+        <button class="action secondary" id="saveMarkdown"><span class="lang-th">Export Markdown (ถ้าต้องการ)</span><span class="lang-en">Export Markdown (optional)</span></button>
+      </div>
+      <div class="callout"><strong><span class="lang-th">Prompt สั้นที่สุดที่ใช้ได้:</span><span class="lang-en">Shortest useful kickoff prompt:</span></strong><br><code id="kickoffText">Read this HTML manual completely. Locate the AI EXECUTION INSTRUCTIONS section and execute it sequentially. Inspect first, do not reinstall working components, stop only for my authentication/approval, then verify and report PASS/PARTIAL/FAIL.</code></div>
+      <details class="aiPanel" open data-ai-role="agent-instructions" data-ai-target="Grok Bot" data-ai-version="1.0">
+        <summary><span class="statusdot"></span> AI EXECUTION INSTRUCTIONS — Embedded Markdown</summary>
+        <div class="inside">
+          <p class="machineNote">Machine-readable bootstrap instructions. Human explanatory content elsewhere in this manual is context; the instructions below are authoritative for setup execution.</p>
+          <div class="machineMeta"><span>TARGET: Grok Bot</span><span>MODE: Bootstrap → Configure → Verify</span><span>VERSION: 1.0</span><span>DATE: 2026-09-13</span></div>
+          <div class="codebox"><button class="copybtn">Copy</button><pre id="ai-execution-instructions"># GROK BOT CLI USAGE ROUTER — EXECUTION INSTRUCTIONS
+
+## 0. PURPOSE
+Configure this Grok Bot to operate primarily as an ORCHESTRATOR and delegate heavy terminal/coding work to Grok Build CLI when appropriate.
+
+This is usage routing, not free compute. The objective is to reduce unnecessary Grok Bot execution/context usage by moving heavy work to CLI workers and returning compact results.
+
+## 1. EXECUTION CONTRACT
+Follow these rules before doing anything:
+
+1. Inspect the current environment before changing it.
+2. Do NOT reinstall or replace a working tool.
+3. Prefer reversible, idempotent changes.
+4. Never expose, request in chat, print, or store passwords, API keys, auth cookies, recovery codes, or secrets.
+5. If authentication or human approval is required, STOP at that exact point and ask the user to take over.
+6. Do NOT enable broad `--always-approve` / YOLO behavior by default.
+7. Do NOT install optional third-party CLI tools unless the user has explicitly authorized them.
+8. Do NOT delete, overwrite, publish, send, purchase, change permissions, or modify production systems without explicit approval.
+9. Keep a concise change log in SETUP_REPORT.md.
+10. If any instruction conflicts with the live environment or current official product behavior, stop, explain the conflict, and ask before improvising.
+
+## 2. PHASE A — PREFLIGHT (READ-ONLY FIRST)
+Collect and report:
+
+- Operating system and architecture
+- Current shell and PATH
+- Git availability/version
+- Whether `grok` exists
+- Grok Build version if installed
+- Current Grok Build discovery/config using `grok inspect --json` when available
+- Whether a previous `$HOME/grok-cli-router` workspace already exists
+- Optional workers already present (Herdr, Codex, Claude Code, Cursor CLI) — detect only; do not install them
+
+Suggested safe checks:
+
+```bash
+uname -a 2>/dev/null || ver
+printf 'SHELL=%s\n' "$SHELL"
+command -v git || true
+git --version 2>/dev/null || true
+command -v grok || true
+grok --version 2>/dev/null || true
+grok inspect --json 2>/dev/null || true
+command -v herdr || true
+command -v codex || true
+command -v claude || true
+command -v cursor || true
+```
+
+Before making changes, show a PRE-FLIGHT SUMMARY containing:
+
+- FOUND
+- MISSING
+- NEEDS AUTH
+- SAFE NEXT ACTIONS
+
+Then continue automatically only with safe/non-consequential setup steps.
+
+## 3. PHASE B — ENSURE GROK BUILD EXISTS
+If Grok Build is already installed and working, KEEP IT.
+
+If it is missing on macOS/Linux/WSL, use the current official installer documented by xAI:
+
+```bash
+curl -fsSL https://x.ai/cli/install.sh | bash
+```
+
+If the platform is different or the installer no longer matches current official documentation, stop and consult current xAI documentation instead of guessing.
+
+Verify:
+
+```bash
+grok --version
+grok inspect
+```
+
+## 4. PHASE C — AUTHENTICATION BOUNDARY
+Check whether Grok Build can run an authenticated non-destructive command.
+
+If authentication is required on a remote/headless environment, prefer:
+
+```bash
+grok login --device-auth
+```
+
+At this point:
+
+- Present the device URL/code to the user.
+- Do NOT authenticate on the user's behalf.
+- Do NOT ask the user to paste a password or API key into chat.
+- Resume only after the user confirms authentication is complete.
+
+## 5. PHASE D — CREATE ROUTER WORKSPACE
+Create or reuse:
+
+```text
+$HOME/grok-cli-router/
+├── AGENTS.md
+├── ROUTING_POLICY.md
+├── RESULT_TEMPLATE.md
+└── SETUP_REPORT.md
+```
+
+If files already exist, read them first. Preserve user changes. Update only when compatible, and record what changed.
+
+## 6. CREATE `ROUTING_POLICY.md`
+Write a clear routing policy containing at least:
+
+### GROK BOT OWNS
+- Conversation with the user
+- Goal clarification
+- Planning and task decomposition
+- Worker selection
+- Approval boundaries
+- Final judgment / synthesis / report
+
+### CLI WORKER OWNS BY DEFAULT
+Delegate when work involves one or more of:
+- Repository exploration
+- More than ~3 files likely to change
+- Multi-step implementation/refactor
+- Tests, lint, build, debugging
+- Long-running or repeated terminal operations
+- Large document/data/code processing
+- Long research where raw output would bloat the main Bot context
+
+### RESULT RULE
+The worker should return a compact result rather than dumping full raw logs into the parent conversation.
+
+### OPTIONAL WORKERS
+If Herdr, Codex, Claude Code, or Cursor CLI are ALREADY installed, record them as optional workers. Do not install or authenticate them without explicit user approval.
+
+## 7. CREATE `AGENTS.md`
+Create an instruction file for CLI workers with this minimum contract:
+
+```markdown
+# ROLE
+You are a Worker Agent operating under a Parent Orchestrator (Grok Bot).
+
+# RESPONSIBILITIES
+- Perform delegated heavy work.
+- Explore repositories/files as needed.
+- Implement changes when authorized.
+- Run tests/lint/build/debug steps.
+- Verify your own work before returning.
+
+# DO NOT
+- Redo parent-level orchestration unless required to unblock execution.
+- Ask the user questions that the parent can answer from existing context.
+- Return huge raw logs unless specifically requested.
+- Perform destructive, publishing, permission, purchasing, or production actions without approval.
+- Expose secrets.
+
+# OUTPUT CONTRACT
+At completion, return/create RESULT.md with:
+
+STATUS: PASS | PARTIAL | FAIL
+SUMMARY:
+FILES_CHANGED:
+TESTS:
+PROBLEMS:
+RISKS:
+NEXT_ACTION:
+```
+
+## 8. CREATE `RESULT_TEMPLATE.md`
+Use exactly this compact structure:
+
+```markdown
+# RESULT
+STATUS: PASS | PARTIAL | FAIL
+
+## SUMMARY
+
+## FILES_CHANGED
+
+## TESTS
+
+## PROBLEMS
+
+## RISKS
+
+## NEXT_ACTION
+```
+
+## 9. PHASE E — SAFE HEADLESS VERIFICATION
+Run a non-destructive Grok Build test:
+
+```bash
+grok --no-auto-update -p "Return exactly: GROK_BUILD_OK" --output-format plain --max-turns 2
+```
+
+Expected result:
+
+```text
+GROK_BUILD_OK
+```
+
+If this fails, diagnose without destructive changes. Report the exact blocker.
+
+## 10. PHASE F — DELEGATION TEST
+Perform one small, safe delegated task that proves the workflow:
+
+1. Grok Bot creates a concise worker task.
+2. Grok Build runs it headlessly.
+3. Worker returns a compact RESULT-style response.
+4. Grok Bot reads only the result needed for the final decision.
+5. Grok Bot does NOT redo the same heavy analysis unless verification fails or risk requires it.
+
+Use a harmless test workspace, not a production repository.
+
+## 11. OPTIONAL HERDR / OTHER CLI INTEGRATION
+If `herdr` or another orchestrator is already installed:
+
+- Detect version/configuration.
+- Do not overwrite existing setup.
+- Propose how it could wrap/manage CLI sessions.
+- Integrate only if the change is safe and compatible.
+- If uncertain about current Herdr commands/config format, DO NOT GUESS. Ask the user or consult its current official documentation.
+
+## 12. PHASE G — FINAL VERIFICATION
+Run/confirm:
+
+```bash
+grok --version
+grok inspect
+```
+
+Verify the four router files exist and are readable.
+Verify the headless test succeeded.
+Verify one delegation test succeeded.
+Verify no secrets were stored.
+Verify no broad always-approve setting was enabled.
+
+## 13. SAVE AS A REUSABLE GROK BOT SKILL
+ONLY after all required verification is PASS:
+
+Save the proven workflow as a Grok Bot Skill named:
+
+`CLI Usage Router`
+
+The skill must preserve:
+- When to delegate
+- Worker-selection rules
+- Approval/security boundaries
+- Result contract
+- Verification procedure
+- Failure/partial-completion reporting
+
+If Skill creation is unavailable in the current product/account, report that fact and leave the validated files in `$HOME/grok-cli-router` as the source of truth.
+
+## 14. FINAL REPORT TO USER
+Return only a concise report in this shape:
+
+```text
+SETUP STATUS: PASS | PARTIAL | FAIL
+
+Grok Build:      PASS / FAIL
+Authentication:  PASS / NEED USER
+Routing Policy:  PASS / FAIL
+AGENTS.md:       PASS / FAIL
+Headless Test:   PASS / FAIL
+Delegation Test: PASS / FAIL
+Skill Saved:     YES / NO / UNAVAILABLE
+
+Changes made:
+- ...
+
+Issues / risks:
+- ...
+
+User action required:
+- ...
+
+Next recommended step:
+- ...
+```
+
+## 15. OPERATING RULE AFTER SETUP
+After setup, behave according to this principle:
+
+> Grok Bot should spend its effort on understanding, orchestration, judgment, approval, and concise review. Delegate heavy execution to CLI workers whenever the routing policy says so, and consume compact worker results instead of repeating their work.
+</pre></div>
+        </div>
+      </details>
+    </section>
+
+    <section class="chapter" id="operation" data-title-th="วิธีใช้งานจริง daily workflow result md skill" data-title-en="Daily operation workflow result skill">
+      <div class="sectionHead"><div class="eyebrow">09 — Operation</div><h2><span class="lang-th">หลัง Setup แล้ว ใช้งานยังไง?</span><span class="lang-en">How to use it after setup</span></h2><p class="lang-th">เป้าหมายคือคุณคุยกับ Grok Bot ตามปกติ โดย Bot เป็นคนตัดสินใจ route งานเอง ไม่ต้องพิมพ์ชื่อ CLI ทุกครั้ง</p><p class="lang-en">You continue talking to Grok Bot normally. The Bot decides when to route work; you should not need to name the CLI every time.</p></div>
+      <div class="flow">
+        <div class="node"><b>1. ASK</b><small>“ช่วยแก้ feature นี้”</small></div><div class="arrow">→</div>
+        <div class="node parent"><b>2. ROUTE</b><small>Bot checks policy</small></div><div class="arrow">→</div>
+        <div class="node worker"><b>3. EXECUTE</b><small>Grok Build</small></div><div class="arrow">→</div>
+        <div class="node"><b>4. RESULT</b><small>PASS / PARTIAL / FAIL</small></div><div class="arrow">→</div>
+        <div class="node parent"><b>5. DECIDE</b><small>Bot reports / asks approval</small></div>
+      </div>
+      <div class="grid g2">
+        <div class="card"><h3><span class="lang-th">ตัวอย่างงานที่ควร delegate</span><span class="lang-en">Examples to delegate</span></h3><p>“อ่าน repo นี้แล้วหา bug” · “แก้ 8 ไฟล์และ run test” · “refactor module” · “ไล่ build error” · “สรุป log จำนวนมาก”</p></div>
+        <div class="card"><h3><span class="lang-th">ตัวอย่างงานที่ Bot ควรทำเอง</span><span class="lang-en">Examples the Bot should keep</span></h3><p>“ช่วยเลือกแนวทาง A/B” · “อธิบาย trade-off” · “ต้องถามอะไรเพิ่ม” · “ผล worker นี้น่าเชื่อถือไหม” · “ขั้นต่อไปควรทำอะไร”</p></div>
+      </div>
+      <div class="callout"><span class="lang-th">วิธีนี้จะประหยัดที่สุดเมื่อ <strong>Bot ไม่อ่าน raw logs ทั้งหมด และไม่ทำงานเดิมซ้ำ</strong> — worker ต้องสรุปเป็น RESULT contract และ Bot อ่านเฉพาะสิ่งที่ต้องใช้ตัดสินใจ</span><span class="lang-en">The biggest savings come when the <strong>Bot does not ingest full raw logs and does not redo the worker's work</strong>. Workers return compact RESULT contracts; the Bot reads only what is needed for judgment.</span></div>
+    </section>
+
+    <section class="chapter" id="references" data-title-th="อ้างอิง youtube xai docs grok bot build usage" data-title-en="References YouTube xAI docs">
+      <div class="sectionHead"><div class="eyebrow">10 — Sources</div><h2><span class="lang-th">แหล่งที่มาและเอกสารอ้างอิง</span><span class="lang-en">Sources and references</span></h2><p class="lang-th">YouTube ด้านล่างเป็นแหล่งไอเดียต้นทางที่ผู้ใช้ส่งมา ส่วนรายการ xAI ใช้ตรวจสอบความสามารถและข้อจำกัดล่าสุดของผลิตภัณฑ์</p><p class="lang-en">The YouTube item below is the original inspiration supplied by the user. Official xAI sources were used to verify current product behavior and limitations.</p></div>
+
+      <div class="ref youtube"><div class="refnum">▶</div><div><b>YouTube — Original technique / inspiration</b><p class="lang-th">วิดีโอที่ผู้ใช้ส่งมาเป็นจุดเริ่มต้นของแนวคิดการใช้ Grok Build CLI ช่วยรับงานหนักจาก Grok Bot (Video ID: lCakHVMISso)</p><p class="lang-en">The user-supplied video that inspired the Grok Build CLI delegation / usage-routing technique (Video ID: lCakHVMISso).</p><a href="https://www.youtube.com/watch?v=lCakHVMISso" target="_blank" rel="noopener">https://www.youtube.com/watch?v=lCakHVMISso</a></div></div>
+
+      <div class="ref"><div class="refnum">01</div><div><b>SpaceXAI — Grok Bot is now included with more plans</b><p>Confirms Grok Bot has its own usage, separate from Grok and Cursor plans.</p><a href="https://x.ai/news/grok-bot-more-plans" target="_blank" rel="noopener">https://x.ai/news/grok-bot-more-plans</a></div></div>
+      <div class="ref"><div class="refnum">02</div><div><b>SpaceXAI Docs — Grok FAQ / Weekly Usage</b><p>Explains the shared weekly Grok usage pool and product breakdown including Build.</p><a href="https://docs.x.ai/grok/faq" target="_blank" rel="noopener">https://docs.x.ai/grok/faq</a></div></div>
+      <div class="ref"><div class="refnum">03</div><div><b>SpaceXAI Docs — Grok Build Overview</b><p>Official install command, interactive use, headless mode and <code>grok inspect</code>.</p><a href="https://docs.x.ai/build/overview" target="_blank" rel="noopener">https://docs.x.ai/build/overview</a></div></div>
+      <div class="ref"><div class="refnum">04</div><div><b>SpaceXAI Docs — Headless & Scripting</b><p>Documents <code>grok -p</code>, sessions, output formats and automation flags.</p><a href="https://docs.x.ai/build/cli/headless-scripting" target="_blank" rel="noopener">https://docs.x.ai/build/cli/headless-scripting</a></div></div>
+      <div class="ref"><div class="refnum">05</div><div><b>SpaceXAI Docs — Grok Build CLI Reference</b><p>Documents device authentication, <code>grok inspect</code> and common CLI flags.</p><a href="https://docs.x.ai/build/cli/reference" target="_blank" rel="noopener">https://docs.x.ai/build/cli/reference</a></div></div>
+      <div class="ref"><div class="refnum">06</div><div><b>SpaceXAI Docs — Grok Bot Files and Results</b><p>Confirms HTML is a supported Grok Bot input format.</p><a href="https://docs.x.ai/grok-bot/files-and-results" target="_blank" rel="noopener">https://docs.x.ai/grok-bot/files-and-results</a></div></div>
+      <div class="ref"><div class="refnum">07</div><div><b>SpaceXAI Docs — Skills and Routines</b><p>Recommends proving a one-time workflow first, then saving it as a Skill.</p><a href="https://docs.x.ai/grok-bot/skills-routines-and-automations" target="_blank" rel="noopener">https://docs.x.ai/grok-bot/skills-routines-and-automations</a></div></div>
+      <div class="ref"><div class="refnum">08</div><div><b>SpaceXAI Docs — Approvals, Security and Privacy</b><p>Guidance for approval boundaries, secure handoffs and consequential actions.</p><a href="https://docs.x.ai/grok-bot/approvals-security-and-privacy" target="_blank" rel="noopener">https://docs.x.ai/grok-bot/approvals-security-and-privacy</a></div></div>
+      <div class="ref"><div class="refnum">09</div><div><b>SpaceXAI Brand Guidelines</b><p>Grok and related marks belong to SpaceXAI; use should follow the official brand rules.</p><a href="https://x.ai/legal/brand-guidelines" target="_blank" rel="noopener">https://x.ai/legal/brand-guidelines</a></div></div>
+
+      <div class="disclaimer"><span class="lang-th">หมายเหตุ: ผลิตภัณฑ์, plan, quota, คำสั่ง CLI และ policy สามารถเปลี่ยนแปลงได้ คู่มือนี้อ้างอิงสถานะที่ตรวจสอบ ณ วันที่ 13 กันยายน 2026 เมื่อ Grok Bot นำไป setup จริง ควรตรวจเอกสาร xAI ปัจจุบันก่อนแก้ configuration ที่สำคัญทุกครั้ง โลโก้/เครื่องหมาย Grok เป็นทรัพย์สินของ SpaceXAI และใช้เพื่อการอ้างอิงผลิตภัณฑ์เท่านั้น</span><span class="lang-en">Note: products, plans, quotas, CLI commands and policies can change. This manual reflects information checked on Sep 13, 2026. During real setup, Grok Bot should verify current xAI documentation before consequential configuration changes. Grok marks belong to SpaceXAI and are used here only to identify the referenced product.</span></div>
+    </section>
+  </main>
+</div>
+<script>
+(function(){
+  const root=document.documentElement, chapters=[...document.querySelectorAll('.chapter')], nav=[...document.querySelectorAll('.navbtn')];
+  const sidebar=document.getElementById('sidebar'), overlay=document.getElementById('overlay');
+  function show(id,push=true){
+    chapters.forEach(c=>c.classList.toggle('active',c.id===id));
+    nav.forEach(n=>n.classList.toggle('active',n.dataset.target===id));
+    if(push) history.replaceState(null,'','#'+id);
+    window.scrollTo({top:0,behavior:'instant'});
+    sidebar.classList.remove('open'); overlay.classList.remove('show');
+    localStorage.setItem('grokManualChapter',id);
+  }
+  nav.forEach(n=>n.addEventListener('click',()=>show(n.dataset.target)));
+  const start=(location.hash||'').slice(1)||localStorage.getItem('grokManualChapter')||'cover';
+  if(document.getElementById(start)) show(start,false);
+  document.getElementById('menuBtn').onclick=()=>{sidebar.classList.toggle('open');overlay.classList.toggle('show')};
+  overlay.onclick=()=>{sidebar.classList.remove('open');overlay.classList.remove('show')};
+
+  let theme=localStorage.getItem('grokManualTheme')||'light'; root.dataset.theme=theme;
+  const themeBtn=document.getElementById('themeBtn');
+  function themeIcon(){themeBtn.textContent=root.dataset.theme==='dark'?'☀':'☾'} themeIcon();
+  themeBtn.onclick=()=>{root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';localStorage.setItem('grokManualTheme',root.dataset.theme);themeIcon()};
+
+  let lang=localStorage.getItem('grokManualLang')||'th'; root.dataset.lang=lang;
+  const flag=document.getElementById('langFlag'), label=document.getElementById('langLabel');
+  function syncLang(){const en=root.dataset.lang==='en';flag.textContent=en?'🇹🇭':'🇬🇧';label.textContent=en?'TH':'EN';document.documentElement.lang=en?'en':'th'} syncLang();
+  document.getElementById('langBtn').onclick=()=>{root.dataset.lang=root.dataset.lang==='en'?'th':'en';localStorage.setItem('grokManualLang',root.dataset.lang);syncLang()};
+
+  let fs=parseFloat(localStorage.getItem('grokManualFont')||'16');
+  function applyFont(){fs=Math.min(20,Math.max(13,fs));document.body.style.fontSize=fs+'px';localStorage.setItem('grokManualFont',fs)} applyFont();
+  document.getElementById('fontUp').onclick=()=>{fs+=1;applyFont()}; document.getElementById('fontDown').onclick=()=>{fs-=1;applyFont()};
+
+  async function copyText(text){
+    try{if(navigator.clipboard && window.isSecureContext){await navigator.clipboard.writeText(text);return true}}catch(e){}
+    try{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();const ok=document.execCommand('copy');ta.remove();return ok}catch(e){return false}
+  }
+  document.querySelectorAll('.copybtn').forEach(btn=>btn.onclick=async()=>{const pre=btn.nextElementSibling;const ok=await copyText(pre.innerText);btn.textContent=ok?'Copied':'Select text';if(ok)btn.classList.add('done');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('done')},1200)});
+
+  const ai=document.getElementById('ai-execution-instructions'), kickoff=document.getElementById('kickoffText').innerText;
+  document.getElementById('copyKickoff').onclick=()=>copyText(kickoff);
+  document.getElementById('copyMarkdown').onclick=()=>copyText(ai.innerText);
+  document.getElementById('saveMarkdown').onclick=()=>{const blob=new Blob([ai.innerText],{type:'text/markdown;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='GROK-BOT-CLI-ROUTER-SETUP.md';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
+
+  const input=document.getElementById('searchInput'), results=document.getElementById('searchResults');
+  input.addEventListener('input',()=>{const q=input.value.trim().toLowerCase();results.innerHTML='';if(q.length<2){results.classList.remove('show');return}const hits=chapters.filter(c=>c.innerText.toLowerCase().includes(q)).slice(0,8);hits.forEach(c=>{const b=document.createElement('button');b.className='searchresult';b.textContent=(root.dataset.lang==='en'?c.dataset.titleEn:c.dataset.titleTh)||c.id;b.onclick=()=>{show(c.id);input.value='';results.classList.remove('show')};results.appendChild(b)});if(!hits.length){const d=document.createElement('div');d.style.padding='9px';d.style.color='var(--muted)';d.textContent='No results';results.appendChild(d)}results.classList.add('show')});
+
+  window.addEventListener('hashchange',()=>{const id=location.hash.slice(1);if(document.getElementById(id))show(id,false)});
+})();
+</script>
+</body>
+</html>
