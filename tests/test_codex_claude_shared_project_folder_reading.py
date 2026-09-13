@@ -91,7 +91,7 @@ class CodexClaudeSharedProjectFolderReadingTests(unittest.TestCase):
         stylesheet = (ROOT / "assets" / "css" / "reading-library.css").read_text(encoding="utf-8")
         template = (ROOT / "templates" / "index.template.html").read_text(encoding="utf-8")
         self.assertIn("@media (hover: hover), (any-hover: hover) {", stylesheet)
-        self.assertNotIn(".reading-page .book-card:hover .book-cover", stylesheet)
+        self.assertIn(".reading-page .book-card:hover .book-cover", stylesheet)
         self.assertIn(".reading-page .book-card.is-hovering .book-cover", stylesheet)
         self.assertIn(".reading-page .book-cover-wrap:hover .book-cover", stylesheet)
         self.assertIn(".reading-page .book-cover-link:hover .book-cover", stylesheet)
@@ -108,8 +108,8 @@ class CodexClaudeSharedProjectFolderReadingTests(unittest.TestCase):
         self.assertIn("is-hovering", script)
         self.assertNotIn("is-open", script)
         self.assertIn('document.addEventListener("mousemove"', script)
-        self.assertIn('href="assets/css/reading-library.css?v=reading-cover-hover-v12"', template)
-        self.assertIn('src="assets/js/library.js?v=reading-cover-hover-v12"', template)
+        self.assertIn('href="assets/css/reading-library.css?v=reading-cover-hover-v13"', template)
+        self.assertIn('src="assets/js/library.js?v=reading-cover-hover-v13"', template)
 
 
 if __name__ == "__main__":
