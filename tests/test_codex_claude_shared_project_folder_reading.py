@@ -93,9 +93,14 @@ class CodexClaudeSharedProjectFolderReadingTests(unittest.TestCase):
         self.assertIn("@media (hover: hover), (any-hover: hover)", stylesheet)
         self.assertIn(".reading-page .book-card:hover .book-cover", stylesheet)
         self.assertIn(".reading-page .book-cover-wrap:hover .book-cover", stylesheet)
-        self.assertIn("rotateY(-24deg)", stylesheet)
-        self.assertIn('href="assets/css/reading-library.css?v=reading-cover-hover-v9"', template)
-        self.assertIn('src="assets/js/library.js?v=reading-cover-hover-v9"', template)
+        self.assertIn(".reading-page .book-cover-link:hover .book-cover", stylesheet)
+        self.assertIn("rotateY(-42deg)", stylesheet)
+        self.assertIn(".42s cubic-bezier(.2, .8, .2, 1)", stylesheet)
+        self.assertIn("z-index: 0;", stylesheet)
+        self.assertIn("position: absolute;", stylesheet)
+        self.assertIn("object-fit: cover;", stylesheet)
+        self.assertIn('href="assets/css/reading-library.css?v=reading-cover-hover-v10"', template)
+        self.assertIn('src="assets/js/library.js?v=reading-cover-hover-v10"', template)
 
 
 if __name__ == "__main__":
