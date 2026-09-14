@@ -1,62 +1,52 @@
 # Library Session Handoff
 
-Updated: 2026-09-13T21:40:00+07:00
+Updated: 2026-09-14T14:40:06+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
 - Branch: `main`.
-- Latest functional commit: `b482eae22c72f4ae2e04608d8df47e1616597e6e` (`Fix reading cover hover trigger`).
-- Public origin and private backup both matched that SHA after push.
-- Reading Shelf hover is now cache-busted to `reading-cover-hover-v13`.
+- Latest public work in this session: produced and published the podcast video **เอไอผสานขุมพลังควอนตัมคอมพิวติ้ง**.
+- New YouTube video ID: `DFGRUCcA6Rg`.
+- Audio Shelf catalog now has 59 audio entries locally, with the new video first/newest.
 
-## Why v13 was needed
+## Podcast production
 
-- The owner reported again that mouse hover still did not visibly open the Reading book cover, after many earlier fixes.
-- v12 had preserved `CSS_3D.txt` and added JS `.is-hovering`, but the real owner environment still could fail if hover media gating or JS fallback did not fire reliably.
-- v13 removes that fragile dependency by adding a plain Reading-scoped card hover trigger while keeping the exact visual contract.
+- Source audio from the owner-supplied Drive folder was resolved as `เอไอผสานขุมพลังควอนตัมคอมพิวติ้ง.m4a`.
+- Source cover was resolved as `podcast cover quantum`.
+- The owner selected **Broadcast Edge Towers** from three motion proofs and explicitly approved full production, YouTube upload, Audio Shelf update, commit, and push without further confirmation.
+- Final MP4: H.264, 1920×1080, 30 fps, yuv420p; AAC stereo 48 kHz; duration 01:09:36.
+- Full decode passed and silence scan found no `silence_start` events at the scan threshold.
+- Representative frame QA showed no black/corrupt frames and edge equalizer towers did not block the cover’s main content.
 
-## v13 behavior
+## YouTube publication
 
-Preserved from `CSS_3D.txt`:
+- Uploaded through the Library YouTube Studio browser session on channel **manny calavara**.
+- Title: `เอไอผสานขุมพลังควอนตัมคอมพิวติ้ง`.
+- Visibility: Public.
+- Audience: Not made for kids.
+- Playlist selected in Studio: `tech (Ai)`.
+- Studio checks: copyright no issues found before publication.
+- Public oEmbed read-back returned exact title, author `manny calavara`, and thumbnail URL for `DFGRUCcA6Rg`.
 
-- Cover and paper/page block are separate layers.
-- Only `.book-cover` rotates; card/volume stay still.
-- `rotateY(-24deg)`.
-- `perspective: 1100px`.
-- `1.05s cubic-bezier(.42, 0, .2, 1)`.
-- Paper block remains stationary at `z-index: -1`.
-- Cover remains relative real image layer with `height: auto`.
-- Keyboard focus and `prefers-reduced-motion` preserved.
-- No click-open, PDF, page-turn, or `.is-open` behavior.
+## Audio Shelf update
 
-New robust trigger:
-
-- Added `.reading-page .book-card:hover .book-cover` outside the hover media query.
-- Kept existing `.book-cover-link:hover`, `.book-cover-wrap:hover`, and `.book-card.is-hovering` fallback.
-- Reduced-motion suppression now includes `.book-card:hover .book-cover`.
-- Template/index use `reading-cover-hover-v13` for both CSS and JS.
+- Added `DFGRUCcA6Rg` to `data/audio-books.json` as the newest item.
+- Cached the public 480×360 YouTube thumbnail at `assets/audio-covers/DFGRUCcA6Rg.jpg`.
+- Regenerated `audio-library.html`.
+- Local browser/CDP checks confirmed 59 audio cards, the new title first, correct YouTube URL, 480×360 cover, and zero horizontal overflow on desktop and mobile.
 
 ## Verification completed
 
-- TDD RED: focused tests failed before implementation because `.book-card:hover .book-cover` and v13 cache-bust were absent.
-- Focused GREEN: `python -m unittest tests.test_build_catalog tests.test_codex_claude_shared_project_folder_reading -v` → OK.
-- Full suite: `python -m unittest discover -s tests -v` → OK, 143 tests.
+- `python -m unittest discover -s tests -v` → OK, 144 tests.
 - `python scripts/build_catalog.py --check` → current, 36 books.
-- `python scripts/build_audio_library.py --check` → current, 58 audio books.
+- `python scripts/build_audio_library.py --check` → current, 59 audio books.
 - `python scripts/build_app_library.py --check` → current, 9 apps.
 - `python scripts/build_gallery.py --check` → current, 8 artworks.
 - `git diff --check` → OK.
-- Pre-share scan over intended public/test files → no findings.
-
-Publication verification:
-
-- Public origin and private backup both matched `b482eae22c72f4ae2e04608d8df47e1616597e6e`.
-- Production HTTP hash read-back matched Local for `index.html`, `assets/css/reading-library.css`, and `assets/js/library.js`.
-- Production static checks confirmed `reading-cover-hover-v13`, 36 Reading cards, `.book-card:hover`, `.book-card.is-hovering`, `rotateY(-24deg)`, 1.05s timing, and no `rotateY(-42deg)`.
 
 ## Follow-up / local state
 
-- This handoff and `docs/wiki/log.md` were updated after Production verification and should be committed/pushed as a small documentation follow-up.
-- Browser/CDP automation remains unavailable in this environment, so live verification used hash/read-back/static contract checks.
-- `.hermes/` remains untracked private workspace content and must not be committed.
+- Private working media and render scripts remain outside the public repository.
+- Private workspace content remains untracked and must not be committed.
+- A temporary local HTTP server may be running for preview until cleaned up at session close.
