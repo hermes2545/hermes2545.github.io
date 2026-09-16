@@ -1,0 +1,1983 @@
+<!doctype html>
+<html lang="th" data-theme="light" data-lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ff6900">
+<meta name="description" content="Bilingual Thai/English interactive manual for reducing latency on legacy Xiaomi cameras using a local RTSP bridge, go2rtc, and Home Assistant.">
+<meta name="ai-purpose" content="Human-readable and AI-readable implementation manual. Preserve all steps, placeholders, commands, troubleshooting and security notes.">
+<meta name="ai-instruction" content="Read sections 1 through 21 in order before implementation. Resolve placeholders and verify each stage. Never expose secrets.">
+<title>Xiaomi Legacy Camera Low-Latency Guide — Interactive Reference Manual</title>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Fixing High Latency on Legacy Xiaomi Cameras with a Local RTSP Bridge",
+  "inLanguage": [
+    "th",
+    "en"
+  ],
+  "about": [
+    "Xiaomi cameras",
+    "Home Assistant",
+    "RTSP",
+    "go2rtc",
+    "Docker",
+    "WebRTC"
+  ],
+  "proficiencyLevel": "Intermediate",
+  "isAccessibleForFree": true
+}
+</script>
+<script type="application/json" id="ai-manifest">
+{
+  "document_type": "bilingual_technical_manual",
+  "topic": "Legacy Xiaomi camera low-latency local RTSP bridge for Home Assistant",
+  "languages": [
+    "th",
+    "en"
+  ],
+  "default_language": "th",
+  "sections": [
+    {
+      "id": "sec-1",
+      "step": 1,
+      "th": "1. ปัญหาเดิมคืออะไร",
+      "en": "1. What is the original problem?"
+    },
+    {
+      "id": "sec-2",
+      "step": 2,
+      "th": "2. สาเหตุที่ภาพดีเลย์",
+      "en": "2. Why does the video become delayed?"
+    },
+    {
+      "id": "sec-3",
+      "step": 3,
+      "th": "3. แนวคิดของวิธีแก้",
+      "en": "3. Solution concept"
+    },
+    {
+      "id": "sec-4",
+      "step": 4,
+      "th": "4. สถาปัตยกรรมที่แนะนำ",
+      "en": "4. Recommended architecture"
+    },
+    {
+      "id": "sec-5",
+      "step": 5,
+      "th": "5. Component ที่ใช้",
+      "en": "5. Components used"
+    },
+    {
+      "id": "sec-6",
+      "step": 6,
+      "th": "6. Flow ที่แก้ delay ได้",
+      "en": "6. Flow that reduces delay"
+    },
+    {
+      "id": "sec-7",
+      "step": 7,
+      "th": "7. Prerequisites",
+      "en": "7. Prerequisites"
+    },
+    {
+      "id": "sec-8",
+      "step": 8,
+      "th": "8. ตัวอย่าง docker-compose.yml",
+      "en": "8. Example docker-compose.yml"
+    },
+    {
+      "id": "sec-9",
+      "step": 9,
+      "th": "9. ตัวอย่าง .env",
+      "en": "9. Example .env"
+    },
+    {
+      "id": "sec-10",
+      "step": 10,
+      "th": "10. ตั้งค่า go2rtc empty streams",
+      "en": "10. Configure go2rtc empty streams"
+    },
+    {
+      "id": "sec-11",
+      "step": 11,
+      "th": "11. ตั้งค่า Xiaomi region ให้ถูกต้อง",
+      "en": "11. Set the Xiaomi region correctly"
+    },
+    {
+      "id": "sec-12",
+      "step": 12,
+      "th": "12. กล้องรุ่นเก่าอาจอยู่ใน denylist",
+      "en": "12. Older cameras may be in a denylist"
+    },
+    {
+      "id": "sec-13",
+      "step": 13,
+      "th": "13. การ authorize Xiaomi account",
+      "en": "13. Authorize the Xiaomi account"
+    },
+    {
+      "id": "sec-14",
+      "step": 14,
+      "th": "14. Start service",
+      "en": "14. Start the service"
+    },
+    {
+      "id": "sec-15",
+      "step": 15,
+      "th": "15. วิธีตรวจว่า stream ใช้ได้จริง",
+      "en": "15. Verify that the stream really works"
+    },
+    {
+      "id": "sec-16",
+      "step": 16,
+      "th": "16. เพิ่มเข้า Home Assistant dashboard",
+      "en": "16. Add it to the Home Assistant dashboard"
+    },
+    {
+      "id": "sec-17",
+      "step": 17,
+      "th": "17. เรื่อง PTZ",
+      "en": "17. PTZ considerations"
+    },
+    {
+      "id": "sec-18",
+      "step": 18,
+      "th": "18. Troubleshooting",
+      "en": "18. Troubleshooting"
+    },
+    {
+      "id": "sec-19",
+      "step": 19,
+      "th": "19. ผลลัพธ์หลังแก้",
+      "en": "19. Expected result after the fix"
+    },
+    {
+      "id": "sec-20",
+      "step": 20,
+      "th": "20. Security Notes",
+      "en": "20. Security Notes"
+    },
+    {
+      "id": "sec-21",
+      "step": 21,
+      "th": "21. สรุปสั้น",
+      "en": "21. Short summary"
+    }
+  ],
+  "execution_rules": [
+    "Resolve every placeholder before executing commands.",
+    "Never expose passwords, tokens, OAuth codes, cookies, 2FA values, private URLs, or real .env files.",
+    "Verify region, camera DID, stream channel, codec, and go2rtc stream path before troubleshooting deeper.",
+    "After changes, verify containers, go2rtc producers, ffprobe output, and a test snapshot.",
+    "Treat provided container images, versions, and implementation-specific options as examples that must match the actual project."
+  ]
+}
+</script>
+<style>
+  :root {
+    --xiaomi:#ff6900;
+    --xiaomi-deep:#e65e00;
+    --bg:#f5f6f7;
+    --surface:#ffffff;
+    --surface-2:#f0f2f4;
+    --text:#1f2328;
+    --muted:#697077;
+    --border:#dfe3e7;
+    --code-bg:#111820;
+    --code-text:#edf4f8;
+    --success:#16865d;
+    --warn:#b66100;
+    --danger:#b42318;
+    --shadow:0 12px 34px rgba(31,35,40,.08);
+    --topbar-h:64px;
+    --sidebar-w:310px;
+    --font-scale:1;
+    --radius:18px;
+  }
+  html[data-theme="dark"] {
+    --bg:#0e1114;
+    --surface:#15191e;
+    --surface-2:#1c2228;
+    --text:#f1f3f5;
+    --muted:#a8b0b8;
+    --border:#2c343d;
+    --code-bg:#080b0e;
+    --code-text:#eaf2f8;
+    --shadow:0 14px 36px rgba(0,0,0,.28);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;font-size:calc(16px * var(--font-scale))}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:"Sarabun","Noto Sans Thai","Inter",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.72;overflow-x:hidden}
+  button,input{font:inherit}
+  button{color:inherit}
+  a{color:var(--xiaomi-deep)}
+  code,kbd,pre{font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}
+  .lang-en{display:none!important}
+  html[data-lang="en"] .lang-th{display:none!important}
+  html[data-lang="en"] .lang-en{display:revert!important}
+
+  .topbar{position:fixed;inset:0 0 auto 0;height:var(--topbar-h);display:flex;align-items:center;gap:12px;padding:0 18px;background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);z-index:1000}
+  .brand{display:flex;align-items:center;gap:11px;min-width:0}
+  .brand-logo-wrap{width:38px;height:38px;border-radius:12px;overflow:hidden;background:var(--xiaomi);display:grid;place-items:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+  .brand-logo{width:100%;height:100%;object-fit:cover;display:block}
+  .brand-fallback{display:none;color:white;font-weight:800;font-size:16px;letter-spacing:-1px}
+  .brand-text{min-width:0}
+  .brand-title{font-weight:800;font-size:.98rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .brand-sub{font-size:.72rem;color:var(--muted);white-space:nowrap}
+  .top-spacer{flex:1}
+  .controls{display:flex;align-items:center;gap:7px}
+  .icon-btn,.seg-btn{border:1px solid var(--border);background:var(--surface);min-width:38px;height:38px;border-radius:11px;display:inline-grid;place-items:center;cursor:pointer;transition:.18s ease;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+  .icon-btn:hover,.seg-btn:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--xiaomi) 50%,var(--border))}
+  .language-switch{display:flex;padding:3px;border:1px solid var(--border);border-radius:13px;background:var(--surface)}
+  .language-switch .seg-btn{border:0;box-shadow:none;height:30px;min-width:48px;border-radius:9px;background:transparent;font-size:.8rem;font-weight:750;display:flex;gap:5px;padding:0 8px}
+  .language-switch .seg-btn.active{background:var(--xiaomi);color:#fff}
+  .flag{font-size:1.05rem;line-height:1}
+  .mobile-menu-btn{display:none}
+
+  .app-shell{display:grid;grid-template-columns:var(--sidebar-w) minmax(0,1fr);min-height:100vh;padding-top:var(--topbar-h)}
+  .sidebar{position:fixed;top:var(--topbar-h);bottom:0;left:0;width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);padding:16px 14px 26px;overflow-y:auto;overscroll-behavior:contain;z-index:700}
+  .sidebar::-webkit-scrollbar{width:8px}
+  .sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+  .search-box{position:sticky;top:-16px;background:var(--surface);z-index:2;padding:0 0 12px}
+  .search-row{display:flex;gap:8px}
+  .search-input{width:100%;height:42px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);border-radius:12px;padding:0 12px;outline:none}
+  .search-input:focus{border-color:var(--xiaomi);box-shadow:0 0 0 3px color-mix(in srgb,var(--xiaomi) 16%,transparent)}
+  .search-hint{font-size:.72rem;color:var(--muted);padding:6px 2px 0}
+  .search-results{display:none;margin-top:8px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow)}
+  .search-results.show{display:block}
+  .search-result{width:100%;text-align:left;border:0;border-bottom:1px solid var(--border);padding:10px;background:transparent;cursor:pointer}
+  .search-result:last-child{border-bottom:0}
+  .search-result:hover{background:var(--surface-2)}
+  .search-result small{display:block;color:var(--muted);margin-top:3px}
+  .nav-group{margin:8px 0 18px}
+  .nav-group-title{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:800;padding:8px 10px 6px}
+  .nav-item{width:100%;border:0;background:transparent;display:grid;grid-template-columns:35px minmax(0,1fr);align-items:center;gap:7px;text-align:left;padding:9px 10px;border-radius:11px;cursor:pointer;color:var(--text);margin:2px 0}
+  .nav-item:hover{background:var(--surface-2)}
+  .nav-item.active{background:color-mix(in srgb,var(--xiaomi) 12%,var(--surface));color:var(--xiaomi-deep)}
+  .nav-num{font-size:.72rem;font-weight:800;color:var(--muted)}
+  .nav-item.active .nav-num{color:var(--xiaomi)}
+  .nav-label{font-size:.86rem;line-height:1.3;font-weight:650}
+  .sidebar-footer{border-top:1px solid var(--border);margin-top:10px;padding:15px 10px 5px;color:var(--muted);font-size:.72rem}
+  .sidebar-footer a{color:inherit}
+
+  .main{grid-column:2;padding:32px clamp(20px,4vw,58px) 70px;min-width:0}
+  .reader{max-width:1050px;margin:0 auto}
+  .content-section{display:none;animation:fade .18s ease}
+  .content-section.active{display:block}
+  @keyframes fade{from{opacity:.3;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+  .hero{position:relative;overflow:hidden;border:1px solid var(--border);background:linear-gradient(145deg,color-mix(in srgb,var(--xiaomi) 14%,var(--surface)),var(--surface) 48%);border-radius:28px;padding:clamp(28px,5vw,62px);box-shadow:var(--shadow)}
+  .hero::after{content:"";position:absolute;width:330px;height:330px;border-radius:50%;right:-100px;top:-120px;background:color-mix(in srgb,var(--xiaomi) 18%,transparent);filter:blur(4px)}
+  .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(230px,.7fr);gap:32px;align-items:center}
+  .hero-logo{width:92px;height:92px;border-radius:29px;overflow:hidden;background:var(--xiaomi);box-shadow:0 18px 38px rgba(255,105,0,.22);margin-bottom:22px;display:grid;place-items:center}
+  .hero-logo img{width:100%;height:100%;object-fit:cover}
+  .hero h1{font-size:clamp(2rem,5vw,4.15rem);line-height:1.04;letter-spacing:-.035em;margin:0 0 18px;max-width:850px}
+  .hero-lead{font-size:clamp(1rem,1.7vw,1.22rem);color:var(--muted);max-width:780px}
+  .hero-lead blockquote{margin:0;border-left:0;padding:0;background:transparent}
+  .hero-lead blockquote p{margin:.5rem 0}
+  .hero-card{border:1px solid var(--border);background:color-mix(in srgb,var(--surface) 85%,transparent);backdrop-filter:blur(8px);border-radius:20px;padding:18px}
+  .hero-card-title{font-weight:850;margin-bottom:10px}
+  .flow-mini{display:grid;gap:8px;margin-top:12px}
+  .flow-step{border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:9px 10px;font-size:.83rem;font-weight:650}
+  .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+  .primary-btn,.secondary-btn{height:44px;border-radius:12px;border:1px solid var(--border);padding:0 15px;cursor:pointer;font-weight:800}
+  .primary-btn{background:var(--xiaomi);color:#fff;border-color:var(--xiaomi)}
+  .secondary-btn{background:var(--surface);color:var(--text)}
+  .badges{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 0}
+  .badge{font-size:.75rem;padding:5px 9px;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-weight:700}
+
+  .ai-note{margin-top:22px;border:1px solid color-mix(in srgb,var(--xiaomi) 42%,var(--border));border-radius:18px;padding:18px;background:color-mix(in srgb,var(--xiaomi) 6%,var(--surface))}
+  .ai-note h3{margin:0 0 9px;font-size:1rem}
+  .ai-note ol{margin:0;padding-left:1.35rem}
+
+  .section-kicker{font-size:.75rem;color:var(--xiaomi-deep);font-weight:850;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+  .content-section>h2{font-size:clamp(1.9rem,4vw,3.15rem);line-height:1.12;letter-spacing:-.025em;margin:0 0 24px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+  .markdown-body{font-size:1rem}
+  .markdown-body h3{font-size:1.32rem;line-height:1.25;margin:34px 0 12px;scroll-margin-top:90px}
+  .markdown-body p{margin:0 0 16px}
+  .markdown-body ul,.markdown-body ol{padding-left:1.4rem;margin:10px 0 18px}
+  .markdown-body li{margin:.42rem 0}
+  .markdown-body blockquote{margin:22px 0;padding:14px 16px;border-left:4px solid var(--xiaomi);background:color-mix(in srgb,var(--xiaomi) 7%,var(--surface));border-radius:0 12px 12px 0;color:var(--text)}
+  .markdown-body blockquote p:last-child{margin-bottom:0}
+  .markdown-body table{width:100%;border-collapse:separate;border-spacing:0;margin:20px 0;border:1px solid var(--border);border-radius:14px;overflow:hidden;display:block;overflow-x:auto;background:var(--surface)}
+  .markdown-body th,.markdown-body td{padding:11px 13px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);text-align:left;min-width:150px;vertical-align:top}
+  .markdown-body th{background:var(--surface-2);font-size:.82rem}
+  .markdown-body tr:last-child td{border-bottom:0}
+  .markdown-body th:last-child,.markdown-body td:last-child{border-right:0}
+  .markdown-body code:not(pre code){background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:.1em .35em;font-size:.88em;overflow-wrap:anywhere}
+  .markdown-body pre{position:relative;background:var(--code-bg);color:var(--code-text);border-radius:15px;padding:18px 18px 16px;margin:18px 0 22px;overflow:auto;border:1px solid color-mix(in srgb,var(--border) 50%,transparent);line-height:1.58;font-size:.84rem;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+  .markdown-body pre code{white-space:pre;display:block;min-width:max-content}
+  .copy-btn{position:sticky;left:100%;top:0;float:right;transform:translate(7px,-7px);border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);color:#fff;border-radius:8px;padding:5px 8px;cursor:pointer;font-size:.72rem;font-family:inherit}
+  .copy-btn:hover{background:rgba(255,255,255,.16)}
+  .section-footer-nav{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;margin-top:38px;padding-top:22px;border-top:1px solid var(--border)}
+  .chapter-btn{border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:10px 13px;cursor:pointer;font-weight:750}
+  .chapter-btn.next-btn{justify-self:end}
+  .chapter-btn:disabled{opacity:.35;cursor:not-allowed}
+  .chapter-counter{font-size:.78rem;color:var(--muted);font-weight:750}
+
+  .mobile-backdrop{display:none}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:#111;color:#fff;padding:10px 13px;border-radius:10px;opacity:0;pointer-events:none;transition:.18s ease;z-index:1500;font-size:.82rem}
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+  .print-only{display:none}
+
+  @media (max-width: 920px){
+    :root{--sidebar-w:300px}
+    .mobile-menu-btn{display:inline-grid}
+    .brand-sub{display:none}
+    .app-shell{display:block}
+    .sidebar{transform:translateX(-102%);transition:transform .22s ease;box-shadow:var(--shadow)}
+    .sidebar.open{transform:translateX(0)}
+    .mobile-backdrop{display:block;position:fixed;inset:var(--topbar-h) 0 0 0;background:rgba(0,0,0,.34);opacity:0;pointer-events:none;transition:.2s ease;z-index:650}
+    .mobile-backdrop.show{opacity:1;pointer-events:auto}
+    .main{padding:24px 18px 55px}
+    .hero-grid{grid-template-columns:1fr}
+    .hero-card{max-width:none}
+  }
+  @media (max-width: 620px){
+    :root{--topbar-h:58px}
+    .topbar{padding:0 10px;gap:8px}
+    .brand-logo-wrap{width:34px;height:34px;border-radius:10px}
+    .brand-title{font-size:.86rem;max-width:31vw}
+    .icon-btn{min-width:34px;height:34px;border-radius:10px}
+    .language-switch .seg-btn{min-width:38px;padding:0 5px}
+    .language-switch .seg-btn .label-text{display:none}
+    .font-btn{display:none}
+    .main{padding:18px 12px 45px}
+    .hero{padding:25px 20px;border-radius:21px}
+    .hero-logo{width:74px;height:74px;border-radius:23px}
+    .hero h1{font-size:2.1rem}
+    .hero-actions>*{flex:1 1 100%}
+    .content-section>h2{font-size:2rem}
+    .markdown-body pre{border-radius:11px;padding:15px 13px;font-size:.78rem}
+    .section-footer-nav{grid-template-columns:1fr 1fr}
+    .chapter-counter{display:none}
+    .sidebar{width:min(88vw,330px)}
+  }
+  @media print{
+    :root{--bg:#fff;--surface:#fff;--text:#111;--muted:#555;--border:#ddd}
+    .topbar,.sidebar,.mobile-backdrop,.section-footer-nav,.hero-actions,.ai-note .no-print{display:none!important}
+    .app-shell,.main{display:block;padding:0}
+    .reader{max-width:none}
+    .content-section{display:block!important;break-before:page;animation:none}
+    #sec-home{break-before:auto}
+    .content-section>h2{font-size:24pt}
+    .markdown-body pre{white-space:pre-wrap;word-break:break-word;background:#f5f5f5;color:#111;border:1px solid #ddd}
+    .copy-btn{display:none}
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <button class="icon-btn mobile-menu-btn" id="menuBtn" type="button" aria-label="Open menu">☰</button>
+  <div class="brand">
+    <div class="brand-logo-wrap">
+      <img class="brand-logo" src="https://i01.appmifile.com/webfile/globalimg/logo/pwa-mi/72x72.png" data-fallback-src="https://upload.wikimedia.org/wikipedia/commons/a/ae/Xiaomi_logo_%282021-%29.svg" alt="Xiaomi logo" onerror="if(!this.dataset.fallbackUsed){this.dataset.fallbackUsed='1';this.src=this.dataset.fallbackSrc}else{this.style.display='none';this.nextElementSibling.style.display='block'}">
+      <span class="brand-fallback">mi</span>
+    </div>
+    <div class="brand-text">
+      <div class="brand-title"><span class="lang-th">คู่มือ Xiaomi Local RTSP Bridge</span><span class="lang-en">Xiaomi Local RTSP Bridge Manual</span></div>
+      <div class="brand-sub">Interactive Reference Manual · Human + AI readable</div>
+    </div>
+  </div>
+  <div class="top-spacer"></div>
+  <div class="controls">
+    <button class="icon-btn font-btn" id="fontDown" type="button" aria-label="Decrease font size">A−</button>
+    <button class="icon-btn font-btn" id="fontUp" type="button" aria-label="Increase font size">A+</button>
+    <button class="icon-btn" id="themeBtn" type="button" aria-label="Toggle dark and light mode">☾</button>
+    <div class="language-switch" role="group" aria-label="Language">
+      <button class="seg-btn active" id="langTh" type="button" data-set-lang="th" title="ภาษาไทย"><span class="flag">🇹🇭</span><span class="label-text">ไทย</span></button>
+      <button class="seg-btn" id="langEn" type="button" data-set-lang="en" title="English"><span class="flag">🇬🇧</span><span class="label-text">EN</span></button>
+    </div>
+  </div>
+</header>
+<div class="mobile-backdrop" id="backdrop"></div>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar" aria-label="Document navigation">
+    <div class="search-box">
+      <div class="search-row">
+        <input id="searchInput" class="search-input" type="search" autocomplete="off" placeholder="ค้นหาในคู่มือ..." aria-label="Search manual">
+      </div>
+      <div class="search-hint"><span class="lang-th">กด / เพื่อค้นหา · ค้นได้ทั้งเนื้อหาที่กำลังแสดง</span><span class="lang-en">Press / to search · searches the active language</span></div>
+      <div class="search-results" id="searchResults" aria-live="polite"></div>
+    </div>
+    <button class="nav-item active" data-target="sec-home" data-index="0" type="button">
+      <span class="nav-num">00</span>
+      <span class="nav-label lang-th">หน้าปก / วิธีใช้คู่มือ</span>
+      <span class="nav-label lang-en">Cover / How to use</span>
+    </button>
+    <div class="nav-group" data-group="concept">
+      <div class="nav-group-title"><span class="lang-th">แนวคิดและปัญหา</span><span class="lang-en">Problem &amp; Concept</span></div>
+      <button class="nav-item" data-target="sec-1" data-index="1" type="button">
+          <span class="nav-num">01</span>
+          <span class="nav-label lang-th">ปัญหาเดิมคืออะไร</span>
+          <span class="nav-label lang-en">What is the original problem?</span>
+        </button><button class="nav-item" data-target="sec-2" data-index="2" type="button">
+          <span class="nav-num">02</span>
+          <span class="nav-label lang-th">สาเหตุที่ภาพดีเลย์</span>
+          <span class="nav-label lang-en">Why does the video become delayed?</span>
+        </button><button class="nav-item" data-target="sec-3" data-index="3" type="button">
+          <span class="nav-num">03</span>
+          <span class="nav-label lang-th">แนวคิดของวิธีแก้</span>
+          <span class="nav-label lang-en">Solution concept</span>
+        </button>
+    </div><div class="nav-group" data-group="architecture">
+      <div class="nav-group-title"><span class="lang-th">สถาปัตยกรรมและสิ่งที่ต้องมี</span><span class="lang-en">Architecture &amp; Requirements</span></div>
+      <button class="nav-item" data-target="sec-4" data-index="4" type="button">
+          <span class="nav-num">04</span>
+          <span class="nav-label lang-th">สถาปัตยกรรมที่แนะนำ</span>
+          <span class="nav-label lang-en">Recommended architecture</span>
+        </button><button class="nav-item" data-target="sec-5" data-index="5" type="button">
+          <span class="nav-num">05</span>
+          <span class="nav-label lang-th">Component ที่ใช้</span>
+          <span class="nav-label lang-en">Components used</span>
+        </button><button class="nav-item" data-target="sec-6" data-index="6" type="button">
+          <span class="nav-num">06</span>
+          <span class="nav-label lang-th">Flow ที่แก้ delay ได้</span>
+          <span class="nav-label lang-en">Flow that reduces delay</span>
+        </button><button class="nav-item" data-target="sec-7" data-index="7" type="button">
+          <span class="nav-num">07</span>
+          <span class="nav-label lang-th">Prerequisites</span>
+          <span class="nav-label lang-en">Prerequisites</span>
+        </button>
+    </div><div class="nav-group" data-group="deployment">
+      <div class="nav-group-title"><span class="lang-th">การติดตั้งและตั้งค่า</span><span class="lang-en">Setup &amp; Deployment</span></div>
+      <button class="nav-item" data-target="sec-8" data-index="8" type="button">
+          <span class="nav-num">08</span>
+          <span class="nav-label lang-th">ตัวอย่าง docker-compose.yml</span>
+          <span class="nav-label lang-en">Example docker-compose.yml</span>
+        </button><button class="nav-item" data-target="sec-9" data-index="9" type="button">
+          <span class="nav-num">09</span>
+          <span class="nav-label lang-th">ตัวอย่าง .env</span>
+          <span class="nav-label lang-en">Example .env</span>
+        </button><button class="nav-item" data-target="sec-10" data-index="10" type="button">
+          <span class="nav-num">10</span>
+          <span class="nav-label lang-th">ตั้งค่า go2rtc empty streams</span>
+          <span class="nav-label lang-en">Configure go2rtc empty streams</span>
+        </button><button class="nav-item" data-target="sec-11" data-index="11" type="button">
+          <span class="nav-num">11</span>
+          <span class="nav-label lang-th">ตั้งค่า Xiaomi region ให้ถูกต้อง</span>
+          <span class="nav-label lang-en">Set the Xiaomi region correctly</span>
+        </button><button class="nav-item" data-target="sec-12" data-index="12" type="button">
+          <span class="nav-num">12</span>
+          <span class="nav-label lang-th">กล้องรุ่นเก่าอาจอยู่ใน denylist</span>
+          <span class="nav-label lang-en">Older cameras may be in a denylist</span>
+        </button><button class="nav-item" data-target="sec-13" data-index="13" type="button">
+          <span class="nav-num">13</span>
+          <span class="nav-label lang-th">การ authorize Xiaomi account</span>
+          <span class="nav-label lang-en">Authorize the Xiaomi account</span>
+        </button><button class="nav-item" data-target="sec-14" data-index="14" type="button">
+          <span class="nav-num">14</span>
+          <span class="nav-label lang-th">Start service</span>
+          <span class="nav-label lang-en">Start the service</span>
+        </button>
+    </div><div class="nav-group" data-group="verify">
+      <div class="nav-group-title"><span class="lang-th">ตรวจสอบและเชื่อมต่อ</span><span class="lang-en">Verification &amp; Integration</span></div>
+      <button class="nav-item" data-target="sec-15" data-index="15" type="button">
+          <span class="nav-num">15</span>
+          <span class="nav-label lang-th">วิธีตรวจว่า stream ใช้ได้จริง</span>
+          <span class="nav-label lang-en">Verify that the stream really works</span>
+        </button><button class="nav-item" data-target="sec-16" data-index="16" type="button">
+          <span class="nav-num">16</span>
+          <span class="nav-label lang-th">เพิ่มเข้า Home Assistant dashboard</span>
+          <span class="nav-label lang-en">Add it to the Home Assistant dashboard</span>
+        </button><button class="nav-item" data-target="sec-17" data-index="17" type="button">
+          <span class="nav-num">17</span>
+          <span class="nav-label lang-th">เรื่อง PTZ</span>
+          <span class="nav-label lang-en">PTZ considerations</span>
+        </button>
+    </div><div class="nav-group" data-group="troubleshoot">
+      <div class="nav-group-title"><span class="lang-th">แก้ปัญหา</span><span class="lang-en">Troubleshooting</span></div>
+      <button class="nav-item" data-target="sec-18" data-index="18" type="button">
+          <span class="nav-num">18</span>
+          <span class="nav-label lang-th">Troubleshooting</span>
+          <span class="nav-label lang-en">Troubleshooting</span>
+        </button>
+    </div><div class="nav-group" data-group="finish">
+      <div class="nav-group-title"><span class="lang-th">ผลลัพธ์ ความปลอดภัย และสรุป</span><span class="lang-en">Results, Security &amp; Summary</span></div>
+      <button class="nav-item" data-target="sec-19" data-index="19" type="button">
+          <span class="nav-num">19</span>
+          <span class="nav-label lang-th">ผลลัพธ์หลังแก้</span>
+          <span class="nav-label lang-en">Expected result after the fix</span>
+        </button><button class="nav-item" data-target="sec-20" data-index="20" type="button">
+          <span class="nav-num">20</span>
+          <span class="nav-label lang-th">Security Notes</span>
+          <span class="nav-label lang-en">Security Notes</span>
+        </button><button class="nav-item" data-target="sec-21" data-index="21" type="button">
+          <span class="nav-num">21</span>
+          <span class="nav-label lang-th">สรุปสั้น</span>
+          <span class="nav-label lang-en">Short summary</span>
+        </button>
+    </div>
+    <div class="sidebar-footer">
+      <div><strong>Xiaomi</strong> logo is used for identification.</div>
+      <div style="margin-top:5px">Official media reference: <a href="https://www.mi.com/global/about/mediakit/" target="_blank" rel="noopener">Xiaomi Media Kit</a></div>
+    </div>
+  </aside>
+
+  <main class="main" id="main">
+    <div class="reader">
+      <section id="sec-home" class="content-section active" data-step="0" data-ai-section="true">
+        <div class="hero">
+          <div class="hero-grid">
+            <div>
+              <div class="hero-logo">
+                <img src="https://i01.appmifile.com/webfile/globalimg/logo/pwa-mi/72x72.png" data-fallback-src="https://upload.wikimedia.org/wikipedia/commons/a/ae/Xiaomi_logo_%282021-%29.svg" alt="Xiaomi logo" onerror="if(!this.dataset.fallbackUsed){this.dataset.fallbackUsed='1';this.src=this.dataset.fallbackSrc}else{this.style.display='none'}">
+              </div>
+              <div class="section-kicker">Interactive Reference Manual · v1.0</div>
+              <h1><span class="lang-th">แก้ปัญหากล้อง Xiaomi รุ่นเก่าภาพดีเลย์ด้วย Local RTSP Bridge</span><span class="lang-en">Fixing High Latency on Legacy Xiaomi Cameras with a Local RTSP Bridge</span></h1>
+              <div class="hero-lead lang-th"><blockquote>
+<p>เอกสารนี้เป็นแนวทางทั่วไปสำหรับผู้ใช้ Home Assistant ที่มีกล้อง Xiaomi / Mi Home / Xiaomi Home รุ่นเก่าบางรุ่น ซึ่งดูภาพผ่าน integration หรือ cloud stream แล้วเกิดอาการดีเลย์สะสมหลายวินาที หลายนาที หรือหนักกว่านั้น<br />
+ตัวอย่างทั้งหมดใช้ placeholder ทั่วไป เช่น <code>&lt;VISION_SERVER_IP&gt;</code> และ <code>&lt;CAMERA_DID&gt;</code> เพื่อให้เผยแพร่สาธารณะได้โดยไม่เปิดเผยข้อมูลระบบจริง</p>
+</blockquote>
+<hr />
+</div>
+              <div class="hero-lead lang-en"><blockquote>
+<p>This document is a general guide for Home Assistant users who have certain older Xiaomi / Mi Home / Xiaomi Home cameras where viewing through an integration or cloud stream develops accumulated delay of several seconds, several minutes, or even worse.<br />
+All examples use generic placeholders such as <code>&lt;VISION_SERVER_IP&gt;</code> and <code>&lt;CAMERA_DID&gt;</code> so the guide can be published publicly without exposing real system information.</p>
+</blockquote>
+<hr />
+</div>
+              <div class="badges">
+                <span class="badge">TH / EN</span>
+                <span class="badge">21 Chapters</span>
+                <span class="badge">Responsive</span>
+                <span class="badge">Human + AI</span>
+                <span class="badge">Copy Code</span>
+              </div>
+              <div class="hero-actions">
+                <button class="primary-btn" type="button" data-jump="sec-1"><span class="lang-th">เริ่มอ่านบทที่ 1</span><span class="lang-en">Start Chapter 1</span></button>
+                <button class="secondary-btn" type="button" id="printBtn"><span class="lang-th">พิมพ์ / บันทึก PDF</span><span class="lang-en">Print / Save PDF</span></button>
+              </div>
+            </div>
+            <div class="hero-card">
+              <div class="hero-card-title"><span class="lang-th">เส้นทางระบบเป้าหมาย</span><span class="lang-en">Target system path</span></div>
+              <div class="flow-mini">
+                <div class="flow-step">Xiaomi Camera</div>
+                <div class="flow-step">↓ Xiaomi / MiOT Bridge</div>
+                <div class="flow-step">↓ micam Worker</div>
+                <div class="flow-step">↓ Local RTSP</div>
+                <div class="flow-step">↓ go2rtc / WebRTC</div>
+                <div class="flow-step">↓ Home Assistant</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ai-note" data-ai-execution-contract="true">
+          <h3><span class="lang-th">วิธีใช้คู่มือนี้ — สำหรับคนและ AI</span><span class="lang-en">How to use this manual — for humans and AI</span></h3>
+          <div class="lang-th">
+            <ol>
+              <li>อ่านบทที่ 1–7 เพื่อเข้าใจปัญหา สถาปัตยกรรม และ prerequisites ก่อนลงมือ</li>
+              <li>ทำบทที่ 8–14 ตามลำดับ และแทน placeholder ทุกตัวด้วยค่าของระบบจริงก่อนรันคำสั่ง</li>
+              <li>ใช้บทที่ 15 ตรวจผลจริง: container → go2rtc producer → ffprobe → snapshot</li>
+              <li>ค่อยเชื่อม Home Assistant และ PTZ ตามบทที่ 16–17 หลัง stream ผ่านการตรวจแล้ว</li>
+              <li>ถ้าเกิดปัญหา ให้ไล่บทที่ 18 ตามอาการ ไม่ควรกระโดดแก้หลายจุดพร้อมกัน</li>
+              <li>ปฏิบัติตาม Security Notes ในบทที่ 20 เสมอ โดยเฉพาะ password, token, OAuth, cookie, IP และ `.env`</li>
+            </ol>
+          </div>
+          <div class="lang-en">
+            <ol>
+              <li>Read Chapters 1–7 first to understand the problem, architecture, and prerequisites.</li>
+              <li>Implement Chapters 8–14 in order and resolve every placeholder before running commands.</li>
+              <li>Use Chapter 15 for real verification: containers → go2rtc producer → ffprobe → snapshot.</li>
+              <li>Integrate Home Assistant and PTZ in Chapters 16–17 only after the stream passes verification.</li>
+              <li>If something fails, troubleshoot symptom-by-symptom with Chapter 18 rather than changing many variables at once.</li>
+              <li>Always follow Chapter 20 Security Notes, especially for passwords, tokens, OAuth data, cookies, IP addresses, and `.env` files.</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section id="sec-1" class="content-section" data-step="1" data-ai-section="true" aria-labelledby="sec-1-title">
+      <div class="section-kicker"><span class="lang-th">บทที่ 1 จาก 21</span><span class="lang-en">Chapter 1 of 21</span></div>
+      <h2 id="sec-1-title"><span class="lang-th">1. ปัญหาเดิมคืออะไร</span><span class="lang-en">1. What is the original problem?</span></h2>
+      <div class="doc-lang lang-th markdown-body" lang="th"><p>กล้อง Xiaomi รุ่นเก่าหลายรุ่น โดยเฉพาะกล้องที่อยู่ในระบบ Xiaomi Home / Mi Home และไม่มี RTSP local โดยตรง มักมีปัญหาเมื่อนำเข้า Home Assistant ผ่าน integration แบบ cloud หรือผ่าน stream endpoint ที่ Xiaomi สร้างให้</p>
+<p>อาการที่พบบ่อยคือ:</p>
+<ul>
+<li>ภาพใน Home Assistant ดีเลย์มากกว่าที่ควร</li>
+<li>ตอนแรกดีเลย์น้อย แต่ยิ่งเปิดไว้นานยิ่งดีเลย์สะสม</li>
+<li>ภาพค้างหรือกระโดดเป็นช่วง ๆ</li>
+<li>entity ของกล้องขึ้น <code>unavailable</code> เป็นบางเวลา</li>
+<li>integration เห็นตัวกล้อง แต่ไม่ได้สร้าง <code>camera.*</code> entity ที่ใช้งาน live stream ได้จริง</li>
+<li>บาง integration ให้ได้แค่ปุ่ม <code>start_hls_stream</code>, <code>start_rtsp_stream</code>, <code>start_p2p_stream</code> แต่ไม่ได้ให้ URL local stream ที่เสถียร</li>
+<li>ดูในแอป Xiaomi เองยังพอใช้ได้ แต่พอเข้า Home Assistant แล้วภาพช้าหรือสะสม delay</li>
+</ul>
+<hr />
+</div>
+      <div class="doc-lang lang-en markdown-body" lang="en"><p>Many older Xiaomi camera models, especially cameras inside the Xiaomi Home / Mi Home ecosystem that do not provide direct local RTSP, can have problems when added to Home Assistant through a cloud-based integration or through a stream endpoint generated by Xiaomi.</p>
+<p>Common symptoms include:</p>
+<ul>
+<li>Video in Home Assistant is more delayed than it should be.</li>
+<li>Delay is small at first, but keeps accumulating the longer the stream remains open.</li>
+<li>Video freezes or jumps intermittently.</li>
+<li>The camera entity sometimes becomes <code>unavailable</code>.</li>
+<li>The integration can see the camera device, but does not create a usable <code>camera.*</code> entity for a real live stream.</li>
+<li>Some integrations expose only buttons such as <code>start_hls_stream</code>, <code>start_rtsp_stream</code>, or <code>start_p2p_stream</code>, but do not provide a stable local stream URL.</li>
+<li>The Xiaomi app itself remains usable, but video becomes slow or accumulates delay after being brought into Home Assistant.</li>
+</ul>
+<hr />
+</div>
+      <div class="section-footer-nav">
+        <button class="chapter-btn prev-btn" type="button"><span aria-hidden="true">←</span> <span class="lang-th">ก่อนหน้า</span><span class="lang-en">Previous</span></button>
+        <div class="chapter-counter"><span class="lang-th">1 / 21</span><span class="lang-en">1 / 21</span></div>
+        <button class="chapter-btn next-btn" type="button"><span class="lang-th">ถัดไป</span><span class="lang-en">Next</span> <span aria-hidden="true">→</span></button>
+      </div>
+    </section><section id="sec-2" class="content-section" data-step="2" data-ai-section="true" aria-labelledby="sec-2-title">
+      <div class="section-kicker"><span class="lang-th">บทที่ 2 จาก 21</span><span class="lang-en">Chapter 2 of 21</span></div>
+      <h2 id="sec-2-title"><span class="lang-th">2. สาเหตุที่ภาพดีเลย์</span><span class="lang-en">2. Why does the video become delayed?</span></h2>
+      <div class="doc-lang lang-th markdown-body" lang="th"><p>สาเหตุหลักไม่ได้เกิดจาก Home Assistant เพียงอย่างเดียว แต่เกิดจากเส้นทางวิดีโอเดิมที่อ้อมผ่าน cloud และ protocol ที่ไม่ได้ออกแบบมาสำหรับ local low-latency dashboard</p>
+<p>เส้นทางเดิมมักเป็นประมาณนี้:</p>
+<pre><code class="language-text">Xiaomi Camera
+  → Xiaomi Cloud / P2P / HLS / cloud proxy
+  → Home Assistant integration
+  → Home Assistant camera entity / dashboard
+  → browser / mobile app
+</code></pre>
+<p>ปัญหาของเส้นทางนี้คือ:</p>
+<h3>2.1 Cloud / P2P มี buffer ของตัวเอง</h3>
+<p>เมื่อ stream ถูกส่งผ่าน Xiaomi Cloud หรือ P2P relay ระบบมักมี buffer เพื่อกันภาพกระตุก ซึ่งดีสำหรับแอปมือถือทั่วไป แต่ไม่ดีสำหรับ Home Assistant dashboard ที่ต้องการภาพใกล้ real-time</p>
+<h3>2.2 HLS มี latency โดยธรรมชาติ</h3>
+<p>ถ้า integration ใช้ HLS stream ภาพมักดีเลย์อยู่แล้ว เพราะ HLS แบ่งวิดีโอเป็น segment เช่น 2–6 วินาทีต่อ segment แล้ว browser ต้องรอ segment ก่อนเล่น</p>
+<p>ผลคือ latency อาจเริ่มที่หลายวินาที และถ้า stream ไม่ sync ดีพอ อาจเกิด delay สะสมได้</p>
+<h3>2.3 Stream ถูกแปลงหลายชั้น</h3>
+<p>บางระบบแปลงแบบนี้:</p>
+<pre><code class="language-text">Camera → Xiaomi cloud stream → HLS/RTSP temp URL → HA stream proxy → dashboard card
+</code></pre>
+<p>ทุกชั้นอาจเพิ่ม buffer อีกเล็กน้อย พอรวมกันแล้วดีเลย์มาก</p>
+<h3>2.4 กล้องรุ่นเก่าไม่มี RTSP local ให้เปิดตรง ๆ</h3>
+<p>กล้อง IP หลายยี่ห้อมี RTSP local URL เช่น:</p>
+<pre><code class="language-text">rtsp://camera-local-ip/live
+</code></pre>
+<p>แต่กล้อง Xiaomi รุ่นเก่าหลายรุ่นไม่ได้เปิด RTSP local ให้ผู้ใช้โดยตรง จึงต้องอาศัย cloud/P2P integration แทน</p>
+<h3>2.5 Integration เห็นกล้องแต่ไม่ expose live stream ที่เหมาะสม</h3>
+<p>บาง integration เห็น device และ properties ได้ เช่น on/off, night mode, motion, stream status แต่ไม่ได้ให้ camera entity ที่เหมาะสำหรับ live view หรือ local low latency</p>
+<hr />
+</div>
+      <div class="doc-lang lang-en markdown-body" lang="en"><p>The main cause is not Home Assistant alone. The delay is usually caused by the original video path being routed through the cloud and through protocols that were not designed for a local low-latency dashboard.</p>
+<p>The original path is often similar to this:</p>
+<pre><code class="language-text">Xiaomi Camera
+  → Xiaomi Cloud / P2P / HLS / cloud proxy
+  → Home Assistant integration
+  → Home Assistant camera entity / dashboard
+  → browser / mobile app
+</code></pre>
+<p>Problems with this path include:</p>
+<h3>2.1 Cloud / P2P has its own buffering</h3>
+<p>When a stream is sent through Xiaomi Cloud or a P2P relay, the system usually buffers video to reduce stuttering. This is useful for a normal mobile app, but not ideal for a Home Assistant dashboard that needs video close to real time.</p>
+<h3>2.2 HLS has inherent latency</h3>
+<p>If an integration uses an HLS stream, video is normally delayed by design because HLS splits video into segments, for example 2–6 seconds per segment, and the browser has to wait for segments before playing them.</p>
+<p>As a result, latency may begin at several seconds, and if the stream does not stay synchronized well, the delay may continue to accumulate.</p>
+<h3>2.3 The stream is converted through multiple layers</h3>
+<p>Some systems convert the stream through a path like this:</p>
+<pre><code class="language-text">Camera → Xiaomi cloud stream → HLS/RTSP temp URL → HA stream proxy → dashboard card
+</code></pre>
+<p>Each layer can add a little more buffering. When those buffers are combined, the total delay can become large.</p>
+<h3>2.4 Older cameras may not expose direct local RTSP</h3>
+<p>Many IP cameras from other vendors provide a direct local RTSP URL such as:</p>
+<pre><code class="language-text">rtsp://camera-local-ip/live
+</code></pre>
+<p>However, many older Xiaomi cameras do not expose local RTSP directly to the user, so cloud/P2P integration has to be used instead.</p>
+<h3>2.5 The integration sees the camera but does not expose a suitable live stream</h3>
+<p>Some integrations can see the device and its properties, such as on/off, night mode, motion, or stream status, but do not provide a camera entity suitable for live viewing or local low-latency playback.</p>
+<hr />
+</div>
+      <div class="section-footer-nav">
+        <button class="chapter-btn prev-btn" type="button"><span aria-hidden="true">←</span> <span class="lang-th">ก่อนหน้า</span><span class="lang-en">Previous</span></button>
+        <div class="chapter-counter"><span class="lang-th">2 / 21</span><span class="lang-en">2 / 21</span></div>
+        <button class="chapter-btn next-btn" type="button"><span class="lang-th">ถัดไป</span><span class="lang-en">Next</span> <span aria-hidden="true">→</span></button>
+      </div>
+    </section><section id="sec-3" class="content-section" data-step="3" data-ai-section="true" aria-labelledby="sec-3-title">
+      <div class="section-kicker"><span class="lang-th">บทที่ 3 จาก 21</span><span class="lang-en">Chapter 3 of 21</span></div>
+      <h2 id="sec-3-title"><span class="lang-th">3. แนวคิดของวิธีแก้</span><span class="lang-en">3. Solution concept</span></h2>
+      <div class="doc-lang lang-th markdown-body" lang="th"><p>แนวทางที่ใช้คือสร้าง “local bridge” แยกต่างหาก ให้เครื่องหนึ่งทำหน้าที่คุยกับ Xiaomi แล้ว publish stream ออกมาเป็น RTSP local ที่ Home Assistant และ go2rtc ใช้งานได้</p>
+<p>เส้นทางใหม่เป็นแบบนี้:</p>
+<pre><code class="language-text">Xiaomi Camera
+  → Xiaomi / MiOT local bridge service
+  → micam stream worker
+  → local RTSP publish
+  → go2rtc
+  → Home Assistant dashboard
+</code></pre>
+<p>หรือเขียนง่าย ๆ:</p>
+<pre><code class="language-text">กล้อง Xiaomi → Bridge → RTSP local → go2rtc → Home Assistant
+</code></pre>
+<p>ข้อดี:</p>
+<ul>
+<li>ลดการพึ่ง cloud playback path ใน Home Assistant</li>
+<li>ได้ RTSP URL ที่เรียกซ้ำได้ถาวร</li>
+<li>ใช้ go2rtc จัดการ WebRTC / RTSP / MSE ได้ต่อ</li>
+<li>ลด delay สะสมจาก HLS/cloud proxy</li>
+<li>แยกงานวิดีโอหนักออกจาก Home Assistant</li>
+<li>เพิ่ม/ลบ stream ได้เป็นระบบ</li>
+</ul>
+<hr />
+</div>
+      <div class="doc-lang lang-en markdown-body" lang="en"><p>The approach is to create a separate “local bridge.” One machine communicates with Xiaomi and then publishes the video as a local RTSP stream that Home Assistant and go2rtc can use.</p>
+<p>The new path looks like this:</p>
+<pre><code class="language-text">Xiaomi Camera
+  → Xiaomi / MiOT local bridge service
+  → micam stream worker
+  → local RTSP publish
+  → go2rtc
+  → Home Assistant dashboard
+</code></pre>
+<p>Or, more simply:</p>
+<pre><code class="language-text">Xiaomi Camera → Bridge → local RTSP → go2rtc → Home Assistant
+</code></pre>
+<p>Benefits:</p>
+<ul>
+<li>Reduces dependence on the cloud playback path inside Home Assistant.</li>
+<li>Provides a reusable, persistent RTSP URL.</li>
+<li>Allows go2rtc to handle WebRTC / RTSP / MSE afterward.</li>
+<li>Reduces accumulated delay from HLS/cloud proxy layers.</li>
+<li>Moves heavy video processing away from Home Assistant.</li>
+<li>Makes adding and removing streams more systematic.</li>
+</ul>
+<hr />
+</div>
+      <div class="section-footer-nav">
+        <button class="chapter-btn prev-btn" type="button"><span aria-hidden="true">←</span> <span class="lang-th">ก่อนหน้า</span><span class="lang-en">Previous</span></button>
+        <div class="chapter-counter"><span class="lang-th">3 / 21</span><span class="lang-en">3 / 21</span></div>
+        <button class="chapter-btn next-btn" type="button"><span class="lang-th">ถัดไป</span><span class="lang-en">Next</span> <span aria-hidden="true">→</span></button>
+      </div>
+    </section><section id="sec-4" class="content-section" data-step="4" data-ai-section="true" aria-labelledby="sec-4-title">
+      <div class="section-kicker"><span class="lang-th">บทที่ 4 จาก 21</span><span class="lang-en">Chapter 4 of 21</span></div>
+      <h2 id="sec-4-title"><span class="lang-th">4. สถาปัตยกรรมที่แนะนำ</span><span class="lang-en">4. Recommended architecture</span></h2>
+      <div class="doc-lang lang-th markdown-body" lang="th"><p>ควรใช้เครื่องแยกสำหรับงานวิดีโอ เช่น mini PC, NUC, workstation, server ขนาดเล็ก หรือเครื่อง Linux ที่เปิด 24/7</p>
+<p>เรียกเครื่องนี้แบบทั่วไปว่า:</p>
+<pre><code class="language-text">Vision Server / Video Worker
+</code></pre>
+<p>ตัวอย่างโครงสร้าง:</p>
+<pre><code class="language-text">[ Xiaomi Cameras ]
+        │
+        ▼
+[ Vision Server / Video Worker ]
+        ├─ Miloco / Xiaomi MiOT bridge
+        ├─ micam worker per camera
+        └─ go2rtc RTSP/WebRTC gateway
+        │
+        ▼
+[ Home Assistant ]
+        │
+        ▼
+[ Lovelace dashboard / mobile app / browser ]
+</code></pre>
+<blockquote>
+<p>แนะนำให้แยก Video Worker ออกจาก Home Assistant เพราะการดึง/แปลงวิดีโออาจใช้ CPU, network, memory และอาจทำให้ Home Assistant หน่วงได้ถ้ารันรวมกัน</p>
+</blockquote>
+<hr />
+</div>
+      <div class="doc-lang lang-en markdown-body" lang="en"><p>Use a separate machine for video work, such as a mini PC, NUC, workstation, small server, or Linux machine that can run 24/7.</p>
+<p>In this guide, that machine is referred to generically as:</p>
+<pre><code class="language-text">Vision Server / Video Worker
+</code></pre>
+<p>Example architecture:</p>
+<pre><code class="language-text">[ Xiaomi Cameras ]
+        │
+        ▼
+[ Vision Server / Video Worker ]
+        ├─ Miloco / Xiaomi MiOT bridge
+        ├─ micam worker per camera
+        └─ go2rtc RTSP/WebRTC gateway
+        │
+        ▼
+[ Home Assistant ]
+        │
+        ▼
+[ Lovelace dashboard / mobile app / browser ]
+</code></pre>
+<blockquote>
+<p>It is recommended to keep the Video Worker separate from Home Assistant because pulling and converting video may consume CPU, network bandwidth, and memory, and can make Home Assistant sluggish if everything runs on the same machine.</p>
+</blockquote>
+<hr />
+</div>
+      <div class="section-footer-nav">
+        <button class="chapter-btn prev-btn" type="button"><span aria-hidden="true">←</span> <span class="lang-th">ก่อนหน้า</span><span class="lang-en">Previous</span></button>
+        <div class="chapter-counter"><span class="lang-th">4 / 21</span><span class="lang-en">4 / 21</span></div>
+        <button class="chapter-btn next-btn" type="button"><span class="lang-th">ถัดไป</span><span class="lang-en">Next</span> <span aria-hidden="true">→</span></button>
+      </div>
+    </section><section id="sec-5" class="content-section" data-step="5" data-ai-section="true" aria-labelledby="sec-5-title">
+      <div class="section-kicker"><span class="lang-th">บทที่ 5 จาก 21</span><span class="lang-en">Chapter 5 of 21</span></div>
+      <h2 id="sec-5-title"><span class="lang-th">5. Component ที่ใช้</span><span class="lang-en">5. Components used</span></h2>
+      <div class="doc-lang lang-th markdown-body" lang="th"><p>แนวทางนี้ใช้ component หลัก ๆ ดังนี้:</p>
+<table>
+<thead>
+<tr>
+  <th>Component</th>
+  <th>หน้าที่</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Miloco / MiOT bridge</td>
+  <td>login/authorize Xiaomi account และเข้าถึงกล้องผ่าน Xiaomi/MiOT API</td>
+</tr>
+<tr>
+  <td>micam</td>
+  <td>ดึง stream จาก Miloco แล้วส่งออกเป็น RTSP</td>
+</tr>
+<tr>
+  <td>go2rtc</td>
+  <td>รับ RTSP publish และให้ Home Assistant/dashboard ใช้งานต่อ</td>
+</tr>
+<tr>
+  <td>Home Assistant</td>
+  <td>แสดงผลบน dashboard / automation / camera cards</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+      <div class="doc-lang lang-en markdown-body" lang="en"><p>This approach uses the following main components:</p>
+<table>
+<thead>
+<tr>
+  <th>Component</th>
+  <th>Function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Miloco / MiOT bridge</td>
+  <td>Log in / authorize the Xiaomi account and access cameras through the Xiaomi/MiOT API</td>
+</tr>
+<tr>
+  <td>micam</td>
+  <td>Pull the stream from Miloco and publish it as RTSP</td>
+</tr>
+<tr>
+  <td>go2rtc</td>
+  <td>Receive the RTSP publish and provide it to Home Assistant / the dashboard</td>
+</tr>
+<tr>
+  <td>Home Assistant</td>
+  <td>Display the stream on dashboards and use it in automations / camera cards</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div>
+      <div class="section-footer-nav">
+        <button class="chapter-btn prev-btn" type="button"><span aria-hidden="true">←</span> <span class="lang-th">ก่อนหน้า</span><span class="lang-en">Previous</span></button>
+        <div class="chapter-counter"><span class="lang-th">5 / 21</span><span class="lang-en">5 / 21</span></div>
+        <button class="chapter-btn next-btn" type="button"><span class="lang-th">ถัดไป</span><span class="lang-en">Next</span> <span aria-hidden="true">→</span></button>
+      </div>
+    </section><section id="sec-6" class="content-section" data-step="6" data-ai-section="true" aria-labelledby="sec-6-title">
+      <div class="section-kicker"><span class="lang-th">บทที่ 6 จาก 21</span><span class="lang-en">Chapter 6 of 21</span></div>
+      <h2 id="sec-6-title"><span class="lang-th">6. Flow ที่แก้ delay ได้</span><span class="lang-en">6. Flow that reduces delay</span></h2>
+      <div class="doc-lang lang-th markdown-body" lang="th"><h3>เดิม</h3>
+<pre><code class="language-text">Camera → Xiaomi Cloud/HLS/P2P → HA integration → dashboard
+</code></pre>
+<p>ปัญหา:</p>
+<ul>
+<li>มี buffer หลายชั้น</li>
+<li>delay สะสม</li>
+<li>stream URL อาจเป็น temporary URL</li>
+<li>HLS มี latency สูงกว่าการดูแบบ live</li>
+</ul>
+<h3>ใหม่</h3>
+<pre><code class="language-text">Camera → Miloco → micam → RTSP local → go2rtc → dashboard
+</code></pre>
+<p>ผลที่ต้องการ:</p>
+<ul>
+<li>RTSP stream อยู่ใน local network</li>
+<li>go2rtc จัดการ stream ให้ browser ดูแบบ low latency ได้</li>
+<li>dashboard ไม่ต้องรอ cloud/HLS path เดิม</li>
+<li>delay ลดลงมาก เหลือระดับ local streaming ตามสภาพ network และ codec</li>
+</ul>
+<hr />
+</div>
+      <div class="doc-lang lang-en markdown-body" lang="en"><h3>Before</h3>
+<pre><code class="language-text">Camera → Xiaomi Cloud/HLS/P2P → HA integration → dashboard
+</code></pre>
+<p>Problems:</p>
+<ul>
+<li>Multiple buffering layers.</li>
+<li>Accumulated delay.</li>
+<li>The stream URL may be temporary.</li>
+<li>HLS has higher latency than live-oriented streaming.</li>
+</ul>
+<h3>After</h3>
+<pre><code class="language-text">Camera → Miloco → micam → local RTSP → go2rtc → dashboard
+</code></pre>
+<p>Desired results:</p>
+<ul>
+<li>The RTSP stream stays inside the local network.</li>
+<li>go2rtc handles the stream so a browser can view it with low latency.</li>
+<li>The dashboard no longer has to wait on the original cloud/HLS path.</li>
+<li>Delay is greatly reduced and becomes closer to normal local-stream latency, depending on the network and codec.</li>
+</ul>
+<hr />
+</div>
+      <div class="section-footer-nav">
+        <button class="chapter-btn prev-btn" type="button"><span aria-hidden="true">←</span> <span class="lang-th">ก่อนหน้า</span><span class="lang-en">Previous</span></button>
+        <div class="chapter-counter"><span class="lang-th">6 / 21</span><span class="lang-en">6 / 21</span></div>
+        <button class="chapter-btn next-btn" type="button"><span class="lang-th">ถัดไป</span><span class="lang-en">Next</span> <span aria-hidden="true">→</span></button>
+      </div>
+    </section><section id="sec-7" class="content-section" data-step="7" data-ai-section="true" aria-labelledby="sec-7-title">
+      <div class="section-kicker"><span class="lang-th">บทที่ 7 จาก 21</span><span class="lang-en">Chapter 7 of 21</span></div>
+      <h2 id="sec-7-title"><span class="lang-th">7. Prerequisites</span><span class="lang-en">7. Prerequisites</span></h2>
+      <div class="doc-lang lang-th markdown-body" lang="th"><p>ต้องมี:</p>
+<ul>
+<li>เครื่อง Linux สำหรับ Video Worker</li>
+<li>Docker และ Docker Compose</li>
+<li>Home Assistant ที่เข้าถึง Video Worker ได้ผ่าน LAN หรือ VPN ส่วนตัว</li>
+<li>Xiaomi account ที่มีกล้องอยู่ใน region ถูกต้อง</li>
+<li>รายชื่อกล้องและ DID ของกล้องแต่ละตัว</li>
+<li>port ที่ต้องใช้ เช่น:<ul>
+<li>Miloco backend: <code>&lt;MILOCO_PORT&gt;</code> เช่น <code>18000</code></li>
+<li>go2rtc API: <code>1984</code></li>
+<li>go2rtc RTSP: <code>8554</code></li>
+</ul>
+</li>
+</ul>
+<p>ตัวอย่าง placeholder:</p>
+<pre><code class="language-text">&lt;VISION_SERVER_IP&gt;      = IP ของ Video Worker
+&lt;MILOCO_PORT&gt;           = port ของ Miloco backend
+&lt;CAMERA_DID_1&gt;          = DID ของกล้องตัวที่ 1
+&lt;CAMERA_DID_2&gt;          = DID ของกล้องตัวที่ 2
+&lt;STREAM_NAME_1&gt;         = ชื่อ stream ใน go2rtc
+&lt;STREAM_NAME_2&gt;         = ชื่อ stream ใน go2rtc
+</code></pre>
+<hr />
+</div>
+      <div class="doc-lang lang-en markdown-body" lang="en"><p>You need:</p>
+<ul>
+<li>A Linux machine for the Video Worker.</li>
+<li>Docker and Docker Compose.</li>
+<li>Home Assistant that can reach the Video Worker over LAN or a private VPN.</li>
+<li>A Xiaomi account containing the cameras in the correct region.</li>
+<li>A list of cameras and the DID of each camera.</li>
+<li>Required ports, for example:<ul>
+<li>Miloco backend: <code>&lt;MILOCO_PORT&gt;</code>, for example <code>18000</code></li>
+<li>go2rtc API: <code>1984</code></li>
+<li>go2rtc RTSP: <code>8554</code></li>
+</ul>
+</li>
+</ul>
+<p>Example placeholders:</p>
+<pre><code class="language-text">&lt;VISION_SERVER_IP&gt;      = IP address of the Video Worker
+&lt;MILOCO_PORT&gt;           = port of the Miloco backend
+&lt;CAMERA_DID_1&gt;          = DID of camera 1
+&lt;CAMERA_DID_2&gt;          = DID of camera 2
+&lt;STREAM_NAME_1&gt;         = stream name in go2rtc
+&lt;STREAM_NAME_2&gt;         = stream name in go2rtc
+</code></pre>
+<hr />
+</div>
+      <div class="section-footer-nav">
+        <button class="chapter-btn prev-btn" type="button"><span aria-hidden="true">←</span> <span class="lang-th">ก่อนหน้า</span><span class="lang-en">Previous</span></button>
+        <div class="chapter-counter"><span class="lang-th">7 / 21</span><span class="lang-en">7 / 21</span></div>
+        <button class="chapter-btn next-btn" type="button"><span class="lang-th">ถัดไป</span><span class="lang-en">Next</span> <span aria-hidden="true">→</span></button>
+      </div>
+    </section><section id="sec-8" class="content-section" data-step="8" data-ai-section="true" aria-labelledby="sec-8-title">
+      <div class="section-kicker"><span class="lang-th">บทที่ 8 จาก 21</span><span class="lang-en">Chapter 8 of 21</span></div>
+      <h2 id="sec-8-title"><span class="lang-th">8. ตัวอย่าง docker-compose.yml</span><span class="lang-en">8. Example docker-compose.yml</span></h2>
+      <div class="doc-lang lang-th markdown-body" lang="th"><blockquote>
+<p>ตัวอย่างนี้เป็นโครงสร้างทั่วไป ต้องปรับ image/version/env ให้ตรงกับ project ที่ใช้งานจริง</p>
+</blockquote>
+<pre><code class="language-yaml">services:
+  miloco:
+    container_name: miloco
+    image: &lt;MILOCO_IMAGE&gt;
+    network_mode: host
+    environment:
+      BACKEND_PORT: ${MILOCO_PORT:-18000}
+      BACKEND_LOG_LEVEL: ${MILOCO_LOG_LEVEL:-warning}
+      TZ: ${TZ:-Asia/Bangkok}
+    volumes:
+      - ./miloco:/app/miloco_server/.temp
+      - ./miloco-config/server_config.yaml:/app/config/server_config.yaml:ro
+      - ./miloco-config/camera_extra_info.yaml:/app/miot_kit/miot/configs/camera_extra_info.yaml:ro
+    restart: unless-stopped
+
+  go2rtc:
+    container_name: go2rtc-xiaomi
+    image: &lt;GO2RTC_IMAGE&gt;
+    network_mode: host
+    privileged: true
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-Asia/Bangkok}
+    volumes:
+      - ./go2rtc:/config
+
+  micam-camera-1:
+    image: &lt;MICAM_IMAGE&gt;
+    container_name: micam-camera-1
+    depends_on: [miloco, go2rtc]
+    environment:
+      MILOCO_BASE_URL: ${MILOCO_BASE_URL:-https://miloco:18000}
+      MILOCO_PASSWORD: ${MILOCO_PASSWORD}
+      CAMERA_ID: ${CAMERA_DID_1}
+      RTSP_URL: ${CAMERA_1_RTSP_URL:-rtsp://miloco:8554/&lt;STREAM_NAME_1&gt;}
+      VIDEO_CODEC: ${VIDEO_CODEC:-hevc}
+      STREAM_CHANNEL: ${STREAM_CHANNEL:-0}
+      TZ: ${TZ:-Asia/Bangkok}
+    restart: unless-stopped
+    extra_hosts:
+      - &quot;miloco:${MILOCO_HOST_IP:-host-gateway}&quot;
+
+  micam-camera-2:
+    image: &lt;MICAM_IMAGE&gt;
+    container_name: micam-camera-2
+    depends_on: [miloco, go2rtc]
+    environment:
+      MILOCO_BASE_URL: ${MILOCO_BASE_URL:-https://miloco:18000}
+      MILOCO_PASSWORD: ${MILOCO_PASSWORD}
+      CAMERA_ID: ${CAMERA_DID_2}
+      RTSP_URL: ${CAMERA_2_RTSP_URL:-rtsp://miloco:8554/&lt;STREAM_NAME_2&gt;}
+      VIDEO_CODEC: ${VIDEO_CODEC:-hevc}
+      STREAM_CHANNEL: ${STREAM_CHANNEL:-0}
+      TZ: ${TZ:-Asia/Bangkok}
+    restart: unless-stopped
+    extra_hosts:
+      - &quot;miloco:${MILOCO_HOST_IP:-host-gateway}&quot;
+</code></pre>
+<hr />
+</div>
+      <div class="doc-lang lang-en markdown-body" lang="en"><blockquote>
+<p>This is a generic structure. Adjust the image, version, and environment values to match the actual project you are using.</p>
+</blockquote>
+<pre><code class="language-yaml">services:
+  miloco:
+    container_name: miloco
+    image: &lt;MILOCO_IMAGE&gt;
+    network_mode: host
+    environment:
+      BACKEND_PORT: ${MILOCO_PORT:-18000}
+      BACKEND_LOG_LEVEL: ${MILOCO_LOG_LEVEL:-warning}
+      TZ: ${TZ:-Asia/Bangkok}
+    volumes:
+      - ./miloco:/app/miloco_server/.temp
+      - ./miloco-config/server_config.yaml:/app/config/server_config.yaml:ro
+      - ./miloco-config/camera_extra_info.yaml:/app/miot_kit/miot/configs/camera_extra_info.yaml:ro
+    restart: unless-stopped
+
+  go2rtc:
+    container_name: go2rtc-xiaomi
+    image: &lt;GO2RTC_IMAGE&gt;
+    network_mode: host
+    privileged: true
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-Asia/Bangkok}
+    volumes:
+      - ./go2rtc:/config
+
+  micam-camera-1:
+    image: &lt;MICAM_IMAGE&gt;
+    container_name: micam-camera-1
+    depends_on: [miloco, go2rtc]
+    environment:
+      MILOCO_BASE_URL: ${MILOCO_BASE_URL:-https://miloco:18000}
+      MILOCO_PASSWORD: ${MILOCO_PASSWORD}
+      CAMERA_ID: ${CAMERA_DID_1}
+      RTSP_URL: ${CAMERA_1_RTSP_URL:-rtsp://miloco:8554/&lt;STREAM_NAME_1&gt;}
+      VIDEO_CODEC: ${VIDEO_CODEC:-hevc}
+      STREAM_CHANNEL: ${STREAM_CHANNEL:-0}
+      TZ: ${TZ:-Asia/Bangkok}
+    restart: unless-stopped
+    extra_hosts:
+      - &quot;miloco:${MILOCO_HOST_IP:-host-gateway}&quot;
+
+  micam-camera-2:
+    image: &lt;MICAM_IMAGE&gt;
+    container_name: micam-camera-2
+    depends_on: [miloco, go2rtc]
+    environment:
+      MILOCO_BASE_URL: ${MILOCO_BASE_URL:-https://miloco:18000}
+      MILOCO_PASSWORD: ${MILOCO_PASSWORD}
+      CAMERA_ID: ${CAMERA_DID_2}
+      RTSP_URL: ${CAMERA_2_RTSP_URL:-rtsp://miloco:8554/&lt;STREAM_NAME_2&gt;}
+      VIDEO_CODEC: ${VIDEO_CODEC:-hevc}
+      STREAM_CHANNEL: ${STREAM_CHANNEL:-0}
+      TZ: ${TZ:-Asia/Bangkok}
+    restart: unless-stopped
+    extra_hosts:
+      - &quot;miloco:${MILOCO_HOST_IP:-host-gateway}&quot;
+</code></pre>
+<hr />
+</div>
+      <div class="section-footer-nav">
+        <button class="chapter-btn prev-btn" type="button"><span aria-hidden="true">←</span> <span class="lang-th">ก่อนหน้า</span><span class="lang-en">Previous</span></button>
+        <div class="chapter-counter"><span class="lang-th">8 / 21</span><span class="lang-en">8 / 21</span></div>
+        <button class="chapter-btn next-btn" type="button"><span class="lang-th">ถัดไป</span><span class="lang-en">Next</span> <span aria-hidden="true">→</span></button>
+      </div>
+    </section><section id="sec-9" class="content-section" data-step="9" data-ai-section="true" aria-labelledby="sec-9-title">
+      <div class="section-kicker"><span class="lang-th">บทที่ 9 จาก 21</span><span class="lang-en">Chapter 9 of 21</span></div>
+      <h2 id="sec-9-title"><span class="lang-th">9. ตัวอย่าง .env</span><span class="lang-en">9. Example .env</span></h2>
+      <div class="doc-lang lang-th markdown-body" lang="th"><pre><code class="language-env">TZ=Asia/Bangkok
+
+MILOCO_PORT=18000
+MILOCO_BASE_URL=https://miloco:18000
+MILOCO_HOST_IP=host-gateway
+MILOCO_PASSWORD=&lt;LOCAL_MILOCO_ADMIN_PASSWORD_OR_HASH&gt;
+
+CAMERA_DID_1=&lt;CAMERA_DID_1&gt;
+CAMERA_DID_2=&lt;CAMERA_DID_2&gt;
+
+CAMERA_1_RTSP_URL=rtsp://miloco:8554/&lt;STREAM_NAME_1&gt;
+CAMERA_2_RTSP_URL=rtsp://miloco:8554/&lt;STREAM_NAME_2&gt;
+
+VIDEO_CODEC=hevc
+STREAM_CHANNEL=0
+</code></pre>
+<blockquote>
+<p>ห้าม commit <code>.env</code> ที่มี password/token ขึ้น public repository</p>
+</blockquote>
+<hr />
+</div>
+      <div class="doc-lang lang-en markdown-body" lang="en"><pre><code class="language-env">TZ=Asia/Bangkok
+
+MILOCO_PORT=18000
+MILOCO_BASE_URL=https://miloco:18000
+MILOCO_HOST_IP=host-gateway
+MILOCO_PASSWORD=&lt;LOCAL_MILOCO_ADMIN_PASSWORD_OR_HASH&gt;
+
+CAMERA_DID_1=&lt;CAMERA_DID_1&gt;
+CAMERA_DID_2=&lt;CAMERA_DID_2&gt;
+
+CAMERA_1_RTSP_URL=rtsp://miloco:8554/&lt;STREAM_NAME_1&gt;
+CAMERA_2_RTSP_URL=rtsp://miloco:8554/&lt;STREAM_NAME_2&gt;
+
+VIDEO_CODEC=hevc
+STREAM_CHANNEL=0
+</code></pre>
+<blockquote>
+<p>Never commit a <code>.env</code> file containing passwords or tokens to a public repository.</p>
+</blockquote>
+<hr />
+</div>
+      <div class="section-footer-nav">
+        <button class="chapter-btn prev-btn" type="button"><span aria-hidden="true">←</span> <span class="lang-th">ก่อนหน้า</span><span class="lang-en">Previous</span></button>
+        <div class="chapter-counter"><span class="lang-th">9 / 21</span><span class="lang-en">9 / 21</span></div>
+        <button class="chapter-btn next-btn" type="button"><span class="lang-th">ถัดไป</span><span class="lang-en">Next</span> <span aria-hidden="true">→</span></button>
+      </div>
+    </section><section id="sec-10" class="content-section" data-step="10" data-ai-section="true" aria-labelledby="sec-10-title">
+      <div class="section-kicker"><span class="lang-th">บทที่ 10 จาก 21</span><span class="lang-en">Chapter 10 of 21</span></div>
+      <h2 id="sec-10-title"><span class="lang-th">10. ตั้งค่า go2rtc empty streams</span><span class="lang-en">10. Configure go2rtc empty streams</span></h2>
+      <div class="doc-lang lang-th markdown-body" lang="th"><p>จุดสำคัญมาก: ต้องสร้าง stream name ใน go2rtc ก่อน เพื่อให้ micam publish RTSP เข้าไปได้</p>
+<p>ตัวอย่าง <code>go2rtc/go2rtc.yaml</code>:</p>
+<pre><code class="language-yaml">api:
+  listen: &quot;:1984&quot;
+rtsp:
+  listen: &quot;:8554&quot;
+webrtc:
+  listen: &quot;:8555&quot;
+streams:
+  &lt;STREAM_NAME_1&gt;:
+  &lt;STREAM_NAME_2&gt;:
+</code></pre>
+<p>ถ้าไม่เพิ่ม empty stream path นี้ อาจเจออาการ:</p>
+<ul>
+<li>micam ต่อ Xiaomi ได้</li>
+<li>log ขึ้น <code>Keyframe detected! Starting stream...</code></li>
+<li>แต่ RTSP URL เปิดแล้วได้ <code>404 Not Found</code></li>
+<li>FFmpeg ใน micam ขึ้น <code>Broken pipe</code></li>
+<li>go2rtc ไม่มี producer ของ stream นั้น</li>
+</ul>
+<hr />
+</div>
+      <div class="doc-lang lang-en markdown-body" lang="en"><p>This point is very important: create the stream names in go2rtc first so micam can publish RTSP into them.</p>
+<p>Example <code>go2rtc/go2rtc.yaml</code>:</p>
+<pre><code class="language-yaml">api:
+  listen: &quot;:1984&quot;
+rtsp:
+  listen: &quot;:8554&quot;
+webrtc:
+  listen: &quot;:8555&quot;
+streams:
+  &lt;STREAM_NAME_1&gt;:
+  &lt;STREAM_NAME_2&gt;:
+</code></pre>
+<p>If these empty stream paths are not added, you may see symptoms such as:</p>
+<ul>
+<li>micam successfully connects to Xiaomi.</li>
+<li>The log shows <code>Keyframe detected! Starting stream...</code>.</li>
+<li>Opening the RTSP URL returns <code>404 Not Found</code>.</li>
+<li>FFmpeg inside micam reports <code>Broken pipe</code>.</li>
+<li>go2rtc has no producer for that stream.</li>
+</ul>
+<hr />
+</div>
+      <div class="section-footer-nav">
+        <button class="chapter-btn prev-btn" type="button"><span aria-hidden="true">←</span> <span class="lang-th">ก่อนหน้า</span><span class="lang-en">Previous</span></button>
+        <div class="chapter-counter"><span class="lang-th">10 / 21</span><span class="lang-en">10 / 21</span></div>
+        <button class="chapter-btn next-btn" type="button"><span class="lang-th">ถัดไป</span><span class="lang-en">Next</span> <span aria-hidden="true">→</span></button>
+      </div>
+    </section><section id="sec-11" class="content-section" data-step="11" data-ai-section="true" aria-labelledby="sec-11-title">
+      <div class="section-kicker"><span class="lang-th">บทที่ 11 จาก 21</span><span class="lang-en">Chapter 11 of 21</span></div>
+      <h2 id="sec-11-title"><span class="lang-th">11. ตั้งค่า Xiaomi region ให้ถูกต้อง</span><span class="lang-en">11. Set the Xiaomi region correctly</span></h2>
+      <div class="doc-lang lang-th markdown-body" lang="th"><p>ถ้า Xiaomi account อยู่ region Singapore, Europe, US หรือ China ต้องตั้ง <code>cloud_server</code> ให้ตรงกับ region จริง</p>
+<p>ตัวอย่าง config:</p>
+<pre><code class="language-yaml">miot:
+  cloud_server: &quot;sg&quot;
+</code></pre>
+<p>ตัวอย่างค่า region:</p>
+<table>
+<thead>
+<tr>
+  <th>Region</th>
+  <th>ค่าโดยทั่วไป</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>China</td>
+  <td><code>cn</code></td>
+</tr>
+<tr>
+  <td>Singapore</td>
+  <td><code>sg</code></td>
+</tr>
+<tr>
+  <td>United States</td>
+  <td><code>us</code></td>
+</tr>
+<tr>
+  <td>Europe</td>
+  <td>อาจขึ้นกับ implementation</td>
+</tr>
+</tbody>
+</table>
+<p>ถ้าตั้ง region ผิด อาการที่มักเจอคือ:</p>
+<ul>
+<li>login สำเร็จ แต่ไม่เห็นกล้อง</li>
+<li>device list เห็นบางอย่าง แต่ camera list ไม่ขึ้น</li>
+<li>stream connect ได้แต่ไม่มี data</li>
+<li>API แจ้งว่าไม่พบ camera หรือ refresh camera list ไม่สำเร็จ</li>
+</ul>
+<hr />
+</div>
+      <div class="doc-lang lang-en markdown-body" lang="en"><p>If the Xiaomi account belongs to the Singapore, Europe, US, or China region, set <code>cloud_server</code> to the actual region used by the account.</p>
+<p>Example configuration:</p>
+<pre><code class="language-yaml">miot:
+  cloud_server: &quot;sg&quot;
+</code></pre>
+<p>Example region values:</p>
+<table>
+<thead>
+<tr>
+  <th>Region</th>
+  <th>Typical value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>China</td>
+  <td><code>cn</code></td>
+</tr>
+<tr>
+  <td>Singapore</td>
+  <td><code>sg</code></td>
+</tr>
+<tr>
+  <td>United States</td>
+  <td><code>us</code></td>
+</tr>
+<tr>
+  <td>Europe</td>
+  <td>May depend on the implementation</td>
+</tr>
+</tbody>
+</table>
+<p>If the region is wrong, common symptoms include:</p>
+<ul>
+<li>Login succeeds, but cameras are not visible.</li>
+<li>The device list shows some devices, but the camera list is missing.</li>
+<li>The stream connects but no data arrives.</li>
+<li>The API reports that the camera cannot be found or the camera list cannot be refreshed.</li>
+</ul>
+<hr />
+</div>
+      <div class="section-footer-nav">
+        <button class="chapter-btn prev-btn" type="button"><span aria-hidden="true">←</span> <span class="lang-th">ก่อนหน้า</span><span class="lang-en">Previous</span></button>
+        <div class="chapter-counter"><span class="lang-th">11 / 21</span><span class="lang-en">11 / 21</span></div>
+        <button class="chapter-btn next-btn" type="button"><span class="lang-th">ถัดไป</span><span class="lang-en">Next</span> <span aria-hidden="true">→</span></button>
+      </div>
+    </section><section id="sec-12" class="content-section" data-step="12" data-ai-section="true" aria-labelledby="sec-12-title">
+      <div class="section-kicker"><span class="lang-th">บทที่ 12 จาก 21</span><span class="lang-en">Chapter 12 of 21</span></div>
+      <h2 id="sec-12-title"><span class="lang-th">12. กล้องรุ่นเก่าอาจอยู่ใน denylist</span><span class="lang-en">12. Older cameras may be in a denylist</span></h2>
+      <div class="doc-lang lang-th markdown-body" lang="th"><p>บาง bridge / MiOT kit อาจมี denylist สำหรับกล้องรุ่นเก่า เช่น รุ่นปีเก่า หรือ vendor ที่ไม่ได้ระบุว่าสนับสนุน</p>
+<p>อาการ:</p>
+<ul>
+<li>device list เห็นกล้อง</li>
+<li>กล้อง online</li>
+<li>แต่ camera list ไม่ขึ้น</li>
+<li>stream endpoint ต่อได้แต่ไม่มีข้อมูลภาพ</li>
+</ul>
+<p>วิธีแก้คือสร้าง custom <code>camera_extra_info.yaml</code> แล้ว mount เข้า container โดย:</p>
+<ol>
+<li>copy config เดิมออกมา</li>
+<li>ลบ model นั้นออกจาก denylist</li>
+<li>เพิ่ม model นั้นใน <code>extra_info</code></li>
+<li>ระบุ <code>channel_count</code></li>
+<li>restart/recreate Miloco</li>
+</ol>
+<p>ตัวอย่าง generic:</p>
+<pre><code class="language-yaml">extra_info:
+  &lt;CAMERA_MODEL&gt;:
+    channel_count: 1
+    name: Legacy Xiaomi Camera
+    vendor: Xiaomi-compatible vendor
+
+allow_classes:
+  - camera
+</code></pre>
+<blockquote>
+<p>ข้อควรระวัง: การเอาออกจาก denylist ไม่ได้แปลว่ากล้องทุกตัวจะใช้ได้เสมอไป ต้อง verify ด้วย stream จริง</p>
+</blockquote>
+<hr />
+</div>
+      <div class="doc-lang lang-en markdown-body" lang="en"><p>Some bridges / MiOT kits may contain a denylist for older camera models, such as old-generation models or vendors not explicitly marked as supported.</p>
+<p>Symptoms:</p>
+<ul>
+<li>The device list sees the camera.</li>
+<li>The camera is online.</li>
+<li>The camera list does not show it.</li>
+<li>The stream endpoint connects but there is no video data.</li>
+</ul>
+<p>A possible fix is to create a custom <code>camera_extra_info.yaml</code> and mount it into the container by:</p>
+<ol>
+<li>Copying the original configuration out.</li>
+<li>Removing that model from the denylist.</li>
+<li>Adding that model to <code>extra_info</code>.</li>
+<li>Setting <code>channel_count</code>.</li>
+<li>Restarting / recreating Miloco.</li>
+</ol>
+<p>Generic example:</p>
+<pre><code class="language-yaml">extra_info:
+  &lt;CAMERA_MODEL&gt;:
+    channel_count: 1
+    name: Legacy Xiaomi Camera
+    vendor: Xiaomi-compatible vendor
+
+allow_classes:
+  - camera
+</code></pre>
+<blockquote>
+<p>Caution: removing a model from the denylist does not guarantee that every camera of that model will work. You still have to verify it with a real stream.</p>
+</blockquote>
+<hr />
+</div>
+      <div class="section-footer-nav">
+        <button class="chapter-btn prev-btn" type="button"><span aria-hidden="true">←</span> <span class="lang-th">ก่อนหน้า</span><span class="lang-en">Previous</span></button>
+        <div class="chapter-counter"><span class="lang-th">12 / 21</span><span class="lang-en">12 / 21</span></div>
+        <button class="chapter-btn next-btn" type="button"><span class="lang-th">ถัดไป</span><span class="lang-en">Next</span> <span aria-hidden="true">→</span></button>
+      </div>
+    </section><section id="sec-13" class="content-section" data-step="13" data-ai-section="true" aria-labelledby="sec-13-title">
+      <div class="section-kicker"><span class="lang-th">บทที่ 13 จาก 21</span><span class="lang-en">Chapter 13 of 21</span></div>
+      <h2 id="sec-13-title"><span class="lang-th">13. การ authorize Xiaomi account</span><span class="lang-en">13. Authorize the Xiaomi account</span></h2>
+      <div class="doc-lang lang-th markdown-body" lang="th"><p>Miloco หรือ bridge ที่ใช้มักต้อง login/authorize Xiaomi account ผ่าน browser</p>
+<p>แนวทางปลอดภัย:</p>
+<ul>
+<li>login ใน browser local ของเครื่องเจ้าของระบบ</li>
+<li>อย่าส่ง password, token, OAuth code, cookie หรือ 2FA ผ่าน chat</li>
+<li>ถ้ามี authorization code ให้ส่งเข้า backend ภายในเครื่อง ไม่ควรพิมพ์เผยแพร่</li>
+<li>ใช้ local HTTPS/self-signed เฉพาะใน trusted network ได้ แต่ต้องเข้าใจความเสี่ยง</li>
+</ul>
+<hr />
+</div>
+      <div class="doc-lang lang-en markdown-body" lang="en"><p>Miloco or another bridge used in this design will normally require the Xiaomi account to be logged in / authorized through a browser.</p>
+<p>Safer practice:</p>
+<ul>
+<li>Log in using a local browser on the system owner's machine.</li>
+<li>Do not send passwords, tokens, OAuth codes, cookies, or 2FA values through chat.</li>
+<li>If an authorization code is provided, submit it to the backend locally; do not publish or paste it publicly.</li>
+<li>Local HTTPS / self-signed certificates may be used inside a trusted network, but you must understand the associated risks.</li>
+</ul>
+<hr />
+</div>
+      <div class="section-footer-nav">
+        <button class="chapter-btn prev-btn" type="button"><span aria-hidden="true">←</span> <span class="lang-th">ก่อนหน้า</span><span class="lang-en">Previous</span></button>
+        <div class="chapter-counter"><span class="lang-th">13 / 21</span><span class="lang-en">13 / 21</span></div>
+        <button class="chapter-btn next-btn" type="button"><span class="lang-th">ถัดไป</span><span class="lang-en">Next</span> <span aria-hidden="true">→</span></button>
+      </div>
+    </section><section id="sec-14" class="content-section" data-step="14" data-ai-section="true" aria-labelledby="sec-14-title">
+      <div class="section-kicker"><span class="lang-th">บทที่ 14 จาก 21</span><span class="lang-en">Chapter 14 of 21</span></div>
+      <h2 id="sec-14-title"><span class="lang-th">14. Start service</span><span class="lang-en">14. Start the service</span></h2>
+      <div class="doc-lang lang-th markdown-body" lang="th"><p>ตัวอย่างคำสั่ง:</p>
+<pre><code class="language-bash">docker compose pull
+docker compose up -d
+</code></pre>
+<p>ถ้ามีการเปลี่ยน <code>.env</code> หรือแก้ค่า RTSP URL / camera ID / codec ให้ใช้ force recreate:</p>
+<pre><code class="language-bash">docker compose up -d --force-recreate micam-camera-1 micam-camera-2
+</code></pre>
+<p>ถ้าแก้ config ของ Miloco:</p>
+<pre><code class="language-bash">docker compose up -d --force-recreate miloco
+</code></pre>
+<p>ถ้าแก้ go2rtc config:</p>
+<pre><code class="language-bash">docker compose restart go2rtc
+</code></pre>
+<hr />
+</div>
+      <div class="doc-lang lang-en markdown-body" lang="en"><p>Example commands:</p>
+<pre><code class="language-bash">docker compose pull
+docker compose up -d
+</code></pre>
+<p>If <code>.env</code>, the RTSP URL, camera ID, or codec has changed, use force recreate:</p>
+<pre><code class="language-bash">docker compose up -d --force-recreate micam-camera-1 micam-camera-2
+</code></pre>
+<p>If the Miloco configuration changed:</p>
+<pre><code class="language-bash">docker compose up -d --force-recreate miloco
+</code></pre>
+<p>If the go2rtc configuration changed:</p>
+<pre><code class="language-bash">docker compose restart go2rtc
+</code></pre>
+<hr />
+</div>
+      <div class="section-footer-nav">
+        <button class="chapter-btn prev-btn" type="button"><span aria-hidden="true">←</span> <span class="lang-th">ก่อนหน้า</span><span class="lang-en">Previous</span></button>
+        <div class="chapter-counter"><span class="lang-th">14 / 21</span><span class="lang-en">14 / 21</span></div>
+        <button class="chapter-btn next-btn" type="button"><span class="lang-th">ถัดไป</span><span class="lang-en">Next</span> <span aria-hidden="true">→</span></button>
+      </div>
+    </section><section id="sec-15" class="content-section" data-step="15" data-ai-section="true" aria-labelledby="sec-15-title">
+      <div class="section-kicker"><span class="lang-th">บทที่ 15 จาก 21</span><span class="lang-en">Chapter 15 of 21</span></div>
+      <h2 id="sec-15-title"><span class="lang-th">15. วิธีตรวจว่า stream ใช้ได้จริง</span><span class="lang-en">15. Verify that the stream really works</span></h2>
+      <div class="doc-lang lang-th markdown-body" lang="th"><h3>15.1 ตรวจ container</h3>
+<pre><code class="language-bash">docker compose ps
+</code></pre>
+<p>ควรเห็น Miloco, go2rtc และ micam workers เป็น <code>running</code> หรือ <code>healthy</code></p>
+<h3>15.2 ตรวจ go2rtc API</h3>
+<pre><code class="language-bash">curl http://127.0.0.1:1984/api/streams
+</code></pre>
+<p>ควรเห็น stream มี <code>producers</code> และมี bytes เพิ่มขึ้น</p>
+<p>ตัวอย่างสิ่งที่ต้องการเห็น:</p>
+<pre><code class="language-text">&lt;STREAM_NAME&gt; producers 1 media video H265/H264 bytes_recv &gt; 0
+</code></pre>
+<h3>15.3 ตรวจ RTSP ด้วย ffprobe</h3>
+<pre><code class="language-bash">ffprobe -hide_banner -v error \
+  -rtsp_transport tcp \
+  -show_entries stream=codec_type,codec_name,width,height,avg_frame_rate \
+  -of json \
+  rtsp://&lt;VISION_SERVER_IP&gt;:8554/&lt;STREAM_NAME&gt;
+</code></pre>
+<p>ผลที่ดีควรเห็นประมาณ:</p>
+<pre><code class="language-json">{
+  &quot;streams&quot;: [
+    {
+      &quot;codec_name&quot;: &quot;hevc&quot;,
+      &quot;codec_type&quot;: &quot;video&quot;,
+      &quot;width&quot;: 1920,
+      &quot;height&quot;: 1080
+    }
+  ]
+}
+</code></pre>
+<h3>15.4 ดึง snapshot ทดสอบ</h3>
+<pre><code class="language-bash">ffmpeg -y \
+  -rtsp_transport tcp \
+  -i rtsp://&lt;VISION_SERVER_IP&gt;:8554/&lt;STREAM_NAME&gt; \
+  -frames:v 1 \
+  snapshot.jpg
+</code></pre>
+<p>ถ้าได้ JPEG จริง แปลว่า stream ใช้งานได้</p>
+<hr />
+</div>
+      <div class="doc-lang lang-en markdown-body" lang="en"><h3>15.1 Check containers</h3>
+<pre><code class="language-bash">docker compose ps
+</code></pre>
+<p>Miloco, go2rtc, and the micam workers should show as <code>running</code> or <code>healthy</code>.</p>
+<h3>15.2 Check the go2rtc API</h3>
+<pre><code class="language-bash">curl http://127.0.0.1:1984/api/streams
+</code></pre>
+<p>The stream should have <code>producers</code>, and the byte count should keep increasing.</p>
+<p>Example of what you want to see:</p>
+<pre><code class="language-text">&lt;STREAM_NAME&gt; producers 1 media video H265/H264 bytes_recv &gt; 0
+</code></pre>
+<h3>15.3 Check RTSP with ffprobe</h3>
+<pre><code class="language-bash">ffprobe -hide_banner -v error \
+  -rtsp_transport tcp \
+  -show_entries stream=codec_type,codec_name,width,height,avg_frame_rate \
+  -of json \
+  rtsp://&lt;VISION_SERVER_IP&gt;:8554/&lt;STREAM_NAME&gt;
+</code></pre>
+<p>A good result should look approximately like this:</p>
+<pre><code class="language-json">{
+  &quot;streams&quot;: [
+    {
+      &quot;codec_name&quot;: &quot;hevc&quot;,
+      &quot;codec_type&quot;: &quot;video&quot;,
+      &quot;width&quot;: 1920,
+      &quot;height&quot;: 1080
+    }
+  ]
+}
+</code></pre>
+<h3>15.4 Pull a test snapshot</h3>
+<pre><code class="language-bash">ffmpeg -y \
+  -rtsp_transport tcp \
+  -i rtsp://&lt;VISION_SERVER_IP&gt;:8554/&lt;STREAM_NAME&gt; \
+  -frames:v 1 \
+  snapshot.jpg
+</code></pre>
+<p>If a real JPEG file is produced, the stream is working.</p>
+<hr />
+</div>
+      <div class="section-footer-nav">
+        <button class="chapter-btn prev-btn" type="button"><span aria-hidden="true">←</span> <span class="lang-th">ก่อนหน้า</span><span class="lang-en">Previous</span></button>
+        <div class="chapter-counter"><span class="lang-th">15 / 21</span><span class="lang-en">15 / 21</span></div>
+        <button class="chapter-btn next-btn" type="button"><span class="lang-th">ถัดไป</span><span class="lang-en">Next</span> <span aria-hidden="true">→</span></button>
+      </div>
+    </section><section id="sec-16" class="content-section" data-step="16" data-ai-section="true" aria-labelledby="sec-16-title">
+      <div class="section-kicker"><span class="lang-th">บทที่ 16 จาก 21</span><span class="lang-en">Chapter 16 of 21</span></div>
+      <h2 id="sec-16-title"><span class="lang-th">16. เพิ่มเข้า Home Assistant dashboard</span><span class="lang-en">16. Add it to the Home Assistant dashboard</span></h2>
+      <div class="doc-lang lang-th markdown-body" lang="th"><p>ถ้าใช้ <code>custom:webrtc-camera</code> สามารถใช้ RTSP URL ผ่าน go2rtc ได้ เช่น:</p>
+<pre><code class="language-yaml">type: custom:webrtc-camera
+url: rtsp://&lt;VISION_SERVER_IP&gt;:8554/&lt;STREAM_NAME&gt;
+mode: webrtc
+muted: true
+ui: true
+title: Xiaomi Camera
+</code></pre>
+<p>หรือถ้า Home Assistant/go2rtc มีชื่อ stream ภายในอยู่แล้ว อาจใช้ชื่อ stream แทน URL ได้ ขึ้นกับการตั้งค่า go2rtc ของระบบนั้น</p>
+<hr />
+</div>
+      <div class="doc-lang lang-en markdown-body" lang="en"><p>If you use <code>custom:webrtc-camera</code>, you can use the RTSP URL through go2rtc, for example:</p>
+<pre><code class="language-yaml">type: custom:webrtc-camera
+url: rtsp://&lt;VISION_SERVER_IP&gt;:8554/&lt;STREAM_NAME&gt;
+mode: webrtc
+muted: true
+ui: true
+title: Xiaomi Camera
+</code></pre>
+<p>If Home Assistant / go2rtc already has an internal stream name configured, you may be able to use the stream name instead of the full URL, depending on the go2rtc configuration in that system.</p>
+<hr />
+</div>
+      <div class="section-footer-nav">
+        <button class="chapter-btn prev-btn" type="button"><span aria-hidden="true">←</span> <span class="lang-th">ก่อนหน้า</span><span class="lang-en">Previous</span></button>
+        <div class="chapter-counter"><span class="lang-th">16 / 21</span><span class="lang-en">16 / 21</span></div>
+        <button class="chapter-btn next-btn" type="button"><span class="lang-th">ถัดไป</span><span class="lang-en">Next</span> <span aria-hidden="true">→</span></button>
+      </div>
+    </section><section id="sec-17" class="content-section" data-step="17" data-ai-section="true" aria-labelledby="sec-17-title">
+      <div class="section-kicker"><span class="lang-th">บทที่ 17 จาก 21</span><span class="lang-en">Chapter 17 of 21</span></div>
+      <h2 id="sec-17-title"><span class="lang-th">17. เรื่อง PTZ</span><span class="lang-en">17. PTZ considerations</span></h2>
+      <div class="doc-lang lang-th markdown-body" lang="th"><p>กล้อง Xiaomi รุ่นเก่าบางรุ่นอาจไม่มี PTZ action ออกมาใน MIoT spec หรือ Home Assistant integration แม้ว่าตัวกล้องจริงจะหมุนได้ในแอป Xiaomi</p>
+<p>สิ่งที่อาจเห็นใน Home Assistant:</p>
+<ul>
+<li>stream start/stop buttons</li>
+<li>memory card actions</li>
+<li>image rollover</li>
+<li>night mode</li>
+<li>motion tracking status</li>
+<li>camera on/off</li>
+</ul>
+<p>แต่ไม่มี:</p>
+<ul>
+<li>move left</li>
+<li>move right</li>
+<li>move up</li>
+<li>move down</li>
+</ul>
+<p>ในกรณีนี้ไม่ควรสร้างปุ่ม PTZ หลอกหรือผูกกับปุ่มของกล้องตัวอื่น เพราะจะทำให้ผู้ใช้เข้าใจผิดหรือสั่งกล้องผิดตัว</p>
+<p>ถ้าจะทำ PTZ จริง ต้องมีอย่างใดอย่างหนึ่ง:</p>
+<ol>
+<li>Home Assistant expose button/action move ของกล้องนั้นโดยตรง</li>
+<li>MIoT action ที่ยืนยันแล้วว่าสั่ง pan/tilt ได้จริง</li>
+<li>API local/cloud ที่ทดสอบแล้วว่าสั่ง PTZ ได้</li>
+<li>script ที่เรียก API นั้นอย่างปลอดภัย โดยไม่เปิดเผย token/password</li>
+</ol>
+<hr />
+</div>
+      <div class="doc-lang lang-en markdown-body" lang="en"><p>Some older Xiaomi cameras may not expose PTZ actions in the MIoT specification or Home Assistant integration, even if the physical camera can rotate when controlled from the Xiaomi app.</p>
+<p>You may see the following in Home Assistant:</p>
+<ul>
+<li>stream start/stop buttons</li>
+<li>memory card actions</li>
+<li>image rollover</li>
+<li>night mode</li>
+<li>motion tracking status</li>
+<li>camera on/off</li>
+</ul>
+<p>But not:</p>
+<ul>
+<li>move left</li>
+<li>move right</li>
+<li>move up</li>
+<li>move down</li>
+</ul>
+<p>In this case, do not create fake PTZ buttons or bind the controls to buttons belonging to another camera. That could mislead the user or cause commands to be sent to the wrong camera.</p>
+<p>To implement real PTZ, at least one of the following must exist:</p>
+<ol>
+<li>Home Assistant directly exposes a move button/action for that camera.</li>
+<li>A MIoT action has been verified to perform pan/tilt for that camera.</li>
+<li>A tested local/cloud API can perform PTZ.</li>
+<li>A script safely calls that API without exposing tokens or passwords.</li>
+</ol>
+<hr />
+</div>
+      <div class="section-footer-nav">
+        <button class="chapter-btn prev-btn" type="button"><span aria-hidden="true">←</span> <span class="lang-th">ก่อนหน้า</span><span class="lang-en">Previous</span></button>
+        <div class="chapter-counter"><span class="lang-th">17 / 21</span><span class="lang-en">17 / 21</span></div>
+        <button class="chapter-btn next-btn" type="button"><span class="lang-th">ถัดไป</span><span class="lang-en">Next</span> <span aria-hidden="true">→</span></button>
+      </div>
+    </section><section id="sec-18" class="content-section" data-step="18" data-ai-section="true" aria-labelledby="sec-18-title">
+      <div class="section-kicker"><span class="lang-th">บทที่ 18 จาก 21</span><span class="lang-en">Chapter 18 of 21</span></div>
+      <h2 id="sec-18-title"><span class="lang-th">18. Troubleshooting</span><span class="lang-en">18. Troubleshooting</span></h2>
+      <div class="doc-lang lang-th markdown-body" lang="th"><h3>18.1 Login สำเร็จ แต่ไม่เห็น camera list</h3>
+<p>ตรวจ region:</p>
+<pre><code class="language-yaml">miot:
+  cloud_server: &quot;&lt;REGION&gt;&quot;
+</code></pre>
+<p>ตรวจว่า model อยู่ denylist หรือไม่</p>
+<hr />
+<h3>18.2 device list เห็นกล้อง แต่ camera list fail</h3>
+<p>อาจต้องเพิ่ม model ใน <code>camera_extra_info.yaml</code> และระบุ <code>channel_count</code></p>
+<hr />
+<h3>18.3 micam log ขึ้น WebSocket connected แต่ไม่มีภาพ</h3>
+<p>เป็นไปได้ว่า:</p>
+<ul>
+<li>region ผิด</li>
+<li>camera model ถูก denylist</li>
+<li>camera ID ผิด</li>
+<li>stream channel ผิด</li>
+<li>bridge ยังไม่ได้ authorize Xiaomi account</li>
+</ul>
+<hr />
+<h3>18.4 log ขึ้น Keyframe detected แต่ RTSP 404</h3>
+<p>มักเกิดจาก go2rtc ยังไม่มี empty stream path</p>
+<p>แก้โดยเพิ่ม:</p>
+<pre><code class="language-yaml">streams:
+  &lt;STREAM_NAME&gt;:
+</code></pre>
+<p>แล้ว restart go2rtc และ recreate micam container</p>
+<hr />
+<h3>18.5 FFmpeg Broken pipe</h3>
+<p>สาเหตุที่เจอบ่อย:</p>
+<ul>
+<li>go2rtc ไม่มี stream path ให้ publish</li>
+<li>micam publish ไปผิด host เช่น <code>127.0.0.1</code> ภายใน container ตัวเอง</li>
+<li>RTSP URL ควรชี้ไป host gateway หรือ network ที่ go2rtc ฟังอยู่</li>
+</ul>
+<p>ตัวอย่างที่ควรใช้ใน container แยก:</p>
+<pre><code class="language-env">CAMERA_1_RTSP_URL=rtsp://miloco:8554/&lt;STREAM_NAME_1&gt;
+</code></pre>
+<p>และต้องมี:</p>
+<pre><code class="language-yaml">extra_hosts:
+  - &quot;miloco:${MILOCO_HOST_IP:-host-gateway}&quot;
+</code></pre>
+<hr />
+<h3>18.6 แก้ .env แล้วไม่เปลี่ยน</h3>
+<p><code>docker compose restart</code> อาจไม่โหลด env ใหม่ ต้อง recreate:</p>
+<pre><code class="language-bash">docker compose up -d --force-recreate micam-camera-1
+</code></pre>
+<hr />
+<h3>18.7 codec ไม่ตรง</h3>
+<p>บางกล้องเป็น HEVC/H.265 บางกล้องเป็น H.264 ต้องดูจาก ffprobe หรือ logs</p>
+<p>ถ้า micam รองรับ parameter codec และต้อง override command อาจใช้:</p>
+<pre><code class="language-yaml">command: micam --video-codec h264
+</code></pre>
+<p>แต่ถ้า HEVC ใช้ได้ ให้ใช้ HEVC เพราะกล้อง Xiaomi รุ่นใหม่/บางรุ่นมักส่งเป็น H.265</p>
+<hr />
+</div>
+      <div class="doc-lang lang-en markdown-body" lang="en"><h3>18.1 Login succeeds but no camera list appears</h3>
+<p>Check the region:</p>
+<pre><code class="language-yaml">miot:
+  cloud_server: &quot;&lt;REGION&gt;&quot;
+</code></pre>
+<p>Check whether the model is in a denylist.</p>
+<hr />
+<h3>18.2 The device list sees the camera but the camera list fails</h3>
+<p>You may need to add the model to <code>camera_extra_info.yaml</code> and set <code>channel_count</code>.</p>
+<hr />
+<h3>18.3 micam log says WebSocket connected but there is no video</h3>
+<p>Possible causes:</p>
+<ul>
+<li>Wrong region.</li>
+<li>The camera model is in a denylist.</li>
+<li>Wrong camera ID.</li>
+<li>Wrong stream channel.</li>
+<li>The bridge has not yet authorized the Xiaomi account.</li>
+</ul>
+<hr />
+<h3>18.4 The log says Keyframe detected but RTSP returns 404</h3>
+<p>This usually means go2rtc does not yet have the empty stream path.</p>
+<p>Add:</p>
+<pre><code class="language-yaml">streams:
+  &lt;STREAM_NAME&gt;:
+</code></pre>
+<p>Then restart go2rtc and recreate the micam container.</p>
+<hr />
+<h3>18.5 FFmpeg Broken pipe</h3>
+<p>Common causes:</p>
+<ul>
+<li>go2rtc has no stream path available for publishing.</li>
+<li>micam publishes to the wrong host, for example <code>127.0.0.1</code> inside the micam container itself.</li>
+<li>The RTSP URL should point to the host gateway or the network interface where go2rtc is listening.</li>
+</ul>
+<p>Example for separate containers:</p>
+<pre><code class="language-env">CAMERA_1_RTSP_URL=rtsp://miloco:8554/&lt;STREAM_NAME_1&gt;
+</code></pre>
+<p>And you also need:</p>
+<pre><code class="language-yaml">extra_hosts:
+  - &quot;miloco:${MILOCO_HOST_IP:-host-gateway}&quot;
+</code></pre>
+<hr />
+<h3>18.6 Changes to .env do not take effect</h3>
+<p><code>docker compose restart</code> may not reload new environment variables. Recreate the container instead:</p>
+<pre><code class="language-bash">docker compose up -d --force-recreate micam-camera-1
+</code></pre>
+<hr />
+<h3>18.7 Codec mismatch</h3>
+<p>Some cameras use HEVC/H.265 and others use H.264. Check with ffprobe or the logs.</p>
+<p>If micam supports a codec parameter and the command must be overridden, you may use:</p>
+<pre><code class="language-yaml">command: micam --video-codec h264
+</code></pre>
+<p>If HEVC works, keep using HEVC because newer Xiaomi cameras / some Xiaomi models commonly output H.265.</p>
+<hr />
+</div>
+      <div class="section-footer-nav">
+        <button class="chapter-btn prev-btn" type="button"><span aria-hidden="true">←</span> <span class="lang-th">ก่อนหน้า</span><span class="lang-en">Previous</span></button>
+        <div class="chapter-counter"><span class="lang-th">18 / 21</span><span class="lang-en">18 / 21</span></div>
+        <button class="chapter-btn next-btn" type="button"><span class="lang-th">ถัดไป</span><span class="lang-en">Next</span> <span aria-hidden="true">→</span></button>
+      </div>
+    </section><section id="sec-19" class="content-section" data-step="19" data-ai-section="true" aria-labelledby="sec-19-title">
+      <div class="section-kicker"><span class="lang-th">บทที่ 19 จาก 21</span><span class="lang-en">Chapter 19 of 21</span></div>
+      <h2 id="sec-19-title"><span class="lang-th">19. ผลลัพธ์หลังแก้</span><span class="lang-en">19. Expected result after the fix</span></h2>
+      <div class="doc-lang lang-th markdown-body" lang="th"><p>หลังเปลี่ยนจาก cloud/HLS path มาเป็น local RTSP bridge ผลที่คาดหวังคือ:</p>
+<ul>
+<li>เปิดภาพใน Home Assistant ได้เร็วขึ้น</li>
+<li>delay ลดลงมาก</li>
+<li>ไม่มี delay สะสมจาก cloud/HLS path เดิม</li>
+<li>stream URL คงที่ เช่น <code>rtsp://&lt;VISION_SERVER_IP&gt;:8554/&lt;STREAM_NAME&gt;</code></li>
+<li>go2rtc เห็น producer ต่อเนื่อง</li>
+<li>dashboard ใช้ WebRTC card ดูภาพได้ใกล้ real-time มากขึ้น</li>
+</ul>
+<p>อย่างไรก็ตาม ยังมี latency เล็กน้อยตามปกติของ:</p>
+<ul>
+<li>codec เช่น H.265</li>
+<li>Wi-Fi/LAN</li>
+<li>browser decoding</li>
+<li>go2rtc/WebRTC pipeline</li>
+<li>CPU ของ Video Worker</li>
+</ul>
+<p>โดยทั่วไปแนวทางนี้ไม่ได้แปลว่า latency เป็นศูนย์ แต่แก้ปัญหา delay สะสมหลายวินาที/หลายนาทีจาก cloud path ได้อย่างชัดเจน</p>
+<hr />
+</div>
+      <div class="doc-lang lang-en markdown-body" lang="en"><p>After switching from the cloud/HLS path to a local RTSP bridge, the expected results are:</p>
+<ul>
+<li>Home Assistant can open the video more quickly.</li>
+<li>Delay is greatly reduced.</li>
+<li>There is no longer accumulated delay caused by the original cloud/HLS path.</li>
+<li>The stream URL is stable, for example <code>rtsp://&lt;VISION_SERVER_IP&gt;:8554/&lt;STREAM_NAME&gt;</code>.</li>
+<li>go2rtc continuously sees a producer.</li>
+<li>A WebRTC card on the dashboard can display video much closer to real time.</li>
+</ul>
+<p>However, a small amount of normal latency can still come from:</p>
+<ul>
+<li>The codec, such as H.265.</li>
+<li>Wi-Fi / LAN.</li>
+<li>Browser decoding.</li>
+<li>The go2rtc/WebRTC pipeline.</li>
+<li>CPU performance of the Video Worker.</li>
+</ul>
+<p>This approach does not mean latency becomes zero. Its purpose is to eliminate the large accumulated delay of several seconds or minutes caused by the cloud path.</p>
+<hr />
+</div>
+      <div class="section-footer-nav">
+        <button class="chapter-btn prev-btn" type="button"><span aria-hidden="true">←</span> <span class="lang-th">ก่อนหน้า</span><span class="lang-en">Previous</span></button>
+        <div class="chapter-counter"><span class="lang-th">19 / 21</span><span class="lang-en">19 / 21</span></div>
+        <button class="chapter-btn next-btn" type="button"><span class="lang-th">ถัดไป</span><span class="lang-en">Next</span> <span aria-hidden="true">→</span></button>
+      </div>
+    </section><section id="sec-20" class="content-section" data-step="20" data-ai-section="true" aria-labelledby="sec-20-title">
+      <div class="section-kicker"><span class="lang-th">บทที่ 20 จาก 21</span><span class="lang-en">Chapter 20 of 21</span></div>
+      <h2 id="sec-20-title"><span class="lang-th">20. Security Notes</span><span class="lang-en">20. Security Notes</span></h2>
+      <div class="doc-lang lang-th markdown-body" lang="th"><p>ห้ามเผยแพร่ข้อมูลเหล่านี้:</p>
+<ul>
+<li>Xiaomi username/password</li>
+<li>OAuth code</li>
+<li>token/cookie/session</li>
+<li>Home Assistant token</li>
+<li>public URL ของบ้านจริง</li>
+<li>IP จริงของบ้านหรือ VPN</li>
+<li>entity ID เฉพาะของระบบส่วนตัว</li>
+<li>ไฟล์ <code>.env</code> จริง</li>
+</ul>
+<p>ควรใช้ placeholder ในเอกสาร public:</p>
+<pre><code class="language-text">&lt;VISION_SERVER_IP&gt;
+&lt;HOME_ASSISTANT_URL&gt;
+&lt;CAMERA_DID&gt;
+&lt;STREAM_NAME&gt;
+&lt;REGION&gt;
+&lt;SECRET&gt;
+</code></pre>
+<hr />
+</div>
+      <div class="doc-lang lang-en markdown-body" lang="en"><p>Do not publish any of the following:</p>
+<ul>
+<li>Xiaomi username/password.</li>
+<li>OAuth code.</li>
+<li>token/cookie/session.</li>
+<li>Home Assistant token.</li>
+<li>The real public URL of the home system.</li>
+<li>The real home or VPN IP address.</li>
+<li>Private entity IDs specific to the system.</li>
+<li>The real <code>.env</code> file.</li>
+</ul>
+<p>Use placeholders in public documentation:</p>
+<pre><code class="language-text">&lt;VISION_SERVER_IP&gt;
+&lt;HOME_ASSISTANT_URL&gt;
+&lt;CAMERA_DID&gt;
+&lt;STREAM_NAME&gt;
+&lt;REGION&gt;
+&lt;SECRET&gt;
+</code></pre>
+<hr />
+</div>
+      <div class="section-footer-nav">
+        <button class="chapter-btn prev-btn" type="button"><span aria-hidden="true">←</span> <span class="lang-th">ก่อนหน้า</span><span class="lang-en">Previous</span></button>
+        <div class="chapter-counter"><span class="lang-th">20 / 21</span><span class="lang-en">20 / 21</span></div>
+        <button class="chapter-btn next-btn" type="button"><span class="lang-th">ถัดไป</span><span class="lang-en">Next</span> <span aria-hidden="true">→</span></button>
+      </div>
+    </section><section id="sec-21" class="content-section" data-step="21" data-ai-section="true" aria-labelledby="sec-21-title">
+      <div class="section-kicker"><span class="lang-th">บทที่ 21 จาก 21</span><span class="lang-en">Chapter 21 of 21</span></div>
+      <h2 id="sec-21-title"><span class="lang-th">21. สรุปสั้น</span><span class="lang-en">21. Short summary</span></h2>
+      <div class="doc-lang lang-th markdown-body" lang="th"><p>ปัญหาเดิมคือกล้อง Xiaomi รุ่นเก่าไม่มี RTSP local ที่ Home Assistant ใช้ได้ตรง ๆ จึงต้องดูผ่าน cloud/P2P/HLS path ซึ่งมี buffer หลายชั้นและเกิด delay สะสม</p>
+<p>วิธีแก้คือแยกเครื่อง Video Worker มารัน bridge ที่คุยกับ Xiaomi แล้ว publish วิดีโอออกมาเป็น RTSP local ผ่าน go2rtc จากนั้นให้ Home Assistant dashboard ดู RTSP/WebRTC จาก local network แทน cloud path เดิม</p>
+<p>ผลคือภาพ live เสถียรขึ้น delay ต่ำลง และลดปัญหาดีเลย์สะสมอย่างมาก</p>
+</div>
+      <div class="doc-lang lang-en markdown-body" lang="en"><p>The original problem is that older Xiaomi cameras may not provide direct local RTSP that Home Assistant can use. As a result, viewing has to pass through a cloud/P2P/HLS path with multiple buffering layers, which can cause accumulated delay.</p>
+<p>The solution is to use a separate Video Worker running a bridge that communicates with Xiaomi and publishes the video as local RTSP through go2rtc. Home Assistant then displays RTSP/WebRTC from the local network instead of using the original cloud path.</p>
+<p>The result is a more stable live view, lower latency, and a major reduction in accumulated delay.</p>
+</div>
+      <div class="section-footer-nav">
+        <button class="chapter-btn prev-btn" type="button"><span aria-hidden="true">←</span> <span class="lang-th">ก่อนหน้า</span><span class="lang-en">Previous</span></button>
+        <div class="chapter-counter"><span class="lang-th">21 / 21</span><span class="lang-en">21 / 21</span></div>
+        <button class="chapter-btn next-btn" type="button"><span class="lang-th">ถัดไป</span><span class="lang-en">Next</span> <span aria-hidden="true">→</span></button>
+      </div>
+    </section>
+    </div>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(()=>{
+  const root=document.documentElement;
+  const sidebar=document.getElementById('sidebar');
+  const backdrop=document.getElementById('backdrop');
+  const searchInput=document.getElementById('searchInput');
+  const searchResults=document.getElementById('searchResults');
+  const toast=document.getElementById('toast');
+  const navItems=[...document.querySelectorAll('.nav-item')];
+  const sections=[...document.querySelectorAll('.content-section')];
+  const langBtns=[document.getElementById('langTh'),document.getElementById('langEn')];
+  let currentIndex=0;
+
+  function lang(){return root.dataset.lang||'th'}
+  function showToast(th,en){
+    toast.textContent=lang()==='th'?th:en;
+    toast.classList.add('show');
+    clearTimeout(showToast.t); showToast.t=setTimeout(()=>toast.classList.remove('show'),1300);
+  }
+  function setLang(l){
+    root.dataset.lang=l; root.lang=l;
+    localStorage.setItem('xiaomi-manual-lang',l);
+    langBtns.forEach(b=>b.classList.toggle('active',b.dataset.setLang===l));
+    searchInput.placeholder=l==='th'?'ค้นหาในคู่มือ...':'Search this manual...';
+    searchInput.setAttribute('aria-label', l==='th'?'ค้นหาในคู่มือ':'Search manual');
+    if(searchInput.value.trim()) runSearch();
+  }
+  function openSection(id, push=true){
+    sections.forEach(s=>s.classList.toggle('active',s.id===id));
+    navItems.forEach(n=>n.classList.toggle('active',n.dataset.target===id));
+    const target=document.getElementById(id);
+    currentIndex=Number(target?.dataset.step||0);
+    updateChapterButtons();
+    if(push) history.replaceState(null,'','#'+id);
+    window.scrollTo({top:0,behavior:'instant'});
+    closeMenu();
+    searchResults.classList.remove('show');
+  }
+  function updateChapterButtons(){
+    document.querySelectorAll('.prev-btn').forEach((b)=>{
+      const sec=b.closest('.content-section'); const n=Number(sec.dataset.step);
+      b.disabled=n<=1; b.onclick=()=>openSection('sec-'+(n-1));
+    });
+    document.querySelectorAll('.next-btn').forEach((b)=>{
+      const sec=b.closest('.content-section'); const n=Number(sec.dataset.step);
+      b.disabled=n>=21; b.onclick=()=>openSection('sec-'+(n+1));
+    });
+  }
+  navItems.forEach(n=>n.addEventListener('click',()=>openSection(n.dataset.target)));
+  document.querySelectorAll('[data-jump]').forEach(b=>b.addEventListener('click',()=>openSection(b.dataset.jump)));
+  document.querySelectorAll('[data-set-lang]').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.setLang)));
+
+  const savedTheme=localStorage.getItem('xiaomi-manual-theme');
+  if(savedTheme) root.dataset.theme=savedTheme;
+  else if(matchMedia('(prefers-color-scheme: dark)').matches) root.dataset.theme='dark';
+  function updateThemeIcon(){document.getElementById('themeBtn').textContent=root.dataset.theme==='dark'?'☀':'☾'}
+  updateThemeIcon();
+  document.getElementById('themeBtn').addEventListener('click',()=>{
+    root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';
+    localStorage.setItem('xiaomi-manual-theme',root.dataset.theme); updateThemeIcon();
+  });
+
+  let fs=Number(localStorage.getItem('xiaomi-manual-font')||1);
+  function applyFont(){fs=Math.max(.88,Math.min(1.22,fs));root.style.setProperty('--font-scale',fs);localStorage.setItem('xiaomi-manual-font',fs)}
+  applyFont();
+  document.getElementById('fontDown').onclick=()=>{fs-=.06;applyFont()};
+  document.getElementById('fontUp').onclick=()=>{fs+=.06;applyFont()};
+
+  document.getElementById('menuBtn').onclick=()=>{sidebar.classList.toggle('open');backdrop.classList.toggle('show',sidebar.classList.contains('open'))};
+  backdrop.onclick=closeMenu;
+  function closeMenu(){sidebar.classList.remove('open');backdrop.classList.remove('show')}
+
+  // Add copy buttons to every code block in both languages.
+  document.querySelectorAll('pre').forEach(pre=>{
+    const btn=document.createElement('button'); btn.type='button'; btn.className='copy-btn'; btn.textContent='Copy';
+    btn.addEventListener('click',async()=>{
+      const code=pre.querySelector('code')?.innerText||pre.innerText.replace(/^Copy\n?/,'');
+      try{await navigator.clipboard.writeText(code);showToast('คัดลอกแล้ว','Copied')}
+      catch{
+        const ta=document.createElement('textarea');ta.value=code;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();showToast('คัดลอกแล้ว','Copied');
+      }
+    });
+    pre.prepend(btn);
+  });
+
+  function getLangText(sec){
+    const node=sec.querySelector(lang()==='th'?'.doc-lang.lang-th':'.doc-lang.lang-en');
+    return (node||sec).innerText.replace(/\s+/g,' ').trim();
+  }
+  function getTitle(sec){
+    if(sec.id==='sec-home') return lang()==='th'?'หน้าปก / วิธีใช้คู่มือ':'Cover / How to use';
+    const h=sec.querySelector('h2'); const n=h?.querySelector(lang()==='th'?'.lang-th':'.lang-en'); return n?.textContent||'';
+  }
+  function runSearch(){
+    const q=searchInput.value.trim().toLowerCase(); searchResults.innerHTML='';
+    if(q.length<2){searchResults.classList.remove('show');return}
+    const matches=sections.filter(sec=>{
+      const t=(getTitle(sec)+' '+getLangText(sec)).toLowerCase(); return t.includes(q);
+    }).slice(0,12);
+    if(!matches.length){
+      searchResults.innerHTML=`<div style="padding:11px;color:var(--muted);font-size:.82rem">${lang()==='th'?'ไม่พบคำที่ค้นหา':'No matches found'}</div>`;
+    } else {
+      matches.forEach(sec=>{
+        const text=getLangText(sec); const low=text.toLowerCase(); const at=low.indexOf(q); const start=Math.max(0,at-45); const snippet=(at>=0?text.slice(start,start+130):text.slice(0,130));
+        const b=document.createElement('button');b.className='search-result';b.type='button';
+        b.innerHTML=`<strong>${getTitle(sec)}</strong><small>${snippet.replace(/</g,'&lt;')}…</small>`;
+        b.onclick=()=>{openSection(sec.id);searchInput.value='';searchResults.classList.remove('show')}; searchResults.appendChild(b);
+      });
+    }
+    searchResults.classList.add('show');
+  }
+  searchInput.addEventListener('input',runSearch);
+  searchInput.addEventListener('keydown',e=>{if(e.key==='Escape'){searchInput.value='';searchResults.classList.remove('show');searchInput.blur()}});
+  document.addEventListener('keydown',e=>{
+    if(e.key==='/' && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){e.preventDefault();searchInput.focus()}
+    if(e.altKey && e.key==='ArrowRight' && currentIndex<21) openSection('sec-'+Math.max(1,currentIndex+1));
+    if(e.altKey && e.key==='ArrowLeft' && currentIndex>1) openSection('sec-'+(currentIndex-1));
+  });
+  document.getElementById('printBtn').onclick=()=>window.print();
+
+  const savedLang=localStorage.getItem('xiaomi-manual-lang')||'th'; setLang(savedLang);
+  const hash=location.hash?.replace('#',''); if(hash && document.getElementById(hash)) openSection(hash,false); else openSection('sec-home',false);
+  updateChapterButtons();
+})();
+</script>
+</body>
+</html>

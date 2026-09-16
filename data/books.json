@@ -1,5 +1,16 @@
 [
   {
+    "id": "xiaomi-legacy-camera-local-rtsp",
+    "title": "แก้ภาพดีเลย์กล้อง Xiaomi ด้วย Local RTSP Bridge",
+    "short_title": "ปลุกกล้อง Xiaomi เก่า",
+    "href": "xiaomi-legacy-camera-local-rtsp-interactive-manual.html",
+    "cover": "assets/covers/custom/xiaomi-legacy-camera-local-rtsp.webp",
+    "category": "Home Assistant",
+    "summary": "คู่มือ Interactive Reference Manual ภาษาไทย/อังกฤษสำหรับลด latency กล้อง Xiaomi รุ่นเก่าด้วย Local RTSP Bridge, go2rtc และ Home Assistant เพื่อให้สตรีมสดกลับมาใช้งานได้จริงแบบ low latency",
+    "accent": "#FF6900",
+    "published_at": "2026-09-16T23:07:54+07:00"
+  },
+  {
     "id": "grok-bot-cli-usage-router-manual",
     "title": "ใช้ Grok Bot ให้คุ้มกว่าเดิม — CLI Usage Router",
     "short_title": "ใช้ Grok Bot ให้คุ้มกว่าเดิม",
