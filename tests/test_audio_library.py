@@ -15,9 +15,9 @@ class AudioLibraryTests(unittest.TestCase):
         self.page = render_audio_library(self.items)
 
     def test_playlist_catalog_is_complete_and_unique(self):
-        self.assertEqual(len(self.items), 59)
-        self.assertEqual(len({item["video_id"] for item in self.items}), 59)
-        self.assertEqual(len({item["youtube_url"] for item in self.items}), 59)
+        self.assertEqual(len(self.items), 60)
+        self.assertEqual(len({item["video_id"] for item in self.items}), 60)
+        self.assertEqual(len({item["youtube_url"] for item in self.items}), 60)
 
     def test_catalog_is_sorted_newest_first_with_playlist_order_as_tiebreak(self):
         expected = sorted(
@@ -25,7 +25,19 @@ class AudioLibraryTests(unittest.TestCase):
             key=lambda item: (-item["published_epoch_ms"], item["playlist_position"]),
         )
         self.assertEqual(self.items, expected)
-        self.assertEqual(self.items[0]["video_id"], "DFGRUCcA6Rg")
+        self.assertEqual(self.items[0]["video_id"], "HWwsNouYMbw")
+
+    def test_latest_checkmate_ai_storyboard_podcast_metadata(self):
+        item = next(item for item in self.items if item["video_id"] == "HWwsNouYMbw")
+        self.assertEqual(item["video_id"], "HWwsNouYMbw")
+        self.assertEqual(item["title"], "Checkmate: วิวัฒนาการ AI 6 ขั้น บนกระดานหมากรุกมนุษย์")
+        self.assertEqual(item["youtube_url"], "https://www.youtube.com/watch?v=HWwsNouYMbw&list=PLiC0CkxoTk9TKjqaZG8n_1EXaiHKTOxFl")
+        self.assertEqual(item["cover"], "assets/audio-covers/HWwsNouYMbw.jpg")
+        self.assertEqual(item["duration_seconds"], 980)
+        self.assertEqual(item["published_epoch_ms"], 1789536086000)
+        self.assertEqual(item["published_at"], "2026-09-16T12:21:26+07:00")
+        self.assertEqual(item["playlist_position"], 1)
+        self.assertEqual(item["uploader"], "manny calavara")
 
     def test_latest_ai_quantum_computing_equalizer_podcast_metadata(self):
         item = next(item for item in self.items if item["video_id"] == "DFGRUCcA6Rg")
@@ -36,7 +48,7 @@ class AudioLibraryTests(unittest.TestCase):
         self.assertEqual(item["duration_seconds"], 4176)
         self.assertEqual(item["published_epoch_ms"], 1789371606000)
         self.assertEqual(item["published_at"], "2026-09-14T14:40:06+07:00")
-        self.assertEqual(item["playlist_position"], 1)
+        self.assertEqual(item["playlist_position"], 2)
         self.assertEqual(item["uploader"], "manny calavara")
 
     def test_latest_what_i_do_storyboard_podcast_metadata(self):
@@ -48,7 +60,7 @@ class AudioLibraryTests(unittest.TestCase):
         self.assertEqual(item["duration_seconds"], 2025)
         self.assertEqual(item["published_epoch_ms"], 1788974439000)
         self.assertEqual(item["published_at"], "2026-09-10T01:20:39+07:00")
-        self.assertEqual(item["playlist_position"], 2)
+        self.assertEqual(item["playlist_position"], 3)
         self.assertEqual(item["uploader"], "manny calavara")
 
     def test_latest_ai_clone_identity_storyboard_podcast_metadata(self):
@@ -60,7 +72,7 @@ class AudioLibraryTests(unittest.TestCase):
         self.assertEqual(item["duration_seconds"], 1414)
         self.assertEqual(item["published_epoch_ms"], 1788581398000)
         self.assertEqual(item["published_at"], "2026-09-05T11:09:58+07:00")
-        self.assertEqual(item["playlist_position"], 4)
+        self.assertEqual(item["playlist_position"], 5)
         self.assertEqual(item["uploader"], "manny calavara")
 
     def test_latest_hermes_agent_business_automation_podcast_metadata(self):
@@ -72,7 +84,7 @@ class AudioLibraryTests(unittest.TestCase):
         self.assertEqual(item["duration_seconds"], 1422)
         self.assertEqual(item["published_epoch_ms"], 1788516294000)
         self.assertEqual(item["published_at"], "2026-09-04T17:04:54+07:00")
-        self.assertEqual(item["playlist_position"], 5)
+        self.assertEqual(item["playlist_position"], 6)
         self.assertEqual(item["uploader"], "manny calavara")
 
     def test_latest_demand_collapse_storyboard_podcast_metadata(self):
@@ -84,7 +96,7 @@ class AudioLibraryTests(unittest.TestCase):
         self.assertEqual(item["duration_seconds"], 701)
         self.assertEqual(item["published_epoch_ms"], 1788287042000)
         self.assertEqual(item["published_at"], "2026-09-02T01:24:02+07:00")
-        self.assertEqual(item["playlist_position"], 6)
+        self.assertEqual(item["playlist_position"], 7)
         self.assertEqual(item["uploader"], "manny calavara")
 
     def test_latest_human_ai_communication_v1_podcast_metadata(self):
@@ -96,7 +108,7 @@ class AudioLibraryTests(unittest.TestCase):
         self.assertEqual(item["duration_seconds"], 1335)
         self.assertEqual(item["published_epoch_ms"], 1788272261000)
         self.assertEqual(item["published_at"], "2026-09-01T21:17:41+07:00")
-        self.assertEqual(item["playlist_position"], 7)
+        self.assertEqual(item["playlist_position"], 8)
         self.assertEqual(item["uploader"], "manny calavara")
 
     def test_latest_grok_ai_beginner_podcast_metadata(self):
@@ -108,7 +120,7 @@ class AudioLibraryTests(unittest.TestCase):
         self.assertEqual(item["duration_seconds"], 1127)
         self.assertEqual(item["published_epoch_ms"], 1787947245000)
         self.assertEqual(item["published_at"], "2026-08-29T03:00:45+07:00")
-        self.assertEqual(item["playlist_position"], 8)
+        self.assertEqual(item["playlist_position"], 9)
         self.assertEqual(item["uploader"], "manny calavara")
 
     def test_latest_alex_finn_ai_army_podcast_metadata(self):
@@ -120,7 +132,7 @@ class AudioLibraryTests(unittest.TestCase):
         self.assertEqual(item["duration_seconds"], 753)
         self.assertEqual(item["published_epoch_ms"], 1787944693000)
         self.assertEqual(item["published_at"], "2026-08-29T02:18:13+07:00")
-        self.assertEqual(item["playlist_position"], 9)
+        self.assertEqual(item["playlist_position"], 10)
         self.assertEqual(item["uploader"], "manny calavara")
 
     def test_latest_agent_reach_podcast_metadata(self):
@@ -132,7 +144,7 @@ class AudioLibraryTests(unittest.TestCase):
         self.assertEqual(item["duration_seconds"], 1375)
         self.assertEqual(item["published_epoch_ms"], 1787830592000)
         self.assertEqual(item["published_at"], "2026-08-27T18:36:32+07:00")
-        self.assertEqual(item["playlist_position"], 10)
+        self.assertEqual(item["playlist_position"], 11)
         self.assertEqual(item["uploader"], "manny calavara")
 
     def test_latest_grok_claude_codex_podcast_metadata(self):
@@ -144,14 +156,14 @@ class AudioLibraryTests(unittest.TestCase):
         self.assertEqual(item["duration_seconds"], 1223)
         self.assertEqual(item["published_epoch_ms"], 1787812109000)
         self.assertEqual(item["published_at"], "2026-08-27T13:28:29+07:00")
-        self.assertEqual(item["playlist_position"], 11)
+        self.assertEqual(item["playlist_position"], 12)
         self.assertEqual(item["uploader"], "manny calavara")
 
     def test_latest_hermes_inside_podcast_metadata(self):
         item = next(item for item in self.items if item["video_id"] == "4zmH_6gM4h4")
         self.assertEqual(item["title"], "ในหัวของ Hermes มีอะไร? แกะระบบ AI Agent ให้คนทั่วไปเข้าใจ | ฉบับแก้ไข")
         self.assertEqual(item["duration_seconds"], 2029)
-        self.assertEqual(item["playlist_position"], 13)
+        self.assertEqual(item["playlist_position"], 14)
         self.assertEqual(item["uploader"], "manny calavara")
 
     def test_latest_vault_ai_safety_podcast_metadata(self):
@@ -159,7 +171,7 @@ class AudioLibraryTests(unittest.TestCase):
         self.assertEqual(item["video_id"], "lL2eb4GeoAU")
         self.assertEqual(item["title"], "คุม AI ไม่ให้พลาด: กรอบ VAULT สำหรับระบบที่ตรวจสอบได้และควบคุมความเสี่ยง")
         self.assertEqual(item["duration_seconds"], 1592)
-        self.assertEqual(item["playlist_position"], 12)
+        self.assertEqual(item["playlist_position"], 13)
         self.assertEqual(item["uploader"], "manny calavara")
 
     def test_dead_air_replacement_supersedes_old_public_video(self):
@@ -177,12 +189,12 @@ class AudioLibraryTests(unittest.TestCase):
             self.assertGreater(cover.stat().st_size, 500, cover)
 
     def test_page_renders_all_items_with_dates_durations_and_new_tabs(self):
-        self.assertEqual(self.page.count('class="book-card audio-card"'), 59)
-        self.assertEqual(self.page.count('target="_blank"'), 61)  # 59 items + playlist button + footer social link
-        self.assertEqual(self.page.count('rel="noopener"'), 61)
+        self.assertEqual(self.page.count('class="book-card audio-card"'), 60)
+        self.assertEqual(self.page.count('target="_blank"'), 62)  # 60 items + playlist button + footer social link
+        self.assertEqual(self.page.count('rel="noopener"'), 62)
         self.assertIn('class="footer-facebook-link"', self.page)
-        self.assertEqual(self.page.count('publish on '), 59)
-        self.assertEqual(self.page.count('class="audio-duration"'), 59)
+        self.assertEqual(self.page.count('publish on '), 60)
+        self.assertEqual(self.page.count('class="audio-duration"'), 60)
         self.assertIn('publish on 24/08/2026', self.page)
         self.assertIn('25:42', self.page)
 
@@ -212,18 +224,18 @@ class AudioLibraryTests(unittest.TestCase):
             self.assertIn(marker, script)
         self.assertIn(".audio-disclosure-controls", stylesheet)
         self.assertIn(".audio-year-filters", stylesheet)
-        self.assertEqual(self.page.count('class="book-card audio-card"'), 59)
+        self.assertEqual(self.page.count('class="book-card audio-card"'), 60)
         self.assertNotIn('class="book-card audio-card" hidden', self.page)
 
     def test_audio_covers_show_full_four_by_three_thumbnail_over_play_panel(self):
-        self.assertEqual(self.page.count('class="audio-thumbnail-frame"'), 59)
-        self.assertEqual(self.page.count('class="audio-play-panel"'), 59)
-        self.assertEqual(self.page.count('class="audio-play-button"'), 59)
+        self.assertEqual(self.page.count('class="audio-thumbnail-frame"'), 60)
+        self.assertEqual(self.page.count('class="audio-play-panel"'), 60)
+        self.assertEqual(self.page.count('class="audio-play-button"'), 60)
 
     def test_audio_cards_are_ipods_without_audio_book_kickers(self):
         self.assertNotIn("AUDIO BOOK", self.page)
-        self.assertEqual(self.page.count('class="book-cover-wrap audio-cover-wrap audio-ipod"'), 59)
-        self.assertEqual(self.page.count('class="audio-click-wheel"'), 59)
+        self.assertEqual(self.page.count('class="book-cover-wrap audio-cover-wrap audio-ipod"'), 60)
+        self.assertEqual(self.page.count('class="audio-click-wheel"'), 60)
         stylesheet = (ROOT / "assets" / "css" / "audio-library.css").read_text(encoding="utf-8")
         self.assertIn(".audio-ipod", stylesheet)
         self.assertIn("aspect-ratio: 2 / 3;", stylesheet)
@@ -275,7 +287,7 @@ class AudioLibraryTests(unittest.TestCase):
 
     def test_duration_is_in_the_lower_panel_above_play(self):
         cards = self.page.split('<article class="book-card audio-card"')[1:]
-        self.assertEqual(len(cards), 59)
+        self.assertEqual(len(cards), 60)
         for card in cards:
             for marker in (
                 'class="audio-play-panel"',
@@ -291,11 +303,11 @@ class AudioLibraryTests(unittest.TestCase):
             self.assertLess(panel, duration)
             self.assertLess(duration, wheel)
             self.assertLess(wheel, play)
-        self.assertEqual(self.page.count('class="audio-play-label">PLAY'), 59)
+        self.assertEqual(self.page.count('class="audio-play-label">PLAY'), 60)
 
     def test_audio_text_is_above_each_book_cover(self):
         cards = self.page.split('<article class="book-card audio-card"')[1:]
-        self.assertEqual(len(cards), 59)
+        self.assertEqual(len(cards), 60)
         for card in cards:
             self.assertLess(card.index('class="book-meta audio-meta"'), card.index('class="book-cover-wrap audio-cover-wrap audio-ipod"'))
 

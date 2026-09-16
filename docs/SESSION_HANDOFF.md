@@ -1,46 +1,45 @@
 # Library Session Handoff
 
-Updated: 2026-09-14T14:40:06+07:00
+Updated: 2026-09-16T12:21:26+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
 - Branch: `main`.
-- Latest public work in this session: produced and published the podcast video **เอไอผสานขุมพลังควอนตัมคอมพิวติ้ง**.
-- New YouTube video ID: `DFGRUCcA6Rg`.
-- Audio Shelf catalog now has 59 audio entries locally, with the new video first/newest.
+- Latest public work in this session: produced and published the no-text storyboard podcast **Checkmate: วิวัฒนาการ AI 6 ขั้น บนกระดานหมากรุกมนุษย์**.
+- New YouTube video ID: `HWwsNouYMbw`.
+- Audio Shelf catalog now has 60 audio entries locally, with the new video first/newest.
 
 ## Podcast production
 
-- Source audio from the owner-supplied Drive folder was resolved as `เอไอผสานขุมพลังควอนตัมคอมพิวติ้ง.m4a`.
-- Source cover was resolved as `podcast cover quantum`.
-- The owner selected **Broadcast Edge Towers** from three motion proofs and explicitly approved full production, YouTube upload, Audio Shelf update, commit, and push without further confirmation.
-- Final MP4: H.264, 1920×1080, 30 fps, yuv420p; AAC stereo 48 kHz; duration 01:09:36.
-- Full decode passed and silence scan found no `silence_start` events at the scan threshold.
-- Representative frame QA showed no black/corrupt frames and edge equalizer towers did not block the cover’s main content.
+- Source audio was the owner-supplied Drive audio for the Checkmate / Six Stages of AI Evolution topic.
+- The owner selected **Option 5 — Quiet Luxury Business Documentary + Blueprint Systems** from the visual previews and approved end-to-end production without further confirmation.
+- Produced a 24-scene storyboard still-image set with no visual captions, title cards, lower thirds, logos, watermarks, or frame overlays.
+- Final MP4: H.264, 1920×1080, 30 fps, yuv420p; AAC stereo 48 kHz; duration 16:19/16:20 display.
+- Full decode passed, silence scan found no unexplained long dead-air issue, and representative frame QA showed no black/corrupt frames or embedded text overlays.
 
 ## YouTube publication
 
-- Uploaded through the Library YouTube Studio browser session on channel **manny calavara**.
-- Title: `เอไอผสานขุมพลังควอนตัมคอมพิวติ้ง`.
+- Uploaded through the Library YouTube Studio browser/CDP session on channel **manny calavara**.
+- Title: `Checkmate: วิวัฒนาการ AI 6 ขั้น บนกระดานหมากรุกมนุษย์`.
 - Visibility: Public.
 - Audience: Not made for kids.
 - Playlist selected in Studio: `tech (Ai)`.
-- Studio checks: copyright no issues found before publication.
-- Public oEmbed read-back returned exact title, author `manny calavara`, and thumbnail URL for `DFGRUCcA6Rg`.
+- Studio checks: copyright checks complete with no issues found before publication.
+- Public read-back verified video ID `HWwsNouYMbw`, exact title, author `manny calavara`, public watch page, and `tech (Ai)` playlist membership at position 1.
 
 ## Audio Shelf update
 
-- Added `DFGRUCcA6Rg` to `data/audio-books.json` as the newest item.
-- Cached the public 480×360 YouTube thumbnail at `assets/audio-covers/DFGRUCcA6Rg.jpg`.
+- Added `HWwsNouYMbw` to `data/audio-books.json` as the newest item.
+- Cached a 480×360 local Audio Shelf cover at `assets/audio-covers/HWwsNouYMbw.jpg`.
 - Regenerated `audio-library.html`.
-- Local browser/CDP checks confirmed 59 audio cards, the new title first, correct YouTube URL, 480×360 cover, and zero horizontal overflow on desktop and mobile.
+- Local browser/CDP checks confirmed 60 audio cards, the new title first, correct YouTube playlist URL, 480×360 cover, duration `16:20`, date `publish on 16/09/2026`, search present, and zero horizontal overflow on desktop and mobile.
 
 ## Verification completed
 
-- `python -m unittest discover -s tests -v` → OK, 144 tests.
+- `python -m unittest discover -s tests -v` → OK, 145 tests.
 - `python scripts/build_catalog.py --check` → current, 36 books.
-- `python scripts/build_audio_library.py --check` → current, 59 audio books.
+- `python scripts/build_audio_library.py --check` → current, 60 audio books.
 - `python scripts/build_app_library.py --check` → current, 9 apps.
 - `python scripts/build_gallery.py --check` → current, 8 artworks.
 - `git diff --check` → OK.
@@ -49,4 +48,4 @@ Updated: 2026-09-14T14:40:06+07:00
 
 - Private working media and render scripts remain outside the public repository.
 - Private workspace content remains untracked and must not be committed.
-- A temporary local HTTP server may be running for preview until cleaned up at session close.
+- A temporary local HTTP preview server and YouTube Studio browser process may be running until cleaned up at session close.
