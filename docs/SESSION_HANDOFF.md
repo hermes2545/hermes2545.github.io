@@ -1,13 +1,13 @@
 # Library Session Handoff
 
-Updated: 2026-09-16T23:07:54+07:00
+Updated: 2026-09-16T23:25:00+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
 - Branch: `main`.
-- Latest local Reading work: added the owner-supplied **แก้ภาพดีเลย์กล้อง Xiaomi ด้วย Local RTSP Bridge** manual and cover to the Reading shelf.
-- Publication state: local verified only; public push/publish remains pending explicit Reading approval.
+- Latest published Reading work: **แก้ภาพดีเลย์กล้อง Xiaomi ด้วย Local RTSP Bridge**.
+- Publication state: content commit `1f17b72541a9f2f2f37d307b4233d336d5e7e971` pushed to both public and private remotes and production-verified.
 
 ## Reading Shelf update
 
@@ -26,17 +26,18 @@ Updated: 2026-09-16T23:07:54+07:00
 
 - TDD RED: focused Xiaomi Reading test failed before the catalog/HTML/cover existed.
 - Focused Xiaomi test after implementation: `python -m unittest tests.test_xiaomi_legacy_camera_local_rtsp_reading -v` → OK, 3 tests.
-- Full suite: `python -m unittest discover -s tests -v` → OK, 148 tests.
-- `python scripts/build_catalog.py --check` → current, 37 books.
-- `python scripts/build_audio_library.py --check` → current, 60 audio books.
-- `python scripts/build_app_library.py --check` → current, 9 apps.
-- `python scripts/build_gallery.py --check` → current, 8 artworks.
+- Full suite before commit: `python -m unittest discover -s tests -v` → OK, 148 tests.
+- Generated-page checks before commit: Reading current at 37 books, Audio current at 60 audio books, App current at 9 apps, Gallery current at 8 artworks.
 - `git diff --check` → OK.
 - Public-safety scan over intended public files → OK; no concrete private paths, cache IDs, token patterns, or image metadata leaks.
-- Playwright local browser checks at 1365×900 and 390×844 → OK: 37 Reading cards, Xiaomi card first, 600×900 cover loaded, Home Assistant plaque filter works, manual has 22 nav items / 22 content sections, and shelf/manual horizontal overflow is zero.
+- Local Playwright checks at 1365×900 and 390×844 → OK: 37 Reading cards, Xiaomi card first, 600×900 cover loaded, Home Assistant plaque filter works, manual has 22 nav items / 22 content sections, and shelf/manual horizontal overflow is zero.
+- Remote HEAD verification: local `main`, `origin/main`, and `backup/main` matched `1f17b72541a9f2f2f37d307b4233d336d5e7e971`.
+- Production HTTP read-back hash-matched Local for `index.html`, the Xiaomi manual, and the cover.
+- Production Playwright desktop/mobile checks confirmed 37 Reading cards, Xiaomi first/newest, working Home Assistant filter, 22-section manual, 600×900 cover, zero overflow, and no console/page errors.
+- GitHub CLI Actions metadata was unavailable because `gh` was not authenticated; deployment verification used remote HEAD equality plus production hash/DOM read-back.
 
 ## Follow-up / local state
 
-- Ready for scoped commit and push when the owner explicitly approves Reading publication.
+- Documentation log/handoff were updated after publication; commit/push of this documentation follow-up may be the only remaining local change if not already completed.
 - Private `.hermes/` preview/test workspace remains untracked and must not be committed.
-- Temporary local HTTP preview server may still be running and should be stopped before session close.
+- No long-running preview server is required.
