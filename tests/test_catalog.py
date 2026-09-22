@@ -20,6 +20,7 @@ class CatalogTests(unittest.TestCase):
             Path("audio-library.html"),
             Path("app-library.html"),
             Path("gallery.html"),
+            Path("admin.html"),
         }
         html_files = {
             str(path.relative_to(ROOT))

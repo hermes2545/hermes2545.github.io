@@ -97,6 +97,14 @@ body::before {
 .site-nav a:hover { color: var(--ink); }
 .site-nav a[aria-current="page"] { color: var(--brass-light); border-bottom-color: var(--brass-light); }
 .site-nav a:focus-visible { outline: 3px solid #f3d7ae; outline-offset: 2px; }
+.cms-entry-link {
+  opacity: .42;
+  font-size: .72rem;
+}
+.cms-entry-link:hover,
+.cms-entry-link:focus-visible {
+  opacity: 1;
+}
 
 .library-header {
   position: relative;

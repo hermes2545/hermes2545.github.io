@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Knowledge Shelf CMS</title>
+  <link rel="icon" type="image/webp" href="assets/icons/shelfkeeper-librarian.webp">
+  <link rel="stylesheet" href="assets/css/library.css">
+  <style>
+    body { min-height: 100vh; margin: 0; font-family: Inter, system-ui, sans-serif; background: linear-gradient(135deg,#eef7f0,#f9f1df); color: #17251e; }
+    .admin-shell { width: min(1040px, calc(100% - 32px)); margin: 40px auto; display: grid; gap: 18px; }
+    .admin-card { border: 1px solid rgba(255,255,255,.7); border-radius: 28px; background: rgba(255,255,255,.62); box-shadow: 0 24px 80px rgba(31,52,39,.18); backdrop-filter: blur(24px) saturate(1.18); padding: clamp(20px, 4vw, 36px); }
+    .eyebrow { letter-spacing: .16em; text-transform: uppercase; font-size: .78rem; color: #68786c; font-weight: 800; }
+    h1 { font-size: clamp(2rem, 7vw, 4.2rem); margin: .2em 0; }
+    .auth-panel { display: grid; gap: 12px; }
+    .allowed { display: inline-flex; width: fit-content; border: 1px solid rgba(22,90,57,.2); border-radius: 999px; padding: .45rem .8rem; background: rgba(255,255,255,.55); font-weight: 700; }
+    .collection-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
+    .collection-tabs button { border: 0; border-radius: 999px; padding: .72rem 1rem; font-weight: 800; background: #17251e; color: #fff; cursor: pointer; }
+    .collection-tabs button[aria-pressed="true"] { background: #2b8a57; }
+    .cms-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    label { display: grid; gap: 6px; font-weight: 800; }
+    input, textarea, select { width: 100%; border: 1px solid rgba(23,37,30,.18); border-radius: 16px; padding: .8rem .95rem; font: inherit; box-sizing: border-box; background: rgba(255,255,255,.82); }
+    textarea { min-height: 110px; }
+    .primary-action { border: 0; border-radius: 20px; padding: 1rem 1.2rem; background: #0f6b42; color: white; font-weight: 900; cursor: pointer; }
+    .status { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; background: rgba(0,0,0,.08); border-radius: 16px; padding: 1rem; }
+  </style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script>
+    window.KNOWLEDGE_SHELF_CMS_CONFIG = {
+      // Google OAuth Web Client ID สำหรับหน้า public admin.html (ไม่ใช่ secret)
+      googleClientId: "60954178981-vmh3kganmefb85abvrr4s95mfpbvkddh.apps.googleusercontent.com",
+      apiBaseUrl: "http://127.0.0.1:8123",
+      // บัญชีจริงถูกบังคับซ้ำที่ backend ผ่าน CMS_ALLOWED_EMAIL; ไม่ฝังอีเมลเจ้าของใน public page
+      allowedEmail: ""
+    };
+  </script>
+  <script src="assets/js/admin-cms.js" defer></script>
+</head>
+<body>
+  <main class="admin-shell">
+    <section class="admin-card">
+      <p class="eyebrow">Google Identity Services · Owner CMS</p>
+      <h1>Knowledge Shelf CMS</h1>
+      <p>หลังบ้านสำหรับเพิ่มหนังสือ HTML พร้อมปก และต่อยอดใช้รูปแบบเดียวกันกับหนังสือเสียง แกลอรี่ และ App โดย token สำหรับ GitHub จะอยู่เฉพาะ backend เท่านั้น ไม่ฝังในหน้าเว็บ public</p>
+      <p class="allowed">บัญชีที่อนุญาต: Owner Google account ที่ตั้งค่าใน backend</p>
+      <div class="auth-panel">
+        <div id="g_id_onload" data-client_id="60954178981-vmh3kganmefb85abvrr4s95mfpbvkddh.apps.googleusercontent.com" data-callback="handleGoogleCredential" data-auto_prompt="false"></div>
+        <div class="g_id_signin" data-type="standard" data-theme="outline" data-size="large" data-text="signin_with" data-shape="pill"></div>
+        <p id="auth-status">ยังไม่ได้เข้าสู่ระบบ</p>
+      </div>
+    </section>
+
+    <section class="admin-card" id="cms-panel" hidden>
+      <p class="eyebrow">Upload target</p>
+      <div class="collection-tabs" role="tablist" aria-label="เลือก Collection">
+        <button type="button" data-collection="reading" aria-pressed="true">หนังสืออ่าน</button>
+        <button type="button" data-collection="audio" aria-pressed="false">หนังสือฟัง</button>
+        <button type="button" data-collection="gallery" aria-pressed="false">Gallery</button>
+        <button type="button" data-collection="app" aria-pressed="false">App</button>
+      </div>
+      <form id="reading-form">
+        <div class="cms-grid">
+          <label>HTML หนังสือ <input required type="file" name="html" accept=".html,text/html"></label>
+          <label>ปกหนังสือ <input required type="file" name="cover" accept="image/png,image/jpeg,image/webp"></label>
+          <label>ID/Slug <input required name="id" placeholder="my-new-book"></label>
+          <label>ชื่อเต็ม <input required name="title" placeholder="ชื่อหนังสือเต็ม"></label>
+          <label>ชื่อสั้นบนชั้น <input required name="short_title" placeholder="ชื่อสั้น"></label>
+          <label>Category <input required name="category" placeholder="AI Operations"></label>
+          <label>Accent <input required name="accent" value="#0B5ED7" pattern="#[0-9A-Fa-f]{6}"></label>
+          <label>Published at <input required name="published_at" placeholder="2026-09-18T10:00:00+07:00"></label>
+        </div>
+        <label>Summary <textarea required name="summary" placeholder="สรุปสั้นสำหรับการ์ดบนชั้นหนังสือ"></textarea></label>
+        <button class="primary-action" type="submit">Publish Reading Book</button>
+      </form>
+      <p>Collection อื่นใช้ backend/auth/publish stack เดียวกัน แต่ metadata validator แตกต่างกัน: Audio ใช้ YouTube metadata, Gallery ใช้ภาพ artwork, App ใช้ runtime/sticker/provenance</p>
+      <pre class="status" id="cms-status">พร้อมทำงาน</pre>
+    </section>
+  </main>
+</body>
+</html>

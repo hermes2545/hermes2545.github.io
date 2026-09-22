@@ -1,44 +1,60 @@
 # Library Session Handoff
 
-Updated: 2026-09-22T23:16:00+07:00
+Updated: 2026-09-22T23:25:00+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
 - Branch: `main`.
-- Latest published Reading work: **Hermes Bot Cheat Code — Practical Guide / Playbook**.
-- Publication state: content commit `17d580cd4a64bedc0a385a3dd3a9a790962c655c` pushed to both public and private remotes and production-verified.
-- GitHub Pages deployment: run `35751673424` completed successfully.
+- Latest published Reading work before this CMS commit: **Hermes Bot Cheat Code — Practical Guide / Playbook**.
+- Publication state of that Reading work: content commit `17d580cd4a64bedc0a385a3dd3a9a790962c655c` pushed to both public and private remotes and production-verified.
+- GitHub Pages deployment for that Reading work: run `35751673424` completed successfully.
+- Current CMS work is approved for commit/push by the owner in the current turn (`push ได้`).
+- The owner-only CMS has been pivoted away from Cloud Run/Billing and away from reusing existing Tailscale Serve URLs. Google Login/OAuth remains in use; the public admin page loads from GitHub Pages and calls the private loopback backend at `http://127.0.0.1:8123` on the same machine where the owner opens the browser.
 
-## Reading Shelf update
+## CMS work completed
 
-- Added `hermes-bot-cheat-code-practical-guide.html` as a byte-preserved owner-supplied HTML Reading guide.
-- HTML SHA-256: `2a2aa8ede49d4750e34f6f26c72759bfdf2d589ed5ebb881634895d2f0e373cb`.
-- Added the catalog record `hermes-bot-cheat-code-practical-guide` as the first/newest Reading book.
-- Shelf title: **Hermes Bot Cheat Code**.
-- Full title: **Hermes Bot Cheat Code — Practical Guide / Playbook**.
-- Category: **Hermes Guide**.
-- Cover: `assets/covers/custom/hermes-bot-cheat-code-practical-guide.webp`.
-- Cover processing: owner-supplied 1024×1536 RGB image resized to 600×900 RGB WebP, no crop/padding/recolor/text edits, EXIF/ICC stripped.
-- Cover SHA-256: `496d885a8e8bac12ef08d578216f867df25736347cf1d94cc584e8a05215f53f`.
-- Added regression coverage in `tests/test_hermes_bot_cheat_code_reading.py` and shifted older fixed-position Reading tests by one slot.
+- Added `admin.html` as a public-safe owner CMS shell with Google Identity Services login UI and collection tabs for Reading, Audio, Gallery, and App.
+- Added a small hidden `🔐` entry link in the Reading page template and regenerated `index.html`.
+- Added `assets/js/admin-cms.js` for Google credential handling, file-to-base64 upload payloads, collection tab UI, and Reading publish calls.
+- Added `cms_backend/`:
+  - `ingest.py`: shared collection registry, slug/path validation, public-safety scan, 600×900 EXIF-free WebP cover normalization, and Reading book staging.
+  - `auth.py`: Google ID token verification with `GOOGLE_OAUTH_CLIENT_ID` and backend-only `CMS_ALLOWED_EMAIL`.
+  - `publish.py`: GitHub Git API publication helper that creates one commit for explicit changed paths and can obtain a backend-only token from environment or the owner-authorized GitHub CLI.
+  - `server.py`: API with `/api/health`, `/api/collections`, `/api/reading/stage`, and `/api/reading/publish`.
+- Added `Dockerfile.cms` and `requirements-cms.txt` for optional container packaging; the default owner-only deployment no longer depends on Google Cloud Billing.
+- Added tests in `tests/test_cms_backend.py` and `tests/test_cms_publish.py`; updated `tests/test_catalog.py` to recognise `admin.html` as an intentional utility page.
+- Added/updated runbook `docs/wiki/runbooks/owner-cms-backend.md`, linked it from `docs/wiki/index.md`, and appended durable context to `docs/wiki/log.md`.
 
-## Verification completed
+## No-billing runtime deployment
 
-- TDD RED: focused Hermes Bot Cheat Code Reading test failed before the catalog/HTML/cover existed.
-- Focused test after implementation: `python -m unittest tests.test_hermes_bot_cheat_code_reading -v` → OK, 3 tests.
-- Full suite before commit: `python -m unittest discover -s tests -v` → OK, 151 tests.
-- Generated-page checks before commit: Reading current at 38 books, Audio current at 60 audio books, App current at 9 apps, Gallery current at 8 artworks.
+- Backend runs as user service `knowledge-shelf-cms.service` and is enabled.
+- Backend binds only to loopback on port `8123`.
+- No CMS route is exposed on the existing Tailscale Serve URL, because that URL belongs to other services on this server.
+- The intended production admin flow is `https://hermes2545.github.io/admin.html` calling `http://127.0.0.1:8123` from the same RDP/browser machine.
+- Verified health endpoint on loopback returned `{"ok": true, "service": "knowledge-shelf-cms"}`.
+- Runtime configuration and OAuth/GitHub credential material are not committed to the public repository. GitHub write access uses the already-authorized CLI token on the backend side, not the static page.
+
+## Design decisions / scope
+
+- One backend/auth/publish stack should serve all collections.
+- Reading is implemented first because it maps directly to owner-supplied HTML + cover + `data/books.json`.
+- Audio, Gallery, and App should not be separate CMS products; they should be separate collection validators/forms using the same Google-authenticated backend and GitHub publication path.
+- The public static files intentionally do not contain the owner email. The real owner account is configured privately via `CMS_ALLOWED_EMAIL` on the backend.
+- Do not return to Cloud Run/Cloud Build/Secret Manager/Artifact Registry for this owner-only CMS unless the owner explicitly asks for Google-hosted public backend infrastructure and accepts Billing.
+
+## Verification completed before CMS push
+
+- TDD RED: CMS backend tests initially failed before implementation; publish-helper token fallback test failed before implementation and passed after adding the `gh auth token` fallback.
+- Full suite: `python -m unittest discover -s tests -v` → OK, 158 tests.
+- Generated-page checks: Reading current at 38 books, Audio current at 60 audio books, App current at 9 apps, Gallery current at 8 artworks.
 - `git diff --check` → OK.
-- Public-safety scan over intended public files → OK; no concrete private paths, cache IDs, token patterns, or image metadata leaks.
-- Local Playwright checks at 1365×900 and 390×844 → OK: 38 Reading cards, Hermes Bot Cheat Code first, cover path/600×900 dimensions, manual has 11 sections / 11 nav buttons, and shelf/manual horizontal overflow is zero.
-- Remote HEAD verification: local commit, `origin/main`, and `backup/main` matched `17d580cd4a64bedc0a385a3dd3a9a790962c655c`.
-- Production HTTP read-back hash-matched Local for `index.html`, the manual, and the cover.
-- Production browser/CDP checks confirmed 38 Reading cards, the guide first/newest, download/read href parity, 11-section manual, 600×900 cover delivery, zero desktop/mobile overflow, and no console/page errors observed in the checked pages.
+- Pre-share scan found no owner email, real OAuth secret, real GitHub token, signed URL, or local absolute path in the new CMS public files. Remaining matches are intentional fake/test scanner strings in tests or older guide examples.
+- Local UI screenshots were produced at `/tmp/library-cms-preview/admin-latest-desktop.png` and `/tmp/library-cms-preview/admin-latest-mobile.png` for owner review.
 
-## Follow-up / local state
+## Remaining / next actions after push
 
-- Documentation log/index/handoff were updated after publication; commit/push of this documentation follow-up may be the only remaining local change if not already completed.
-- Private `.hermes/` project registry copied into the temporary worktree only for local tests; it remains untracked and must not be committed.
-- The temporary local preview server `proc_26dc18351c85` should be stopped if still running.
-- The primary project working tree still has pre-existing CMS/backend local changes unrelated to this Reading publication.
+- Verify public `https://hermes2545.github.io/admin.html` loads the CMS shell.
+- Verify local backend remains active on the owner's RDP machine before using the CMS.
+- Test a real owner-supplied Reading upload through the CMS when the owner provides the next HTML + cover.
+- `.hermes/` remains untracked/private and must not be committed.
