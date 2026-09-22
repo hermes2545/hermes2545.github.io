@@ -4,7 +4,7 @@ type: runbook
 status: active
 visibility: public
 created: 2026-09-18
-updated: 2026-09-18
+updated: 2026-09-23
 sources: [admin.html, assets/js/admin-cms.js, cms_backend/ingest.py, cms_backend/server.py, data/books.json]
 tags: [library, cms, google-oauth, github-pages]
 ---
@@ -16,7 +16,8 @@ This runbook describes the owner-only CMS path for adding public collection item
 ## Security model
 
 - The public static page `admin.html` never stores GitHub credentials, Google secrets, OAuth refresh tokens, or owner email addresses.
-- Google Sign-In produces an ID token in the browser.
+- Google Sign-In produces an ID token in the browser, but browser sign-in alone is not authorization.
+- The public admin page must call backend `GET /api/session` with the ID token before revealing the upload panel.
 - The private backend verifies the ID token against the configured OAuth Web Client ID.
 - The backend enforces the allowed owner account from the environment variable `CMS_ALLOWED_EMAIL`.
 - GitHub write credentials must live only in Google Secret Manager or another backend-only secret store.
@@ -57,6 +58,7 @@ The default deployment runs the private backend on the owner-controlled workstat
 - Google Identity Services signs the owner into the static page from `https://hermes2545.github.io`.
 - The static page calls the private backend at `http://127.0.0.1:8123` on the same machine/browser session.
 - `cms_backend.server` verifies the token and owner allowlist.
+- The admin UI does not show the upload panel until `/api/session` returns an owner-verified session.
 - The backend writes the existing catalog/source files and publishes changed paths to GitHub using backend-only GitHub credentials.
 - Existing Tailscale Serve paths/ports on the server must not be reused for the CMS unless the owner explicitly allocates a dedicated URL/port for it.
 
@@ -73,6 +75,7 @@ The repository includes:
 - `Dockerfile.cms` and `requirements-cms.txt` for optional container packaging.
 - `cms_backend/server.py` exposing:
   - `GET /api/health`.
+  - `GET /api/session` after Google auth, used by the admin UI to confirm the signed-in account is the configured owner before showing upload controls.
   - `GET /api/collections` after Google auth.
   - `POST /api/reading/stage` after Google auth.
   - `POST /api/reading/publish` after Google auth, which stages the Reading upload and creates one GitHub commit for the changed paths.

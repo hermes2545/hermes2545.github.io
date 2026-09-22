@@ -13,19 +13,31 @@
     return JSON.parse(decodeURIComponent(Array.prototype.map.call(atob(normalized), c => `%${(`00${c.charCodeAt(0).toString(16)}`).slice(-2)}`).join("")));
   }
 
-  window.handleGoogleCredential = (response) => {
+  window.handleGoogleCredential = async (response) => {
     try {
       const claims = decodeJwtPayload(response.credential);
-      if (config.allowedEmail && (claims.email || "").toLowerCase() !== (config.allowedEmail || "").toLowerCase()) {
-        setText("auth-status", "บัญชีนี้ไม่มีสิทธิ์ใช้งาน CMS นี้");
+      setText("auth-status", `กำลังตรวจสิทธิ์กับ backend: ${claims.email || "unknown"}`);
+      const session = await fetch(`${config.apiBaseUrl}/api/session`, {
+        method: "GET",
+        headers: { "authorization": `Bearer ${response.credential}` }
+      });
+      const data = await session.json();
+      if (!session.ok || !data.ok) {
+        idToken = "";
+        const panel = document.getElementById("cms-panel");
+        if (panel) panel.hidden = true;
+        setText("auth-status", `บัญชีนี้ไม่มีสิทธิ์ใช้งาน CMS นี้: ${data.error || session.status}`);
         return;
       }
       idToken = response.credential;
-      setText("auth-status", `เข้าสู่ระบบแล้ว: ${claims.email}`);
+      setText("auth-status", `เข้าสู่ระบบแล้วและยืนยันสิทธิ์ backend แล้ว: ${data.email || claims.email}`);
       const panel = document.getElementById("cms-panel");
       if (panel) panel.hidden = false;
     } catch (error) {
-      setText("auth-status", `อ่าน Google credential ไม่สำเร็จ: ${error.message}`);
+      idToken = "";
+      const panel = document.getElementById("cms-panel");
+      if (panel) panel.hidden = true;
+      setText("auth-status", `ตรวจสิทธิ์กับ backend ไม่สำเร็จ: ${error.message}`);
     }
   };
 

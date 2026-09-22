@@ -3,6 +3,7 @@ import json
 import re
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 from PIL import Image
@@ -114,6 +115,29 @@ class CmsBackendTests(unittest.TestCase):
         self.assertEqual(captured["status"], "204 No Content")
         self.assertEqual(captured["headers"]["Access-Control-Allow-Origin"], "https://hermes2545.github.io")
         self.assertEqual(captured["headers"]["Access-Control-Allow-Private-Network"], "true")
+
+    def test_session_endpoint_verifies_owner_before_revealing_admin_panel(self):
+        from cms_backend import server
+
+        captured = {}
+
+        def start_response(status, headers):
+            captured["status"] = status
+            captured["headers"] = dict(headers)
+
+        with mock.patch.object(server, "verify_owner_id_token", return_value={"email": "owner@example.com"}) as verify:
+            body = b"".join(server.application({"REQUEST_METHOD": "GET", "PATH_INFO": "/api/session", "HTTP_AUTHORIZATION": "Bearer owner-token"}, start_response))
+
+        verify.assert_called_once_with("owner-token")
+        self.assertEqual(captured["status"], "200 OK")
+        self.assertEqual(json.loads(body.decode("utf-8")), {"ok": True, "email": "owner@example.com"})
+
+    def test_admin_js_waits_for_backend_owner_verification_before_opening_panel(self):
+        script = (ROOT / "assets" / "js" / "admin-cms.js").read_text(encoding="utf-8")
+        self.assertIn('/api/session', script)
+        self.assertIn('idToken = response.credential;', script)
+        self.assertRegex(script, re.compile(r"fetch\(`\$\{config\.apiBaseUrl\}/api/session`"))
+        self.assertRegex(script, re.compile(r"if \(panel\) panel\.hidden = false;"))
 
     def test_admin_page_contains_hidden_entry_google_login_and_collection_tabs(self):
         admin = (ROOT / "admin.html").read_text(encoding="utf-8")

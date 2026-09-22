@@ -46,6 +46,9 @@ def application(environ, start_response):
     try:
         if method == "GET" and path == "/api/health":
             return _json(start_response, "200 OK", {"ok": True, "service": "knowledge-shelf-cms"})
+        if method == "GET" and path == "/api/session":
+            claims = _require_owner(environ)
+            return _json(start_response, "200 OK", {"ok": True, "email": claims.get("email", "")})
         if method == "GET" and path == "/api/collections":
             _require_owner(environ)
             return _json(start_response, "200 OK", {"collections": {key: config.__dict__ | {"catalog_path": str(config.catalog_path), "output_path": str(config.output_path)} for key, config in collection_registry().items()}})
