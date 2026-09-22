@@ -1,43 +1,44 @@
 # Library Session Handoff
 
-Updated: 2026-09-16T23:25:00+07:00
+Updated: 2026-09-22T23:16:00+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
 - Branch: `main`.
-- Latest published Reading work: **แก้ภาพดีเลย์กล้อง Xiaomi ด้วย Local RTSP Bridge**.
-- Publication state: content commit `1f17b72541a9f2f2f37d307b4233d336d5e7e971` pushed to both public and private remotes and production-verified.
+- Latest published Reading work: **Hermes Bot Cheat Code — Practical Guide / Playbook**.
+- Publication state: content commit `17d580cd4a64bedc0a385a3dd3a9a790962c655c` pushed to both public and private remotes and production-verified.
+- GitHub Pages deployment: run `35751673424` completed successfully.
 
 ## Reading Shelf update
 
-- Added `xiaomi-legacy-camera-local-rtsp-interactive-manual.html` as a byte-preserved owner-supplied HTML Reading guide.
-- HTML SHA-256: `5f561d60ef634b55e0ba7ac87d992186bad6a6b96e283c9c26670526238bd062`.
-- Added the catalog record `xiaomi-legacy-camera-local-rtsp` as the first/newest Reading book.
-- Shelf title: **ปลุกกล้อง Xiaomi เก่า**.
-- Full title: **แก้ภาพดีเลย์กล้อง Xiaomi ด้วย Local RTSP Bridge**.
-- Category: **Home Assistant**.
-- Cover: `assets/covers/custom/xiaomi-legacy-camera-local-rtsp.webp`.
+- Added `hermes-bot-cheat-code-practical-guide.html` as a byte-preserved owner-supplied HTML Reading guide.
+- HTML SHA-256: `2a2aa8ede49d4750e34f6f26c72759bfdf2d589ed5ebb881634895d2f0e373cb`.
+- Added the catalog record `hermes-bot-cheat-code-practical-guide` as the first/newest Reading book.
+- Shelf title: **Hermes Bot Cheat Code**.
+- Full title: **Hermes Bot Cheat Code — Practical Guide / Playbook**.
+- Category: **Hermes Guide**.
+- Cover: `assets/covers/custom/hermes-bot-cheat-code-practical-guide.webp`.
 - Cover processing: owner-supplied 1024×1536 RGB image resized to 600×900 RGB WebP, no crop/padding/recolor/text edits, EXIF/ICC stripped.
-- Cover SHA-256: `0b444f1bab3a1c83c17be08a99bbd9593333cb8c009c06ea371de88441c3a52e`.
-- Added regression coverage in `tests/test_xiaomi_legacy_camera_local_rtsp_reading.py` and shifted older fixed-position Reading tests by one slot.
+- Cover SHA-256: `496d885a8e8bac12ef08d578216f867df25736347cf1d94cc584e8a05215f53f`.
+- Added regression coverage in `tests/test_hermes_bot_cheat_code_reading.py` and shifted older fixed-position Reading tests by one slot.
 
 ## Verification completed
 
-- TDD RED: focused Xiaomi Reading test failed before the catalog/HTML/cover existed.
-- Focused Xiaomi test after implementation: `python -m unittest tests.test_xiaomi_legacy_camera_local_rtsp_reading -v` → OK, 3 tests.
-- Full suite before commit: `python -m unittest discover -s tests -v` → OK, 148 tests.
-- Generated-page checks before commit: Reading current at 37 books, Audio current at 60 audio books, App current at 9 apps, Gallery current at 8 artworks.
+- TDD RED: focused Hermes Bot Cheat Code Reading test failed before the catalog/HTML/cover existed.
+- Focused test after implementation: `python -m unittest tests.test_hermes_bot_cheat_code_reading -v` → OK, 3 tests.
+- Full suite before commit: `python -m unittest discover -s tests -v` → OK, 151 tests.
+- Generated-page checks before commit: Reading current at 38 books, Audio current at 60 audio books, App current at 9 apps, Gallery current at 8 artworks.
 - `git diff --check` → OK.
 - Public-safety scan over intended public files → OK; no concrete private paths, cache IDs, token patterns, or image metadata leaks.
-- Local Playwright checks at 1365×900 and 390×844 → OK: 37 Reading cards, Xiaomi card first, 600×900 cover loaded, Home Assistant plaque filter works, manual has 22 nav items / 22 content sections, and shelf/manual horizontal overflow is zero.
-- Remote HEAD verification: local `main`, `origin/main`, and `backup/main` matched `1f17b72541a9f2f2f37d307b4233d336d5e7e971`.
-- Production HTTP read-back hash-matched Local for `index.html`, the Xiaomi manual, and the cover.
-- Production Playwright desktop/mobile checks confirmed 37 Reading cards, Xiaomi first/newest, working Home Assistant filter, 22-section manual, 600×900 cover, zero overflow, and no console/page errors.
-- GitHub CLI Actions metadata was unavailable because `gh` was not authenticated; deployment verification used remote HEAD equality plus production hash/DOM read-back.
+- Local Playwright checks at 1365×900 and 390×844 → OK: 38 Reading cards, Hermes Bot Cheat Code first, cover path/600×900 dimensions, manual has 11 sections / 11 nav buttons, and shelf/manual horizontal overflow is zero.
+- Remote HEAD verification: local commit, `origin/main`, and `backup/main` matched `17d580cd4a64bedc0a385a3dd3a9a790962c655c`.
+- Production HTTP read-back hash-matched Local for `index.html`, the manual, and the cover.
+- Production browser/CDP checks confirmed 38 Reading cards, the guide first/newest, download/read href parity, 11-section manual, 600×900 cover delivery, zero desktop/mobile overflow, and no console/page errors observed in the checked pages.
 
 ## Follow-up / local state
 
-- Documentation log/handoff were updated after publication; commit/push of this documentation follow-up may be the only remaining local change if not already completed.
-- Private `.hermes/` preview/test workspace remains untracked and must not be committed.
-- No long-running preview server is required.
+- Documentation log/index/handoff were updated after publication; commit/push of this documentation follow-up may be the only remaining local change if not already completed.
+- Private `.hermes/` project registry copied into the temporary worktree only for local tests; it remains untracked and must not be committed.
+- The temporary local preview server `proc_26dc18351c85` should be stopped if still running.
+- The primary project working tree still has pre-existing CMS/backend local changes unrelated to this Reading publication.
