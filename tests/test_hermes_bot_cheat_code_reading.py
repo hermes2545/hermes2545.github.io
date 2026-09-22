@@ -8,11 +8,11 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-BOOK_ID = "xiaomi-legacy-camera-local-rtsp"
-HTML_PATH = ROOT / "xiaomi-legacy-camera-local-rtsp-interactive-manual.html"
+BOOK_ID = "hermes-bot-cheat-code-practical-guide"
+HTML_PATH = ROOT / "hermes-bot-cheat-code-practical-guide.html"
 COVER_PATH = ROOT / "assets" / "covers" / "custom" / f"{BOOK_ID}.webp"
-FINAL_HTML_SHA256 = "5f561d60ef634b55e0ba7ac87d992186bad6a6b96e283c9c26670526238bd062"
-COVER_SOURCE_SHA256 = "d4cc445cf3b7d8593ce084357206023e31f51e68c5b65ea3a63ae3860fa8b35a"
+FINAL_HTML_SHA256 = "2a2aa8ede49d4750e34f6f26c72759bfdf2d589ed5ebb881634895d2f0e373cb"
+COVER_SOURCE_SHA256 = "abc4533b68c6d493103681fa845d4fd59bf48ebe82d31038371ffd5095b29f16"
 PROHIBITED_PUBLIC_RE = re.compile(
     "|".join(
         [
@@ -29,33 +29,32 @@ PROHIBITED_PUBLIC_RE = re.compile(
 )
 
 
-class XiaomiLegacyCameraLocalRtspReadingTests(unittest.TestCase):
-    def test_catalog_contains_xiaomi_camera_manual_once_as_newest(self):
+class HermesBotCheatCodeReadingTests(unittest.TestCase):
+    def test_catalog_contains_hermes_bot_cheat_code_once_as_newest(self):
         books = json.loads((ROOT / "data" / "books.json").read_text(encoding="utf-8"))
         matches = [book for book in books if book["id"] == BOOK_ID]
         self.assertEqual(len(matches), 1)
         book = matches[0]
-        self.assertEqual(book["title"], "แก้ภาพดีเลย์กล้อง Xiaomi ด้วย Local RTSP Bridge")
-        self.assertEqual(book["short_title"], "ปลุกกล้อง Xiaomi เก่า")
-        self.assertEqual(book["href"], "xiaomi-legacy-camera-local-rtsp-interactive-manual.html")
+        self.assertEqual(book["title"], "Hermes Bot Cheat Code — Practical Guide / Playbook")
+        self.assertEqual(book["short_title"], "Hermes Bot Cheat Code")
+        self.assertEqual(book["href"], "hermes-bot-cheat-code-practical-guide.html")
         self.assertEqual(book["cover"], f"assets/covers/custom/{BOOK_ID}.webp")
-        self.assertEqual(book["category"], "Home Assistant")
-        self.assertEqual(book["published_at"], "2026-09-16T23:07:54+07:00")
-        self.assertIn("Local RTSP Bridge", book["summary"])
-        self.assertIn("go2rtc", book["summary"])
-        self.assertEqual(books[1]["id"], BOOK_ID)
+        self.assertEqual(book["category"], "Hermes Guide")
+        self.assertEqual(book["published_at"], "2026-09-22T22:58:39+07:00")
+        self.assertIn("สร้างทีม AI Agent", book["summary"])
+        self.assertEqual(books[0]["id"], BOOK_ID)
 
     def test_owner_supplied_html_is_preserved_and_public_safe(self):
         self.assertTrue(HTML_PATH.is_file())
         html_bytes = HTML_PATH.read_bytes()
         self.assertEqual(hashlib.sha256(html_bytes).hexdigest(), FINAL_HTML_SHA256)
         html = html_bytes.decode("utf-8")
-        self.assertIn("Xiaomi Legacy Camera Low-Latency Guide", html)
-        self.assertIn("แก้ปัญหากล้อง Xiaomi รุ่นเก่าภาพดีเลย์ด้วย Local RTSP Bridge", html)
-        self.assertIn("go2rtc", html)
-        self.assertEqual(len(re.findall(r'<section[^>]+class="content-section', html)), 22)
-        self.assertEqual(html.count('class="nav-item'), 22)
-        self.assertEqual(html.count('data-target="'), 22)
+        self.assertIn("Hermes Bot Cheat Code", html)
+        self.assertIn("สูตรโกงสร้างทีม AI ให้ทำงานแทนคุณ", html)
+        self.assertIn("เข้าใจ Bot Mode ก่อนสร้างทีม", html)
+        self.assertEqual(html.count('<section class="page'), 11)
+        self.assertEqual(html.count('data-target="'), 11)
+        self.assertEqual(html.count('class="nav-btn'), 11)
         self.assertNotRegex(html, PROHIBITED_PUBLIC_RE)
         scripts = "\n".join(
             body
@@ -81,10 +80,10 @@ class XiaomiLegacyCameraLocalRtspReadingTests(unittest.TestCase):
             self.assertEqual(image.mode, "RGB")
             self.assertEqual(getattr(image, "n_frames", 1), 1)
             self.assertEqual(dict(image.getexif()), {})
-            self.assertNotIn("exif", {key.lower() for key in image.info})
-            self.assertNotIn("icc_profile", {key.lower() for key in image.info})
+            self.assertNotIn("exif", {str(key).lower() for key in image.info})
+            self.assertNotIn("icc_profile", {str(key).lower() for key in image.info})
         self.assertGreater(COVER_PATH.stat().st_size, 30_000)
-        template = ROOT / "templates" / f"{BOOK_ID}-cover.template.md"
+        template = ROOT / "templates" / "hermes-bot-cheat-code-practical-guide-cover.template.md"
         self.assertTrue(template.is_file())
         template_text = template.read_text(encoding="utf-8")
         self.assertIn(COVER_SOURCE_SHA256, template_text)

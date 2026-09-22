@@ -1,5 +1,16 @@
 [
   {
+    "id": "hermes-bot-cheat-code-practical-guide",
+    "title": "Hermes Bot Cheat Code — Practical Guide / Playbook",
+    "short_title": "Hermes Bot Cheat Code",
+    "href": "hermes-bot-cheat-code-practical-guide.html",
+    "cover": "assets/covers/custom/hermes-bot-cheat-code-practical-guide.webp",
+    "category": "Hermes Guide",
+    "summary": "คู่มือ Practical Guide / Playbook สำหรับสร้างทีม AI Agent ด้วย Hermes Bot Mode แบบทำตามได้ทีละบท ตั้งแต่ Bot Mode, Soul, tools/MCP, model routing, memory, guardrails, orchestrator-specialist team และการฝึกทีมหลังงานจบ",
+    "accent": "#177B7C",
+    "published_at": "2026-09-22T22:58:39+07:00"
+  },
+  {
     "id": "xiaomi-legacy-camera-local-rtsp",
     "title": "แก้ภาพดีเลย์กล้อง Xiaomi ด้วย Local RTSP Bridge",
     "short_title": "ปลุกกล้อง Xiaomi เก่า",
