@@ -145,6 +145,7 @@ class CmsBackendTests(unittest.TestCase):
         self.assertIn("Google Identity Services", admin)
         self.assertIn("CMS_ALLOWED_EMAIL", admin)
         self.assertIn('apiBaseUrl: "http://127.0.0.1:8123"', admin)
+        self.assertIn('assets/js/admin-cms.js?v=cms-owner-session-v2', admin)
         self.assertRegex(admin, r'data-client_id="60954178981-[^"]+\.apps\.googleusercontent\.com"')
         self.assertNotIn('REPLACE_WITH_GOOGLE_OAUTH_WEB_CLIENT_ID', admin)
         self.assertNotRegex(admin, re.compile(r"[A-Za-z0-9._%+-]+@gmail\\.com", re.IGNORECASE))
