@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Web Anatomy — Interactive Reference Manual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf6ef; --bg2:#f2ecdf; --card:#ffffff; --ink:#22302e; --ink2:#5b6b68;
+  --line:#e4dccb; --accent:#0e7c6b; --accent2:#0a5d50; --amber:#e8a13d; --amberbg:#fdf3e2;
+  --hl:#d8efe9; --hl2:#bfe3da; --mut:#dfd8c8; --mut2:#cfc7b4; --shadow:0 2px 10px rgba(60,50,20,.07);
+  --demo:#f6f1e6; --frame:#fffdf8; --chip:#eef7f4;
+}
+[data-theme="dark"]{
+  --bg:#101817; --bg2:#0b1211; --card:#1a2422; --ink:#e8efec; --ink2:#9bafa9;
+  --line:#2c3a37; --accent:#3ecfb2; --accent2:#7fe6d2; --amber:#f0b860; --amberbg:#2c2415;
+  --hl:#16443c; --hl2:#1d5a4e; --mut:#314540; --mut2:#3d564f; --shadow:0 2px 12px rgba(0,0,0,.35);
+  --demo:#141d1b; --frame:#1f2b28; --chip:#16443c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;
+  background-image:radial-gradient(circle at 15% 0%, rgba(14,124,107,.06), transparent 40%),
+                   radial-gradient(circle at 90% 10%, rgba(232,161,61,.07), transparent 35%);}
+h1,h2,h3,.eng{font-family:'Chakra Petch','Sarabun',sans-serif}
+
+/* ===== Top bar ===== */
+.topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1180px;margin:0 auto;padding:12px 20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .mark{width:34px;height:34px;border-radius:9px;background:var(--accent);position:relative;flex:none}
+.brand .mark::before{content:"";position:absolute;inset:6px 6px 18px 6px;background:rgba(255,255,255,.85);border-radius:3px}
+.brand .mark::after{content:"";position:absolute;inset:18px 14px 6px 6px;background:rgba(255,255,255,.55);border-radius:3px}
+.brand b{font-family:'Chakra Petch';font-size:1.05rem;letter-spacing:.3px}
+.brand small{display:block;color:var(--ink2);font-size:.72rem;font-weight:400;margin-top:-3px}
+.search{flex:1;min-width:200px;max-width:420px;position:relative}
+.search input{width:100%;padding:9px 14px 9px 38px;border-radius:99px;border:1.5px solid var(--line);
+  background:var(--card);color:var(--ink);font-family:'Sarabun';font-size:.92rem;outline:none;transition:.2s}
+.search input:focus{border-color:var(--accent)}
+.search::before{content:"⌕";position:absolute;left:14px;top:50%;transform:translateY(-54%);font-size:1.15rem;color:var(--ink2)}
+.theme-btn{margin-left:auto;border:1.5px solid var(--line);background:var(--card);color:var(--ink);
+  border-radius:99px;padding:8px 16px;cursor:pointer;font-family:'Sarabun';font-size:.88rem;transition:.2s}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+@media(max-width:640px){
+  .topbar-in{padding:10px 14px;gap:10px}
+  .brand{flex:1}
+  .brand b{font-size:.95rem}
+  .theme-btn{margin-left:0;padding:7px 12px;font-size:.8rem}
+  .search{order:3;flex-basis:100%;max-width:none}
+}
+
+/* ===== Hero ===== */
+.hero{max-width:1180px;margin:0 auto;padding:42px 20px 8px}
+.hero h1{font-size:clamp(1.6rem,3.6vw,2.5rem);line-height:1.25}
+.hero h1 span{color:var(--accent)}
+.hero p{color:var(--ink2);max-width:760px;margin-top:8px}
+.hero .stats{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.hero .stat{background:var(--chip);border:1px solid var(--hl2);color:var(--accent2);
+  border-radius:99px;padding:4px 14px;font-size:.82rem;font-weight:600}
+
+/* ===== Anatomy diagram ===== */
+.anatomy{max-width:1180px;margin:26px auto 6px;padding:0 20px}
+.anatomy .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:22px}
+.anatomy h2{font-size:1.1rem;margin-bottom:4px}
+.anatomy .sub{color:var(--ink2);font-size:.86rem;margin-bottom:16px}
+.diagram{display:grid;grid-template-columns:1fr;gap:0;border:2px solid var(--mut2);border-radius:12px;overflow:hidden;background:var(--frame)}
+.dg{position:relative;padding:14px;border-bottom:1.5px dashed var(--mut)}
+.dg:last-child{border-bottom:none}
+.dg .lbl{position:absolute;top:8px;right:10px;font-family:'Chakra Petch';font-size:.72rem;font-weight:600;
+  color:var(--accent2);background:var(--chip);border:1px solid var(--hl2);padding:1px 9px;border-radius:99px;z-index:2}
+.dg-head{display:flex;align-items:center;gap:10px;background:var(--hl)}
+.dg-head .logo-d{width:26px;height:10px;border-radius:3px;background:var(--accent)}
+.dg-head .ln{height:6px;border-radius:3px;background:var(--mut2)}
+.dg-hero{background:linear-gradient(135deg,var(--hl),transparent);text-align:center;padding:26px 14px}
+.dg-body{display:grid;grid-template-columns:160px 1fr;gap:0;padding:0}
+.dg-side{border-right:1.5px dashed var(--mut);padding:14px;position:relative;background:var(--demo)}
+.dg-main{padding:14px;position:relative}
+.dg-foot{background:var(--mut);opacity:.92}
+.ln{height:6px;border-radius:3px;background:var(--mut2)}
+.ln+.ln{margin-top:7px}
+.w20{width:20%}.w30{width:30%}.w40{width:40%}.w50{width:50%}.w60{width:60%}.w70{width:70%}.w80{width:80%}.w90{width:90%}.w100{width:100%}
+.mini-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.mini-cards .mc{height:54px;border:1.5px solid var(--mut);border-radius:8px;background:var(--frame);padding:8px}
+.btn-d{display:inline-block;background:var(--accent);color:#fff;border-radius:99px;padding:4px 16px;font-size:.7rem;font-family:'Chakra Petch'}
+@media(max-width:680px){.dg-body{grid-template-columns:1fr}.dg-side{border-right:none;border-bottom:1.5px dashed var(--mut)}}
+
+/* ===== Tabs ===== */
+.tabbar-wrap{position:sticky;top:var(--topbar-h,62px);z-index:40;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);margin-top:26px}
+.tabbar{max-width:1180px;margin:0 auto;padding:10px 20px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.tabbar::-webkit-scrollbar{display:none}
+.tab{flex:none;border:1.5px solid var(--line);background:var(--card);color:var(--ink2);border-radius:99px;
+  padding:7px 16px;font-family:'Sarabun';font-size:.88rem;font-weight:600;cursor:pointer;transition:.18s;white-space:nowrap}
+.tab .n{font-size:.72rem;opacity:.65;margin-left:4px}
+.tab:hover{border-color:var(--accent);color:var(--accent)}
+.tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.tab.active .n{opacity:.85}
+
+/* ===== Mobile category selector (dropdown) ===== */
+.tabselect{display:none}
+@media(max-width:768px){
+  .tabbar{display:none}
+  .tabselect{display:block;max-width:1180px;margin:0 auto;padding:9px 14px;position:relative}
+  .ts-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;
+    background:var(--accent);color:#fff;border:none;border-radius:12px;padding:11px 16px;
+    font-family:'Sarabun';font-size:.95rem;font-weight:700;cursor:pointer;box-shadow:var(--shadow)}
+  .ts-btn .arr{transition:transform .2s}
+  .ts-btn.open .arr{transform:rotate(180deg)}
+  .ts-list{display:none;position:absolute;left:14px;right:14px;top:calc(100% - 3px);
+    background:var(--card);border:1.5px solid var(--line);border-radius:14px;
+    box-shadow:0 14px 34px rgba(0,0,0,.22);overflow:hidden;z-index:60}
+  .ts-list.open{display:block;animation:fade .2s ease}
+  .ts-item{display:flex;justify-content:space-between;align-items:center;width:100%;
+    padding:12px 16px;border:none;background:none;color:var(--ink);font-family:'Sarabun';
+    font-size:.92rem;font-weight:600;cursor:pointer;border-bottom:1px solid var(--line);text-align:left}
+  .ts-item:last-child{border-bottom:none}
+  .ts-item.active{background:var(--chip);color:var(--accent2)}
+  .ts-item .cnt{font-size:.74rem;color:var(--ink2);background:var(--bg2);border:1px solid var(--line);border-radius:99px;padding:1px 9px;flex:none}
+  .ts-item.active .cnt{color:var(--accent2);border-color:var(--hl2)}
+}
+main{scroll-margin-top:calc(var(--topbar-h,62px) + 70px)}
+.sec>h2{scroll-margin-top:calc(var(--topbar-h,62px) + 70px)}
+
+/* ===== Sections & cards ===== */
+main{max-width:1180px;margin:0 auto;padding:26px 20px 70px}
+.sec{display:none;animation:fade .35s ease}
+.sec.show{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.sec>h2{font-size:1.3rem;margin-bottom:2px}
+.sec>.desc{color:var(--ink2);font-size:.9rem;margin-bottom:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;transition:transform .18s,border-color .18s}
+.card:hover{transform:translateY(-3px);border-color:var(--accent)}
+.dm{height:118px;background:var(--demo);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;padding:14px;position:relative;overflow:hidden}
+.ct{padding:14px 16px 16px}
+.ct h3{font-size:1rem;color:var(--accent2);letter-spacing:.2px}
+.ct h3 .alias{font-size:.75rem;color:var(--ink2);font-weight:500;font-family:'Sarabun';margin-left:6px}
+.ct p{font-size:.86rem;color:var(--ink);margin-top:5px}
+.card.hidden{display:none}
+.no-result{display:none;text-align:center;color:var(--ink2);padding:50px 0;font-size:.95rem}
+
+/* ===== Demo primitives ===== */
+.fr{width:100%;max-width:240px;background:var(--frame);border:1.5px solid var(--mut2);border-radius:8px;overflow:hidden}
+.fr-top{display:flex;gap:4px;padding:5px 7px;border-bottom:1px solid var(--mut)}
+.fr-top i{width:6px;height:6px;border-radius:50%;background:var(--mut2)}
+.fr-bd{padding:9px}
+.hlband{background:var(--hl2);outline:1.5px solid var(--accent);outline-offset:-1.5px}
+.rowf{display:flex;gap:6px;align-items:center}
+.colf{display:flex;flex-direction:column;gap:6px}
+.bx{background:var(--mut);border-radius:5px}
+.pill{border-radius:99px;background:var(--accent);color:#fff;font-size:.62rem;font-family:'Chakra Petch';padding:2px 10px;display:inline-block}
+.pill.o{background:transparent;border:1.5px solid var(--accent);color:var(--accent)}
+.pill.g{background:transparent;color:var(--accent)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--mut2);display:inline-block}
+.dot.on{background:var(--accent)}
+.tipbox{background:var(--ink);color:var(--bg);font-size:.6rem;padding:3px 8px;border-radius:5px;position:relative}
+.tipbox::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--ink)}
+.spin{width:22px;height:22px;border:3px solid var(--mut);border-top-color:var(--accent);border-radius:50%;animation:rot 1s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.shimmer{position:relative;overflow:hidden}
+.shimmer::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);animation:shm 1.4s infinite}
+@keyframes shm{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.av{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:.6rem;display:flex;align-items:center;justify-content:center;font-family:'Chakra Petch';flex:none}
+.badge-d{position:relative;display:inline-block}
+.badge-d::after{content:"3";position:absolute;top:-6px;right:-7px;background:#e25555;color:#fff;font-size:.55rem;border-radius:99px;padding:1px 5px;font-family:'Chakra Petch'}
+.tagd{font-size:.6rem;background:var(--chip);color:var(--accent2);border:1px solid var(--hl2);border-radius:5px;padding:1px 7px}
+.switch{width:30px;height:16px;border-radius:99px;background:var(--accent);position:relative}
+.switch::after{content:"";position:absolute;top:2px;right:2px;width:12px;height:12px;border-radius:50%;background:#fff}
+.switch.off{background:var(--mut2)}
+.switch.off::after{right:auto;left:2px}
+.chk{width:13px;height:13px;border-radius:3px;background:var(--accent);position:relative;flex:none}
+.chk::after{content:"✓";color:#fff;font-size:.6rem;position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.chk.off{background:transparent;border:1.5px solid var(--mut2)}
+.rad{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--mut2);flex:none}
+.rad.on{border-color:var(--accent);box-shadow:inset 0 0 0 3px var(--frame);background:var(--accent)}
+.inputd{border:1.5px solid var(--mut2);border-radius:6px;background:var(--frame);padding:5px 9px;font-size:.62rem;color:var(--ink2);min-width:110px}
+.inputd.focus{border-color:var(--accent)}
+.lbl-s{font-size:.6rem;color:var(--ink2);font-weight:600}
+.txt-s{font-size:.62rem;color:var(--ink2)}
+.txt-xs{font-size:.55rem;color:var(--ink2)}
+footer{border-top:1px solid var(--line);text-align:center;padding:26px 20px;color:var(--ink2);font-size:.82rem}
+footer b{color:var(--accent)}
+
+/* ===== Interactive Manual Enhancements ===== */
+:root{
+  --manual-max:1240px;
+  --radius-lg:22px;
+  --radius-md:14px;
+  --reading-scale:1;
+}
+body{font-size:calc(16px * var(--reading-scale))}
+body.manual-compact .card .ct p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+body.manual-compact .dm{height:104px}
+body.manual-compact .grid{gap:12px}
+body.manual-compact .ct{padding:12px 14px 14px}
+
+.topbar-in{max-width:var(--manual-max)}
+.manual-branding{display:flex;align-items:center;gap:10px;min-width:220px}
+.manual-branding .edition{
+  font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--accent);background:var(--chip);border:1px solid var(--hl2);
+  padding:2px 8px;border-radius:99px;white-space:nowrap
+}
+.toolbar{display:flex;gap:7px;align-items:center;margin-left:auto}
+.tool-btn{
+  min-width:38px;height:38px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);
+  border-radius:10px;cursor:pointer;font-family:'Sarabun';font-weight:700;transition:.18s;
+  display:inline-flex;align-items:center;justify-content:center;padding:0 10px
+}
+.tool-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+.theme-btn{margin-left:0;height:38px;border-radius:10px;padding:0 12px}
+
+.hero{
+  max-width:var(--manual-max);padding:28px 20px 12px;
+  display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:22px;align-items:stretch
+}
+.hero-copy{
+  background:linear-gradient(145deg,var(--card),color-mix(in srgb,var(--chip) 65%,var(--card)));
+  border:1px solid var(--line);border-radius:var(--radius-lg);padding:30px;box-shadow:var(--shadow);
+  position:relative;overflow:hidden
+}
+.hero-copy::after{
+  content:"";position:absolute;width:220px;height:220px;border-radius:50%;
+  right:-80px;bottom:-100px;background:radial-gradient(circle,var(--hl2),transparent 68%);opacity:.8
+}
+.kicker{
+  display:inline-flex;align-items:center;gap:8px;font-family:'Chakra Petch';font-weight:700;
+  color:var(--accent2);background:var(--chip);border:1px solid var(--hl2);border-radius:99px;
+  padding:5px 11px;font-size:.76rem;margin-bottom:12px
+}
+.hero h1{font-size:clamp(1.7rem,3.5vw,2.65rem);max-width:850px}
+.hero p{font-size:.96rem;max-width:820px}
+.hero .stats{position:relative;z-index:1}
+.hero-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px;position:relative;z-index:1}
+.hero-action{
+  border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;
+  padding:8px 12px;font-family:'Sarabun';font-weight:700;font-size:.84rem;cursor:pointer
+}
+.hero-action.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.hero-action:hover{border-color:var(--accent);color:var(--accent)}
+.hero-action.primary:hover{color:#fff;filter:brightness(.95)}
+
+.cover-card{
+  border-radius:var(--radius-lg);padding:24px;position:relative;overflow:hidden;
+  background:linear-gradient(155deg,#102d28 0%,#0e7c6b 56%,#d0aa67 160%);
+  color:#fff;box-shadow:0 14px 36px rgba(16,45,40,.22);min-height:260px;
+  display:flex;flex-direction:column;justify-content:space-between
+}
+.cover-card::before{
+  content:"";position:absolute;inset:0;
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px),
+    linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px);
+  background-size:24px 24px;mask-image:linear-gradient(to bottom,black,transparent 86%)
+}
+.cover-eyebrow{font:600 .74rem 'Chakra Petch';letter-spacing:.16em;opacity:.78;position:relative}
+.cover-symbol{
+  width:74px;height:74px;border-radius:20px;background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.28);display:grid;place-items:center;
+  margin:16px 0;backdrop-filter:blur(5px);position:relative
+}
+.cover-symbol .mini-browser{width:46px;border:2px solid rgba(255,255,255,.92);border-radius:7px;padding:5px}
+.cover-symbol .mini-browser i{display:block;height:4px;border-radius:4px;background:#fff;margin-top:4px;opacity:.85}
+.cover-symbol .mini-browser i:first-child{margin-top:0;width:60%}
+.cover-title{font:700 clamp(1.5rem,3vw,2.2rem)/1.05 'Chakra Petch';position:relative}
+.cover-sub{font-size:.83rem;line-height:1.5;opacity:.88;margin-top:8px;position:relative}
+.cover-footer{display:flex;justify-content:space-between;align-items:end;margin-top:20px;font-size:.68rem;opacity:.78;position:relative}
+
+.manual-strip{
+  max-width:var(--manual-max);margin:10px auto 0;padding:0 20px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px
+}
+.manual-chip{
+  border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 12px;
+  display:flex;align-items:center;gap:9px;box-shadow:var(--shadow)
+}
+.manual-chip b{font:700 .8rem 'Chakra Petch';display:block}
+.manual-chip span{font-size:.72rem;color:var(--ink2)}
+.manual-chip .ic{
+  width:31px;height:31px;border-radius:9px;background:var(--chip);border:1px solid var(--hl2);
+  color:var(--accent2);display:grid;place-items:center;flex:none;font-weight:700
+}
+
+.anatomy{max-width:var(--manual-max);margin-top:18px}
+.anatomy .panel{border-radius:var(--radius-lg);padding:20px}
+.anatomy-head{display:flex;justify-content:space-between;gap:16px;align-items:start;margin-bottom:14px}
+.anatomy-note{
+  font-size:.74rem;color:var(--accent2);background:var(--chip);border:1px solid var(--hl2);
+  border-radius:99px;padding:4px 10px;white-space:nowrap
+}
+
+.tabbar{max-width:var(--manual-max)}
+.tabbar-wrap{margin-top:18px}
+.tab{border-radius:10px;padding:7px 13px}
+main{max-width:var(--manual-max);padding-top:20px}
+.sec-head{
+  display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:16px;
+  padding:0 2px
+}
+.sec-head-left h2{margin-bottom:2px}
+.sec-count{
+  flex:none;font:700 .76rem 'Chakra Petch';color:var(--accent2);background:var(--chip);
+  border:1px solid var(--hl2);border-radius:99px;padding:4px 10px
+}
+.grid{grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:14px}
+.card{border-radius:14px}
+.card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(60,50,20,.09)}
+.ct h3{font-size:.98rem}
+.ct p{font-size:.84rem;line-height:1.62}
+
+.search-note{
+  display:none;max-width:var(--manual-max);margin:14px auto 0;padding:0 20px;
+  color:var(--ink2);font-size:.82rem
+}
+.search-note.show{display:block}
+kbd{
+  font-family:'Chakra Petch';font-size:.68rem;border:1px solid var(--line);background:var(--card);
+  border-bottom-width:2px;border-radius:5px;padding:1px 5px
+}
+#backTop{
+  position:fixed;right:18px;bottom:18px;width:42px;height:42px;border-radius:12px;border:none;
+  background:var(--accent);color:#fff;font-weight:800;box-shadow:0 8px 20px rgba(14,124,107,.28);
+  cursor:pointer;z-index:70;opacity:0;pointer-events:none;transform:translateY(8px);transition:.2s
+}
+#backTop.show{opacity:1;pointer-events:auto;transform:none}
+
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .cover-card{min-height:220px}
+  .manual-strip{grid-template-columns:repeat(2,1fr)}
+  .manual-branding .edition{display:none}
+}
+@media(max-width:640px){
+  body{font-size:calc(15px * var(--reading-scale))}
+  .topbar-in{align-items:center}
+  .manual-branding{min-width:0;flex:1}
+  .brand small{display:none}
+  .toolbar{gap:5px}
+  .tool-btn{min-width:34px;height:34px;border-radius:9px;padding:0 8px}
+  .theme-btn{height:34px;padding:0 9px;font-size:0}
+  .theme-btn::first-letter{font-size:.9rem}
+  .search{order:4;flex-basis:100%;max-width:none}
+  .hero{padding:18px 14px 8px;gap:12px}
+  .hero-copy{padding:20px;border-radius:16px}
+  .hero-copy::after{display:none}
+  .hero h1{font-size:1.72rem}
+  .hero p{font-size:.9rem}
+  .cover-card{padding:20px;border-radius:16px;min-height:200px}
+  .cover-symbol{width:58px;height:58px;border-radius:16px}
+  .manual-strip{grid-template-columns:1fr 1fr;padding:0 14px;gap:8px}
+  .manual-chip{padding:8px 9px}
+  .manual-chip span{display:none}
+  .anatomy{padding:0 14px}
+  .anatomy .panel{padding:14px;border-radius:16px}
+  .anatomy-head{display:block}
+  .anatomy-note{display:inline-block;margin-top:7px}
+  .tabbar-wrap{top:var(--topbar-h,96px)}
+  main{padding:18px 14px 70px}
+  .grid{grid-template-columns:1fr;gap:12px}
+  .sec-head{align-items:start}
+  .sec-count{margin-top:2px}
+  .dm{height:104px}
+  .ct{padding:12px 14px 14px}
+  #backTop{right:12px;bottom:12px}
+}
+@media print{
+  .topbar,.tabbar-wrap,.hero-actions,.manual-strip,#backTop,.search-note{display:none!important}
+  .hero{display:block;padding:0}
+  .hero-copy{box-shadow:none}
+  .cover-card{break-after:page;margin-top:14px}
+  .anatomy,.sec,main{max-width:none}
+  .sec{display:block!important;break-before:page}
+  .card{break-inside:avoid;box-shadow:none}
+  body{background:#fff}
+}
+
+
+/* ===== Side Navigation Manual Layout ===== */
+:root{
+  --side-w:260px;
+  --content-gap:22px;
+}
+
+.tabbar-wrap{display:none!important}
+
+.manual-layout{
+  max-width:var(--manual-max);
+  margin:18px auto 0;
+  padding:0 20px 70px;
+  display:grid;
+  grid-template-columns:var(--side-w) minmax(0,1fr);
+  gap:var(--content-gap);
+  align-items:start;
+}
+
+.side-nav{
+  position:sticky;
+  top:calc(var(--topbar-h,62px) + 16px);
+  max-height:calc(100vh - var(--topbar-h,62px) - 32px);
+  overflow:auto;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  padding:14px;
+  z-index:35;
+}
+.side-nav::-webkit-scrollbar{width:8px}
+.side-nav::-webkit-scrollbar-thumb{background:var(--mut2);border-radius:99px}
+.side-head{
+  padding:4px 4px 12px;
+  margin-bottom:8px;
+  border-bottom:1px solid var(--line)
+}
+.side-head .eyebrow{
+  font:700 .68rem 'Chakra Petch';
+  letter-spacing:.12em;
+  color:var(--accent);
+  text-transform:uppercase
+}
+.side-head h3{
+  margin-top:3px;
+  font-size:1rem;
+  line-height:1.25
+}
+.side-head p{
+  color:var(--ink2);
+  font-size:.75rem;
+  margin-top:4px
+}
+
+.side-link{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  border:none;
+  background:transparent;
+  color:var(--ink2);
+  padding:10px 10px;
+  border-radius:10px;
+  text-align:left;
+  cursor:pointer;
+  font-family:'Sarabun';
+  font-size:.87rem;
+  font-weight:600;
+  transition:.16s;
+}
+.side-link:hover{background:var(--chip);color:var(--accent2)}
+.side-link.active{background:var(--accent);color:#fff}
+.side-link .ico{
+  width:26px;height:26px;border-radius:8px;
+  display:grid;place-items:center;
+  background:var(--bg2);
+  color:var(--accent2);
+  flex:none;
+  font-size:.85rem
+}
+.side-link.active .ico{
+  background:rgba(255,255,255,.16);
+  color:#fff
+}
+.side-link .label{flex:1}
+.side-link .count{
+  font:700 .66rem 'Chakra Petch';
+  background:var(--bg2);
+  color:var(--ink2);
+  border:1px solid var(--line);
+  border-radius:99px;
+  padding:1px 7px;
+  flex:none
+}
+.side-link.active .count{
+  background:rgba(255,255,255,.16);
+  color:#fff;
+  border-color:rgba(255,255,255,.18)
+}
+
+.side-tools{
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px solid var(--line);
+  display:grid;
+  gap:7px
+}
+.side-mini{
+  border:1px solid var(--line);
+  background:var(--bg);
+  color:var(--ink2);
+  border-radius:9px;
+  padding:8px 10px;
+  font-size:.75rem;
+  line-height:1.45
+}
+
+.manual-content{
+  min-width:0;
+}
+.manual-content main{
+  max-width:none;
+  padding:0;
+}
+.manual-content .sec{
+  display:none;
+  animation:fade .25s ease;
+}
+.manual-content .sec.show{display:block}
+.manual-content .anatomy{
+  max-width:none;
+  margin:0 0 18px;
+  padding:0
+}
+.manual-content .anatomy .panel{
+  border-radius:18px;
+}
+.manual-content .sec-head{
+  position:sticky;
+  top:calc(var(--topbar-h,62px) + 8px);
+  z-index:20;
+  background:color-mix(in srgb,var(--bg) 94%,transparent);
+  backdrop-filter:blur(10px);
+  margin:0 0 14px;
+  padding:10px 2px;
+  border-bottom:1px solid var(--line)
+}
+.manual-content .sec-head-left .desc{margin-bottom:0}
+
+.mobile-nav-btn{
+  display:none;
+  border:1.5px solid var(--line);
+  background:var(--card);
+  color:var(--ink);
+  border-radius:10px;
+  height:38px;
+  padding:0 11px;
+  cursor:pointer;
+  font-family:'Sarabun';
+  font-weight:700
+}
+.mobile-side-overlay{
+  display:none;
+}
+
+@media(max-width:980px){
+  :root{--side-w:225px}
+  .manual-layout{gap:16px}
+}
+
+@media(max-width:780px){
+  .mobile-nav-btn{display:inline-flex;align-items:center;gap:6px}
+  .manual-layout{
+    display:block;
+    padding:0 14px 70px;
+    margin-top:12px
+  }
+  .side-nav{
+    position:fixed;
+    top:0;
+    left:0;
+    bottom:0;
+    width:min(86vw,320px);
+    max-height:none;
+    z-index:120;
+    border-radius:0 18px 18px 0;
+    transform:translateX(-104%);
+    transition:transform .24s ease;
+    padding:18px 14px;
+  }
+  .side-nav.open{transform:none}
+  .mobile-side-overlay{
+    display:block;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.38);
+    z-index:110;
+    opacity:0;
+    pointer-events:none;
+    transition:.2s;
+  }
+  .mobile-side-overlay.show{
+    opacity:1;
+    pointer-events:auto
+  }
+  .manual-content .sec-head{
+    top:calc(var(--topbar-h,96px) + 4px)
+  }
+  body.nav-open{overflow:hidden}
+}
+
+@media(max-width:640px){
+  .mobile-nav-btn{
+    min-width:34px;
+    width:34px;
+    padding:0;
+    justify-content:center;
+    font-size:0
+  }
+  .mobile-nav-btn::before{
+    content:"☰";
+    font-size:1rem
+  }
+  .manual-content .anatomy{margin-bottom:12px}
+  .manual-content .sec-head{padding-top:8px}
+}
+
+@media print{
+  .side-nav,.mobile-side-overlay,.mobile-nav-btn{display:none!important}
+  .manual-layout{display:block;max-width:none;padding:0}
+}
+
+</style>
+</head>
+<body>
+
+<!-- ==================== TOP BAR ==================== -->
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="manual-branding">
+      <div class="brand">
+        <div class="mark"></div>
+        <div><b>WEB ANATOMY</b><small>Interactive Reference Manual</small></div>
+      </div>
+      <span class="edition">REFERENCE GUIDE</span>
+    </div>
+
+    <div class="search"><input id="q" type="search" autocomplete="off" placeholder="ค้นหาคำศัพท์ เช่น modal, navbar, ปุ่ม, dashboard..."></div>
+
+    <div class="toolbar" aria-label="เครื่องมือคู่มือ">
+      <button class="tool-btn" id="fontDown" title="ลดขนาดตัวอักษร" aria-label="ลดขนาดตัวอักษร">A−</button>
+      <button class="tool-btn" id="fontUp" title="เพิ่มขนาดตัวอักษร" aria-label="เพิ่มขนาดตัวอักษร">A+</button>
+      <button class="tool-btn" id="compactBtn" title="สลับโหมดกระชับ" aria-label="สลับโหมดกระชับ">▦</button>
+      <button class="mobile-nav-btn" id="mobileNavBtn" title="เปิดสารบัญ">เมนู</button>
+      <button class="theme-btn" id="themeBtn" title="สลับโหมดสี">🌙 <span class="theme-label">โหมดมืด</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero">
+  <div class="hero-copy">
+    <div class="kicker">INTERACTIVE REFERENCE MANUAL · ฉบับใช้งานจริง</div>
+    <h1>Web Anatomy <span>ศัพท์เรียกส่วนประกอบเว็บไซต์ & เว็บแอป</span></h1>
+    <p>คู่มืออ้างอิงสำหรับคนที่ต้องคุยกับ Designer, Developer หรือสั่ง AI ทำเว็บให้เข้าใจตรงกัน รวมชื่อเรียกมาตรฐานของ UI และส่วนประกอบหน้าเว็บ พร้อมคำอธิบายภาษาไทยและภาพจำลองทุกคำ</p>
+    <div class="stats">
+      <span class="stat">7 หมวดหมู่</span>
+      <span class="stat" id="totalCount">100+ คำศัพท์</span>
+      <span class="stat">ค้นหาได้ทันที</span>
+      <span class="stat">Responsive</span>
+    </div>
+    <div class="hero-actions">
+      <button class="hero-action primary" id="startBtn">เริ่มเปิดคู่มือ ↓</button>
+      <button class="hero-action" id="focusSearch">ค้นหาคำศัพท์</button>
+      <button class="hero-action" onclick="window.print()">พิมพ์ / Save PDF</button>
+    </div>
+  </div>
+
+  <aside class="cover-card" aria-label="ปกคู่มือ Web Anatomy">
+    <div>
+      <div class="cover-eyebrow">WEB DESIGN · UI · UX · WEB APP</div>
+      <div class="cover-symbol">
+        <div class="mini-browser"><i></i><i></i><i></i></div>
+      </div>
+      <div class="cover-title">WEB<br>ANATOMY</div>
+      <div class="cover-sub">พจนานุกรมภาพสำหรับเรียกชื่อส่วนประกอบเว็บไซต์ให้ตรงกัน</div>
+    </div>
+    <div class="cover-footer"><span>INTERACTIVE EDITION</span><span>TH / EN TERMS</span></div>
+  </aside>
+</section>
+
+<div class="manual-strip">
+  <div class="manual-chip"><div class="ic">⌕</div><div><b>Search First</b><span>ค้นคำจากทุกหมวดพร้อมกัน</span></div></div>
+  <div class="manual-chip"><div class="ic">7</div><div><b>7 Categories</b><span>แบ่งหัวข้อสั้น อ่านไม่ยาว</span></div></div>
+  <div class="manual-chip"><div class="ic">A</div><div><b>Readable</b><span>ปรับขนาดตัวอักษรได้</span></div></div>
+  <div class="manual-chip"><div class="ic">☾</div><div><b>Light / Dark</b><span>สลับธีมตามการใช้งาน</span></div></div>
+</div>
+
+<div class="search-note" id="searchNote">กำลังแสดงผลการค้นหาจากทุกหมวด · กด <kbd>Esc</kbd> เพื่อล้างคำค้น</div>
+
+
+
+
+<div class="mobile-side-overlay" id="mobileSideOverlay"></div>
+
+<div class="manual-layout">
+  <aside class="side-nav" id="sideNav" aria-label="สารบัญคู่มือ">
+    <div class="side-head">
+      <div class="eyebrow">CONTENTS</div>
+      <h3>สารบัญ Web Anatomy</h3>
+      <p>เลือกหมวดเพื่อเปิดเนื้อหา โดยไม่ต้องเลื่อนหน้ายาว</p>
+    </div>
+
+    <button class="side-link active" data-sec="layout">
+      <span class="ico">⌂</span><span class="label">โครงสร้างหน้า</span><span class="count">0</span>
+    </button>
+    <button class="side-link" data-sec="nav">
+      <span class="ico">↗</span><span class="label">Navigation</span><span class="count">0</span>
+    </button>
+    <button class="side-link" data-sec="form">
+      <span class="ico">⌨</span><span class="label">Form & Input</span><span class="count">0</span>
+    </button>
+    <button class="side-link" data-sec="btn">
+      <span class="ico">●</span><span class="label">Buttons & Actions</span><span class="count">0</span>
+    </button>
+    <button class="side-link" data-sec="fb">
+      <span class="ico">!</span><span class="label">Feedback & Overlay</span><span class="count">0</span>
+    </button>
+    <button class="side-link" data-sec="data">
+      <span class="ico">▥</span><span class="label">Data Display</span><span class="count">0</span>
+    </button>
+    <button class="side-link" data-sec="page">
+      <span class="ico">□</span><span class="label">Page Types & Sections</span><span class="count">0</span>
+    </button>
+
+    <div class="side-tools">
+      <div class="side-mini"><b>Tip:</b> กด <kbd>Ctrl/⌘ + K</kbd> เพื่อค้นหาคำศัพท์ได้ทันที</div>
+      <div class="side-mini"><b>Mobile:</b> แตะปุ่ม ☰ ด้านบนเพื่อเปิด/ปิดสารบัญ</div>
+    </div>
+  </aside>
+
+  <div class="manual-content">
+<section class="anatomy">
+  <div class="panel">
+    <div class="anatomy-head">
+      <div>
+        <h2>ภาพรวม: กายวิภาคของหน้าเว็บ (Page Anatomy)</h2>
+        <div class="sub">เริ่มจากภาพใหญ่ก่อน แล้วค่อยเปิดดูศัพท์แต่ละหมวดด้านล่าง</div>
+      </div>
+      <div class="anatomy-note">Visual Overview</div>
+    </div>
+    <div class="diagram">
+      <div class="dg dg-head"><span class="lbl">Header / Navbar</span>
+        <div class="logo-d"></div><div class="ln w20"></div><div class="ln" style="width:36px"></div><div class="ln" style="width:36px"></div><div class="ln" style="width:36px"></div>
+        <span class="btn-d" style="margin-left:auto;margin-right:120px">Sign in</span>
+      </div>
+      <div class="dg dg-hero"><span class="lbl">Hero Section</span>
+        <div class="ln w50" style="margin:0 auto;height:10px"></div>
+        <div class="ln w70" style="margin:10px auto 0"></div>
+        <div class="ln w60" style="margin:7px auto 14px"></div>
+        <span class="btn-d">Get Started →</span>
+      </div>
+      <div class="dg dg-body">
+        <div class="dg-side"><span class="lbl">Sidebar</span>
+          <div class="ln w80"></div><div class="ln w60"></div><div class="ln w70"></div><div class="ln w50"></div>
+        </div>
+        <div class="dg-main"><span class="lbl">Main Content</span>
+          <div class="ln w40" style="height:8px"></div>
+          <div class="ln w90" style="margin-top:9px"></div><div class="ln w100"></div><div class="ln w70"></div>
+          <div class="mini-cards"><div class="mc"><div class="ln w70"></div><div class="ln w50"></div></div><div class="mc"><div class="ln w70"></div><div class="ln w50"></div></div><div class="mc"><div class="ln w70"></div><div class="ln w50"></div></div></div>
+          <div style="position:absolute;bottom:46px;right:24px;background:var(--chip);border:1px solid var(--hl2);color:var(--accent2);font-family:'Chakra Petch';font-size:.72rem;font-weight:600;padding:1px 9px;border-radius:99px">Card ×3</div>
+        </div>
+      </div>
+      <div class="dg dg-foot"><span class="lbl">Footer</span>
+        <div class="rowf"><div class="ln w20"></div><div class="ln w20"></div><div class="ln w20"></div></div>
+        <div class="ln w30" style="margin-top:8px"></div>
+      </div>
+    </div>
+  </div>
+</section>
+<main>
+<!-- ================================================== -->
+<!-- SECTION 1 : LAYOUT -->
+<!-- ================================================== -->
+<section class="sec show" id="layout">
+<div class="sec-head">
+  <div class="sec-head-left">
+    <h2>🏗️ โครงสร้างหน้า (Layout & Structure)</h2>
+    <div class="desc">โซนหลัก ๆ ที่ประกอบกันเป็นหน้าเว็บ 1 หน้า — ศัพท์กลุ่มนี้ใช้บ่อยที่สุดเวลาคุยเรื่อง layout</div>
+  </div>
+  <div class="sec-count" data-count-for="layout">0 คำ</div>
+</div>
+<div class="grid">
+
+<div class="card" data-k="header เฮดเดอร์ ส่วนหัว แถบบน">
+<div class="dm"><div class="fr"><div class="fr-bd hlband rowf"><div class="logo-d" style="width:20px;height:8px;border-radius:2px;background:var(--accent)"></div><div class="ln w20"></div><div class="ln w20"></div></div><div class="fr-bd"><div class="ln w80"></div><div class="ln w60"></div><div class="ln w90"></div></div></div></div>
+<div class="ct"><h3>Header</h3><p>ส่วนหัวบนสุดของหน้าเว็บ มักวาง logo, เมนู และปุ่มสำคัญ ปรากฏเหมือนกันทุกหน้า</p></div></div>
+
+<div class="card" data-k="navbar navigation bar แถบเมนู เมนูบน">
+<div class="dm"><div class="fr"><div class="fr-bd hlband rowf"><div style="width:18px;height:8px;border-radius:2px;background:var(--accent)"></div><span class="txt-xs">Home</span><span class="txt-xs">Products</span><span class="txt-xs">About</span><span class="pill" style="margin-left:auto">Login</span></div><div class="fr-bd"><div class="ln w90"></div><div class="ln w70"></div></div></div></div>
+<div class="ct"><h3>Navbar <span class="alias">(Navigation Bar)</span></h3><p>แถบเมนูหลักสำหรับนำทางไปหน้าต่าง ๆ ปกติอยู่ใน Header บางทีเรียกรวมกันว่า "navbar" เลย</p></div></div>
+
+<div class="card" data-k="hero section ฮีโร่ ส่วนแรก banner ใหญ่">
+<div class="dm"><div class="fr"><div class="fr-bd rowf"><div class="ln w20"></div><div class="ln w20"></div></div><div class="fr-bd hlband" style="text-align:center;padding:14px"><div class="ln w60" style="height:8px;margin:0 auto"></div><div class="ln w80" style="margin:7px auto"></div><span class="pill">Get Started</span></div></div></div>
+<div class="ct"><h3>Hero Section</h3><p>โซนใหญ่ส่วนแรกใต้ Header ใส่ headline เด็ด ๆ รูปใหญ่ และปุ่ม CTA เป็นจุดขายแรกของหน้า</p></div></div>
+
+<div class="card" data-k="main content เนื้อหาหลัก">
+<div class="dm"><div class="fr"><div class="fr-bd rowf"><div class="ln w30"></div><div class="ln w20"></div></div><div class="fr-bd hlband"><div class="ln w40" style="height:8px"></div><div class="ln w90" style="margin-top:8px"></div><div class="ln w100"></div><div class="ln w70"></div></div><div class="fr-bd"><div class="ln w50"></div></div></div></div>
+<div class="ct"><h3>Main Content <span class="alias">(Main)</span></h3><p>พื้นที่เนื้อหาหลักของหน้า อยู่ระหว่าง Header กับ Footer ใน HTML ใช้แท็ก <b>&lt;main&gt;</b></p></div></div>
+
+<div class="card" data-k="section ส่วน โซน">
+<div class="dm"><div class="fr"><div class="fr-bd"><div class="ln w80"></div><div class="ln w60"></div></div><div class="fr-bd hlband"><div class="ln w40" style="height:7px"></div><div class="ln w90" style="margin-top:7px"></div></div><div class="fr-bd"><div class="ln w70"></div><div class="ln w50"></div></div></div></div>
+<div class="ct"><h3>Section</h3><p>"ท่อน" หรือบล็อกเนื้อหา 1 เรื่องในหน้า เช่น ส่วนแนะนำสินค้า ส่วนรีวิว — หน้าเว็บคือหลาย section ต่อกัน</p></div></div>
+
+<div class="card" data-k="container wrapper คอนเทนเนอร์ กรอบ">
+<div class="dm"><div class="fr"><div class="fr-bd"><div style="border:1.5px dashed var(--accent);border-radius:6px;padding:8px;margin:0 18px"><div class="ln w80"></div><div class="ln w100"></div><div class="ln w60"></div></div></div></div></div>
+<div class="ct"><h3>Container <span class="alias">/ Wrapper</span></h3><p>กล่องครอบเนื้อหาเพื่อคุมความกว้างให้อยู่กึ่งกลาง ไม่ให้ยืดเต็มจอบนหน้าจอใหญ่</p></div></div>
+
+<div class="card" data-k="sidebar ไซด์บาร์ แถบข้าง เมนูข้าง">
+<div class="dm"><div class="fr"><div class="fr-bd rowf" style="align-items:stretch;gap:8px"><div class="hlband" style="width:34%;border-radius:5px;padding:7px"><div class="ln w80"></div><div class="ln w60"></div><div class="ln w70"></div></div><div style="flex:1"><div class="ln w90"></div><div class="ln w100"></div><div class="ln w70"></div><div class="ln w80"></div></div></div></div></div>
+<div class="ct"><h3>Sidebar</h3><p>แถบด้านข้าง (ซ้ายหรือขวา) ใส่เมนูย่อย, filter หรือ widget — ใช้บ่อยมากใน dashboard และระบบหลังบ้าน</p></div></div>
+
+<div class="card" data-k="footer ฟุตเตอร์ ส่วนท้าย ล่างสุด">
+<div class="dm"><div class="fr"><div class="fr-bd"><div class="ln w90"></div><div class="ln w70"></div></div><div class="fr-bd hlband"><div class="rowf"><div class="ln w20"></div><div class="ln w20"></div><div class="ln w20"></div></div><div class="ln w30" style="margin-top:7px"></div></div></div></div>
+<div class="ct"><h3>Footer</h3><p>ส่วนท้ายล่างสุดของหน้า ใส่ลิงก์รวม, ที่อยู่ติดต่อ, social และข้อความลิขสิทธิ์ (copyright)</p></div></div>
+
+<div class="card" data-k="grid layout กริด ตาราง คอลัมน์ column row">
+<div class="dm"><div style="display:grid;grid-template-columns:repeat(3,52px);gap:7px"><div class="bx" style="height:26px"></div><div class="bx" style="height:26px"></div><div class="bx" style="height:26px"></div><div class="bx" style="height:26px;background:var(--hl2);outline:1.5px solid var(--accent)"></div><div class="bx" style="height:26px"></div><div class="bx" style="height:26px"></div></div></div>
+<div class="ct"><h3>Grid <span class="alias">/ Column / Row</span></h3><p>ระบบจัดวางแบบตาราง แบ่งหน้าเป็นแถว (row) และคอลัมน์ (column) เพื่อให้องค์ประกอบเรียงเป็นระเบียบ</p></div></div>
+
+<div class="card" data-k="card การ์ด กล่อง">
+<div class="dm"><div style="width:120px;background:var(--frame);border:1.5px solid var(--accent);border-radius:9px;overflow:hidden"><div class="bx" style="height:34px;border-radius:0"></div><div style="padding:8px"><div class="ln w70" style="height:7px"></div><div class="ln w90" style="margin-top:6px"></div><span class="pill" style="margin-top:7px">View</span></div></div></div>
+<div class="ct"><h3>Card</h3><p>กล่องสี่เหลี่ยมรวมข้อมูล 1 ชุด (รูป + ชื่อ + ปุ่ม) ไว้ด้วยกัน เช่น การ์ดสินค้า การ์ดบทความ</p></div></div>
+
+<div class="card" data-k="banner แบนเนอร์ ป้ายโฆษณา">
+<div class="dm"><div class="fr"><div class="fr-bd hlband rowf" style="justify-content:center"><span class="txt-s" style="color:var(--accent2);font-weight:700">🎉 SALE 50% — Today only!</span></div><div class="fr-bd"><div class="ln w80"></div><div class="ln w60"></div></div></div></div>
+<div class="ct"><h3>Banner</h3><p>แถบ/ป้ายภาพหรือข้อความเพื่อโปรโมตหรือประกาศ มักวางพาดด้านบนหรือแทรกในหน้า</p></div></div>
+
+<div class="card" data-k="above the fold below พับหน้าจอ ส่วนที่เห็นก่อน scroll">
+<div class="dm"><div class="fr"><div class="fr-bd hlband"><div class="ln w70"></div><div class="ln w50"></div></div><div style="border-top:2px dashed var(--amber);position:relative"><span style="position:absolute;right:6px;top:-9px;font-size:.55rem;background:var(--amberbg);color:var(--amber);padding:0 6px;border-radius:4px;font-weight:700">fold</span></div><div class="fr-bd" style="opacity:.45"><div class="ln w80"></div><div class="ln w60"></div></div></div></div>
+<div class="ct"><h3>Above the Fold</h3><p>เนื้อหาส่วนที่ผู้ใช้เห็นทันทีโดยไม่ต้องเลื่อนจอ — ของสำคัญต้องอยู่เหนือ "รอยพับ" นี้</p></div></div>
+
+<div class="card" data-k="sticky header fixed ติดบน ลอย">
+<div class="dm"><div class="fr"><div class="fr-bd hlband rowf" style="box-shadow:0 3px 6px rgba(0,0,0,.12)"><div style="width:16px;height:7px;background:var(--accent);border-radius:2px"></div><div class="ln w30"></div><span class="txt-xs" style="margin-left:auto;color:var(--accent);font-weight:700">📌 sticky</span></div><div class="fr-bd" style="opacity:.6"><div class="ln w90"></div><div class="ln w70"></div><div class="ln w80"></div></div></div></div>
+<div class="ct"><h3>Sticky Header <span class="alias">/ Fixed Header</span></h3><p>Header ที่ "เกาะ" ขอบบนจอตลอดแม้เลื่อนหน้าลงไป เพื่อให้เมนูใช้ได้ทุกเวลา</p></div></div>
+
+<div class="card" data-k="divider separator เส้นคั่น เส้นแบ่ง hr">
+<div class="dm"><div class="fr"><div class="fr-bd"><div class="ln w80"></div><div class="ln w60"></div><div style="height:2px;background:var(--accent);border-radius:2px;margin:9px 0"></div><div class="ln w70"></div><div class="ln w90"></div></div></div></div>
+<div class="ct"><h3>Divider <span class="alias">/ Separator</span></h3><p>เส้นคั่นแบ่งเนื้อหาออกเป็นส่วน ๆ ใน HTML คือแท็ก <b>&lt;hr&gt;</b></p></div></div>
+
+<div class="card" data-k="whitespace negative space พื้นที่ว่าง ช่องไฟ padding margin">
+<div class="dm"><div class="fr"><div class="fr-bd" style="padding:16px 26px"><div style="border:1.5px dashed var(--accent);border-radius:6px;padding:10px"><div class="ln w60"></div></div></div></div></div>
+<div class="ct"><h3>Whitespace <span class="alias">(Padding / Margin)</span></h3><p>พื้นที่ว่างรอบองค์ประกอบ — <b>padding</b> คือช่องไฟด้านใน, <b>margin</b> คือระยะห่างด้านนอก</p></div></div>
+
+<div class="card" data-k="viewport วิวพอร์ต พื้นที่จอ">
+<div class="dm"><div style="border:2px solid var(--accent);border-radius:8px;padding:8px;width:150px"><div class="ln w80"></div><div class="ln w60"></div><div class="ln w90"></div><div class="txt-xs" style="text-align:center;color:var(--accent);font-weight:700;margin-top:5px">พื้นที่ที่จอมองเห็น</div></div></div>
+<div class="ct"><h3>Viewport</h3><p>พื้นที่หน้าจอที่มองเห็นเว็บได้จริงในขณะนั้น — มือถือกับ desktop มี viewport ต่างกัน</p></div></div>
+
+<div class="card" data-k="responsive breakpoint mobile first ปรับขนาดจอ">
+<div class="dm"><div class="rowf" style="gap:12px;align-items:flex-end"><div style="width:90px;height:60px;border:2px solid var(--mut2);border-radius:6px;padding:5px"><div class="rowf"><div class="ln w30"></div><div class="ln w20"></div></div><div class="rowf" style="margin-top:5px;gap:4px"><div class="bx" style="flex:1;height:24px"></div><div class="bx" style="flex:1;height:24px"></div></div></div><div style="width:36px;height:62px;border:2px solid var(--accent);border-radius:7px;padding:4px"><div class="ln w80"></div><div class="bx" style="height:16px;margin-top:4px"></div><div class="bx" style="height:16px;margin-top:4px"></div></div></div></div>
+<div class="ct"><h3>Responsive Design <span class="alias">/ Breakpoint</span></h3><p>การออกแบบให้ layout ปรับตัวตามขนาดจอ — จุดที่ layout เปลี่ยน (เช่นที่ 768px) เรียกว่า breakpoint</p></div></div>
+
+</div></section>
+
+<!-- ================================================== -->
+<!-- SECTION 2 : NAVIGATION -->
+<!-- ================================================== -->
+<section class="sec" id="nav">
+<div class="sec-head">
+  <div class="sec-head-left">
+    <h2>🧭 การนำทาง (Navigation)</h2>
+    <div class="desc">องค์ประกอบที่ช่วยให้ผู้ใช้ "เดินทาง" ไปยังหน้าหรือส่วนต่าง ๆ ของเว็บ</div>
+  </div>
+  <div class="sec-count" data-count-for="nav">0 คำ</div>
+</div>
+<div class="grid">
+
+<div class="card" data-k="logo โลโก้ brand">
+<div class="dm"><div class="fr"><div class="fr-bd rowf"><div class="hlband rowf" style="border-radius:5px;padding:3px 7px;gap:5px"><div style="width:13px;height:13px;border-radius:4px;background:var(--accent)"></div><span class="txt-xs" style="font-weight:700;color:var(--ink)">BRAND</span></div><div class="ln w20" style="margin-left:auto"></div><div class="ln w20"></div></div></div></div>
+<div class="ct"><h3>Logo <span class="alias">/ Brand</span></h3><p>สัญลักษณ์แบรนด์ มุมซ้ายบนของ Navbar ตามธรรมเนียมคลิกแล้วต้องกลับหน้าแรกเสมอ</p></div></div>
+
+<div class="card" data-k="menu nav links เมนู ลิงก์">
+<div class="dm"><div class="fr"><div class="fr-bd rowf" style="justify-content:center;gap:12px"><span class="txt-s" style="color:var(--accent);font-weight:700;border-bottom:2px solid var(--accent)">Home</span><span class="txt-s">Shop</span><span class="txt-s">Blog</span><span class="txt-s">Contact</span></div></div></div>
+<div class="ct"><h3>Menu <span class="alias">/ Nav Links</span></h3><p>ชุดลิงก์ในแถบเมนู — ลิงก์ของหน้าปัจจุบันมักไฮไลต์ไว้ เรียกว่า active state</p></div></div>
+
+<div class="card" data-k="hamburger menu แฮมเบอร์เกอร์ เมนูสามขีด mobile">
+<div class="dm"><div class="fr" style="max-width:120px"><div class="fr-bd rowf"><div class="hlband" style="border-radius:5px;padding:5px 6px"><div style="width:14px;height:2px;background:var(--accent);border-radius:2px"></div><div style="width:14px;height:2px;background:var(--accent);border-radius:2px;margin-top:3px"></div><div style="width:14px;height:2px;background:var(--accent);border-radius:2px;margin-top:3px"></div></div><div class="ln w40" style="margin-left:auto"></div></div><div class="fr-bd"><div class="ln w80"></div><div class="ln w60"></div></div></div></div>
+<div class="ct"><h3>Hamburger Menu</h3><p>ไอคอนสามขีด ☰ กดแล้วเมนูถึงจะกางออก ใช้ประหยัดพื้นที่บนมือถือ</p></div></div>
+
+<div class="card" data-k="dropdown menu ดรอปดาวน์ เมนูย่อย">
+<div class="dm"><div class="colf" style="align-items:flex-start"><span class="txt-s" style="font-weight:700">Products ▾</span><div class="hlband" style="border-radius:7px;padding:7px 10px;box-shadow:var(--shadow)"><div class="txt-xs">เสื้อผ้า</div><div class="txt-xs" style="margin-top:4px">กระเป๋า</div><div class="txt-xs" style="margin-top:4px">รองเท้า</div></div></div></div>
+<div class="ct"><h3>Dropdown Menu</h3><p>เมนูย่อยที่ "หล่น" ลงมาเมื่อ hover หรือคลิกที่เมนูหลัก</p></div></div>
+
+<div class="card" data-k="mega menu เมกะเมนู เมนูใหญ่หลายคอลัมน์">
+<div class="dm"><div class="fr"><div class="fr-bd rowf"><div class="ln w20"></div><span class="txt-xs" style="font-weight:700;color:var(--accent)">All ▾</span><div class="ln w20"></div></div><div class="fr-bd hlband rowf" style="align-items:flex-start;gap:10px"><div class="colf" style="gap:4px;flex:1"><div class="ln w90" style="height:5px;background:var(--accent)"></div><div class="ln w70"></div><div class="ln w60"></div></div><div class="colf" style="gap:4px;flex:1"><div class="ln w90" style="height:5px;background:var(--accent)"></div><div class="ln w60"></div><div class="ln w80"></div></div><div class="colf" style="gap:4px;flex:1"><div class="ln w90" style="height:5px;background:var(--accent)"></div><div class="ln w70"></div><div class="ln w50"></div></div></div></div></div>
+<div class="ct"><h3>Mega Menu</h3><p>Dropdown ขนาดใหญ่ที่กางออกเต็มความกว้าง แสดงหมวดหมู่ย่อยหลายคอลัมน์พร้อมกัน นิยมในเว็บ e-commerce</p></div></div>
+
+<div class="card" data-k="breadcrumb เบรดครัมบ์ เส้นทาง path">
+<div class="dm"><div class="hlband rowf" style="border-radius:7px;padding:7px 12px;gap:6px"><span class="txt-xs">Home</span><span class="txt-xs">›</span><span class="txt-xs">เสื้อผ้า</span><span class="txt-xs">›</span><span class="txt-xs" style="color:var(--accent);font-weight:700">เสื้อยืด</span></div></div>
+<div class="ct"><h3>Breadcrumb</h3><p>"เส้นทางขนมปัง" แสดงตำแหน่งปัจจุบันว่าอยู่ลึกระดับไหน เช่น Home › สินค้า › เสื้อยืด คลิกย้อนกลับได้</p></div></div>
+
+<div class="card" data-k="tabs แท็บ สลับหน้า">
+<div class="dm"><div class="fr"><div class="rowf" style="border-bottom:1.5px solid var(--mut);padding:0 8px;gap:10px"><span class="txt-xs" style="padding:6px 2px;color:var(--accent);font-weight:700;border-bottom:2px solid var(--accent)">Overview</span><span class="txt-xs" style="padding:6px 2px">Specs</span><span class="txt-xs" style="padding:6px 2px">Reviews</span></div><div class="fr-bd"><div class="ln w90"></div><div class="ln w70"></div></div></div></div>
+<div class="ct"><h3>Tabs</h3><p>แถบสลับเนื้อหาหลายชุดในพื้นที่เดียว คลิกแท็บไหนก็แสดงเนื้อหาชุดนั้น (เหมือนหน้านี้เลย!)</p></div></div>
+
+<div class="card" data-k="pagination เพจจิเนชั่น แบ่งหน้า เลขหน้า">
+<div class="dm"><div class="rowf" style="gap:5px"><span class="tagd">‹</span><span class="tagd">1</span><span class="tagd" style="background:var(--accent);color:#fff;border-color:var(--accent)">2</span><span class="tagd">3</span><span class="tagd">…</span><span class="tagd">9</span><span class="tagd">›</span></div></div>
+<div class="ct"><h3>Pagination</h3><p>ตัวเลขแบ่งหน้า 1 2 3 … สำหรับเนื้อหาที่ยาวหรือรายการเยอะ ๆ (อีกทางเลือกคือ Infinite Scroll — เลื่อนแล้วโหลดต่อเอง)</p></div></div>
+
+<div class="card" data-k="side navigation drawer nav แถบเมนูข้าง dashboard">
+<div class="dm"><div class="fr"><div class="fr-bd rowf" style="align-items:stretch;gap:8px"><div class="hlband colf" style="width:38%;border-radius:6px;padding:7px;gap:5px"><div class="rowf" style="gap:4px"><span class="dot on"></span><div class="ln w60" style="background:var(--accent)"></div></div><div class="rowf" style="gap:4px"><span class="dot"></span><div class="ln w50"></div></div><div class="rowf" style="gap:4px"><span class="dot"></span><div class="ln w70"></div></div></div><div style="flex:1"><div class="ln w50" style="height:7px"></div><div class="bx" style="height:30px;margin-top:7px"></div></div></div></div></div>
+<div class="ct"><h3>Side Navigation <span class="alias">/ Nav Drawer</span></h3><p>เมนูหลักแบบแนวตั้งด้านข้าง มาตรฐานของ web app และ dashboard ถ้าซ่อน-เลื่อนเปิดได้เรียกว่า Drawer</p></div></div>
+
+<div class="card" data-k="bottom navigation แถบเมนูล่าง มือถือ app">
+<div class="dm"><div class="fr" style="max-width:130px"><div class="fr-bd"><div class="ln w80"></div><div class="ln w60"></div><div class="ln w90"></div></div><div class="hlband rowf" style="justify-content:space-around;padding:6px"><div class="colf" style="gap:2px;align-items:center"><span class="dot on"></span><div class="ln" style="width:16px"></div></div><div class="colf" style="gap:2px;align-items:center"><span class="dot"></span><div class="ln" style="width:16px"></div></div><div class="colf" style="gap:2px;align-items:center"><span class="dot"></span><div class="ln" style="width:16px"></div></div></div></div></div>
+<div class="ct"><h3>Bottom Navigation</h3><p>แถบเมนูติดขอบล่างจอ (3–5 ไอคอน) มาตรฐานของ mobile app และ PWA เพราะนิ้วโป้งเอื้อมถึงง่าย</p></div></div>
+
+<div class="card" data-k="anchor link jump link ลิงก์กระโดด ภายในหน้า">
+<div class="dm"><div class="fr"><div class="fr-bd rowf"><span class="txt-xs" style="color:var(--accent);font-weight:700;text-decoration:underline">#pricing ↓</span></div><div class="fr-bd" style="opacity:.4"><div class="ln w80"></div><div class="ln w60"></div></div><div class="fr-bd hlband"><div class="ln w40" style="height:6px"></div><div class="ln w80" style="margin-top:5px"></div></div></div></div>
+<div class="ct"><h3>Anchor Link <span class="alias">/ Jump Link</span></h3><p>ลิงก์ที่กระโดดไปยัง section ภายในหน้าเดียวกัน (ใช้ # ต่อท้าย URL เช่น /page#pricing)</p></div></div>
+
+<div class="card" data-k="back to top กลับขึ้นบน ปุ่มลอย">
+<div class="dm"><div class="fr"><div class="fr-bd"><div class="ln w90"></div><div class="ln w70"></div><div class="ln w80"></div><div class="ln w60"></div></div><div style="position:absolute;right:18px;bottom:14px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.8rem;box-shadow:var(--shadow)">↑</div></div></div>
+<div class="ct"><h3>Back to Top Button</h3><p>ปุ่มลอยมุมล่างขวา กดแล้วเลื่อนกลับขึ้นบนสุดของหน้า โผล่มาเมื่อเลื่อนหน้าลงไปลึก</p></div></div>
+
+<div class="card" data-k="stepper wizard ขั้นตอน ทีละสเต็ป">
+<div class="dm"><div class="rowf" style="gap:0"><div class="colf" style="align-items:center;gap:3px"><div class="av" style="background:var(--accent)">✓</div><span class="txt-xs">ข้อมูล</span></div><div style="width:34px;height:2px;background:var(--accent)"></div><div class="colf" style="align-items:center;gap:3px"><div class="av" style="background:var(--accent)">2</div><span class="txt-xs">ชำระเงิน</span></div><div style="width:34px;height:2px;background:var(--mut2)"></div><div class="colf" style="align-items:center;gap:3px"><div class="av" style="background:var(--mut2)">3</div><span class="txt-xs">เสร็จสิ้น</span></div></div></div>
+<div class="ct"><h3>Stepper <span class="alias">/ Wizard</span></h3><p>ตัวบอกขั้นตอน 1 → 2 → 3 สำหรับ flow หลายสเต็ป เช่น สมัครสมาชิก, checkout</p></div></div>
+
+<div class="card" data-k="link hyperlink ลิงก์ ไฮเปอร์ลิงก์">
+<div class="dm"><div class="fr"><div class="fr-bd"><div class="ln w90"></div><div class="rowf" style="margin-top:6px;gap:4px"><div class="ln w30"></div><span class="txt-xs" style="color:var(--accent);font-weight:700;text-decoration:underline">อ่านเพิ่มเติม</span><div class="ln w20"></div></div><div class="ln w70" style="margin-top:6px"></div></div></div></div>
+<div class="ct"><h3>Link <span class="alias">(Hyperlink)</span></h3><p>ข้อความคลิกได้เพื่อไปหน้าอื่น ปกติเป็นสีต่างและขีดเส้นใต้ ใช้แท็ก <b>&lt;a&gt;</b></p></div></div>
+
+<div class="card" data-k="footer navigation sitemap ลิงก์ท้ายหน้า">
+<div class="dm"><div class="fr"><div class="fr-bd hlband rowf" style="align-items:flex-start;gap:12px"><div class="colf" style="gap:4px;flex:1"><div class="ln w80" style="height:5px;background:var(--accent)"></div><div class="ln w60"></div><div class="ln w70"></div></div><div class="colf" style="gap:4px;flex:1"><div class="ln w80" style="height:5px;background:var(--accent)"></div><div class="ln w50"></div><div class="ln w70"></div></div><div class="colf" style="gap:4px;flex:1"><div class="ln w80" style="height:5px;background:var(--accent)"></div><div class="ln w60"></div><div class="ln w50"></div></div></div></div></div>
+<div class="ct"><h3>Footer Navigation <span class="alias">/ Sitemap Links</span></h3><p>กลุ่มลิงก์ใน Footer จัดเป็นคอลัมน์ตามหมวด เป็น "แผนผังเว็บ" ฉบับย่อ</p></div></div>
+
+</div></section>
+
+<!-- ================================================== -->
+<!-- SECTION 3 : FORMS -->
+<!-- ================================================== -->
+<section class="sec" id="form">
+<div class="sec-head">
+  <div class="sec-head-left">
+    <h2>📝 ฟอร์มและช่องกรอกข้อมูล (Form & Input)</h2>
+    <div class="desc">องค์ประกอบรับข้อมูลจากผู้ใช้ — หัวใจของหน้า login, สมัครสมาชิก, สั่งซื้อ และระบบ ERP/CRM ทุกระบบ</div>
+  </div>
+  <div class="sec-count" data-count-for="form">0 คำ</div>
+</div>
+<div class="grid">
+
+<div class="card" data-k="form ฟอร์ม แบบฟอร์ม">
+<div class="dm"><div class="hlband colf" style="border-radius:9px;padding:10px;width:160px;gap:6px"><div class="lbl-s">ชื่อ</div><div class="inputd"></div><div class="lbl-s">อีเมล</div><div class="inputd"></div><span class="pill" style="align-self:flex-end">Submit</span></div></div>
+<div class="ct"><h3>Form</h3><p>ชุดช่องกรอกข้อมูล + ปุ่มส่ง รวมกันเป็น 1 แบบฟอร์ม ใช้แท็ก <b>&lt;form&gt;</b></p></div></div>
+
+<div class="card" data-k="input text field ช่องกรอก textbox">
+<div class="dm"><div class="colf" style="width:170px;gap:4px"><div class="lbl-s">ชื่อลูกค้า</div><div class="inputd focus" style="color:var(--ink)">สมชาย ใจดี|</div></div></div>
+<div class="ct"><h3>Text Field <span class="alias">/ Input</span></h3><p>ช่องกรอกข้อความบรรทัดเดียว องค์ประกอบพื้นฐานที่สุดของฟอร์ม ใช้แท็ก <b>&lt;input&gt;</b></p></div></div>
+
+<div class="card" data-k="label ป้ายชื่อช่อง">
+<div class="dm"><div class="colf" style="width:170px;gap:4px"><div class="lbl-s" style="color:var(--accent);font-size:.68rem">เบอร์โทรศัพท์ ← Label</div><div class="inputd"></div></div></div>
+<div class="ct"><h3>Label</h3><p>ป้ายชื่อบอกว่าช่องนี้ให้กรอกอะไร วางเหนือหรือข้างช่อง input</p></div></div>
+
+<div class="card" data-k="placeholder ตัวอย่างข้อความจาง">
+<div class="dm"><div class="colf" style="width:170px;gap:4px"><div class="lbl-s">อีเมล</div><div class="inputd" style="font-style:italic;opacity:.75">เช่น name@company.com</div></div></div>
+<div class="ct"><h3>Placeholder</h3><p>ข้อความจาง ๆ ตัวอย่างในช่อง จะหายไปเมื่อเริ่มพิมพ์ — ไม่ใช่ค่าจริง ใช้แทน label ไม่ได้</p></div></div>
+
+<div class="card" data-k="textarea ช่องข้อความยาว หลายบรรทัด">
+<div class="dm"><div class="colf" style="width:170px;gap:4px"><div class="lbl-s">หมายเหตุ</div><div class="inputd" style="height:48px"></div></div></div>
+<div class="ct"><h3>Textarea</h3><p>ช่องกรอกข้อความหลายบรรทัด สำหรับข้อความยาว เช่น ที่อยู่ หมายเหตุ คอมเมนต์</p></div></div>
+
+<div class="card" data-k="checkbox เช็คบ็อกซ์ ติ๊กถูก เลือกหลายข้อ">
+<div class="dm"><div class="colf" style="gap:7px"><div class="rowf"><span class="chk"></span><span class="txt-s">เสื้อผ้า</span></div><div class="rowf"><span class="chk"></span><span class="txt-s">กระเป๋า</span></div><div class="rowf"><span class="chk off"></span><span class="txt-s">รองเท้า</span></div></div></div>
+<div class="ct"><h3>Checkbox</h3><p>กล่องติ๊กถูก ☑ เลือกได้<b>หลายข้อ</b>พร้อมกัน</p></div></div>
+
+<div class="card" data-k="radio button เรดิโอ เลือกข้อเดียว">
+<div class="dm"><div class="colf" style="gap:7px"><div class="rowf"><span class="rad on"></span><span class="txt-s">โอนเงิน</span></div><div class="rowf"><span class="rad"></span><span class="txt-s">บัตรเครดิต</span></div><div class="rowf"><span class="rad"></span><span class="txt-s">เก็บเงินปลายทาง</span></div></div></div>
+<div class="ct"><h3>Radio Button</h3><p>ปุ่มวงกลมเลือกได้<b>เพียงข้อเดียว</b>จากกลุ่ม — ต่างจาก Checkbox ที่เลือกได้หลายข้อ</p></div></div>
+
+<div class="card" data-k="toggle switch สวิตช์ เปิดปิด">
+<div class="dm"><div class="colf" style="gap:9px"><div class="rowf" style="gap:9px"><span class="switch"></span><span class="txt-s">เปิดแจ้งเตือน</span></div><div class="rowf" style="gap:9px"><span class="switch off"></span><span class="txt-s">โหมดมืด</span></div></div></div>
+<div class="ct"><h3>Toggle <span class="alias">/ Switch</span></h3><p>สวิตช์เปิด–ปิด สำหรับค่าที่มีแค่ 2 สถานะและมีผลทันที เช่น เปิด/ปิดการแจ้งเตือน</p></div></div>
+
+<div class="card" data-k="select dropdown list ตัวเลือก เลือกจากรายการ">
+<div class="dm"><div class="colf" style="width:160px;gap:4px"><div class="lbl-s">จังหวัด</div><div class="inputd rowf" style="justify-content:space-between"><span>กรุงเทพมหานคร</span><span>▾</span></div></div></div>
+<div class="ct"><h3>Select <span class="alias">/ Dropdown List</span></h3><p>ช่องเลือกค่าจากรายการที่กำหนดไว้ กดแล้วรายการกางลงมาให้เลือก ใช้แท็ก <b>&lt;select&gt;</b></p></div></div>
+
+<div class="card" data-k="autocomplete combobox typeahead พิมพ์แล้วแนะนำ">
+<div class="dm"><div class="colf" style="width:170px;gap:0"><div class="inputd focus" style="color:var(--ink)">เสื้อ|</div><div class="hlband colf" style="border-radius:0 0 7px 7px;padding:6px 9px;gap:4px"><span class="txt-xs" style="color:var(--accent);font-weight:700">เสื้อยืด</span><span class="txt-xs">เสื้อโปโล</span><span class="txt-xs">เสื้อเชิ้ต</span></div></div></div>
+<div class="ct"><h3>Autocomplete <span class="alias">/ Combobox</span></h3><p>ช่องที่พิมพ์แล้วเด้งรายการแนะนำให้เลือกทันที เช่น ช่องค้นหาสินค้า ช่องเลือกลูกค้าใน CRM</p></div></div>
+
+<div class="card" data-k="slider range สไลเดอร์ เลื่อนค่า">
+<div class="dm"><div style="width:170px"><div class="rowf" style="justify-content:space-between"><span class="txt-xs">฿0</span><span class="txt-xs" style="color:var(--accent);font-weight:700">฿7,500</span><span class="txt-xs">฿10,000</span></div><div style="height:5px;background:var(--mut);border-radius:99px;margin-top:6px;position:relative"><div style="position:absolute;left:0;width:75%;height:100%;background:var(--accent);border-radius:99px"></div><div style="position:absolute;left:75%;top:50%;transform:translate(-50%,-50%);width:15px;height:15px;border-radius:50%;background:#fff;border:3px solid var(--accent)"></div></div></div></div>
+<div class="ct"><h3>Slider <span class="alias">/ Range</span></h3><p>แถบเลื่อนเลือกค่าตัวเลขในช่วงที่กำหนด เช่น เลือกช่วงราคา ปรับระดับเสียง</p></div></div>
+
+<div class="card" data-k="date picker ปฏิทิน เลือกวันที่">
+<div class="dm"><div class="colf" style="gap:5px"><div class="inputd rowf" style="justify-content:space-between;width:140px"><span>06/06/2026</span><span>📅</span></div><div class="hlband" style="border-radius:7px;padding:6px;display:grid;grid-template-columns:repeat(7,14px);gap:3px">
+<span class="txt-xs" style="text-align:center">จ</span><span class="txt-xs" style="text-align:center">อ</span><span class="txt-xs" style="text-align:center">พ</span><span class="txt-xs" style="text-align:center">พ</span><span class="txt-xs" style="text-align:center">ศ</span><span class="txt-xs" style="text-align:center">ส</span><span class="txt-xs" style="text-align:center">อ</span>
+<span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot on" style="outline:2px solid var(--accent)"></span><span class="dot"></span></div></div></div>
+<div class="ct"><h3>Date Picker</h3><p>ช่องเลือกวันที่แบบมีปฏิทินเด้งขึ้นมาให้จิ้ม แทนการพิมพ์วันที่เอง</p></div></div>
+
+<div class="card" data-k="search bar ช่องค้นหา">
+<div class="dm"><div class="inputd rowf" style="width:180px;border-radius:99px;gap:6px"><span>⌕</span><span style="opacity:.7">ค้นหาสินค้า...</span><span class="pill" style="margin-left:auto">ค้นหา</span></div></div>
+<div class="ct"><h3>Search Bar <span class="alias">/ Search Box</span></h3><p>ช่องค้นหา มักเป็นทรงแคปซูลพร้อมไอคอนแว่นขยาย วางใน Header หรือเหนือรายการข้อมูล</p></div></div>
+
+<div class="card" data-k="file upload dropzone อัปโหลดไฟล์ ลากวาง">
+<div class="dm"><div style="width:170px;border:2px dashed var(--accent);border-radius:9px;padding:12px;text-align:center;background:var(--chip)"><div style="font-size:1.1rem">📁</div><div class="txt-xs" style="color:var(--accent2);font-weight:700">ลากไฟล์มาวางที่นี่</div><div class="txt-xs">หรือคลิกเพื่อเลือกไฟล์</div></div></div>
+<div class="ct"><h3>File Upload <span class="alias">/ Dropzone</span></h3><p>พื้นที่อัปโหลดไฟล์ แบบลากมาวาง (drag & drop) หรือกดเลือกไฟล์จากเครื่อง</p></div></div>
+
+<div class="card" data-k="password field ช่องรหัสผ่าน ตาเปิดปิด">
+<div class="dm"><div class="colf" style="width:160px;gap:4px"><div class="lbl-s">รหัสผ่าน</div><div class="inputd rowf" style="justify-content:space-between"><span>••••••••</span><span>👁</span></div></div></div>
+<div class="ct"><h3>Password Field</h3><p>ช่องรหัสผ่านที่ซ่อนตัวอักษรเป็นจุด มักมีไอคอนรูปตาไว้กดดู/ซ่อนรหัส (show/hide password)</p></div></div>
+
+<div class="card" data-k="otp input pin รหัสยืนยัน 6 หลัก">
+<div class="dm"><div class="rowf" style="gap:5px"><div class="inputd" style="min-width:0;width:24px;text-align:center;color:var(--ink)">8</div><div class="inputd" style="min-width:0;width:24px;text-align:center;color:var(--ink)">2</div><div class="inputd focus" style="min-width:0;width:24px;text-align:center;color:var(--ink)">4</div><div class="inputd" style="min-width:0;width:24px"></div><div class="inputd" style="min-width:0;width:24px"></div><div class="inputd" style="min-width:0;width:24px"></div></div></div>
+<div class="ct"><h3>OTP Input <span class="alias">/ PIN Field</span></h3><p>ช่องกรอกรหัสยืนยันทีละหลัก (เช่น OTP 6 หลักจาก SMS) พิมพ์แล้วกระโดดช่องถัดไปอัตโนมัติ</p></div></div>
+
+<div class="card" data-k="validation error message ข้อความเตือน กรอกผิด">
+<div class="dm"><div class="colf" style="width:170px;gap:4px"><div class="lbl-s">อีเมล</div><div class="inputd" style="border-color:#e25555;color:var(--ink)">somchai@</div><span class="txt-xs" style="color:#e25555">⚠ รูปแบบอีเมลไม่ถูกต้อง</span></div></div>
+<div class="ct"><h3>Validation Message <span class="alias">/ Error Message</span></h3><p>ข้อความเตือนเมื่อกรอกผิดหรือไม่ครบ มักเป็นสีแดงพร้อมขอบช่องแดง — กระบวนการตรวจเรียกว่า form validation</p></div></div>
+
+<div class="card" data-k="helper text hint คำแนะนำใต้ช่อง">
+<div class="dm"><div class="colf" style="width:170px;gap:4px"><div class="lbl-s">ชื่อผู้ใช้</div><div class="inputd"></div><span class="txt-xs">ใช้ตัวอักษร a–z และตัวเลขเท่านั้น</span></div></div>
+<div class="ct"><h3>Helper Text <span class="alias">/ Hint</span></h3><p>ข้อความตัวเล็กใต้ช่อง อธิบายเงื่อนไขหรือช่วยแนะวิธีกรอกที่ถูกต้อง</p></div></div>
+
+<div class="card" data-k="required field ดอกจัน จำเป็น บังคับกรอก">
+<div class="dm"><div class="colf" style="width:170px;gap:4px"><div class="lbl-s">ชื่อบริษัท <span style="color:#e25555">*</span></div><div class="inputd"></div><div class="lbl-s" style="margin-top:4px">เว็บไซต์ <span style="opacity:.6">(ไม่บังคับ)</span></div><div class="inputd"></div></div></div>
+<div class="ct"><h3>Required Field</h3><p>ช่องที่บังคับกรอก สัญลักษณ์มาตรฐานคือดอกจันสีแดง (*) — ช่องที่ไม่บังคับเรียก optional</p></div></div>
+
+<div class="card" data-k="captcha แคปช่า ยืนยันไม่ใช่บอท robot">
+<div class="dm"><div class="hlband rowf" style="border-radius:7px;padding:9px 13px;gap:9px"><span class="chk"></span><span class="txt-s" style="font-weight:600">I'm not a robot</span><span style="font-size:1rem">🤖</span></div></div>
+<div class="ct"><h3>CAPTCHA</h3><p>ตัวทดสอบว่าเป็นมนุษย์ไม่ใช่บอท เช่น ติ๊ก "I'm not a robot" หรือเลือกรูปภาพ (reCAPTCHA ของ Google)</p></div></div>
+
+</div></section>
+
+<!-- ================================================== -->
+<!-- SECTION 4 : BUTTONS -->
+<!-- ================================================== -->
+<section class="sec" id="btn">
+<div class="sec-head">
+  <div class="sec-head-left">
+    <h2>🔘 ปุ่มและการกระทำ (Buttons & Actions)</h2>
+    <div class="desc">ปุ่มหลากชนิดและ "สถานะ" ของปุ่ม — ศัพท์กลุ่มนี้ใช้บ่อยมากเวลาสั่งงาน UI</div>
+  </div>
+  <div class="sec-count" data-count-for="btn">0 คำ</div>
+</div>
+<div class="grid">
+
+<div class="card" data-k="button ปุ่ม">
+<div class="dm"><span class="pill" style="font-size:.78rem;padding:7px 22px">Button</span></div>
+<div class="ct"><h3>Button</h3><p>ปุ่มกดเพื่อสั่งให้ระบบ "ทำอะไรบางอย่าง" เช่น บันทึก ส่ง ลบ — ต่างจาก Link ที่ใช้พาไปหน้าอื่น</p></div></div>
+
+<div class="card" data-k="primary secondary button ปุ่มหลัก ปุ่มรอง">
+<div class="dm"><div class="rowf" style="gap:9px"><span class="pill" style="font-size:.72rem;padding:6px 16px">บันทึก</span><span class="pill o" style="font-size:.72rem;padding:6px 16px">ยกเลิก</span></div></div>
+<div class="ct"><h3>Primary / Secondary Button</h3><p>ปุ่มหลัก (สีเข้มสมชาย) คือ action สำคัญสุดของหน้า ส่วนปุ่มรอง (แบบขอบ/จาง) คือทางเลือกรอง เช่น บันทึก vs ยกเลิก</p></div></div>
+
+<div class="card" data-k="outline ghost text button ปุ่มขอบ ปุ่มโปร่ง">
+<div class="dm"><div class="rowf" style="gap:9px"><span class="pill o" style="font-size:.72rem;padding:6px 16px">Outline</span><span class="pill g" style="font-size:.72rem;padding:6px 10px">Text/Ghost</span></div></div>
+<div class="ct"><h3>Outline / Ghost / Text Button</h3><p>ปุ่มน้ำหนักเบา — Outline มีแค่เส้นขอบ, Ghost/Text มีแค่ตัวหนังสือ ใช้กับ action ที่ไม่อยากให้สมชายแย่งซีน</p></div></div>
+
+<div class="card" data-k="cta call to action ปุ่มชวนคลิก">
+<div class="dm"><div class="colf" style="align-items:center;gap:6px"><div class="ln w60" style="width:120px"></div><span class="pill" style="font-size:.8rem;padding:8px 24px;background:var(--amber);box-shadow:0 4px 12px rgba(232,161,61,.45)">สมัครเลยวันนี้ →</span></div></div>
+<div class="ct"><h3>CTA <span class="alias">(Call to Action)</span></h3><p>ปุ่ม/ข้อความ "ชวนให้ลงมือทำ" เป้าหมายหลักของหน้า เช่น สมัครเลย, ขอคำสั่งซื้อ — ต้องสมชายที่สุดในหน้า</p></div></div>
+
+<div class="card" data-k="icon button ปุ่มไอคอน">
+<div class="dm"><div class="rowf" style="gap:9px"><div style="width:30px;height:30px;border-radius:8px;border:1.5px solid var(--mut2);display:flex;align-items:center;justify-content:center;font-size:.8rem">✎</div><div style="width:30px;height:30px;border-radius:8px;border:1.5px solid var(--mut2);display:flex;align-items:center;justify-content:center;font-size:.8rem">🗑</div><div style="width:30px;height:30px;border-radius:8px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.8rem">＋</div></div></div>
+<div class="ct"><h3>Icon Button</h3><p>ปุ่มที่มีแต่ไอคอนไม่มีข้อความ ประหยัดพื้นที่ ใช้กับ action ที่สื่อง่าย เช่น แก้ไข ลบ ปิด</p></div></div>
+
+<div class="card" data-k="fab floating action button ปุ่มลอย">
+<div class="dm"><div class="fr"><div class="fr-bd"><div class="ln w90"></div><div class="ln w70"></div><div class="ln w80"></div></div><div style="position:absolute;right:20px;bottom:14px;width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:0 4px 12px rgba(0,0,0,.25)">＋</div></div></div>
+<div class="ct"><h3>FAB <span class="alias">(Floating Action Button)</span></h3><p>ปุ่มกลมลอยมุมจอ (มักเป็น "+") สำหรับ action หลักที่ใช้บ่อยสุด มาจาก Material Design ของ Google</p></div></div>
+
+<div class="card" data-k="split button dropdown button ปุ่มแยก">
+<div class="dm"><div class="rowf" style="gap:0"><span class="pill" style="font-size:.72rem;padding:6px 16px;border-radius:99px 0 0 99px">บันทึก</span><span class="pill" style="font-size:.72rem;padding:6px 10px;border-radius:0 99px 99px 0;border-left:1.5px solid rgba(255,255,255,.4)">▾</span></div></div>
+<div class="ct"><h3>Split Button</h3><p>ปุ่ม 2 ส่วน — ฝั่งซ้ายทำ action หลัก ฝั่งขวา (▾) กางตัวเลือกเพิ่ม เช่น บันทึก / บันทึกแล้วปิด / บันทึกเป็นฉบับร่าง</p></div></div>
+
+<div class="card" data-k="button group segmented control กลุ่มปุ่ม">
+<div class="dm"><div class="rowf" style="gap:0;border:1.5px solid var(--accent);border-radius:99px;overflow:hidden"><span style="font-size:.65rem;padding:5px 13px;background:var(--accent);color:#fff;font-family:'Chakra Petch'">Day</span><span style="font-size:.65rem;padding:5px 13px;color:var(--accent);font-family:'Chakra Petch'">Week</span><span style="font-size:.65rem;padding:5px 13px;color:var(--accent);border-left:1.5px solid var(--accent);font-family:'Chakra Petch'">Month</span></div></div>
+<div class="ct"><h3>Button Group <span class="alias">/ Segmented Control</span></h3><p>ปุ่มหลายตัวเรียงติดกันเป็นชุด ใช้สลับโหมดหรือมุมมอง เช่น รายวัน/รายสัปดาห์/รายเดือน</p></div></div>
+
+<div class="card" data-k="chip ชิป ตัวเลือกเม็ด filter">
+<div class="dm"><div class="rowf" style="gap:6px;flex-wrap:wrap;justify-content:center"><span class="tagd" style="border-radius:99px;padding:3px 11px;background:var(--accent);color:#fff;border-color:var(--accent)">ทั้งหมด</span><span class="tagd" style="border-radius:99px;padding:3px 11px">เสื้อผ้า ✕</span><span class="tagd" style="border-radius:99px;padding:3px 11px">กระเป๋า</span></div></div>
+<div class="ct"><h3>Chip</h3><p>เม็ดตัวเลือกขนาดเล็กรูปแคปซูล กดเลือก/ยกเลิกได้ ใช้เป็น filter หรือแสดง tag ที่เลือกไว้ (มี ✕ ไว้ลบ)</p></div></div>
+
+<div class="card" data-k="disabled state ปุ่มกดไม่ได้ สีจาง">
+<div class="dm"><div class="rowf" style="gap:9px"><span class="pill" style="font-size:.72rem;padding:6px 16px">ส่งข้อมูล</span><span class="pill" style="font-size:.72rem;padding:6px 16px;background:var(--mut2);color:var(--ink2);cursor:not-allowed">ส่งข้อมูล</span></div></div>
+<div class="ct"><h3>Disabled State</h3><p>สถานะ "ปิดใช้งาน" — ปุ่ม/ช่องเป็นสีจาง กดไม่ได้ จนกว่าจะทำเงื่อนไขครบ เช่น กรอกฟอร์มให้ครบก่อน</p></div></div>
+
+<div class="card" data-k="hover active focus state สถานะ เมาส์ชี้">
+<div class="dm"><div class="colf" style="gap:6px;align-items:center"><div class="rowf" style="gap:8px"><span class="pill o" style="font-size:.62rem;padding:4px 12px">ปกติ</span><span class="pill" style="font-size:.62rem;padding:4px 12px;box-shadow:0 4px 10px rgba(14,124,107,.4)">hover 🖱️</span><span class="pill" style="font-size:.62rem;padding:4px 12px;outline:2px solid var(--amber);outline-offset:2px">focus</span></div><span class="txt-xs">สถานะเปลี่ยนตามการโต้ตอบของผู้ใช้</span></div></div>
+<div class="ct"><h3>Hover / Active / Focus State</h3><p>สถานะของ UI — <b>hover</b> ตอนเมาส์ชี้, <b>active</b> ตอนกำลังกด, <b>focus</b> ตอนถูกเลือกด้วยคีย์บอร์ด (กรอบเรือง)</p></div></div>
+
+<div class="card" data-k="loading button spinner ปุ่มกำลังโหลด">
+<div class="dm"><span class="pill rowf" style="font-size:.72rem;padding:6px 16px;gap:7px"><span class="spin" style="width:12px;height:12px;border-width:2px;border-color:rgba(255,255,255,.4);border-top-color:#fff"></span>กำลังบันทึก...</span></div>
+<div class="ct"><h3>Loading Button</h3><p>ปุ่มที่แสดงวงหมุนระหว่างรอระบบทำงาน ป้องกันการกดซ้ำ และบอกผู้ใช้ว่า "รับคำสั่งแล้วนะ"</p></div></div>
+
+</div></section>
+
+<!-- ================================================== -->
+<!-- SECTION 5 : FEEDBACK & OVERLAY -->
+<!-- ================================================== -->
+<section class="sec" id="fb">
+<div class="sec-head">
+  <div class="sec-head-left">
+    <h2>💬 การแจ้งเตือนและหน้าต่างซ้อน (Feedback & Overlay)</h2>
+    <div class="desc">องค์ประกอบที่ "เด้ง" ขึ้นมาคุยกับผู้ใช้ — แจ้งผล เตือน ถามยืนยัน หรือบอกว่ากำลังโหลด</div>
+  </div>
+  <div class="sec-count" data-count-for="fb">0 คำ</div>
+</div>
+<div class="grid">
+
+<div class="card" data-k="modal dialog โมดอล หน้าต่างเด้ง popup">
+<div class="dm"><div class="fr" style="position:relative"><div class="fr-bd" style="opacity:.25"><div class="ln w90"></div><div class="ln w70"></div><div class="ln w80"></div><div class="ln w60"></div></div><div style="position:absolute;inset:0;background:rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center"><div style="background:var(--frame);border-radius:9px;padding:10px 14px;box-shadow:0 8px 20px rgba(0,0,0,.25);min-width:130px"><div class="rowf" style="justify-content:space-between"><div class="ln w50" style="height:7px"></div><span class="txt-s">✕</span></div><div class="ln w90" style="margin-top:7px"></div><div class="rowf" style="margin-top:8px;justify-content:flex-end;gap:5px"><span class="pill o" style="font-size:.55rem">ยกเลิก</span><span class="pill" style="font-size:.55rem">ตกลง</span></div></div></div></div></div>
+<div class="ct"><h3>Modal <span class="alias">/ Dialog</span></h3><p>หน้าต่างเด้งซ้อนกลางจอ พื้นหลังมืดลง บังคับให้จัดการก่อนถึงจะทำอย่างอื่นต่อได้</p></div></div>
+
+<div class="card" data-k="confirmation dialog ยืนยัน ลบ แน่ใจ">
+<div class="dm"><div style="background:var(--frame);border:1.5px solid var(--mut2);border-radius:9px;padding:11px 15px;box-shadow:var(--shadow)"><div class="txt-s" style="font-weight:700">ลบรายการนี้?</div><div class="txt-xs">การลบไม่สามารถย้อนกลับได้</div><div class="rowf" style="margin-top:8px;justify-content:flex-end;gap:5px"><span class="pill o" style="font-size:.58rem">ยกเลิก</span><span class="pill" style="font-size:.58rem;background:#e25555">ลบเลย</span></div></div></div>
+<div class="ct"><h3>Confirmation Dialog</h3><p>กล่องถามยืนยันก่อนทำ action อันตราย เช่น "ลบจริงหรือไม่?" — กันกดพลาด (destructive action ใช้ปุ่มสีแดง)</p></div></div>
+
+<div class="card" data-k="drawer off-canvas ลิ้นชัก แผงเลื่อนข้าง">
+<div class="dm"><div class="fr" style="position:relative;overflow:hidden"><div class="fr-bd" style="opacity:.3"><div class="ln w90"></div><div class="ln w70"></div><div class="ln w80"></div><div class="ln w60"></div></div><div style="position:absolute;top:0;right:0;bottom:0;width:46%;background:var(--frame);border-left:2px solid var(--accent);padding:9px;box-shadow:-4px 0 12px rgba(0,0,0,.15)"><div class="rowf" style="justify-content:space-between"><div class="ln w40" style="height:6px"></div><span class="txt-xs">✕</span></div><div class="ln w80" style="margin-top:7px"></div><div class="ln w60"></div></div></div></div>
+<div class="ct"><h3>Drawer <span class="alias">/ Off-canvas Panel</span></h3><p>แผงที่ "เลื่อน" เข้ามาจากขอบจอ (ซ้าย/ขวา) ใช้ใส่เมนู ตะกร้าสินค้า หรือฟอร์มย่อย แล้วเลื่อนกลับไปซ่อนได้</p></div></div>
+
+<div class="card" data-k="bottom sheet แผงเลื่อนจากล่าง มือถือ">
+<div class="dm"><div class="fr" style="max-width:130px;position:relative;overflow:hidden"><div class="fr-bd" style="opacity:.3"><div class="ln w80"></div><div class="ln w60"></div><div class="ln w90"></div></div><div style="position:absolute;left:0;right:0;bottom:0;background:var(--frame);border-radius:10px 10px 0 0;border-top:2px solid var(--accent);padding:7px 9px;box-shadow:0 -4px 12px rgba(0,0,0,.15)"><div style="width:26px;height:3px;background:var(--mut2);border-radius:99px;margin:0 auto 6px"></div><div class="ln w70"></div><div class="ln w50"></div></div></div></div>
+<div class="ct"><h3>Bottom Sheet</h3><p>แผงที่เลื่อนขึ้นมาจากขอบล่างจอ (มีขีดจับด้านบนไว้ลาก) นิยมมากบนมือถือ เช่น แผงตัวเลือกใน app</p></div></div>
+
+<div class="card" data-k="toast snackbar แจ้งเตือนชั่วคราว เด้งแป๊บเดียว">
+<div class="dm"><div class="fr" style="position:relative"><div class="fr-bd" style="opacity:.4"><div class="ln w90"></div><div class="ln w70"></div><div class="ln w80"></div></div><div style="position:absolute;left:50%;bottom:10px;transform:translateX(-50%);background:var(--ink);color:var(--bg);font-size:.6rem;padding:5px 13px;border-radius:7px;white-space:nowrap;box-shadow:var(--shadow)">✓ บันทึกข้อมูลเรียบร้อย</div></div></div>
+<div class="ct"><h3>Toast <span class="alias">/ Snackbar</span></h3><p>แถบแจ้งผลสั้น ๆ เด้งขึ้นมุมจอแล้วหายเองใน 2–3 วินาที เช่น "บันทึกแล้ว" — ไม่ขวางการใช้งาน</p></div></div>
+
+<div class="card" data-k="alert callout กล่องเตือน ข้อความแจ้ง">
+<div class="dm"><div class="colf" style="width:190px;gap:6px"><div class="rowf" style="background:#e7f6ec;border-left:3px solid #2e9e5b;border-radius:6px;padding:5px 9px"><span class="txt-xs" style="color:#1d7a43;font-weight:700">✓ สำเร็จ — บันทึกแล้ว</span></div><div class="rowf" style="background:#fdeeee;border-left:3px solid #e25555;border-radius:6px;padding:5px 9px"><span class="txt-xs" style="color:#b53d3d;font-weight:700">✕ ผิดพลาด — ลองใหม่อีกครั้ง</span></div></div></div>
+<div class="ct"><h3>Alert <span class="alias">/ Callout</span></h3><p>กล่องข้อความแจ้งสถานะฝังในหน้า แบ่งตามสี: เขียว=สำเร็จ, แดง=ผิดพลาด, เหลือง=เตือน, ฟ้า=ข้อมูล</p></div></div>
+
+<div class="card" data-k="announcement bar notification banner แถบประกาศบนสุด">
+<div class="dm"><div class="fr"><div style="background:var(--accent);color:#fff;font-size:.6rem;text-align:center;padding:4px">🚚 ส่งฟรีทั่วไทย เมื่อสั่งครบ ฿1,000 — <u>ดูเงื่อนไข</u> ✕</div><div class="fr-bd"><div class="rowf"><div class="ln w20"></div><div class="ln w20"></div></div><div class="ln w80" style="margin-top:7px"></div></div></div></div>
+<div class="ct"><h3>Announcement Bar</h3><p>แถบประกาศเล็ก ๆ พาดบนสุดเหนือ Header ใช้แจ้งโปรโมชันหรือข่าวสำคัญ มักมีปุ่ม ✕ ปิดได้</p></div></div>
+
+<div class="card" data-k="tooltip ทูลทิป คำอธิบายลอย hover">
+<div class="dm"><div class="colf" style="align-items:center;gap:7px"><span class="tipbox">ดาวน์โหลดรายงาน PDF</span><div style="width:28px;height:28px;border-radius:8px;border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:.8rem">⬇</div></div></div>
+<div class="ct"><h3>Tooltip</h3><p>กล่องคำอธิบายเล็ก ๆ ลอยขึ้นเมื่อเอาเมาส์ชี้ค้าง ใช้บอกความหมายของไอคอนหรือปุ่ม</p></div></div>
+
+<div class="card" data-k="popover ป็อปโอเวอร์ กล่องลอยโต้ตอบ">
+<div class="dm"><div class="colf" style="align-items:center;gap:7px"><div style="background:var(--frame);border:1.5px solid var(--mut2);border-radius:8px;padding:8px 11px;box-shadow:var(--shadow);position:relative"><div class="ln w70" style="height:6px"></div><div class="ln w90" style="margin-top:5px"></div><div class="rowf" style="margin-top:6px;gap:5px"><span class="pill" style="font-size:.55rem">ทำเลย</span><span class="pill g" style="font-size:.55rem">ข้าม</span></div></div><span class="txt-s" style="border:1.5px solid var(--accent);border-radius:6px;padding:1px 9px;color:var(--accent)">ⓘ</span></div></div>
+<div class="ct"><h3>Popover</h3><p>คล้าย Tooltip แต่ใหญ่กว่าและโต้ตอบได้ (มีปุ่ม มีลิงก์ข้างใน) เปิดด้วยการคลิก ไม่ใช่แค่ hover</p></div></div>
+
+<div class="card" data-k="spinner loader วงหมุน กำลังโหลด loading">
+<div class="dm"><div class="colf" style="align-items:center;gap:8px"><div class="spin"></div><span class="txt-xs">กำลังโหลด...</span></div></div>
+<div class="ct"><h3>Spinner <span class="alias">/ Loader</span></h3><p>วงกลมหมุนบอกว่าระบบกำลังทำงาน ใช้ตอนรอโหลดข้อมูลที่ไม่รู้ว่าจะนานแค่ไหน</p></div></div>
+
+<div class="card" data-k="skeleton screen โครงเทาๆ กำลังโหลด">
+<div class="dm"><div class="fr"><div class="fr-bd rowf" style="gap:8px"><div class="bx shimmer" style="width:30px;height:30px;border-radius:50%"></div><div style="flex:1"><div class="ln w60 shimmer"></div><div class="ln w90 shimmer"></div></div></div><div class="fr-bd"><div class="bx shimmer" style="height:26px"></div></div></div></div>
+<div class="ct"><h3>Skeleton Screen</h3><p>"โครงเทา ๆ" รูปร่างเหมือนเนื้อหาจริงที่กะพริบระหว่างรอโหลด ทำให้รู้สึกเร็วกว่า spinner เฉย ๆ</p></div></div>
+
+<div class="card" data-k="progress bar แถบความคืบหน้า เปอร์เซ็นต์">
+<div class="dm"><div style="width:180px"><div class="rowf" style="justify-content:space-between"><span class="txt-xs">กำลังอัปโหลด...</span><span class="txt-xs" style="color:var(--accent);font-weight:700">68%</span></div><div style="height:8px;background:var(--mut);border-radius:99px;margin-top:5px;overflow:hidden"><div style="width:68%;height:100%;background:var(--accent);border-radius:99px"></div></div></div></div>
+<div class="ct"><h3>Progress Bar</h3><p>แถบแสดงความคืบหน้าเป็น % ใช้เมื่อรู้ว่างานเสร็จไปเท่าไหร่แล้ว เช่น อัปโหลดไฟล์</p></div></div>
+
+<div class="card" data-k="badge notification dot ตัวเลขแจ้งเตือน จุดแดง">
+<div class="dm"><div class="rowf" style="gap:22px"><span class="badge-d" style="font-size:1.3rem">🔔</span><span class="badge-d" style="font-size:1.3rem">✉️</span><span class="tagd" style="background:#e7f6ec;color:#1d7a43;border-color:#bfe5cc">Active</span></div></div>
+<div class="ct"><h3>Badge</h3><p>ป้ายเล็กแปะบนไอคอนแสดงจำนวนแจ้งเตือน (จุดแดงมีเลข) หรือป้ายสถานะ เช่น Active, New, Pro</p></div></div>
+
+<div class="card" data-k="empty state หน้าว่าง ไม่มีข้อมูล">
+<div class="dm"><div class="colf" style="align-items:center;gap:4px"><span style="font-size:1.5rem">📭</span><span class="txt-s" style="font-weight:700">ยังไม่มีรายการ</span><span class="txt-xs">เริ่มสร้างรายการแรกของคุณ</span><span class="pill" style="font-size:.58rem;margin-top:3px">+ สร้างใหม่</span></div></div>
+<div class="ct"><h3>Empty State</h3><p>หน้าจอตอน "ยังไม่มีข้อมูล" — แทนที่จะว่างเปล่า ควรมีรูป + คำอธิบาย + ปุ่มชวนเริ่มใช้งาน</p></div></div>
+
+<div class="card" data-k="lightbox ดูรูปขยาย เต็มจอ gallery">
+<div class="dm"><div class="fr" style="position:relative"><div class="fr-bd rowf" style="gap:5px;opacity:.3"><div class="bx" style="flex:1;height:30px"></div><div class="bx" style="flex:1;height:30px"></div><div class="bx" style="flex:1;height:30px"></div></div><div style="position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;gap:8px"><span style="color:#fff;font-size:.8rem">‹</span><div style="width:90px;height:52px;background:var(--frame);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.1rem">🖼️</div><span style="color:#fff;font-size:.8rem">›</span><span style="position:absolute;top:5px;right:8px;color:#fff;font-size:.7rem">✕</span></div></div></div>
+<div class="ct"><h3>Lightbox</h3><p>โหมดดูรูป/วิดีโอขยายใหญ่กลางจอบนพื้นหลังมืด เลื่อนดูรูปถัดไปได้ ใช้ในแกลเลอรีสินค้า</p></div></div>
+
+<div class="card" data-k="overlay backdrop scrim ฉากหลังมืด">
+<div class="dm"><div class="fr" style="position:relative"><div class="fr-bd"><div class="ln w90"></div><div class="ln w70"></div><div class="ln w80"></div></div><div style="position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center"><span style="color:#fff;font-size:.62rem;font-weight:700;border:1.5px dashed rgba(255,255,255,.7);border-radius:6px;padding:4px 12px">Overlay / Backdrop</span></div></div></div>
+<div class="ct"><h3>Overlay <span class="alias">/ Backdrop / Scrim</span></h3><p>ฉากมืดโปร่งแสงที่คลุมทั้งหน้าอยู่หลัง Modal/Drawer เพื่อดึงโฟกัส คลิกที่ฉากมักเป็นการปิดหน้าต่าง</p></div></div>
+
+<div class="card" data-k="cookie consent คุกกี้ ยอมรับ pdpa">
+<div class="dm"><div class="fr" style="position:relative"><div class="fr-bd" style="opacity:.4"><div class="ln w90"></div><div class="ln w70"></div></div><div style="position:absolute;left:6px;right:6px;bottom:6px;background:var(--frame);border:1.5px solid var(--mut2);border-radius:8px;padding:7px 10px;box-shadow:var(--shadow)"><span class="txt-xs">🍪 เว็บนี้ใช้คุกกี้เพื่อประสบการณ์ที่ดีขึ้น</span><div class="rowf" style="margin-top:5px;gap:5px"><span class="pill" style="font-size:.55rem">ยอมรับ</span><span class="pill o" style="font-size:.55rem">ตั้งค่า</span></div></div></div></div>
+<div class="ct"><h3>Cookie Consent <span class="alias">/ Cookie Banner</span></h3><p>แถบขอความยินยอมใช้คุกกี้ตามกฎหมาย (PDPA/GDPR) เด้งขึ้นครั้งแรกที่เข้าเว็บ</p></div></div>
+
+</div></section>
+
+<!-- ================================================== -->
+<!-- SECTION 6 : DATA DISPLAY -->
+<!-- ================================================== -->
+<section class="sec" id="data">
+<div class="sec-head">
+  <div class="sec-head-left">
+    <h2>📊 การแสดงข้อมูล (Data Display)</h2>
+    <div class="desc">องค์ประกอบสำหรับแสดงข้อมูลจำนวนมาก — ใช้หนักใน dashboard, ERP, CRM และระบบหลังบ้าน</div>
+  </div>
+  <div class="sec-count" data-count-for="data">0 คำ</div>
+</div>
+<div class="grid">
+
+<div class="card" data-k="table data table ตาราง">
+<div class="dm"><div class="fr"><div class="rowf hlband" style="padding:5px 9px;gap:0"><span class="txt-xs" style="flex:2;font-weight:700">สินค้า</span><span class="txt-xs" style="flex:1;font-weight:700">จำนวน</span><span class="txt-xs" style="flex:1;font-weight:700">ราคา</span></div><div class="rowf" style="padding:5px 9px;border-bottom:1px solid var(--mut)"><span class="txt-xs" style="flex:2">เสื้อยืด</span><span class="txt-xs" style="flex:1">2</span><span class="txt-xs" style="flex:1">4,500</span></div><div class="rowf" style="padding:5px 9px"><span class="txt-xs" style="flex:2">กางเกงยีนส์</span><span class="txt-xs" style="flex:1">5</span><span class="txt-xs" style="flex:1">8,900</span></div></div></div>
+<div class="ct"><h3>Table <span class="alias">/ Data Table</span></h3><p>ตารางข้อมูลแถว-คอลัมน์ ส่วนหัวเรียก header row — ถ้าเรียงลำดับ/กรอง/แก้ไขได้ มักเรียกว่า Data Grid</p></div></div>
+
+<div class="card" data-k="list item รายการ ลิสต์">
+<div class="dm"><div class="fr"><div class="rowf" style="padding:6px 9px;border-bottom:1px solid var(--mut);gap:7px"><div class="av">A</div><div style="flex:1"><div class="ln w50"></div></div><span class="txt-xs">›</span></div><div class="rowf" style="padding:6px 9px;border-bottom:1px solid var(--mut);gap:7px"><div class="av" style="background:var(--amber)">B</div><div style="flex:1"><div class="ln w70"></div></div><span class="txt-xs">›</span></div><div class="rowf" style="padding:6px 9px;gap:7px"><div class="av" style="background:var(--mut2)">C</div><div style="flex:1"><div class="ln w40"></div></div><span class="txt-xs">›</span></div></div></div>
+<div class="ct"><h3>List <span class="alias">/ List Item</span></h3><p>รายการเรียงแนวตั้ง แต่ละแถวคือ list item (รูป + ข้อความ + action) เช่น รายชื่อลูกค้า กล่องข้อความ</p></div></div>
+
+<div class="card" data-k="accordion collapse expand พับ กาง faq">
+<div class="dm"><div class="fr"><div class="rowf hlband" style="padding:6px 9px;justify-content:space-between"><span class="txt-xs" style="font-weight:700">ส่งสินค้ากี่วัน?</span><span class="txt-xs" style="color:var(--accent)">▾</span></div><div style="padding:6px 9px;border-bottom:1px solid var(--mut)"><div class="ln w90"></div><div class="ln w60"></div></div><div class="rowf" style="padding:6px 9px;justify-content:space-between"><span class="txt-xs" style="font-weight:700">มีรับประกันไหม?</span><span class="txt-xs">▸</span></div></div></div>
+<div class="ct"><h3>Accordion <span class="alias">/ Collapse</span></h3><p>รายการพับ-กางได้ คลิกหัวข้อแล้วเนื้อหาขยายลงมา ประหยัดพื้นที่ นิยมใช้ทำ FAQ</p></div></div>
+
+<div class="card" data-k="carousel slider สไลด์รูป เลื่อนดู">
+<div class="dm"><div class="colf" style="align-items:center;gap:6px"><div class="rowf" style="gap:6px"><span class="txt-s">‹</span><div class="bx" style="width:36px;height:42px;opacity:.4"></div><div style="width:64px;height:48px;background:var(--hl2);outline:2px solid var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center">🖼️</div><div class="bx" style="width:36px;height:42px;opacity:.4"></div><span class="txt-s">›</span></div><div class="rowf" style="gap:4px"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div></div></div>
+<div class="ct"><h3>Carousel <span class="alias">/ Slider</span></h3><p>ชุดรูป/การ์ดที่เลื่อนดูทีละสไลด์ มีลูกศรซ้าย-ขวาและจุดบอกตำแหน่ง (dots/indicators)</p></div></div>
+
+<div class="card" data-k="avatar รูปโปรไฟล์ วงกลม">
+<div class="dm"><div class="rowf" style="gap:8px"><div class="av" style="width:30px;height:30px;font-size:.7rem">A</div><div class="av" style="width:30px;height:30px;font-size:.7rem;background:var(--amber)">B</div><div class="av" style="width:30px;height:30px;font-size:.9rem;background:var(--mut2)">👤</div><div class="rowf" style="margin-left:6px"><div class="av" style="margin-right:-8px;border:2px solid var(--demo)">A</div><div class="av" style="margin-right:-8px;border:2px solid var(--demo);background:var(--amber)">B</div><div class="av" style="border:2px solid var(--demo);background:var(--mut2)">+3</div></div></div></div>
+<div class="ct"><h3>Avatar</h3><p>รูปโปรไฟล์วงกลม (หรือตัวอักษรย่อ) แทนตัวผู้ใช้ — หลายอันซ้อนกันเรียก avatar group/stack</p></div></div>
+
+<div class="card" data-k="tag label ป้ายกำกับ หมวดหมู่">
+<div class="dm"><div class="rowf" style="gap:6px;flex-wrap:wrap;justify-content:center"><span class="tagd">#เสื้อผ้า</span><span class="tagd" style="background:#fdeeee;color:#b53d3d;border-color:#f3ccca">ด่วน</span><span class="tagd" style="background:#e7f6ec;color:#1d7a43;border-color:#bfe5cc">ชำระแล้ว</span><span class="tagd" style="background:var(--amberbg);color:#a8742a;border-color:#f0d9b0">รออนุมัติ</span></div></div>
+<div class="ct"><h3>Tag <span class="alias">/ Label</span></h3><p>ป้ายเล็กบอกหมวดหมู่หรือสถานะ ใช้สีช่วยสื่อความหมาย เช่น เขียว=ชำระแล้ว เหลือง=รออนุมัติ</p></div></div>
+
+<div class="card" data-k="timeline ไทม์ไลน์ ลำดับเหตุการณ์">
+<div class="dm"><div class="colf" style="gap:0"><div class="rowf" style="gap:8px"><div class="colf" style="align-items:center;gap:0"><span class="dot on"></span><div style="width:2px;height:14px;background:var(--accent)"></div></div><span class="txt-xs">สั่งซื้อ — 1 มิ.ย.</span></div><div class="rowf" style="gap:8px"><div class="colf" style="align-items:center;gap:0"><span class="dot on"></span><div style="width:2px;height:14px;background:var(--mut2)"></div></div><span class="txt-xs">จัดส่ง — 3 มิ.ย.</span></div><div class="rowf" style="gap:8px"><span class="dot"></span><span class="txt-xs" style="opacity:.6">ส่งมอบ — 8 มิ.ย.</span></div></div></div>
+<div class="ct"><h3>Timeline</h3><p>เส้นเวลาแสดงลำดับเหตุการณ์จากบนลงล่าง เช่น สถานะการสั่งซื้อ ประวัติการแก้ไข (activity log)</p></div></div>
+
+<div class="card" data-k="tree view โครงสร้างต้นไม้ โฟลเดอร์">
+<div class="dm"><div class="colf" style="gap:4px;align-items:flex-start"><span class="txt-xs" style="font-weight:700">▾ 📁 สินค้า</span><span class="txt-xs" style="margin-left:14px;font-weight:700">▾ 📁 เสื้อผ้า</span><span class="txt-xs" style="margin-left:28px;color:var(--accent)">📄 เสื้อยืด</span><span class="txt-xs" style="margin-left:28px">📄 เสื้อเชิ้ต</span><span class="txt-xs" style="margin-left:14px">▸ 📁 กระเป๋า</span></div></div>
+<div class="ct"><h3>Tree View</h3><p>โครงสร้างแบบต้นไม้ พับ-กางเป็นชั้น ๆ เหมือนโฟลเดอร์ในคอมพิวเตอร์ ใช้กับข้อมูลที่มีลำดับชั้น</p></div></div>
+
+<div class="card" data-k="kanban board บอร์ดงาน ลากการ์ด asana trello">
+<div class="dm"><div class="rowf" style="gap:7px;align-items:flex-start"><div class="colf" style="gap:4px;width:56px"><span class="txt-xs" style="font-weight:700">To Do</span><div class="bx" style="height:16px;border-radius:4px"></div><div class="bx" style="height:16px;border-radius:4px"></div></div><div class="colf" style="gap:4px;width:56px"><span class="txt-xs" style="font-weight:700;color:var(--accent)">Doing</span><div style="height:16px;border-radius:4px;background:var(--hl2);outline:1.5px solid var(--accent)"></div></div><div class="colf" style="gap:4px;width:56px"><span class="txt-xs" style="font-weight:700">Done</span><div class="bx" style="height:16px;border-radius:4px"></div><div class="bx" style="height:16px;border-radius:4px"></div><div class="bx" style="height:16px;border-radius:4px"></div></div></div></div>
+<div class="ct"><h3>Kanban Board</h3><p>บอร์ดคอลัมน์ตามสถานะงาน (To Do / Doing / Done) ลากการ์ดย้ายคอลัมน์ได้ — แบบเดียวกับ Asana/Trello</p></div></div>
+
+<div class="card" data-k="chart graph กราฟ แผนภูมิ">
+<div class="dm"><div class="rowf" style="gap:14px;align-items:flex-end"><div class="rowf" style="gap:5px;align-items:flex-end"><div style="width:11px;height:22px;background:var(--mut2);border-radius:3px 3px 0 0"></div><div style="width:11px;height:38px;background:var(--accent);border-radius:3px 3px 0 0"></div><div style="width:11px;height:30px;background:var(--mut2);border-radius:3px 3px 0 0"></div><div style="width:11px;height:48px;background:var(--amber);border-radius:3px 3px 0 0"></div></div><div style="width:46px;height:46px;border-radius:50%;background:conic-gradient(var(--accent) 0 60%,var(--amber) 60% 85%,var(--mut2) 85%);position:relative"><div style="position:absolute;inset:11px;border-radius:50%;background:var(--demo)"></div></div></div></div>
+<div class="ct"><h3>Chart <span class="alias">/ Graph</span></h3><p>กราฟแสดงข้อมูล — bar chart (แท่ง), line chart (เส้น), pie/donut chart (วงกลม/โดนัท) คือพื้นฐานของ dashboard</p></div></div>
+
+<div class="card" data-k="stat kpi card ตัวเลขสรุป metric">
+<div class="dm"><div class="rowf" style="gap:8px"><div style="background:var(--frame);border:1.5px solid var(--mut2);border-radius:9px;padding:8px 12px"><div class="txt-xs">ยอดขายเดือนนี้</div><div style="font-family:'Chakra Petch';font-weight:700;color:var(--accent);font-size:1rem">฿1.2M</div><div class="txt-xs" style="color:#1d7a43">▲ +12%</div></div><div style="background:var(--frame);border:1.5px solid var(--mut2);border-radius:9px;padding:8px 12px"><div class="txt-xs">คำสั่งซื้อ</div><div style="font-family:'Chakra Petch';font-weight:700;font-size:1rem">47</div><div class="txt-xs" style="color:#b53d3d">▼ -3%</div></div></div></div>
+<div class="ct"><h3>Stat Card <span class="alias">/ KPI Card</span></h3><p>การ์ดตัวเลขสรุป (metric) พร้อมลูกศรเทียบช่วงก่อนหน้า เป็นองค์ประกอบหลักของ dashboard ผู้บริหาร</p></div></div>
+
+<div class="card" data-k="calendar ปฏิทิน ตารางนัด">
+<div class="dm"><div class="fr" style="max-width:150px"><div class="rowf hlband" style="padding:4px 8px;justify-content:space-between"><span class="txt-xs">‹</span><span class="txt-xs" style="font-weight:700">มิถุนายน 2026</span><span class="txt-xs">›</span></div><div style="padding:6px;display:grid;grid-template-columns:repeat(7,1fr);gap:3px;justify-items:center"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot on" style="outline:2px solid var(--accent)"></span><span class="dot"></span><span class="dot"></span><span class="dot" style="background:var(--amber)"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div></div>
+<div class="ct"><h3>Calendar</h3><p>มุมมองปฏิทินรายเดือน/สัปดาห์ แสดงนัดหมายและกำหนดการ ต่างจาก Date Picker ที่ใช้แค่เลือกวัน</p></div></div>
+
+<div class="card" data-k="rating stars ดาว รีวิว คะแนน">
+<div class="dm"><div class="colf" style="align-items:center;gap:4px"><div style="color:var(--amber);font-size:1.05rem;letter-spacing:2px">★★★★<span style="opacity:.3">★</span></div><span class="txt-xs">4.0 จาก 128 รีวิว</span></div></div>
+<div class="ct"><h3>Rating <span class="alias">/ Star Rating</span></h3><p>ดาวให้คะแนน 1–5 พร้อมจำนวนรีวิว ใช้คู่กับสินค้าและ testimonial</p></div></div>
+
+<div class="card" data-k="code block โค้ด snippet">
+<div class="dm"><div style="background:#1c2826;border-radius:8px;padding:9px 13px;font-family:monospace;font-size:.62rem;color:#9fe8d5;width:180px"><div><span style="color:#f0b860">const</span> total = qty * price;</div><div><span style="color:#7fb4e8">console</span>.log(total);</div></div></div>
+<div class="ct"><h3>Code Block <span class="alias">/ Snippet</span></h3><p>กล่องแสดงโค้ดด้วยฟอนต์ monospace พื้นเข้ม มี syntax highlighting และปุ่ม copy</p></div></div>
+
+<div class="card" data-k="image gallery grid แกลเลอรี รูปภาพ">
+<div class="dm"><div style="display:grid;grid-template-columns:repeat(3,46px);gap:5px"><div class="bx" style="height:34px;display:flex;align-items:center;justify-content:center">🖼️</div><div class="bx" style="height:34px"></div><div class="bx" style="height:34px"></div><div class="bx" style="height:34px"></div><div class="bx" style="height:34px;display:flex;align-items:center;justify-content:center">🖼️</div><div class="bx" style="height:34px"></div></div></div>
+<div class="ct"><h3>Image Gallery <span class="alias">/ Grid Gallery</span></h3><p>ตารางรูปภาพหลายรูป คลิกแล้วเปิดดูใหญ่ใน Lightbox — แบบช่องไม่เท่ากันเรียก masonry layout</p></div></div>
+
+<div class="card" data-k="video player embed วิดีโอ youtube">
+<div class="dm"><div style="width:160px;height:84px;background:#1c2826;border-radius:9px;position:relative;display:flex;align-items:center;justify-content:center"><div style="width:30px;height:30px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;padding-left:2px">▶</div><div style="position:absolute;left:8px;right:8px;bottom:7px;height:3px;background:rgba(255,255,255,.25);border-radius:99px"><div style="width:35%;height:100%;background:var(--accent);border-radius:99px"></div></div></div></div>
+<div class="ct"><h3>Video Player <span class="alias">/ Embed</span></h3><p>เครื่องเล่นวิดีโอฝังในหน้า — การฝังเนื้อหาจากที่อื่น (YouTube, แผนที่) เรียกว่า embed/iframe</p></div></div>
+
+<div class="card" data-k="feed activity stream ฟีด รายการอัปเดต">
+<div class="dm"><div class="fr"><div class="rowf" style="padding:5px 9px;gap:6px;border-bottom:1px solid var(--mut)"><div class="av" style="width:16px;height:16px;font-size:.5rem">ส</div><span class="txt-xs"><b>สมชาย</b> สร้างเอกสาร #1042</span></div><div class="rowf" style="padding:5px 9px;gap:6px;border-bottom:1px solid var(--mut)"><div class="av" style="width:16px;height:16px;font-size:.5rem;background:var(--amber)">ส</div><span class="txt-xs"><b>วิภา</b> อัปเดตสถานะงาน</span></div><div class="rowf" style="padding:5px 9px;gap:6px"><div class="av" style="width:16px;height:16px;font-size:.5rem;background:var(--mut2)">ร</div><span class="txt-xs">ระบบ ส่งอีเมลอัตโนมัติ</span></div></div></div>
+<div class="ct"><h3>Feed <span class="alias">/ Activity Stream</span></h3><p>รายการอัปเดตเรียงตามเวลา ใหม่สุดอยู่บน เช่น ฟีดโซเชียล หรือ activity log ในระบบงาน</p></div></div>
+
+</div></section>
+
+<!-- ================================================== -->
+<!-- SECTION 7 : PAGE TYPES -->
+<!-- ================================================== -->
+<section class="sec" id="page">
+<div class="sec-head">
+  <div class="sec-head-left">
+    <h2>📄 ชนิดหน้าและ Section ยอดนิยม (Page Types & Sections)</h2>
+    <div class="desc">ชื่อเรียก "หน้า" ทั้งหน้า และ section สำเร็จรูปที่เว็บการตลาด / เว็บแอปส่วนใหญ่มีเหมือนกัน</div>
+  </div>
+  <div class="sec-count" data-count-for="page">0 คำ</div>
+</div>
+<div class="grid">
+
+<div class="card" data-k="landing page หน้าแลนดิ้ง หน้าขาย">
+<div class="dm"><div class="fr"><div class="fr-bd rowf"><div style="width:14px;height:6px;background:var(--accent);border-radius:2px"></div><span class="pill" style="margin-left:auto;font-size:.5rem">Try Free</span></div><div class="fr-bd" style="text-align:center"><div class="ln w60" style="height:7px;margin:0 auto"></div><span class="pill" style="font-size:.5rem;margin-top:6px">CTA →</span></div><div class="fr-bd rowf" style="gap:5px"><div class="bx" style="flex:1;height:14px"></div><div class="bx" style="flex:1;height:14px"></div><div class="bx" style="flex:1;height:14px"></div></div></div></div>
+<div class="ct"><h3>Landing Page</h3><p>หน้าเดี่ยวที่ออกแบบมาเพื่อเป้าหมายเดียว (ขาย/เก็บ lead) มักเป็นปลายทางของโฆษณา โครงสร้าง: Hero → Features → Social Proof → Pricing → FAQ → CTA</p></div></div>
+
+<div class="card" data-k="feature section จุดสมชาย ฟีเจอร์ 3 คอลัมน์">
+<div class="dm"><div class="rowf" style="gap:9px"><div class="colf" style="align-items:center;gap:4px;width:54px"><div style="width:22px;height:22px;border-radius:7px;background:var(--chip);border:1.5px solid var(--hl2);display:flex;align-items:center;justify-content:center;font-size:.7rem">⚡</div><div class="ln w80"></div><div class="ln w100"></div></div><div class="colf" style="align-items:center;gap:4px;width:54px"><div style="width:22px;height:22px;border-radius:7px;background:var(--chip);border:1.5px solid var(--hl2);display:flex;align-items:center;justify-content:center;font-size:.7rem">🛡️</div><div class="ln w80"></div><div class="ln w100"></div></div><div class="colf" style="align-items:center;gap:4px;width:54px"><div style="width:22px;height:22px;border-radius:7px;background:var(--chip);border:1.5px solid var(--hl2);display:flex;align-items:center;justify-content:center;font-size:.7rem">📈</div><div class="ln w80"></div><div class="ln w100"></div></div></div></div>
+<div class="ct"><h3>Feature Section</h3><p>Section แสดงจุดสมชาย 3–4 ข้อ เป็นไอคอน + หัวข้อ + คำอธิบายสั้น เรียงเป็นคอลัมน์</p></div></div>
+
+<div class="card" data-k="testimonial รีวิว คำชม ลูกค้า">
+<div class="dm"><div style="background:var(--frame);border:1.5px solid var(--mut2);border-radius:10px;padding:10px 13px;width:190px"><div style="color:var(--amber);font-size:.7rem">★★★★★</div><div class="ln w100" style="margin-top:5px"></div><div class="ln w70"></div><div class="rowf" style="margin-top:7px;gap:6px"><div class="av" style="width:18px;height:18px;font-size:.5rem">ก</div><span class="txt-xs"><b>คุณนภา</b> — ลูกค้า</span></div></div></div>
+<div class="ct"><h3>Testimonial</h3><p>คำรับรอง/รีวิวจากลูกค้าจริง พร้อมชื่อ รูป และดาว ช่วยสร้างความเชื่อมั่น</p></div></div>
+
+<div class="card" data-k="pricing table ตารางราคา แพ็กเกจ plan">
+<div class="dm"><div class="rowf" style="gap:7px;align-items:stretch"><div style="border:1.5px solid var(--mut2);border-radius:9px;padding:8px;width:62px;text-align:center"><div class="txt-xs" style="font-weight:700">Basic</div><div style="font-family:'Chakra Petch';font-size:.8rem">฿99</div><div class="ln w80" style="margin:5px auto 0"></div></div><div style="border:2px solid var(--accent);border-radius:9px;padding:8px;width:66px;text-align:center;position:relative;background:var(--chip)"><span style="position:absolute;top:-7px;left:50%;transform:translateX(-50%);font-size:.45rem;background:var(--accent);color:#fff;border-radius:99px;padding:1px 7px;white-space:nowrap">แนะนำ</span><div class="txt-xs" style="font-weight:700">Pro</div><div style="font-family:'Chakra Petch';font-size:.8rem;color:var(--accent)">฿299</div><div class="ln w80" style="margin:5px auto 0"></div></div></div></div>
+<div class="ct"><h3>Pricing Table</h3><p>ตารางเทียบแพ็กเกจราคา (plan/tier) แพ็กเกจที่อยากดันมักไฮไลต์ป้าย "แนะนำ" (most popular)</p></div></div>
+
+<div class="card" data-k="faq frequently asked questions คำถามพบบ่อย">
+<div class="dm"><div class="fr"><div class="fr-bd" style="text-align:center;padding-bottom:4px"><span class="txt-s" style="font-weight:700">คำถามที่พบบ่อย</span></div><div class="rowf" style="padding:5px 9px;border-top:1px solid var(--mut);justify-content:space-between"><div class="ln w70"></div><span class="txt-xs">+</span></div><div class="rowf" style="padding:5px 9px;border-top:1px solid var(--mut);justify-content:space-between"><div class="ln w50"></div><span class="txt-xs">+</span></div></div></div>
+<div class="ct"><h3>FAQ Section</h3><p>รวมคำถาม-คำตอบที่ถามบ่อย มักทำเป็น Accordion พับ-กาง ช่วยลดภาระทีมขาย/ซัพพอร์ต</p></div></div>
+
+<div class="card" data-k="cta section ปิดการขาย ส่วนท้าย">
+<div class="dm"><div class="hlband colf" style="border-radius:11px;padding:13px 22px;align-items:center;gap:6px"><div class="ln w70" style="height:7px;width:110px;background:var(--accent)"></div><span class="txt-xs">พร้อมเริ่มหรือยัง?</span><span class="pill" style="font-size:.6rem">เริ่มใช้ฟรีวันนี้ →</span></div></div>
+<div class="ct"><h3>CTA Section</h3><p>Section ปิดท้ายก่อน Footer เพื่อ "ปิดการขาย" — headline สั้น ๆ + ปุ่ม CTA ใหญ่ บนพื้นสีสมชาย</p></div></div>
+
+<div class="card" data-k="newsletter signup สมัครรับข่าว อีเมล subscribe">
+<div class="dm"><div class="colf" style="align-items:center;gap:6px"><span class="txt-s" style="font-weight:700">📬 รับข่าวสารและโปรโมชัน</span><div class="rowf" style="gap:0"><div class="inputd" style="border-radius:99px 0 0 99px;min-width:110px">your@email.com</div><span class="pill" style="border-radius:0 99px 99px 0;font-size:.6rem;padding:5px 13px">Subscribe</span></div></div></div>
+<div class="ct"><h3>Newsletter Signup</h3><p>ฟอร์มเก็บอีเมลเพื่อส่งข่าวสาร มักวางใน Footer หรือทำเป็น section/popup แยก</p></div></div>
+
+<div class="card" data-k="social proof logo wall ลูกค้าไว้ใจ โลโก้พาร์ทเนอร์">
+<div class="dm"><div class="colf" style="align-items:center;gap:8px"><span class="txt-xs">บริษัทชั้นนำกว่า 500 แห่งไว้วางใจ</span><div class="rowf" style="gap:10px;opacity:.55"><div class="bx" style="width:36px;height:12px"></div><div class="bx" style="width:30px;height:12px"></div><div class="bx" style="width:40px;height:12px"></div><div class="bx" style="width:32px;height:12px"></div></div></div></div>
+<div class="ct"><h3>Social Proof <span class="alias">/ Logo Wall</span></h3><p>แถวโลโก้ลูกค้า/พาร์ทเนอร์ หรือตัวเลขผู้ใช้ เพื่อพิสูจน์ว่า "คนอื่นก็ใช้" สร้างความน่าเชื่อถือ</p></div></div>
+
+<div class="card" data-k="team section ทีมงาน about us">
+<div class="dm"><div class="rowf" style="gap:11px"><div class="colf" style="align-items:center;gap:3px"><div class="av" style="width:28px;height:28px">A</div><div class="ln" style="width:30px"></div><div class="txt-xs" style="font-size:.5rem">CEO</div></div><div class="colf" style="align-items:center;gap:3px"><div class="av" style="width:28px;height:28px;background:var(--amber)">B</div><div class="ln" style="width:30px"></div><div class="txt-xs" style="font-size:.5rem">Sales</div></div><div class="colf" style="align-items:center;gap:3px"><div class="av" style="width:28px;height:28px;background:var(--mut2)">C</div><div class="ln" style="width:30px"></div><div class="txt-xs" style="font-size:.5rem">Support</div></div></div></div>
+<div class="ct"><h3>Team Section</h3><p>Section แนะนำทีมงาน รูป + ชื่อ + ตำแหน่ง อยู่ในหน้า About Us เป็นหลัก</p></div></div>
+
+<div class="card" data-k="contact section form ติดต่อเรา แผนที่">
+<div class="dm"><div class="rowf" style="gap:8px;align-items:stretch"><div class="colf" style="gap:4px;width:90px"><div class="inputd" style="min-width:0"></div><div class="inputd" style="min-width:0;height:26px"></div><span class="pill" style="font-size:.5rem;align-self:flex-start">ส่งข้อความ</span></div><div style="width:70px;background:var(--hl);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem">📍</div></div></div>
+<div class="ct"><h3>Contact Section</h3><p>ฟอร์มติดต่อ + ข้อมูลที่อยู่/เบอร์โทร + แผนที่ (map embed) มาตรฐานของหน้า Contact Us</p></div></div>
+
+<div class="card" data-k="blog card article card การ์ดบทความ">
+<div class="dm"><div style="width:130px;background:var(--frame);border:1.5px solid var(--mut2);border-radius:10px;overflow:hidden"><div class="bx" style="height:36px;border-radius:0;display:flex;align-items:center;justify-content:center">🖼️</div><div style="padding:7px 9px"><span class="tagd" style="font-size:.48rem">HOW-TO</span><div class="ln w90" style="height:6px;margin-top:5px"></div><div class="rowf" style="margin-top:5px;gap:4px"><div class="av" style="width:13px;height:13px;font-size:.45rem">ส</div><span class="txt-xs" style="font-size:.48rem">5 มิ.ย. · อ่าน 4 นาที</span></div></div></div></div>
+<div class="ct"><h3>Blog Card <span class="alias">/ Article Card</span></h3><p>การ์ดบทความ: รูปปก (thumbnail) + หมวด + หัวข้อ + ผู้เขียน + เวลาอ่าน ใช้ในหน้ารวมบทความ</p></div></div>
+
+<div class="card" data-k="login page sign up auth หน้าเข้าสู่ระบบ สมัครสมาชิก">
+<div class="dm"><div style="background:var(--frame);border:1.5px solid var(--mut2);border-radius:10px;padding:10px 14px;width:150px"><div class="txt-s" style="font-weight:700;text-align:center">เข้าสู่ระบบ</div><div class="inputd" style="margin-top:6px;min-width:0">อีเมล</div><div class="inputd" style="margin-top:4px;min-width:0">••••••</div><span class="pill" style="font-size:.55rem;width:100%;text-align:center;margin-top:6px;display:block">Login</span><div class="txt-xs" style="text-align:center;margin-top:4px;color:var(--accent)">ลืมรหัสผ่าน?</div></div></div>
+<div class="ct"><h3>Login / Sign-up Page <span class="alias">(Auth)</span></h3><p>หน้าเข้าสู่ระบบ/สมัครสมาชิก — ศัพท์รวมเรียก authentication (auth) มักมีปุ่ม "Login with Google" (social login)</p></div></div>
+
+<div class="card" data-k="dashboard แดชบอร์ด หน้าสรุปภาพรวม">
+<div class="dm"><div class="fr"><div class="fr-bd rowf" style="align-items:stretch;gap:6px"><div class="colf" style="width:26%;gap:3px"><div class="ln w90" style="background:var(--accent)"></div><div class="ln w70"></div><div class="ln w80"></div></div><div style="flex:1"><div class="rowf" style="gap:4px"><div style="flex:1;height:18px;background:var(--chip);border:1px solid var(--hl2);border-radius:5px"></div><div style="flex:1;height:18px;background:var(--chip);border:1px solid var(--hl2);border-radius:5px"></div><div style="flex:1;height:18px;background:var(--chip);border:1px solid var(--hl2);border-radius:5px"></div></div><div class="rowf" style="gap:4px;margin-top:4px;align-items:flex-end"><div style="width:8px;height:14px;background:var(--mut2);border-radius:2px 2px 0 0"></div><div style="width:8px;height:22px;background:var(--accent);border-radius:2px 2px 0 0"></div><div style="width:8px;height:18px;background:var(--mut2);border-radius:2px 2px 0 0"></div><div style="width:8px;height:26px;background:var(--amber);border-radius:2px 2px 0 0"></div></div></div></div></div></div>
+<div class="ct"><h3>Dashboard</h3><p>หน้าสรุปภาพรวมของ web app: Sidebar + KPI cards + กราฟ + ตาราง — หน้าแรกหลัง login ของระบบงานส่วนใหญ่</p></div></div>
+
+<div class="card" data-k="404 page error page หน้าไม่พบ">
+<div class="dm"><div class="colf" style="align-items:center;gap:4px"><div style="font-family:'Chakra Petch';font-weight:700;font-size:1.5rem;color:var(--accent)">404</div><span class="txt-xs">ไม่พบหน้าที่คุณต้องการ</span><span class="pill o" style="font-size:.55rem">← กลับหน้าแรก</span></div></div>
+<div class="ct"><h3>404 Page <span class="alias">/ Error Page</span></h3><p>หน้าแสดงเมื่อ URL ไม่มีอยู่จริง (รหัส 404 Not Found) ควรมีปุ่มพากลับหน้าแรก — error ฝั่งเซิร์ฟเวอร์คือ 500</p></div></div>
+
+<div class="card" data-k="splash screen หน้าเปิดแอป loading screen">
+<div class="dm"><div style="width:74px;height:90px;border:2px solid var(--mut2);border-radius:10px;background:var(--hl);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px"><div style="width:24px;height:24px;border-radius:8px;background:var(--accent)"></div><div class="ln" style="width:34px"></div><div class="spin" style="width:13px;height:13px;border-width:2px"></div></div></div>
+<div class="ct"><h3>Splash Screen</h3><p>หน้าจอโลโก้ตอนเปิดแอปครั้งแรกระหว่างรอโหลด พบใน mobile app และ PWA</p></div></div>
+
+<div class="card" data-k="onboarding แนะนำการใช้งานครั้งแรก tour">
+<div class="dm"><div class="colf" style="align-items:center;gap:6px"><div style="background:var(--frame);border:1.5px solid var(--accent);border-radius:10px;padding:8px 14px;text-align:center"><span style="font-size:1rem">👋</span><div class="txt-xs" style="font-weight:700">ยินดีต้อนรับ! (1/3)</div><div class="txt-xs">มาดูวิธีสร้างรายการแรกกัน</div></div><div class="rowf" style="gap:4px"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div></div></div>
+<div class="ct"><h3>Onboarding <span class="alias">/ Product Tour</span></h3><p>ขั้นตอนแนะนำการใช้งานครั้งแรก — สไลด์ต้อนรับ หรือ tooltip ชี้ทีละจุด (guided tour) ให้ผู้ใช้ใหม่ไม่หลง</p></div></div>
+
+<div class="card" data-k="settings page profile หน้าตั้งค่า โปรไฟล์">
+<div class="dm"><div class="fr"><div class="fr-bd rowf" style="align-items:stretch;gap:7px"><div class="colf" style="width:32%;gap:4px"><span class="txt-xs" style="color:var(--accent);font-weight:700">บัญชี</span><span class="txt-xs">การแจ้งเตือน</span><span class="txt-xs">ความปลอดภัย</span></div><div class="colf" style="flex:1;gap:5px"><div class="rowf" style="justify-content:space-between"><div class="ln w40"></div><span class="switch" style="transform:scale(.8)"></span></div><div class="rowf" style="justify-content:space-between"><div class="ln w50"></div><span class="switch off" style="transform:scale(.8)"></span></div></div></div></div></div>
+<div class="ct"><h3>Settings Page</h3><p>หน้าตั้งค่าผู้ใช้/ระบบ — เมนูหมวดด้านซ้าย + รายการ toggle/ฟอร์มด้านขวา เป็น pattern มาตรฐานของ web app</p></div></div>
+
+</div></section>
+
+<div class="no-result" id="noResult">ไม่พบคำที่ค้นหา — ลองคำอื่น เช่น "modal", "ปุ่ม", "เมนู"</div>
+</main>
+  </div>
+</div>
+
+<button id="backTop" title="กลับด้านบน" aria-label="กลับด้านบน">↑</button>
+<footer><b>WEB ANATOMY</b> · Interactive Reference Manual · ศัพท์ส่วนประกอบเว็บไซต์และเว็บแอป</footer>
+
+<script>
+// ---- Sticky offset: วัดความสูง topbar จริง (จอแคบ topbar สูงขึ้นเพราะตกบรรทัด) ----
+const topbarEl=document.querySelector('.topbar');
+function setTopH(){
+  document.documentElement.style.setProperty('--topbar-h', topbarEl.offsetHeight+'px');
+}
+setTopH();
+window.addEventListener('resize',setTopH);
+window.addEventListener('load',setTopH);
+if(window.ResizeObserver){new ResizeObserver(setTopH).observe(topbarEl);}
+
+// ---- Side Navigation ----
+const tabs=document.querySelectorAll('.side-link');
+const secs=document.querySelectorAll('.sec');
+const mainEl=document.querySelector('main');
+
+function activateSec(id,scroll){
+  tabs.forEach(x=>x.classList.toggle('active',x.dataset.sec===id));
+  secs.forEach(s=>s.classList.toggle('show',s.id===id));
+  const search=document.getElementById('q');
+  if(search){search.value='';filterCards('');}
+  closeSideNav();
+  if(scroll){
+    const sec=document.getElementById(id);
+    if(sec) sec.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+tabs.forEach(t=>t.addEventListener('click',()=>activateSec(t.dataset.sec,true)));
+
+const sideNav=document.getElementById('sideNav');
+const mobileNavBtn=document.getElementById('mobileNavBtn');
+const mobileSideOverlay=document.getElementById('mobileSideOverlay');
+
+function openSideNav(){
+  sideNav.classList.add('open');
+  mobileSideOverlay.classList.add('show');
+  document.body.classList.add('nav-open');
+}
+function closeSideNav(){
+  sideNav.classList.remove('open');
+  mobileSideOverlay.classList.remove('show');
+  document.body.classList.remove('nav-open');
+}
+mobileNavBtn?.addEventListener('click',openSideNav);
+mobileSideOverlay?.addEventListener('click',closeSideNav);
+document.addEventListener('keydown',e=>{if(e.key==='Escape') closeSideNav();});
+
+
+// ---- Counts ----
+let total=0;
+secs.forEach(s=>{
+  const n=s.querySelectorAll('.card').length;
+  total+=n;
+  const side=document.querySelector(`.side-link[data-sec="${s.id}"] .count`);
+  if(side) side.textContent=n;
+});
+document.getElementById('totalCount').textContent=total+' คำศัพท์';
+
+// ---- Search ----
+const q=document.getElementById('q');
+function filterCards(v){
+  v=v.trim().toLowerCase();
+  let any=false;
+  document.querySelectorAll('.card').forEach(c=>{
+    const hay=(c.dataset.k+' '+c.textContent).toLowerCase();
+    const hit=!v||hay.includes(v);
+    c.classList.toggle('hidden',!hit);
+    if(hit)any=true;
+  });
+  if(v){secs.forEach(s=>{
+    const has=s.querySelector('.card:not(.hidden)');
+    s.classList.toggle('show',!!has);
+  });}else{
+    const act=document.querySelector('.side-link.active').dataset.sec;
+    secs.forEach(s=>s.classList.toggle('show',s.id===act));
+  }
+  document.getElementById('noResult').style.display=any?'none':'block';
+}
+q.addEventListener('input',()=>filterCards(q.value));
+
+// ---- Theme ----
+const btn=document.getElementById('themeBtn');
+btn.addEventListener('click',()=>{
+  const h=document.documentElement;
+  const d=h.dataset.theme==='dark';
+  h.dataset.theme=d?'light':'dark';
+  btn.textContent=d?'🌙 โหมดมืด':'☀️ โหมดสว่าง';
+});
+
+// ---- Manual utilities ----
+const root=document.documentElement;
+const body=document.body;
+const fontDown=document.getElementById('fontDown');
+const fontUp=document.getElementById('fontUp');
+const compactBtn=document.getElementById('compactBtn');
+const searchNote=document.getElementById('searchNote');
+const backTop=document.getElementById('backTop');
+
+let scale=parseFloat(localStorage.getItem('wa-font-scale')||'1');
+let compact=localStorage.getItem('wa-compact')==='1';
+const savedTheme=localStorage.getItem('wa-theme');
+if(savedTheme==='dark'||savedTheme==='light'){
+  root.dataset.theme=savedTheme;
+}
+body.classList.toggle('manual-compact',compact);
+root.style.setProperty('--reading-scale',scale);
+compactBtn.setAttribute('aria-pressed',compact?'true':'false');
+
+function syncThemeBtn(){
+  const dark=root.dataset.theme==='dark';
+  btn.innerHTML=dark?'☀️ <span class="theme-label">โหมดสว่าง</span>':'🌙 <span class="theme-label">โหมดมืด</span>';
+}
+syncThemeBtn();
+
+fontDown.addEventListener('click',()=>{
+  scale=Math.max(.88,+(scale-.06).toFixed(2));
+  root.style.setProperty('--reading-scale',scale);
+  localStorage.setItem('wa-font-scale',scale);
+});
+fontUp.addEventListener('click',()=>{
+  scale=Math.min(1.24,+(scale+.06).toFixed(2));
+  root.style.setProperty('--reading-scale',scale);
+  localStorage.setItem('wa-font-scale',scale);
+});
+compactBtn.addEventListener('click',()=>{
+  compact=!compact;
+  body.classList.toggle('manual-compact',compact);
+  compactBtn.setAttribute('aria-pressed',compact?'true':'false');
+  localStorage.setItem('wa-compact',compact?'1':'0');
+});
+document.getElementById('startBtn').addEventListener('click',()=>{
+  document.querySelector('.anatomy').scrollIntoView({behavior:'smooth',block:'start'});
+});
+document.getElementById('focusSearch').addEventListener('click',()=>{
+  q.focus(); q.scrollIntoView({behavior:'smooth',block:'center'});
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape' && q.value){
+    q.value=''; filterCards(''); q.blur();
+  }
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='k'){
+    e.preventDefault(); q.focus(); q.select();
+  }
+});
+q.addEventListener('input',()=>{
+  searchNote.classList.toggle('show',!!q.value.trim());
+});
+window.addEventListener('scroll',()=>{
+  backTop.classList.toggle('show',window.scrollY>520);
+},{passive:true});
+backTop.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+// section counters
+secs.forEach(s=>{
+  const target=document.querySelector(`[data-count-for="${s.id}"]`);
+  if(target) target.textContent=s.querySelectorAll('.card').length+' คำ';
+});
+
+// Persist theme whenever it changes.
+const originalThemeHandler=btn.onclick;
+btn.addEventListener('click',()=>{
+  localStorage.setItem('wa-theme',root.dataset.theme);
+  syncThemeBtn();
+});
+
+</script>
+</body>
+</html>

@@ -4,7 +4,7 @@ type: meta
 status: active
 visibility: public
 created: 2026-08-23
-updated: 2026-09-22
+updated: 2026-09-27
 sources: [PROJECT.md, AGENTS.md]
 tags: [library, index]
 ---
@@ -50,6 +50,7 @@ tags: [library, index]
 - [Hermes Bot Mode · Interactive Reference Manual](../../hermes-bot-mode-interactive-manual.html)
 - [ใช้ Grok Bot ให้คุ้มกว่าเดิม — CLI Usage Router](../../grok-bot-cli-usage-router-manual.html)
 - [Hermes Bot Cheat Code — Practical Guide / Playbook](../../hermes-bot-cheat-code-practical-guide.html)
+- [Web Anatomy — Interactive Reference Manual](../../web-anatomy-dictionary.html)
 
 ## Reports
 

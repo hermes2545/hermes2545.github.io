@@ -1,5 +1,16 @@
 [
   {
+    "id": "web-anatomy-dictionary",
+    "title": "Web Anatomy — Interactive Reference Manual",
+    "short_title": "Web Anatomy",
+    "href": "web-anatomy-dictionary.html",
+    "cover": "assets/covers/custom/web-anatomy-dictionary.webp",
+    "category": "Web Design",
+    "summary": "คู่มือ Interactive Reference Manual ภาษาไทยสำหรับศัพท์เรียกส่วนประกอบเว็บไซต์และเว็บแอป ครอบคลุม page anatomy, layout, navigation, forms, buttons, feedback, overlays, data display และชนิด section ยอดนิยม เพื่อช่วย build, explore และ understand the web",
+    "accent": "#E95B4F",
+    "published_at": "2026-09-27T13:29:36+07:00"
+  },
+  {
     "id": "hermes-bot-cheat-code-practical-guide",
     "title": "Hermes Bot Cheat Code — Practical Guide / Playbook",
     "short_title": "Hermes Bot Cheat Code",
