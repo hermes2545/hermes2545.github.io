@@ -1,49 +1,35 @@
 # Library Session Handoff
 
-Updated: 2026-09-27T13:29:36+07:00
+Updated: 2026-10-04T17:15:25+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
 - Branch: `main`.
-- Current local prepared Reading addition: **Web Anatomy — Interactive Reference Manual** as the 39th Reading entry.
-- Public push/publish has **not** been approved in the current turn; changes are local only and uncommitted.
+- Current local prepared App update: **PDF Password Remover — Local Browser Utility** at `app/pdf-password-remover.html`.
+- Public push/publish has **not** been explicitly approved in the current turn; changes are local only and uncommitted.
 - Project-private local workspace remains untracked/private and must not be committed.
 
-## Web Anatomy Reading addition
+## PDF Password Remover update
 
-- Owner supplied final HTML was copied to `web-anatomy-dictionary.html` and preserved byte-for-byte at SHA-256 `8d917f2840a8396f2b9581c570cc70320356c9f3df80b96961dd5f5f99ed8e53`.
-- Owner supplied cover was normalized only for the Reading shelf to `assets/covers/custom/web-anatomy-dictionary.webp`, an EXIF-free 600×900 RGB WebP at SHA-256 `644cd769831726a8ceb2f510da4b86e29399a47e02e73389de9a7fb6caf58a9d`.
-- Catalog record added to `data/books.json` with ID `web-anatomy-dictionary`, short title `Web Anatomy`, category `Web Design`, and local addition timestamp `2026-09-27T13:29:36+07:00` because no separate publication date was supplied.
-- `index.html` regenerated from `scripts/build_catalog.py`; Web Anatomy appears first/newest on the Reading shelf.
+- Replaced `app/pdf-password-remover.html` with the owner-supplied updated standalone HTML, preserving the supplied file bytes at SHA-256 `4f2c9aacaa5613eff72eef0025a03b130cd93d19255c2e87ba33812b427874ab`.
+- Updated `data/apps.json` `source_sha256` for `pdf-password-remover`; source repository/commit remain `null` and `import_mode` remains `user-supplied-preserved`.
+- Added regression coverage for the new hash and safety/runtime markers: password input autocomplete disabled, password passed to qpdf via `--password-file`, save handle selected while the user gesture is still active, and no old inline qpdf password argument.
+- `app-library.html` did not need regeneration because the rendered shelf metadata is unchanged; `python scripts/build_app_library.py --check` confirmed it is current.
 
 ## Files changed locally
 
-- `web-anatomy-dictionary.html`
-- `assets/covers/custom/web-anatomy-dictionary.webp`
-- `templates/web-anatomy-dictionary-cover.template.md`
-- `data/books.json`
-- `index.html`
-- `tests/test_web_anatomy_dictionary_reading.py`
-- `tests/test_catalog.py`
-- Existing fixed-position Reading tests shifted by one newest entry:
-  - `tests/test_hermes_bot_cheat_code_reading.py`
-  - `tests/test_xiaomi_legacy_camera_local_rtsp_reading.py`
-  - `tests/test_what_i_do_reading.py`
-  - `tests/test_grok_bot_interactive_manual_reading.py`
-  - `tests/test_hermes_bot_mode_reading.py`
-  - `tests/test_podcast_visual_storyboard_ai_prompting_reading.py`
-  - `tests/test_human_ai_communication_framework_reading.py`
-  - `tests/test_grokrouter_reading.py`
-- Documentation updated:
-  - `docs/wiki/index.md`
-  - `docs/wiki/log.md`
-  - `docs/SESSION_HANDOFF.md`
+- `app/pdf-password-remover.html`
+- `data/apps.json`
+- `tests/test_app_library.py`
+- `docs/wiki/index.md`
+- `docs/wiki/log.md`
+- `docs/SESSION_HANDOFF.md`
 
 ## Verification completed
 
-- TDD RED: `python -m unittest tests.test_web_anatomy_dictionary_reading -v` failed because catalog/html/cover were absent.
-- Focused GREEN: `python -m unittest tests.test_web_anatomy_dictionary_reading ... -v` passed after implementation.
+- TDD RED: `python -m unittest tests.test_app_library.AppLibraryTests.test_pdf_password_remover_preserves_user_supplied_bytes_and_verified_cdn_pins -v` failed on the old catalog hash before implementation.
+- Focused GREEN: same focused test passed after replacing the file and updating the catalog hash.
 - Full local gates passed:
   - `python -m unittest discover -s tests -v` → OK, 166 tests.
   - `python scripts/build_catalog.py --check` → `index.html is current (39 books)`.
@@ -51,16 +37,15 @@ Updated: 2026-09-27T13:29:36+07:00
   - `python scripts/build_app_library.py --check` → `app-library.html is current (9 apps)`.
   - `python scripts/build_gallery.py --check` → `gallery.html is current (8 artworks)`.
   - `git diff --check` → OK.
-- Browser verification via Playwright against local HTTP server on desktop 1365×900 and mobile 390×844 confirmed:
-  - 39 Reading cards.
-  - First card title `Web Anatomy`, href/download `web-anatomy-dictionary.html`, cover `assets/covers/custom/web-anatomy-dictionary.webp` with natural 600×900 dimensions.
-  - Search for `Web Anatomy` returns exactly one visible card.
-  - Manual title matches, 7 sections, 7 nav items, 115 cards, search/theme/mobile-menu controls present.
-  - Zero horizontal overflow and no console/page errors on both viewports.
-- Pre-share scan over intended public files found no concrete local paths, cache IDs, token patterns, private key markers, or image metadata leaks.
+- Local browser/CDP verification against `http://127.0.0.1:8765/app/pdf-password-remover.html` confirmed:
+  - Desktop page title `PDF Password Remover`, Thai H1 `ถอดรหัส PDF แบบไม่อัปโหลดไฟล์`, 3 main cards, zero horizontal overflow, `showSaveFilePicker` available, and password input `autocomplete="off"` present.
+  - Mobile 390×844 layout collapsed hero/grid to one column, zero horizontal overflow, and Thai controls rendered.
+  - Password-preset UI smoke test added one temporary preset, displayed a masked password, and did not create password/pass localStorage keys.
+- Pre-share scan over touched public files found no local cache path, profile path, obvious token/private-key marker, or sample password leak.
+- Full encrypted-PDF browser transformation smoke test was not run because this host currently lacks `qpdf`, Playwright, and Python PDF libraries (`pypdf`, `PyPDF2`, `reportlab`).
 
 ## Remaining / next actions
 
-- Ask the owner for explicit commit/push/publish approval before publishing Reading changes to public GitHub Pages/private backup.
-- After approved push, verify public/private remote HEADs and production HTTP/browser read-back for `index.html`, `web-anatomy-dictionary.html`, and the cover.
-- Stop/clean any local preview server if still running before ending the work session.
+- Ask the owner for explicit commit/push/publish approval before publishing the App update to public GitHub Pages/private backup.
+- After approved push, verify public/private remote HEADs and production HTTP/browser read-back for `app/pdf-password-remover.html` and `data/apps.json`/App shelf state.
+- Stop the local preview server `proc_b97e387c79cb` if still running before ending the work session.

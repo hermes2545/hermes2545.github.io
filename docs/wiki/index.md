@@ -4,7 +4,7 @@ type: meta
 status: active
 visibility: public
 created: 2026-08-23
-updated: 2026-09-27
+updated: 2026-10-04
 sources: [PROJECT.md, AGENTS.md]
 tags: [library, index]
 ---

@@ -157,7 +157,7 @@ class AppLibraryTests(unittest.TestCase):
         source = source_path.read_text(encoding="utf-8")
         self.assertEqual(app["import_mode"], "user-supplied-preserved")
         self.assertEqual(hashlib.sha256(source_path.read_bytes()).hexdigest(), app["source_sha256"])
-        self.assertEqual(app["source_sha256"], "454dad79d097b0669a55fc76d23723b6a3bf5255c72f42529923c6a5fd40e665")
+        self.assertEqual(app["source_sha256"], "4f2c9aacaa5613eff72eef0025a03b130cd93d19255c2e87ba33812b427874ab")
         self.assertIn("https://cdn.jsdelivr.net/npm/qpdf-run@0.2.1", source)
         for integrity in (
             "sha384-uzCijgvXJJyitdtBSpGIYugGqP/ya67leAPzNA5lOfBXdVqA3Op9YoD+oyGH3wbw",
@@ -166,6 +166,10 @@ class AppLibraryTests(unittest.TestCase):
         ):
             self.assertIn(integrity, source)
         self.assertIn("passwords stay in page memory only", source.lower())
+        self.assertIn("autocomplete=\"off\"", source)
+        self.assertIn("--password-file=${pwName}", source)
+        self.assertIn("pickSaveHandle(outputName)", source)
+        self.assertNotIn("--password=${pass.password}", source)
         self.assertNotIn("pdf-remover.password", source)
 
     def test_tumngern_preserves_runtime_with_only_library_path_adjustments(self):
