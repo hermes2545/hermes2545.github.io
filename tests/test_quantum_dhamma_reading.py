@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BOOK_ID = "quantum-dhamma-series"
 HTML_PATH = ROOT / "quantum" / "index.html"
 COVER_PATH = ROOT / "assets" / "covers" / "custom" / f"{BOOK_ID}.webp"
-MIRRORED_INDEX_SHA256 = "1cd259432f998ffa6236f587be80d32894ebf8b627da351c00512233673b2106"
+MIRRORED_INDEX_SHA256 = "c0f110f7c2881d250c40d339797b7b0142986a9c4a3e82a3de72ff049391bf22"
 COVER_SOURCE_SHA256 = "03880d327498a782932236a4d20586b4350ebec891bff942c2c6b008cc1fac6b"
 PROHIBITED_PUBLIC_RE = re.compile(
     "|".join(
