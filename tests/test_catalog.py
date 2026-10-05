@@ -30,6 +30,10 @@ class CatalogTests(unittest.TestCase):
             and "templates" not in path.relative_to(ROOT).parts
             and "app" not in path.relative_to(ROOT).parts
             and path.relative_to(ROOT) not in generated_collection_pages
+            and (
+                "quantum" not in path.relative_to(ROOT).parts
+                or path.relative_to(ROOT) == Path("quantum/index.html")
+            )
         }
         catalog_targets = {unquote(urlparse(book["href"]).path) for book in self.books}
         # The root token guide and folder token guide are byte-identical aliases.
@@ -39,7 +43,7 @@ class CatalogTests(unittest.TestCase):
     def test_required_fields_and_unique_ids_and_links(self):
         required = {"id", "title", "short_title", "href", "cover", "category", "summary", "accent", "published_at"}
         self.assertTrue(self.books)
-        self.assertEqual(len(self.books), 39)
+        self.assertEqual(len(self.books), 40)
         self.assertEqual(len({book["id"] for book in self.books}), len(self.books))
         self.assertEqual(len({book["href"] for book in self.books}), len(self.books))
         for book in self.books:
@@ -49,7 +53,7 @@ class CatalogTests(unittest.TestCase):
             self.assertRegex(book["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
 
     def test_every_reading_book_uses_an_approved_custom_cover(self):
-        self.assertEqual(len(self.books), 39)
+        self.assertEqual(len(self.books), 40)
         for book in self.books:
             self.assertEqual(book["cover"], f'assets/covers/custom/{book["id"]}.webp')
             self.assertEqual(Path(book["cover"]).suffix, ".webp")
@@ -75,6 +79,7 @@ class CatalogTests(unittest.TestCase):
 
     def test_all_reading_books_use_approved_thai_titles(self):
         expected = {
+            "quantum-dhamma-series": "ธรรมะกับควอนตัม",
             "web-anatomy-dictionary": "Web Anatomy",
             "hermes-bot-cheat-code-practical-guide": "Hermes Bot Cheat Code",
             "xiaomi-legacy-camera-local-rtsp": "ปลุกกล้อง Xiaomi เก่า",

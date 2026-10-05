@@ -1,0 +1,93 @@
+/*
+ * tokens.css — ตัวแปรสี/รูปทรง/ฟอนต์ทั้งหมดของระบบ (§4 + สัญญาระหว่างโมดูล §C)
+ * เจ้าของ: web-shell (P4) — ห้ามแพ็กเกจอื่นประกาศ custom property ซ้ำ
+ * ชื่อ token สะกดตรงเป๊ะตามสัญญา ห้ามเพิ่มชื่ออื่นโดยไม่แก้เอกสารสัญญาก่อน
+ *
+ * โครงสร้างธีม (ต้องประกาศครบ 3 จุดเสมอ กันหลุดเวลาแก้ค่า):
+ *   1) :root                                                → ค่า light (ดีฟอลต์)
+ *   2) @media(prefers-color-scheme:dark) :root:not([data-theme="light"]) → dark ตามระบบ
+ *   3) :root[data-theme="dark"]                             → dark ตามที่ผู้ใช้เลือกเอง (ถ้ามีสวิตช์ในอนาคต)
+ * กลุ่ม "night panel" (UniverseWindow) เป็นธีมมืดค้างที่ตลอดทุกกรณี จึงประกาศครั้งเดียวบน :root เท่านั้น
+ */
+
+:root{
+  /* ---------- กลุ่ม 1: ธีมกระดาษ (เปลี่ยนตาม light/dark) — ค่า light ---------- */
+  --paper: #F5F1E8;
+  --paper-2: #ECE6D8;
+  --ink: #1C2040;
+  --ink-2: #4A4E68;
+  --ink-3: #7E819A;
+  --line: #D9D2C2;
+  --gold: #B8892B;
+  --gold-soft: #F1E4C4;
+  --teal: #1F8A85;
+  --teal-soft: #D3EAE7;
+  --focus: #1F8A85;
+  color-scheme: light;
+
+  /* ---------- กลุ่ม 2: Night panel (คงที่ทุกธีม ประกาศบน :root ครั้งเดียว) ---------- */
+  --night: #0F1230;
+  --night-2: #1B1F3F;
+  --star: #EAE6F5;
+  --night-line: #2E3363;
+  --night-mute: #9A9EC4;
+  --night-text: #CFD2EA;
+  --night-hi: #F3E2B3;
+  --night-k: #8FD3CE;
+  --dot-gold: #D9AE4D;
+  --dot-teal: #4FB8B2;
+  --dot-pink: #F0A3C8;
+  --chip-on-ink: #1A1400;
+
+  /* ---------- รูปทรง/เงา ---------- */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-pill: 99px;
+  --shadow-night: 0 20px 50px -30px rgba(0,0,0,.6);
+  --shadow-float: 0 30px 60px -20px rgba(0,0,0,.5);
+
+  /* ---------- ฟอนต์ (§7) ---------- */
+  --font-head: 'Chonburi','Sarabun',serif;
+  --font-body: 'Sarabun',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-mono: 'IBM Plex Mono',ui-monospace,monospace;
+}
+
+/* dark ตามการตั้งค่าระบบ ผู้ใช้ยังไม่ได้ล็อกธีมเอง (ไม่มี data-theme="light" ค้างอยู่) */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper: #12152B;
+    --paper-2: #1A1E38;
+    --ink: #ECE8F6;
+    --ink-2: #BDBAD0;
+    --ink-3: #8A8DAB;
+    --line: #2C3054;
+    --gold: #D9AE4D;
+    --gold-soft: #2E2A1C;
+    --teal: #4FB8B2;
+    --teal-soft: #16332F;
+    --focus: #4FB8B2;
+    color-scheme: dark;
+  }
+}
+
+/* dark ที่ผู้ใช้เลือกเองผ่านสวิตช์ธีม (ชนะ prefers-color-scheme เสมอทั้งสองทิศทาง) */
+:root[data-theme="dark"]{
+  --paper: #12152B;
+  --paper-2: #1A1E38;
+  --ink: #ECE8F6;
+  --ink-2: #BDBAD0;
+  --ink-3: #8A8DAB;
+  --line: #2C3054;
+  --gold: #D9AE4D;
+  --gold-soft: #2E2A1C;
+  --teal: #4FB8B2;
+  --teal-soft: #16332F;
+  --focus: #4FB8B2;
+  color-scheme: dark;
+}
+
+/* body ต้องมี background จาก token เสมอ ห้ามโปร่งใส (§4 บังคับ) */
+body{
+  background: var(--paper);
+  color: var(--ink);
+}

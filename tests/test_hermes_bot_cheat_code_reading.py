@@ -42,7 +42,7 @@ class HermesBotCheatCodeReadingTests(unittest.TestCase):
         self.assertEqual(book["category"], "Hermes Guide")
         self.assertEqual(book["published_at"], "2026-09-22T22:58:39+07:00")
         self.assertIn("สร้างทีม AI Agent", book["summary"])
-        self.assertEqual(books[1]["id"], BOOK_ID)
+        self.assertEqual(books[2]["id"], BOOK_ID)
 
     def test_owner_supplied_html_is_preserved_and_public_safe(self):
         self.assertTrue(HTML_PATH.is_file())

@@ -42,7 +42,7 @@ class WebAnatomyDictionaryReadingTests(unittest.TestCase):
         self.assertEqual(book["category"], "Web Design")
         self.assertEqual(book["published_at"], "2026-09-27T13:29:36+07:00")
         self.assertIn("ศัพท์เรียกส่วนประกอบเว็บไซต์", book["summary"])
-        self.assertEqual(books[0]["id"], BOOK_ID)
+        self.assertEqual(books[1]["id"], BOOK_ID)
 
     def test_owner_supplied_html_is_preserved_and_public_safe(self):
         self.assertTrue(HTML_PATH.is_file())

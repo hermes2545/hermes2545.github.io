@@ -1,0 +1,338 @@
+/*
+ * base.css — layout + component style (§3, §4, §5 ของ handoff-spec และ §C/§D ของสัญญาระหว่างโมดูล)
+ * เจ้าของ: web-shell (P4). ทุกสีอ้างอิง custom property จาก tokens.css เท่านั้น ห้าม hex ตรงนี้
+ * ข้อยกเว้นเดียว: rgba(...) โปร่งใสที่ไม่ผูกกับ token สี (เช่น เงา, พื้นกระจกจาง ๆ ของ night panel)
+ * ซึ่งตรงกับที่สัญญาอนุญาตไว้สำหรับ P4 CSS (ดูคอมเมนต์จุดที่ใช้)
+ *
+ * Breakpoint เดียวตามสัญญา: ≥861px = desktop, ≤860px = มือถือ/แท็บเล็ตแนวตั้ง
+ */
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  font-family:var(--font-body);
+  font-size:17px;
+  line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--font-head);font-weight:400;line-height:1.35;text-wrap:balance;margin:0}
+p{margin:0 0 1.1em}
+a{color:var(--teal);text-decoration-color:currentColor}
+button{font:inherit;cursor:pointer}
+img{max-width:100%}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+
+/* ป้องกัน body scroll แนวนอนทุกกรณี (§5 ข้อ 1) — ตารางเนื้อหาที่กว้างต้องเลื่อนในกล่องตัวเอง */
+body{overflow-x:hidden}
+.scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+/* ============================================================ */
+/* app frame */
+/* ============================================================ */
+.app{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100vh}
+.rail{border-right:1px solid var(--line);padding:26px 18px;position:sticky;top:0;height:100vh;overflow:auto;background:var(--paper)}
+.brand{display:flex;flex-direction:column;gap:2px;margin-bottom:22px}
+.brand .t{font-family:var(--font-head);font-size:1.15rem;color:var(--ink);text-decoration:none}
+.brand .s{font-size:.8rem;color:var(--ink-3)}
+.rail .home{margin-bottom:8px;padding-left:10px}
+.rail nav{display:flex;flex-direction:column;gap:2px}
+.rail nav a{display:grid;grid-template-columns:28px 1fr;align-items:baseline;gap:8px;text-align:left;background:none;border:0;color:var(--ink-2);padding:10px;border-radius:6px;font-size:.92rem;line-height:1.4;text-decoration:none;min-height:44px}
+.rail nav a .n{font-family:var(--font-mono);font-size:.78rem;color:var(--ink-3)}
+.rail nav a[aria-current="page"]{background:var(--gold-soft);color:var(--ink)}
+.rail nav a[aria-current="page"] .n{color:var(--gold)}
+.rail nav a.soon{opacity:.55}
+.rail .foot{margin-top:22px;font-size:.78rem;color:var(--ink-3);line-height:1.5;border-top:1px solid var(--line);padding-top:12px}
+.main{min-width:0}
+.page{max-width:72ch;margin:0 auto;padding:44px 28px 120px}
+
+/* topbar สำหรับมือถือ (ซ่อนบน desktop) */
+.topbar{display:none;position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line);padding:10px 14px;align-items:center;gap:10px}
+.topbar .t{font-family:var(--font-head);font-size:1rem;flex:1;color:var(--ink);text-decoration:none;min-height:44px;display:flex;align-items:center}
+.topbar select{font:inherit;font-size:.9rem;padding:10px 8px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--paper-2);color:var(--ink);max-width:60%;min-height:44px}
+.topbar select[hidden]{display:none}
+
+/* ============================================================ */
+/* ชั้นหนังสือ (shelf) */
+/* ============================================================ */
+.hero{padding-bottom:26px;border-bottom:1px solid var(--line);margin-bottom:26px}
+.hero h1{font-size:2.5rem;margin:6px 0 10px}
+.hero .lead{font-size:1.12rem;color:var(--ink-2);max-width:60ch}
+.hero .lead b{color:var(--ink);font-weight:500}
+.hero.has-cover{display:grid;grid-template-columns:200px 1fr;gap:28px;align-items:start}
+.hero-cover{display:flex;flex-direction:column;gap:8px;text-decoration:none;color:var(--teal)}
+.hero-cover img{display:block;width:100%;height:auto;border-radius:var(--r-sm);box-shadow:var(--shadow-night);background:var(--night)}
+.hero-cover .hc-cap{font-size:.85rem;text-align:center;text-decoration:underline;min-height:24px}
+.hero-text{min-width:0}
+.byline{font-size:.98rem;color:var(--ink-2);margin:0 0 12px}
+
+.shelf{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:26px 0}
+.bookcard{display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);border-radius:var(--r-md);padding:16px;background:var(--paper-2);text-decoration:none;color:var(--ink);min-height:44px}
+.bookcard:hover{background:var(--gold-soft)}
+.bookcard .bc-cover{display:flex;align-items:center;justify-content:center;height:64px;border-radius:var(--r-sm);background:var(--paper);border:1px solid var(--line);margin-bottom:4px}
+.bookcard .bc-cover .n{font-family:var(--font-mono);color:var(--ink-3);font-size:1.4rem}
+.bookcard .bc-cover.has-img{display:block;height:auto;aspect-ratio:480/696;padding:0;border:0;overflow:hidden;background:var(--night);box-shadow:var(--shadow-night);transition:transform .2s ease}
+.bookcard .bc-cover.has-img img{display:block;width:100%;height:100%;object-fit:cover}
+.bookcard:hover .bc-cover.has-img{transform:translateY(-3px)}
+.bookcard .bc-title{font-family:var(--font-head);font-size:1.05rem;overflow-wrap:anywhere}
+.bookcard .bc-meta{font-size:.82rem;color:var(--ink-3)}
+.bookcard .bc-status{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
+.bookcard.building{opacity:.6}
+.bookcard.building .bc-status{color:var(--ink-3)}
+.bookcard .bc-progress{font-size:.78rem;color:var(--gold)}
+.bookcard .bc-progress:empty{display:none}
+
+.howto{margin-top:34px;padding:18px 20px;border-radius:var(--r-md);background:var(--gold-soft);font-size:.95rem;line-height:1.7}
+.howto b{font-weight:500}
+.howto .kbd{display:inline-block;border-bottom:2px dotted var(--gold);color:var(--ink);font-weight:500}
+
+/* ============================================================ */
+/* แผนที่เล่ม (book) */
+/* ============================================================ */
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:26px 0}
+.three .c{border:1px solid var(--line);border-radius:var(--r-md);padding:16px 16px 12px;background:var(--paper-2)}
+.three .c .pali{font-family:var(--font-head);font-size:1.35rem}
+.three .c .th{color:var(--ink-3);font-size:.8rem;letter-spacing:.08em;margin-bottom:6px}
+.three .c p{font-size:.93rem;line-height:1.6;color:var(--ink-2);margin:0}
+
+.mapgrid{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+.maprow{display:grid;grid-template-columns:52px 1fr auto;gap:14px;align-items:center;padding:14px 4px;border-bottom:1px solid var(--line);background:none;border-left:0;border-right:0;text-align:left;color:var(--ink);width:100%;text-decoration:none;min-height:44px}
+.maprow .n{font-family:var(--font-mono);color:var(--ink-3);font-size:.85rem}
+.maprow .ti{font-weight:500;font-size:1.02rem;display:block}
+.maprow .sub{font-size:.85rem;color:var(--ink-3);display:block}
+.maprow .st{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:var(--r-pill);border:1px solid var(--line);color:var(--ink-3);white-space:nowrap}
+.maprow.ok:hover{background:var(--paper-2)}
+.maprow.ok .st{background:var(--teal-soft);border-color:transparent;color:var(--teal)}
+.maprow.ok.done .st{background:var(--gold-soft);color:var(--gold)}
+.maprow.soon{opacity:.6}
+
+/* ============================================================ */
+/* chapter typography */
+/* ============================================================ */
+.ch-head{margin-bottom:28px}
+.ch-head h1{font-size:2.1rem;margin:6px 0 12px}
+.ch-head .goal{border-left:3px solid var(--gold);padding:4px 0 4px 14px;color:var(--ink-2);font-size:1rem}
+.page h2{font-size:1.45rem;margin:44px 0 12px;padding-top:22px;border-top:1px solid var(--line)}
+.page h3{font-size:1.1rem;margin:26px 0 8px;font-family:var(--font-body);font-weight:700}
+.page ul{padding-left:1.2em}
+.page li{margin-bottom:.35em}
+dfn{font-style:normal;text-decoration:underline dotted var(--gold);text-underline-offset:4px;text-decoration-thickness:1.5px;cursor:help;color:inherit}
+dfn:hover,dfn:focus-visible{background:var(--gold-soft)}
+dfn[data-kind="วิทยาศาสตร์"]{text-decoration-color:var(--teal)}
+dfn[data-kind="วิทยาศาสตร์"]:hover,dfn[data-kind="วิทยาศาสตร์"]:focus-visible{background:var(--teal-soft)}
+dfn[data-kind="ปรัชญา"]{text-decoration-color:var(--ink-3)}
+dfn[data-kind="ปรัชญา"]:hover,dfn[data-kind="ปรัชญา"]:focus-visible{background:var(--paper-2)}
+
+.quote{margin:26px 0;padding:18px 22px;border-top:1px solid var(--gold);border-bottom:1px solid var(--gold);background:linear-gradient(180deg,transparent,var(--gold-soft) 50%,transparent)}
+.quote .eyebrow{color:var(--gold);margin-bottom:6px}
+.quote p{font-size:1.02rem;line-height:1.85;margin:0}
+.quote .src{font-size:.8rem;color:var(--ink-3);margin-top:8px}
+.aside{margin:20px 0;padding:14px 18px;border-radius:var(--r-sm);background:var(--paper-2);font-size:.95rem;line-height:1.7}
+.aside .eyebrow{margin-bottom:4px}
+.aside p:last-child{margin:0}
+.ask-inline{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:none;color:var(--teal);padding:8px 14px;border-radius:var(--r-pill);font-size:.85rem;margin:4px 0;text-decoration:none;min-height:44px}
+.ask-inline:hover{background:var(--teal-soft)}
+
+/* ============================================================ */
+/* night panel (UniverseWindow) — ธีมมืดค้างทุกกรณี ใช้ token กลุ่ม 2 เท่านั้น */
+/* ============================================================ */
+.night{background:var(--night);color:var(--star);border-radius:var(--r-md);padding:22px 22px 18px;margin:26px -8px;box-shadow:var(--shadow-night)}
+.night .eyebrow{color:var(--night-mute)}
+.night h3{font-family:var(--font-head);font-weight:400;font-size:1.25rem;margin:4px 0 8px;color:var(--star)}
+.night p{color:var(--night-text)}
+.night .stage{position:relative;background:var(--night-2);border-radius:var(--r-sm);overflow:hidden;border:1px solid var(--night-line)}
+.night canvas{display:block;width:100%;height:auto}
+.night .ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
+.night .ctl label{font-size:.85rem;color:var(--night-mute)}
+.night input[type=range]{width:100%;accent-color:var(--dot-gold);min-height:44px}
+.chip{border:1px solid var(--night-line);background:transparent;color:var(--night-text);padding:10px 14px;border-radius:var(--r-pill);font-size:.9rem;min-height:44px}
+.chip[aria-pressed="true"]{background:var(--dot-gold);border-color:var(--dot-gold);color:var(--chip-on-ink);font-weight:500}
+.chip.teal[aria-pressed="true"]{background:var(--dot-teal);border-color:var(--dot-teal)}
+.night .readout{margin-top:12px;padding:12px 14px;background:rgba(255,255,255,.04);border-radius:var(--r-sm);font-size:.95rem;line-height:1.7;min-height:64px}
+.night .readout b{color:var(--night-hi);font-weight:500}
+.night .readout .k{color:var(--night-k);font-weight:500}
+.phase{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.phase div{text-align:center;font-size:.82rem;color:var(--night-mute);padding:6px 0;border-top:2px solid var(--night-line)}
+.phase div.on{color:var(--night-hi);border-top-color:var(--dot-gold)}
+.lens{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.lens button{background:rgba(255,255,255,.04);border:1px solid var(--night-line);color:var(--night-text);border-radius:var(--r-sm);padding:10px 8px;text-align:left;line-height:1.4;min-height:44px}
+.lens button .pali{font-family:var(--font-head);display:block;font-size:1.05rem;color:var(--star)}
+.lens button .th{font-size:.78rem;color:var(--night-mute)}
+/* แก้ตามข้อเสนอ reviewer: เลี่ยง hex/rgba ที่ผูกกับสี token ตรงตัว (กฎเหล็ก #4) —
+   ใช้ --night-2 (พื้นเข้มกว่า .stage) เป็นพื้นหลังสถานะกดแทน ผูกกับ --dot-gold เฉพาะเส้นขอบ
+   (ไม่ใช้ color-mix เพราะ Safari iOS 15 ไม่รองรับ) */
+.lens button[aria-pressed="true"]{border-color:var(--dot-gold);background:var(--night-2)}
+.lens button[aria-pressed="true"] .pali{color:var(--night-hi)}
+.zoomsteps{display:flex;justify-content:space-between;margin-top:6px;font-size:.72rem;color:var(--night-mute)}
+.zoomsteps span.on{color:var(--night-hi)}
+.ix-fallback{color:var(--night-text);font-size:.9rem}
+.ix-root:empty{min-height:40px}
+
+/* ============================================================ */
+/* exercise */
+/* ============================================================ */
+.exercise{margin:30px 0;border:1px solid var(--line);border-radius:var(--r-md);padding:18px 20px}
+.exercise .eyebrow{color:var(--teal)}
+.exercise h3{margin-top:4px;font-family:var(--font-head);font-weight:400;font-size:1.2rem}
+.exercise .ex-intro{font-size:.95rem;color:var(--ink-2)}
+.exercise .pick{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}
+.exercise .pick button{border:1px solid var(--line);background:var(--paper-2);color:var(--ink);border-radius:var(--r-pill);padding:10px 14px;font-size:.9rem;min-height:44px}
+.exercise .pick button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.steps{display:grid;gap:10px}
+.step{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:start;padding:12px 14px;border-radius:var(--r-sm);background:var(--paper-2)}
+.step .lab{font-family:var(--font-head);font-size:1rem}
+.step .lab small{display:block;font-family:var(--font-body);font-size:.75rem;color:var(--ink-3);letter-spacing:.06em}
+.step .txt{font-size:.95rem;line-height:1.7;color:var(--ink-2)}
+.step .txt.empty{color:var(--ink-3);font-style:italic}
+.reflect{margin-top:16px}
+.reflect textarea{width:100%;min-height:90px;font:inherit;font-size:.95rem;padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--paper);color:var(--ink);resize:vertical}
+.reflect .row{display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.reflect .hint{text-transform:none;letter-spacing:0}
+.btn{background:var(--ink);color:var(--paper);border:0;border-radius:var(--r-sm);padding:12px 18px;font-weight:500;min-height:44px}
+.btn.ghost{background:none;color:var(--ink-2);border:1px solid var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+.feedback{margin-top:12px;padding:12px 14px;border-radius:var(--r-sm);background:var(--teal-soft);font-size:.95rem;line-height:1.7;white-space:pre-wrap}
+.feedback[hidden]{display:none}
+
+.qlist{display:grid;gap:8px;margin:12px 0}
+.qlist button{text-align:left;border:1px solid var(--line);background:none;color:var(--ink);padding:12px 14px;border-radius:var(--r-sm);font-size:.95rem;line-height:1.5;min-height:44px}
+.qlist button:hover{background:var(--paper-2)}
+.qlist button::before{content:'?';display:inline-block;width:20px;color:var(--teal);font-weight:700}
+
+.chnav{display:flex;justify-content:space-between;gap:12px;margin-top:50px;padding-top:20px;border-top:1px solid var(--line)}
+.chnav a{background:none;border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 16px;color:var(--ink);text-align:left;line-height:1.4;max-width:48%;text-decoration:none;display:block;min-height:44px}
+.chnav a:hover{background:var(--paper-2)}
+.chnav a small{display:block;color:var(--ink-3);font-size:.75rem;letter-spacing:.06em}
+.chnav-next{margin-left:auto;text-align:right}
+
+/* ============================================================ */
+/* SourceFooter (A-01) — ฝั่งทอง เพราะเป็นฝั่งหนังสือ/ธรรมะ ไม่ใช่ผู้ช่วย/วิทยาศาสตร์ */
+/* ============================================================ */
+.source-footer{margin-top:40px;padding:20px 4px 4px;border-top:1px solid var(--line);background:var(--paper-2)}
+.source-footer .eyebrow{padding:0 16px}
+.source-footer .sf-author{margin:6px 16px 12px;color:var(--ink-2);font-size:.95rem}
+.sf-list{list-style:none;margin:0;padding:0}
+.sf-list li{border-top:1px solid var(--line)}
+.sf-item{display:grid;grid-template-columns:2ch 1fr auto;gap:10px;align-items:center;padding:12px 16px;min-height:44px;text-decoration:none;color:var(--ink-2);font-size:15px}
+a.sf-item:hover .sf-title,.sf-current .sf-title{color:var(--gold)}
+.sf-num{font-family:var(--font-mono);color:var(--ink-3);font-size:15px}
+.sf-title{color:var(--ink);overflow-wrap:anywhere}
+.sf-size{font-size:15px;color:var(--ink-3);white-space:nowrap}
+.sf-item.is-missing{opacity:.55;cursor:default}
+.sf-item.is-missing .sf-title{color:var(--ink-2)}
+.source-footer .sf-note,.source-footer .sf-credit{padding:0 16px;font-size:15px;color:var(--ink-3);line-height:1.6}
+.source-footer .sf-credit{padding-bottom:16px}
+
+/* ============================================================ */
+/* หน้าศัพท์รวม (glossary) */
+/* ============================================================ */
+.gloss-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:20px 0}
+.gloss-tools input[type="search"]{flex:1;min-width:200px;font:inherit;font-size:.95rem;padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--paper-2);color:var(--ink);min-height:44px}
+.gloss-filter{display:flex;gap:8px;flex-wrap:wrap}
+.gloss-filter button{border:1px solid var(--line);background:none;color:var(--ink-2);padding:10px 14px;border-radius:var(--r-pill);font-size:.85rem;min-height:44px}
+.gloss-filter button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.gloss-list{display:grid;gap:0;border-top:1px solid var(--line)}
+.gloss-item{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:baseline;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);background:none;color:var(--ink);padding:14px 4px;font-size:.98rem;min-height:44px}
+.gloss-item:hover{background:var(--paper-2)}
+.gi-term{font-weight:500}
+.gi-alt{font-size:.82rem;color:var(--ink-3)}
+.gi-kind{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:var(--r-pill);border:1px solid var(--line);color:var(--ink-3);white-space:nowrap}
+.gloss-empty{color:var(--ink-3);padding:20px 4px}
+.gloss-empty[hidden]{display:none}
+.gloss-item[hidden]{display:none}
+
+/* ============================================================ */
+/* term sheet */
+/* ============================================================ */
+.sheet-bg{position:fixed;inset:0;background:rgba(10,12,30,.45);z-index:40}
+.sheet-bg[hidden]{display:none}
+.sheet{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(640px,100%);background:var(--paper);color:var(--ink);border-radius:16px 16px 0 0;padding:20px 22px 26px;z-index:41;box-shadow:var(--shadow-float);max-height:75vh;overflow:auto}
+.sheet[hidden]{display:none}
+.sheet .eyebrow{color:var(--gold)}
+.sheet h3{font-family:var(--font-head);font-weight:400;font-size:1.35rem;margin:2px 0 6px}
+.sheet .alt{font-size:.85rem;color:var(--ink-3);margin-bottom:8px}
+.sheet p{font-size:.98rem;line-height:1.75}
+.sheet .row{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+
+/* ============================================================ */
+/* ask panel */
+/* ============================================================ */
+.fab{position:fixed;right:22px;bottom:22px;z-index:30;background:var(--ink);color:var(--paper);border:0;border-radius:var(--r-pill);padding:12px 20px;font-weight:500;box-shadow:var(--shadow-float);display:flex;gap:8px;align-items:center;min-height:44px}
+.fab .dot{width:8px;height:8px;border-radius:var(--r-pill);background:var(--gold)}
+.fab[hidden]{display:none}
+.ask{position:fixed;right:22px;bottom:22px;width:min(420px,calc(100% - 24px));height:min(600px,calc(100vh - 40px));z-index:45;background:var(--paper);border:1px solid var(--line);border-radius:var(--r-md);display:flex;flex-direction:column;box-shadow:var(--shadow-float)}
+.ask[hidden]{display:none}
+.ask header{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.ask header .t{font-family:var(--font-head);flex:1}
+.ask header .ctx{font-size:.75rem;color:var(--ink-3)}
+.ask header button{background:none;border:0;color:var(--ink-3);font-size:1.2rem;padding:4px 8px;min-height:44px;min-width:44px}
+.ask .log{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:92%;padding:9px 13px;border-radius:12px;font-size:.93rem;line-height:1.65;white-space:pre-wrap}
+.msg.u{align-self:flex-end;background:var(--ink);color:var(--paper);border-bottom-right-radius:3px}
+.msg.a{align-self:flex-start;background:var(--paper-2);border-bottom-left-radius:3px}
+.msg.a.think{color:var(--ink-3);font-style:italic}
+.msg.a.err{background:var(--gold-soft);color:var(--ink)}
+.ask .sugg{display:flex;gap:6px;flex-wrap:wrap;padding:0 14px 8px}
+.ask .sugg button{border:1px solid var(--line);background:none;color:var(--ink-2);border-radius:var(--r-pill);padding:10px 14px;font-size:.8rem;min-height:44px}
+.ask form{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
+.ask input{flex:1;font:inherit;font-size:.95rem;padding:9px 12px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--paper-2);color:var(--ink);min-height:44px}
+.ask form button{background:var(--ink);color:var(--paper);border:0;border-radius:var(--r-sm);padding:0 16px;min-height:44px;min-width:44px}
+.ask .note{font-size:.75rem;color:var(--ink-3);padding:0 14px 8px}
+.ask form.keyform{flex-direction:column;align-items:stretch;gap:8px;padding:12px 13px;border-top:0;white-space:normal;align-self:stretch;max-width:100%;min-width:0;box-sizing:border-box}
+.ask form.keyform>*{min-width:0;max-width:100%;box-sizing:border-box}
+.ask form.keyform input[type=checkbox]{flex:none;width:20px;height:20px;min-height:0;padding:0;margin:0}
+.ask form.keyform p{margin:0}
+.ask form.keyform a{color:var(--teal)}
+.ask form.keyform select{font:inherit;font-size:.9rem;padding:8px 10px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--paper);color:var(--ink);min-height:44px}
+.ask form.keyform label{font-size:.85rem;color:var(--ink-2);display:flex;align-items:center;gap:6px;min-height:44px}
+.ask .note .linkbtn{background:none;border:0;padding:0;color:var(--teal);font:inherit;text-decoration:underline;cursor:pointer;min-height:24px}
+
+/* หน้า 404 */
+.notfound-page{text-align:center;padding-top:80px}
+.notfound-page h1{font-size:2rem;margin-bottom:12px}
+
+/* ============================================================ */
+/* มือถือ / แท็บเล็ตแนวตั้ง — ≤860px (§5 ข้อบังคับ 10 ข้อ) */
+/* ============================================================ */
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  .rail{display:none}
+  .topbar{display:flex}
+  .page{padding:26px 18px 120px}
+  .hero h1{font-size:1.9rem}
+  .hero.has-cover{grid-template-columns:1fr;gap:18px}
+  .hero-cover{width:150px}
+  .three{grid-template-columns:1fr}
+  .shelf{grid-template-columns:1fr 1fr}
+  .night{margin:22px -6px;padding:16px 14px 14px}
+  .lens{grid-template-columns:1fr}
+  .phase{grid-template-columns:1fr}
+  .step{grid-template-columns:1fr;gap:4px}
+  .maprow{grid-template-columns:36px 1fr auto}
+  .fab{right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+  .ask{
+    right:0;bottom:0;left:0;top:0;
+    width:auto;border-radius:0;
+    height:100vh; /* fallback สำหรับเบราว์เซอร์ที่ไม่รู้จัก dvh */
+    height:100dvh;
+  }
+  .chnav{flex-direction:column}
+  .chnav a{max-width:100%}
+  .gloss-item{grid-template-columns:1fr auto}
+  .gi-alt{grid-column:1 / -1}
+  .sheet{width:100%;left:0;right:0;transform:none;border-radius:16px 16px 0 0}
+}
+
+/* prefers-reduced-motion (§5 ข้อ 9) — JS (interactive.js/canvas.js) ต้องเช็ค prefersReducedMotion() เองด้วย
+   กฎ CSS นี้ปิดเฉพาะ transition/animation แบบ CSS ทั่วไป ไม่ครอบคลุม requestAnimationFrame ใน JS */
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+  .bookcard:hover .bc-cover.has-img{transform:none}
+}
+
+/* §5 กฎข้อ 8 — ผู้อ่านหลายคนอายุ 50+: ข้อความที่ "อ่านเป็นเนื้อหา" ต้อง ≥16px/1.7 ทุกจอ
+   (QA docs/qa/mobile-report.md พบ .three .c p 14.9px, .aside/.ex-intro/.sf-* 15.2px) — ป้ายกำกับสั้นๆ (.eyebrow, .bc-meta) ไม่นับ */
+.three .c p,.aside,.exercise .ex-intro,.qlist button,.night .readout,.howto,
+.source-footer .sf-author,.source-footer .sf-note,.source-footer .sf-credit,.ask .msg{font-size:1rem;line-height:1.7}

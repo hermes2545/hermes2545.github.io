@@ -1,5 +1,16 @@
 [
   {
+    "id": "quantum-dhamma-series",
+    "title": "ธรรมะกับควอนตัม",
+    "short_title": "ธรรมะกับควอนตัม",
+    "href": "quantum/index.html",
+    "cover": "assets/covers/custom/quantum-dhamma-series.webp",
+    "category": "Dhamma & Quantum",
+    "summary": "คู่มือเดินทางแบบโต้ตอบสำหรับหนังสือชุด 9 เล่ม ธรรมะกับควอนตัม โดย สิรวิชญ์ รัตน์จินดา เชื่อมธรรมะ จิต และจักรวาลภายในกับมุมมองควอนตัม พร้อมต้นฉบับ PDF ที่ได้รับอนุญาตจากผู้เขียน",
+    "accent": "#B7892E",
+    "published_at": "2026-10-05T23:30:45+07:00"
+  },
+  {
     "id": "web-anatomy-dictionary",
     "title": "Web Anatomy — Interactive Reference Manual",
     "short_title": "Web Anatomy",
