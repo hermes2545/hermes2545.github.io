@@ -1,5 +1,16 @@
 [
   {
+    "id": "48-hours-survival-playbook",
+    "title": "48 HOURS — เมื่อระบบล่ม เราจะดูแลกันอย่างไร",
+    "short_title": "48 Hours เอาตัวรอด",
+    "href": "48-hours-survival-playbook.html",
+    "cover": "assets/covers/custom/48-hours-survival-playbook.webp",
+    "category": "Emergency Preparedness",
+    "summary": "คู่มือเตรียมพร้อมเมื่อระบบล่ม 48 ชั่วโมงแรกสำหรับครอบครัวไทย พร้อม 15 ภารกิจ การจัดน้ำ อาหาร ไฟฟ้า การสื่อสาร ยา ความปลอดภัย และ Checklist ใช้งานออฟไลน์",
+    "accent": "#FFD400",
+    "published_at": "2026-10-11T12:50:53+07:00"
+  },
+  {
     "id": "quantum-dhamma-series",
     "title": "ธรรมะกับควอนตัม",
     "short_title": "ธรรมะกับควอนตัม",

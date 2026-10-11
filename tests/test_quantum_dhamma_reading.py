@@ -42,7 +42,7 @@ class QuantumDhammaReadingTests(unittest.TestCase):
         self.assertEqual(book["category"], "Dhamma & Quantum")
         self.assertEqual(book["published_at"], "2026-10-05T23:30:45+07:00")
         self.assertIn("หนังสือชุด 9 เล่ม", book["summary"])
-        self.assertEqual(books[0]["id"], BOOK_ID)
+        self.assertEqual(books[1]["id"], BOOK_ID)
 
     def test_mirrored_quantum_site_is_public_safe_and_complete(self):
         self.assertTrue(HTML_PATH.is_file())
