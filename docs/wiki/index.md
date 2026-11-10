@@ -50,6 +50,7 @@ tags: [library, index]
 - [Hermes Bot Mode · Interactive Reference Manual](../../hermes-bot-mode-interactive-manual.html)
 - [ใช้ Grok Bot ให้คุ้มกว่าเดิม — CLI Usage Router](../../grok-bot-cli-usage-router-manual.html)
 - [Hermes Bot Cheat Code — Practical Guide / Playbook](../../hermes-bot-cheat-code-practical-guide.html)
+- [HERMES AT WORK — คู่มือเครื่องมือและการทำงานของทีม AI 5 แผนก](../../hermes-at-work-public-edition.html)
 - [Web Anatomy — Interactive Reference Manual](../../web-anatomy-dictionary.html)
 - [ธรรมะกับควอนตัม](../../quantum/index.html)
 

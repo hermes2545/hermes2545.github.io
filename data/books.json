@@ -1,5 +1,16 @@
 [
   {
+    "id": "hermes-at-work",
+    "title": "HERMES AT WORK — คู่มือเครื่องมือและการทำงานของทีม AI 5 แผนก",
+    "short_title": "HERMES AT WORK",
+    "href": "hermes-at-work-public-edition.html",
+    "cover": "assets/covers/custom/hermes-at-work.webp",
+    "category": "Hermes Guide",
+    "summary": "คู่มือ Interactive สองภาษาสำหรับเลือกและประสานเครื่องมือ Hermes ตามผลงานของทีม AI 5 แผนก ครอบคลุม 27 เครื่องมือสำหรับสร้างระบบ งานสื่อ ค้นคว้า เอกสาร และระบบอัตโนมัติ พร้อมข้อจำกัด การตรวจสอบ และ Mega Prompt สำหรับนำไปปฏิบัติ",
+    "accent": "#F16A22",
+    "published_at": "2026-11-10T12:50:27+07:00"
+  },
+  {
     "id": "48-hours-survival-playbook",
     "title": "48 HOURS — เมื่อระบบล่ม เราจะดูแลกันอย่างไร",
     "short_title": "48 Hours เอาตัวรอด",

@@ -42,7 +42,7 @@ class FortyEightHoursSurvivalPlaybookReadingTests(unittest.TestCase):
         self.assertEqual(book["category"], "Emergency Preparedness")
         self.assertEqual(book["published_at"], "2026-10-11T12:50:53+07:00")
         self.assertIn("48 ชั่วโมงแรก", book["summary"])
-        self.assertEqual(books[0]["id"], BOOK_ID)
+        self.assertEqual(books[1]["id"], BOOK_ID)
 
     def test_owner_supplied_html_is_preserved_and_public_safe(self):
         self.assertTrue(HTML_PATH.is_file())
