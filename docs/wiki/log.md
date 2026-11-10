@@ -4,7 +4,7 @@ type: meta
 status: active
 visibility: public
 created: 2026-08-23
-updated: 2026-08-30
+updated: 2026-11-10
 sources: [docs/SESSION_HANDOFF.md]
 tags: [library, changelog]
 ---
@@ -218,3 +218,7 @@ tags: [library, changelog]
 ## 2026-10-11
 
 - Published the owner-supplied Reading guide **48 HOURS — เมื่อระบบล่ม เราจะดูแลกันอย่างไร** in commit `cc575f3` after the owner explicitly approved immediate push. The supplied HTML was copied byte-for-byte to `48-hours-survival-playbook.html` at SHA-256 `427a7e4af42cb63a671ce0f7192203bc3755007803d19b787f8b776ecaf5228d`; the owner-supplied exact 2:3 cover was resized only to an EXIF-free 600×900 RGB WebP at `assets/covers/custom/48-hours-survival-playbook.webp` with SHA-256 `38598dfc384d07120138fcfe550ef946630313558dfba634f1be4114aafaf778`. TDD RED/GREEN locked catalog metadata, newest position, HTML hash, 9 source sections, 15 source articles, JavaScript syntax, public-safety scan, cover normalization, and shifted older fixed-position Reading tests. Full pre-push verification passed 172 tests, all four generated-page drift checks, `git diff --check`, staged pre-share scan, and Playwright desktop/mobile shelf/manual checks. Public/private remotes matched `cc575f33625af3e8dc24ec4ca319138ab89980bd`; Production HTTP hashes matched Local for `index.html`, the manual, and cover, and Production browser checks confirmed 41 Reading cards with the new guide first, 9 manual sections, search present, 600×900 live cover, and zero horizontal overflow on desktop/mobile.
+
+## 2026-11-10
+
+- Published the owner-supplied **HERMES AT WORK — คู่มือเครื่องมือและการทำงานของทีม AI 5 แผนก** as the 42nd Reading entry in commit `f42f9eb`. The supplied HTML is preserved byte-for-byte at `hermes-at-work-public-edition.html` with SHA-256 `47aa69c361243ae90f73ead84ca9cfeb119850b25761a0986993fc201b7c74a6`; the separately supplied PNG cover is byte-identical to the cover embedded in the HTML and was normalized without cropping to an EXIF-free 600×900 RGB WebP at `assets/covers/custom/hermes-at-work.webp` with SHA-256 `e3b4f3e497273948ff1cbd6a7aa6ead80dc9729c87e4a7d51d46b9c0af563af2`. TDD RED/GREEN locked catalog metadata, source hashes, 11 navigation topics, 27 tools, JavaScript syntax, public-safety rules, cover provenance, and shifted older fixed-position Reading tests. Pre-push verification passed 175 tests, all four generated-page drift checks, `git diff --check`, and a staged pre-share scan. Public/private remotes matched `f42f9eb4fe651a75fd8e7428776a85ae28cc8346`; GitHub Pages run `42767282823` succeeded; Production hashes matched Local for the shelf, manual, and cover. Production desktop/mobile browser checks confirmed 42 Reading cards with **HERMES AT WORK** first, working Thai/English and Light/Dark controls, 11 navigation topics, a 600×900 live cover, and zero horizontal overflow.
