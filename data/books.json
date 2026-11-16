@@ -1,5 +1,16 @@
 [
   {
+    "id": "windows-ai-agent-remote-maintenance-guide",
+    "title": "ขีดความสามารถในการดูแลระบบ Windows ระยะไกลด้วย AI Agent",
+    "short_title": "ดูแล Windows ระยะไกลด้วย AI",
+    "href": "Windows_AI_Agent_Remote_Maintenance_Guide.html",
+    "cover": "assets/covers/custom/windows-ai-agent-remote-maintenance-guide.webp",
+    "category": "AI Operations",
+    "summary": "คู่มือภาคสนามภาษาไทย 22 บทสำหรับตรวจสุขภาพ วิเคราะห์ปัญหา ซ่อมบำรุง และดูแลระบบ Windows ระยะไกลด้วย AI Agent โดยยึดหลัก Read-only First, Human Approval และเตรียม Rollback ก่อนงานที่มีผลกระทบ",
+    "accent": "#177963",
+    "published_at": "2026-11-16T14:00:13+07:00"
+  },
+  {
     "id": "hermes-at-work",
     "title": "HERMES AT WORK — คู่มือเครื่องมือและการทำงานของทีม AI 5 แผนก",
     "short_title": "HERMES AT WORK",
