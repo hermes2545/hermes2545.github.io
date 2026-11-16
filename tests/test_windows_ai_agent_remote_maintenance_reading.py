@@ -13,7 +13,8 @@ BOOK_ID = "windows-ai-agent-remote-maintenance-guide"
 HTML_PATH = ROOT / "Windows_AI_Agent_Remote_Maintenance_Guide.html"
 COVER_PATH = ROOT / "assets" / "covers" / "custom" / f"{BOOK_ID}.webp"
 FINAL_HTML_SHA256 = "26db6fb1d75a5ec7f297332a1c04270e789cd13ec94b4c0e0868f79ece300184"
-COVER_SOURCE_SHA256 = "f6d4ef4ece640dc84588dcd5ce93145262cb2540421745c2e61ae9f52f9198ce"
+EMBEDDED_ART_SHA256 = "f6d4ef4ece640dc84588dcd5ce93145262cb2540421745c2e61ae9f52f9198ce"
+OWNER_COVER_SOURCE_SHA256 = "a3657e69d33bf1845415b03a70894c2d0a57e9e23beda5fe8358676e49ce13ab"
 PROHIBITED_PUBLIC_RE = re.compile(
     "|".join(
         [
@@ -80,7 +81,7 @@ class WindowsAiAgentRemoteMaintenanceReadingTests(unittest.TestCase):
         self.assertIsNotNone(embedded_match)
         assert embedded_match is not None
         embedded_cover = base64.b64decode(embedded_match.group(1))
-        self.assertEqual(hashlib.sha256(embedded_cover).hexdigest(), COVER_SOURCE_SHA256)
+        self.assertEqual(hashlib.sha256(embedded_cover).hexdigest(), EMBEDDED_ART_SHA256)
 
         scripts = "\n".join(
             body
@@ -98,7 +99,7 @@ class WindowsAiAgentRemoteMaintenanceReadingTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
 
-    def test_embedded_owner_cover_is_normalized_without_cropping(self):
+    def test_final_owner_cover_replaces_embedded_art_without_cropping(self):
         self.assertTrue(COVER_PATH.is_file())
         with Image.open(COVER_PATH) as image:
             self.assertEqual(image.format, "WEBP")
@@ -112,10 +113,11 @@ class WindowsAiAgentRemoteMaintenanceReadingTests(unittest.TestCase):
         template = ROOT / "templates" / "windows-ai-agent-remote-maintenance-guide-cover.template.md"
         self.assertTrue(template.is_file())
         template_text = template.read_text(encoding="utf-8")
-        self.assertIn(COVER_SOURCE_SHA256, template_text)
-        self.assertIn("project-owner supplied image embedded in the supplied HTML", template_text)
+        self.assertIn(OWNER_COVER_SOURCE_SHA256, template_text)
+        self.assertIn(hashlib.sha256(COVER_PATH.read_bytes()).hexdigest(), template_text)
+        self.assertIn("project-owner supplied final cover image attachment", template_text)
         self.assertIn("aspect-preserving containment", template_text)
-        self.assertIn("915×835", template_text)
+        self.assertIn("906×1280", template_text)
         self.assertIn("600×900", template_text)
 
 
