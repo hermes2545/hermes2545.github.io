@@ -1,51 +1,51 @@
 # Library Session Handoff
 
-Updated: 2026-11-10T13:23:49+07:00
+Updated: 2026-11-16T14:08:24+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
 - Branch: `main`.
-- Latest published Reading addition: **HERMES AT WORK — คู่มือเครื่องมือและการทำงานของทีม AI 5 แผนก**.
-- Content publication commit: `f42f9eb4fe651a75fd8e7428776a85ae28cc8346`.
+- Latest published Reading addition: **ขีดความสามารถในการดูแลระบบ Windows ระยะไกลด้วย AI Agent**.
+- Content publication commit: `6b26ab87c36cc3a80e8dfcdca0cbfc7cad502440`.
 - Public and private remotes matched the content commit before this documentation follow-up.
 - Project-private `.hermes/` routing remains untracked/private and must not be committed.
 
-## Published Reading addition: HERMES AT WORK
+## Published Reading addition
 
-- Added the owner-supplied HTML byte-for-byte at `hermes-at-work-public-edition.html`.
-- HTML SHA-256: `47aa69c361243ae90f73ead84ca9cfeb119850b25761a0986993fc201b7c74a6`.
-- Added `hermes-at-work` to `data/books.json` as the newest Reading entry:
-  - title: `HERMES AT WORK — คู่มือเครื่องมือและการทำงานของทีม AI 5 แผนก`
-  - short title: `HERMES AT WORK`
-  - category: `Hermes Guide`
-  - href: `hermes-at-work-public-edition.html`
-  - cover: `assets/covers/custom/hermes-at-work.webp`
-  - timestamp: `2026-11-10T12:50:27+07:00`
-- Used the separately owner-supplied PNG cover, which is byte-identical to the cover embedded in the HTML.
-- Normalized the cover without cropping from 1086×1448 to an EXIF-free 600×900 RGB WebP with edge-color padding; output SHA-256: `e3b4f3e497273948ff1cbd6a7aa6ead80dc9729c87e4a7d51d46b9c0af563af2`.
-- Added public-safe provenance at `templates/hermes-at-work-cover.template.md`.
-- Regenerated `index.html`; Reading now renders 42 books with **HERMES AT WORK** first.
+- Added the owner-supplied HTML byte-for-byte at `Windows_AI_Agent_Remote_Maintenance_Guide.html`.
+- HTML SHA-256: `26db6fb1d75a5ec7f297332a1c04270e789cd13ec94b4c0e0868f79ece300184`.
+- Added `windows-ai-agent-remote-maintenance-guide` to `data/books.json` as the newest Reading entry:
+  - title: `ขีดความสามารถในการดูแลระบบ Windows ระยะไกลด้วย AI Agent`
+  - short title: `ดูแล Windows ระยะไกลด้วย AI`
+  - category: `AI Operations`
+  - href: `Windows_AI_Agent_Remote_Maintenance_Guide.html`
+  - cover: `assets/covers/custom/windows-ai-agent-remote-maintenance-guide.webp`
+  - timestamp: `2026-11-16T14:00:13+07:00`
+- Used the project-owner supplied 915×835 WebP artwork embedded in the HTML.
+- Normalized it without cropping or stretching to an EXIF-free 600×900 RGB WebP using aspect-preserving containment and source-edge color padding.
+- Public cover SHA-256: `62f4ef4c53009368ed50ae531d015663ded8cb597638827c65bc60a3813c94e2`.
+- Added public-safe provenance at `templates/windows-ai-agent-remote-maintenance-guide-cover.template.md`.
+- Regenerated `index.html`; Reading now renders 43 books with the Windows guide first.
 
 ## Verification completed
 
-- TDD RED/GREEN covered catalog metadata, owner source/provenance hashes, HTML byte preservation, 11 navigation topics, 27 tools, JavaScript syntax, public-safety conditions, and cover normalization.
+- TDD RED/GREEN covered catalog metadata, newest position, HTML/artwork hashes, 23 manual entries (22 chapters plus summary), JavaScript syntax, public-safety conditions, and cover normalization.
 - Full local gates passed before publication:
-  - `python -m unittest discover -s tests -v` → OK, 175 tests.
+  - `python -m unittest discover -s tests -v` → OK, 178 tests.
   - All four generated-page drift checks → current.
   - `git diff --check` → OK.
-- Staged pre-share scan covered 21 intended files and found no concrete home path, private key, GitHub token, API key, cache artifact ID, signed URL, or staged `.hermes/` file.
-- GitHub Pages run `42767282823` completed successfully.
-- Production SHA-256 matched Local for `index.html`, `hermes-at-work-public-edition.html`, and `assets/covers/custom/hermes-at-work.webp`.
+- Staged pre-share scan covered 19 intended files and found no concrete home path, private workspace path, private key, GitHub/OpenAI token, cache artifact ID, signed URL, or staged `.hermes/` file.
+- GitHub Pages run `43821471643` completed successfully.
+- Production SHA-256 matched Local for `index.html`, `Windows_AI_Agent_Remote_Maintenance_Guide.html`, and the 600×900 cover.
 - Production browser verification passed at desktop and 390px mobile:
-  - 42 Reading cards; **HERMES AT WORK** first.
-  - 600×900 shelf cover loaded.
-  - Manual rendered 11 navigation topics.
-  - Thai/English and Light/Dark interactions worked.
-  - Mobile navigation opened correctly.
+  - 43 Reading cards; the Windows guide is first.
+  - Shelf cover loaded at 600×900.
+  - Manual rendered 23 entries and 24 navigation buttons including Home.
+  - Mobile menu, chapter navigation, Light/Dark theme, and font scaling worked.
   - Horizontal overflow was 0.
 
 ## Working-tree note
 
 - The original project working tree still contains pre-existing/unrelated local changes. Publication was made from an isolated clean worktree with explicit staging so those files were not included.
-- The temporary browser process used for Production verification must be stopped before session close.
+- Temporary preview/browser processes must be stopped and the isolated worktree removed after the documentation follow-up is pushed and verified.

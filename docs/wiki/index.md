@@ -4,7 +4,7 @@ type: meta
 status: active
 visibility: public
 created: 2026-08-23
-updated: 2026-10-05
+updated: 2026-11-16
 sources: [PROJECT.md, AGENTS.md]
 tags: [library, index]
 ---
@@ -51,6 +51,7 @@ tags: [library, index]
 - [ใช้ Grok Bot ให้คุ้มกว่าเดิม — CLI Usage Router](../../grok-bot-cli-usage-router-manual.html)
 - [Hermes Bot Cheat Code — Practical Guide / Playbook](../../hermes-bot-cheat-code-practical-guide.html)
 - [HERMES AT WORK — คู่มือเครื่องมือและการทำงานของทีม AI 5 แผนก](../../hermes-at-work-public-edition.html)
+- [ขีดความสามารถในการดูแลระบบ Windows ระยะไกลด้วย AI Agent](../../Windows_AI_Agent_Remote_Maintenance_Guide.html)
 - [Web Anatomy — Interactive Reference Manual](../../web-anatomy-dictionary.html)
 - [ธรรมะกับควอนตัม](../../quantum/index.html)
 
