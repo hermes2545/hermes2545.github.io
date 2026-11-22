@@ -1,52 +1,50 @@
 # Library Session Handoff
 
-Updated: 2026-11-16T14:16:40+07:00
+Updated: 2026-11-23T00:59:39+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
 - Branch: `main`.
-- Latest published Reading addition: **ขีดความสามารถในการดูแลระบบ Windows ระยะไกลด้วย AI Agent**.
-- Content publication commit: `6b26ab87c36cc3a80e8dfcdca0cbfc7cad502440`.
-- Final cover replacement commit: `4d8863eb8ba314a7f674dcc646ce5b3ef074ca02`.
-- Public and private remotes matched the cover replacement commit before this documentation follow-up.
+- Latest published Reading addition: **คู่มือสร้างระบบ Hermes Full Disaster Recovery Backup**.
+- Content publication commit: `702bc45cd035956fcc9aa595edc1a134aeaff92a`.
+- Public and private remotes matched the content commit before this documentation follow-up.
 - Project-private `.hermes/` routing remains untracked/private and must not be committed.
 
 ## Published Reading addition
 
-- Added the owner-supplied HTML byte-for-byte at `Windows_AI_Agent_Remote_Maintenance_Guide.html`.
-- HTML SHA-256: `26db6fb1d75a5ec7f297332a1c04270e789cd13ec94b4c0e0868f79ece300184`.
-- Added `windows-ai-agent-remote-maintenance-guide` to `data/books.json` as the newest Reading entry:
-  - title: `ขีดความสามารถในการดูแลระบบ Windows ระยะไกลด้วย AI Agent`
-  - short title: `ดูแล Windows ระยะไกลด้วย AI`
-  - category: `AI Operations`
-  - href: `Windows_AI_Agent_Remote_Maintenance_Guide.html`
-  - cover: `assets/covers/custom/windows-ai-agent-remote-maintenance-guide.webp`
-  - timestamp: `2026-11-16T14:00:13+07:00`
-- Initially used the 915×835 WebP artwork embedded in the supplied HTML as a provisional shelf cover.
-- Replaced it with the project-owner supplied final JPEG cover while preserving the stable catalog ID, title, HTML, href, date, and cover path.
-- Final cover source: JPEG, RGB, 906×1280, SHA-256 `a3657e69d33bf1845415b03a70894c2d0a57e9e23beda5fe8358676e49ce13ab`.
-- Converted through the supplied color profile to sRGB and normalized without cropping or stretching to an EXIF-free 600×900 RGB WebP using aspect-preserving containment and source-edge color padding.
-- Final public cover SHA-256: `6e5b34978bee16904f33a80d726d960180d02f9f54c436c3484bc3457b5f23d9`.
-- Added public-safe provenance at `templates/windows-ai-agent-remote-maintenance-guide-cover.template.md`.
-- Regenerated `index.html`; Reading now renders 43 books with the Windows guide first.
+- Added the owner-supplied interactive HTML byte-for-byte at `Hermes_Full_Disaster_Recovery_Interactive_Manual.html`.
+- HTML SHA-256: `179e91a7037e89a4c0dc86771f9d7272e13d27a7ee35ee5aeb561ce5cdb41f16`.
+- Added `hermes-full-disaster-recovery` to `data/books.json` as the newest Reading entry:
+  - title: `คู่มือสร้างระบบ Hermes Full Disaster Recovery Backup`
+  - short title: `Hermes Full Disaster Recovery`
+  - category: `Disaster Recovery`
+  - href: `Hermes_Full_Disaster_Recovery_Interactive_Manual.html`
+  - cover: `assets/covers/custom/hermes-full-disaster-recovery.webp`
+  - timestamp: `2026-11-23T00:52:34+07:00`
+- Used the project-owner supplied PNG cover at 1086×1448.
+- Normalized it without cropping or stretching to an EXIF-free 600×900 RGB WebP using aspect-preserving containment and source-edge color padding.
+- Public cover SHA-256: `228f6c1ce93c0accb5ee3e268953c4b715d5c3a361e68a17e952965100e29ec3`.
+- Added public-safe provenance at `templates/hermes-full-disaster-recovery-cover.template.md`.
+- Regenerated `index.html`; Reading now renders 44 books with the Full Disaster Recovery guide first.
 
 ## Verification completed
 
-- TDD RED/GREEN covered catalog metadata, newest position, HTML/artwork hashes, 23 manual entries (22 chapters plus summary), JavaScript syntax, public-safety conditions, and cover normalization.
+- TDD RED/GREEN covered catalog metadata, newest position, HTML/cover/embedded-hero hashes, 31 navigation entries, 31 chapter sections, 57 code-copy controls, 33 checklist boxes, JavaScript syntax, public-safety conditions, and cover normalization.
 - Full local gates passed before publication:
-  - `python -m unittest discover -s tests -v` → OK, 178 tests.
+  - `python -m unittest discover -s tests -v` → OK, 181 tests.
   - All four generated-page drift checks → current.
   - `git diff --check` → OK.
-- The initial publication staged pre-share scan covered 19 intended files; the final-cover replacement scan covered three scoped files. Neither found a concrete home path, private workspace path, private key, GitHub/OpenAI token, cache artifact ID, signed URL, or staged `.hermes/` file.
-- Initial GitHub Pages run `43821471643` and final-cover run `43822532484` completed successfully.
-- Production SHA-256 matched Local for `index.html`, `Windows_AI_Agent_Remote_Maintenance_Guide.html`, and the final 600×900 cover.
-- Production browser verification passed at desktop and 390px mobile:
-  - 43 Reading cards; the Windows guide is first.
+- Staged pre-share scan covered 20 intended files and found no concrete home path, private workspace path, private key, GitHub/OpenAI token, cache artifact ID, signed URL, or staged `.hermes/` file. Embedded image payloads were excluded from textual secret-pattern matching to avoid random base64 false positives.
+- GitHub Pages run `45052392726` completed successfully.
+- Production SHA-256 matched Local for `index.html`, `Hermes_Full_Disaster_Recovery_Interactive_Manual.html`, and the 600×900 cover.
+- Production browser verification passed for the shelf and manual controls at desktop and 390px mobile:
+  - 44 Reading cards; the Full Disaster Recovery guide is first.
   - Shelf cover loaded at 600×900.
-  - Manual rendered 23 entries and 24 navigation buttons including Home.
-  - Mobile menu, chapter navigation, Light/Dark theme, and font scaling worked.
-  - Horizontal overflow was 0.
+  - Manual rendered 31 navigation entries/chapters and 57 copy controls.
+  - Mobile menu, search, chapter navigation, Light/Dark theme, and font scaling worked.
+  - Reading shelf and manual landing page horizontal overflow was 0.
+- Preserved-source limitation: the wide comparison table in Part 1 expands the mobile document by 178 px at 390px viewport with font scale 110%. The source HTML was intentionally preserved byte-for-byte rather than silently modified.
 
 ## Working-tree note
 
