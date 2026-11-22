@@ -45,7 +45,7 @@ class WindowsAiAgentRemoteMaintenanceReadingTests(unittest.TestCase):
         self.assertEqual(book["published_at"], "2026-11-16T14:00:13+07:00")
         self.assertIn("22 บท", book["summary"])
         self.assertEqual(book["accent"], "#177963")
-        self.assertEqual(books[0]["id"], BOOK_ID)
+        self.assertEqual(books[1]["id"], BOOK_ID)
 
     def test_owner_supplied_html_is_preserved_interactive_and_public_safe(self):
         self.assertTrue(HTML_PATH.is_file())

@@ -43,7 +43,7 @@ class CatalogTests(unittest.TestCase):
     def test_required_fields_and_unique_ids_and_links(self):
         required = {"id", "title", "short_title", "href", "cover", "category", "summary", "accent", "published_at"}
         self.assertTrue(self.books)
-        self.assertEqual(len(self.books), 43)
+        self.assertEqual(len(self.books), 44)
         self.assertEqual(len({book["id"] for book in self.books}), len(self.books))
         self.assertEqual(len({book["href"] for book in self.books}), len(self.books))
         for book in self.books:
@@ -53,7 +53,7 @@ class CatalogTests(unittest.TestCase):
             self.assertRegex(book["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
 
     def test_every_reading_book_uses_an_approved_custom_cover(self):
-        self.assertEqual(len(self.books), 43)
+        self.assertEqual(len(self.books), 44)
         for book in self.books:
             self.assertEqual(book["cover"], f'assets/covers/custom/{book["id"]}.webp')
             self.assertEqual(Path(book["cover"]).suffix, ".webp")
@@ -79,6 +79,7 @@ class CatalogTests(unittest.TestCase):
 
     def test_all_reading_books_use_approved_thai_titles(self):
         expected = {
+            "hermes-full-disaster-recovery": "Hermes Full Disaster Recovery",
             "windows-ai-agent-remote-maintenance-guide": "ดูแล Windows ระยะไกลด้วย AI",
             "hermes-at-work": "HERMES AT WORK",
             "48-hours-survival-playbook": "48 Hours เอาตัวรอด",

@@ -1,5 +1,16 @@
 [
   {
+    "id": "hermes-full-disaster-recovery",
+    "title": "คู่มือสร้างระบบ Hermes Full Disaster Recovery Backup",
+    "short_title": "Hermes Full Disaster Recovery",
+    "href": "Hermes_Full_Disaster_Recovery_Interactive_Manual.html",
+    "cover": "assets/covers/custom/hermes-full-disaster-recovery.webp",
+    "category": "Disaster Recovery",
+    "summary": "คู่มือ Interactive ภาษาไทย 30 ภาคสำหรับออกแบบ ติดตั้ง ทดสอบ สำรอง และกู้คืน Hermes Agent แบบ Full Disaster Recovery ครอบคลุม Restic, rclone, SQLite snapshot, retention, systemd scheduling, monitoring, security, restore rehearsal และการย้ายไปเครื่องใหม่",
+    "accent": "#EF352C",
+    "published_at": "2026-11-23T00:52:34+07:00"
+  },
+  {
     "id": "windows-ai-agent-remote-maintenance-guide",
     "title": "ขีดความสามารถในการดูแลระบบ Windows ระยะไกลด้วย AI Agent",
     "short_title": "ดูแล Windows ระยะไกลด้วย AI",
