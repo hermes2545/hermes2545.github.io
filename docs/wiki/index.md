@@ -53,6 +53,7 @@ tags: [library, index]
 - [HERMES AT WORK — คู่มือเครื่องมือและการทำงานของทีม AI 5 แผนก](../../hermes-at-work-public-edition.html)
 - [ขีดความสามารถในการดูแลระบบ Windows ระยะไกลด้วย AI Agent](../../Windows_AI_Agent_Remote_Maintenance_Guide.html)
 - [คู่มือสร้างระบบ Hermes Full Disaster Recovery Backup](../../Hermes_Full_Disaster_Recovery_Interactive_Manual.html)
+- [Hermes installation manual — การติดตั้ง Hermes บนเครื่องของคุณ](../../Hermes-installation-manual.pdf)
 - [Web Anatomy — Interactive Reference Manual](../../web-anatomy-dictionary.html)
 - [ธรรมะกับควอนตัม](../../quantum/index.html)
 
