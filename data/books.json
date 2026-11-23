@@ -1,5 +1,16 @@
 [
   {
+    "id": "hermes-installation-manual",
+    "title": "Hermes installation manual — การติดตั้ง Hermes บนเครื่องของคุณ",
+    "short_title": "Hermes installation manual",
+    "href": "Hermes-installation-manual.pdf",
+    "cover": "assets/covers/custom/hermes-installation-manual.webp",
+    "category": "Installation Guide",
+    "summary": "คู่มือติดตั้งและใช้งาน Hermes ภาษาไทย 26 หน้า ครอบคลุมการติดตั้งเบื้องต้น Windows ผ่าน WSL2, macOS Apple Silicon และขั้นตอนหลังติดตั้ง เช่น การเลือกโมเดล เชื่อม Gateway ปรับ Skin อัปเดต วินิจฉัย และถอนการติดตั้ง",
+    "accent": "#F5B82E",
+    "published_at": "2026-11-23T17:41:27+07:00"
+  },
+  {
     "id": "hermes-full-disaster-recovery",
     "title": "คู่มือสร้างระบบ Hermes Full Disaster Recovery Backup",
     "short_title": "Hermes Full Disaster Recovery",
