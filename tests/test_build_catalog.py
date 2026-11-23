@@ -34,7 +34,11 @@ class HomepageBuildTests(unittest.TestCase):
     def test_homepage_renders_every_book_once(self):
         self.assertEqual(self.html.count('class="book-card"'), len(self.books))
         for book in self.books:
-            self.assertEqual(self.html.count(f'href="{book["href"]}"'), 3)
+            expected_direct_links = 1 if book["href"].lower().endswith(".pdf") else 3
+            self.assertEqual(self.html.count(f'href="{book["href"]}"'), expected_direct_links)
+            if book["href"].lower().endswith(".pdf"):
+                viewer_href = f'flip-viewer.html?id={book["id"]}'
+                self.assertEqual(self.html.count(f'href="{viewer_href}"'), 2)
             self.assertIn(html.escape(book["short_title"]), self.html)
 
     def test_books_open_in_a_new_tab_with_safe_rel(self):
@@ -42,10 +46,12 @@ class HomepageBuildTests(unittest.TestCase):
         self.assertEqual(self.html.count('rel="noopener"'), len(self.books) * 2 + 1)
         self.assertIn('class="footer-facebook-link"', self.html)
 
-    def test_reading_books_have_glass_circle_html_download_after_date(self):
+    def test_reading_books_have_glass_circle_file_download_after_date(self):
         self.assertEqual(self.html.count('class="book-download-html book-download-html--glass"'), len(self.books))
         self.assertEqual(self.html.count(" download "), len(self.books))
-        self.assertEqual(self.html.count('title="ดาวน์โหลด HTML"'), len(self.books))
+        pdf_count = sum(book["href"].lower().endswith(".pdf") for book in self.books)
+        self.assertEqual(self.html.count('title="ดาวน์โหลด PDF"'), pdf_count)
+        self.assertEqual(self.html.count('title="ดาวน์โหลด HTML"'), len(self.books) - pdf_count)
         parser = AnchorNestingParser()
         parser.feed(self.html)
         self.assertEqual(parser.nested, 0)
@@ -55,10 +61,11 @@ class HomepageBuildTests(unittest.TestCase):
         for book, card in zip(self.books, cards):
             href = html.escape(book["href"])
             title = html.escape(book["title"])
+            download_format = "PDF" if book["href"].lower().endswith(".pdf") else "HTML"
             self.assertIn('class="book-date-line"', card)
             self.assertIn(
                 f'<a class="book-download-html book-download-html--glass" href="{href}" download '
-                f'aria-label="ดาวน์โหลด HTML: {title}" title="ดาวน์โหลด HTML">',
+                f'aria-label="ดาวน์โหลด {download_format}: {title}" title="ดาวน์โหลด {download_format}">',
                 card,
             )
             self.assertLess(card.index('class="publish-date"'), card.index('class="book-download-html book-download-html--glass"'))

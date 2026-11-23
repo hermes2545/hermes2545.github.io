@@ -1,55 +1,62 @@
 # Library Session Handoff
 
-Updated: 2026-11-23T17:55:20+07:00
+Updated: 2026-11-23T18:14:17+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
-- Branch: `main`.
+- Latest published remote commit: `958211e715f114998991e9cc08487b6cdd1daa95`.
 - Latest published Reading addition: **Hermes installation manual — การติดตั้ง Hermes บนเครื่องของคุณ**.
-- Content publication commit: `42f28b4d9628bef4c9e0c4bb21a0f5c6b53ba3d8`.
-- Public and private remotes matched the content commit before this documentation follow-up.
-- GitHub Pages run `45160249031` completed successfully.
-- Project-private `.hermes/` routing remains untracked/private and must not be committed.
+- A Reading Shelf Flip PDF Viewer is implemented and fully verified in the isolated branch `shelfkeeper/reading-flip-pdf`, but remains uncommitted/unpublished pending explicit push approval.
+- The original project working tree still contains unrelated pre-existing changes and was not modified for this implementation.
+- Project-private `.hermes/` routing copied into the isolated worktree remains untracked/private and must not be committed.
 
-## Published Reading addition
+## Prepared Flip PDF behavior
 
-- Added the owner-supplied PDF byte-for-byte at `Hermes-installation-manual.pdf`.
-- PDF SHA-256: `baf44008dfadadd6b23a6084a1146f67a20b82554a3795d4f56642c4a24b2b18`.
-- PDF facts: 444,397 bytes, PDF 1.7, 26 A4 pages, not encrypted.
-- Safety inspection found no attachments, JavaScript, OpenAction, AcroForm, concrete home path, cache artifact ID, private key, GitHub/OpenAI token, or signed URL.
-- Added `hermes-installation-manual` to `data/books.json` as the newest Reading entry:
-  - title: `Hermes installation manual — การติดตั้ง Hermes บนเครื่องของคุณ`
-  - short title: `Hermes installation manual`
-  - category: `Installation Guide`
-  - href: `Hermes-installation-manual.pdf`
-  - cover: `assets/covers/custom/hermes-installation-manual.webp`
-  - timestamp: `2026-11-23T17:41:27+07:00`
-- Used the project-owner supplied JPEG cover at 906×1280.
-- Color-managed it to sRGB and normalized it without cropping or stretching to a metadata-free 600×900 RGB WebP using aspect-preserving containment and source-edge color padding.
-- Public cover SHA-256: `e126488560c02bcb354d8cc2b208239929558ffe41556141477ab6cd53b2e151`.
-- Added public-safe provenance at `templates/hermes-installation-manual-pdf.template.md` and `templates/hermes-installation-manual-cover.template.md`.
-- Extended catalog completeness coverage to include root-level Reading PDFs.
-- Regenerated `index.html`; Reading now renders 45 books with the installation manual first.
+- Reading artifact routing is automatic from the existing catalog `href`:
+  - `.pdf`: title and cover open `flip-viewer.html?id=<catalog-id>`; the separate glass download control downloads the exact original PDF.
+  - HTML: title, cover, and download behavior remain unchanged.
+- The catalog continues storing the stable original PDF path; no second inventory or schema field was added.
+- The viewer resolves only one validated catalog ID and rejects unknown IDs, HTML targets, traversal, absolute paths, and external PDF URLs.
+- Runtime capabilities:
+  - realistic StPageFlip page-turn animation and page-turn audio;
+  - previous/next, direct page number, fullscreen, and shelf-return controls;
+  - mouse-wheel zoom from 100–250%;
+  - bounded left-button drag pan while zoomed;
+  - touch pinch zoom, double-tap zoom, and touch pan;
+  - reduced-motion handling;
+  - direct original-PDF download button.
+- Browser dependencies are vendored locally:
+  - PDF.js / `pdfjs-dist` 6.4.299;
+  - StPageFlip / `page-flip` 2.0.7;
+  - all CMaps, standard fonts, WASM fallback files, and license texts.
+- Third-party provenance is recorded in `docs/reports/FLIP_PDF_THIRD_PARTY_NOTICES.md`.
+- The runbook and owner-supplied artifact skill now record PDF-versus-HTML auto-detection for future Reading additions.
 
 ## Verification completed
 
-- TDD RED/GREEN covered catalog metadata, newest position, exact PDF hash/size/structure, PDF safety, cover normalization/provenance, and older fixed-position Reading tests.
-- Full local gates passed before publication:
-  - `python -m unittest discover -s tests -v` → OK, 184 tests.
-  - All four generated-page drift checks → current.
+- TDD RED/GREEN was observed before implementing the viewer and generator routing.
+- Full local gates:
+  - `python -m unittest discover -s tests -v` → OK, 190 tests.
+  - Reading, Audio, App, and Gallery generator drift checks → current.
+  - `node --check assets/flip-viewer/viewer.js` → OK.
   - `git diff --check` → OK.
-- Staged pre-share scan covered 22 intended files and found no newly added concrete home path, private workspace path, private key, GitHub/OpenAI token, cache artifact ID, or staged `.hermes/` file.
-- Local and Production browser verification passed at desktop and 390px mobile:
-  - 45 Reading cards; the installation manual is first.
-  - Shelf cover loaded at 600×900.
-  - Open and download links target `Hermes-installation-manual.pdf`.
-  - Shelf horizontal overflow was 0 at both viewport sizes.
-  - Chrome PDF Viewer rendered page 1 and showed all 26 page thumbnails without an error or blank document.
-- Production SHA-256 matched Local for `index.html`, `Hermes-installation-manual.pdf`, and the 600×900 cover.
-- Production served the PDF with HTTP 200, `Content-Type: application/pdf`, and `Content-Length: 444397`.
+- Real Chrome desktop verification with the 26-page Hermes installation manual:
+  - page 1 rendered successfully with 5 nearby pages prefetched;
+  - next control changed the viewer to page 2 and rendered 6 nearby pages;
+  - wheel input changed the transform to `scale(1.1)` and enabled pan mode;
+  - left-button drag changed bounded translation to `55px, 35px`;
+  - direct download target remained `Hermes-installation-manual.pdf`;
+  - viewer and shelf horizontal overflow were 0.
+- Real Chrome 390×844 mobile verification:
+  - viewer reported all 26 pages and rendered page 1 without error;
+  - 382px control bar fit inside the 390px viewport;
+  - shelf and viewer horizontal overflow were 0;
+  - the first Reading card retained its cover and direct PDF download control.
+- Visual review passed for desktop page 1, page 2 spread, zoom/pan state, mobile viewer, and desktop/mobile Reading shelf.
 
-## Working-tree note
+## Pending publication
 
-- The original project working tree still contains pre-existing/unrelated local changes. Publication was made from an isolated clean worktree with explicit staging so those files were not included.
-- Temporary local preview/browser processes and the isolated worktree must be stopped/removed after this documentation follow-up is pushed and verified.
+- Run the final staged pre-share scan, commit only the scoped Flip PDF files, and push both Library remotes after explicit approval.
+- After push, verify matching remote HEADs, the exact GitHub Pages deployment, Production shelf routing, page-turn/zoom/pan behavior, dependency MIME types, direct PDF hash, and desktop/mobile screenshots.
+- Stop the local preview/Chrome processes and remove the isolated worktree after publication or an explicit cancellation.

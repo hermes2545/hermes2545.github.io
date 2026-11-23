@@ -21,6 +21,7 @@ class CatalogTests(unittest.TestCase):
             Path("app-library.html"),
             Path("gallery.html"),
             Path("admin.html"),
+            Path("flip-viewer.html"),
         }
         html_files = {
             str(path.relative_to(ROOT))

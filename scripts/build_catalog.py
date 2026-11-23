@@ -29,12 +29,15 @@ def esc(value: object, *, quote: bool = True) -> str:
 def render_book(book: dict) -> str:
     searchable = " ".join((book["title"], book["short_title"], book["category"], book["summary"]))
     published = datetime.fromisoformat(book["published_at"]).strftime("%d/%m/%Y")
+    is_pdf = str(book["href"]).lower().endswith(".pdf")
+    read_href = f'flip-viewer.html?id={book["id"]}' if is_pdf else book["href"]
+    download_format = "PDF" if is_pdf else "HTML"
     return f'''<article class="book-card" data-category="{esc(book["category"])}" data-search="{esc(searchable)}" style="--book-accent:{esc(book["accent"])}">
   <div class="book-meta">
-    <h3 class="book-title"><a class="book-title-link" href="{esc(book["href"])}" target="_blank" rel="noopener" aria-label="เปิดอ่าน {esc(book["title"])} ในแท็บใหม่">{esc(book["short_title"])}</a></h3>
+    <h3 class="book-title"><a class="book-title-link" href="{esc(read_href)}" target="_blank" rel="noopener" aria-label="เปิดอ่าน {esc(book["title"])} ในแท็บใหม่">{esc(book["short_title"])}</a></h3>
     <div class="book-date-line">
       <time class="publish-date" datetime="{esc(book["published_at"])}">publish on {published}</time>
-      <a class="book-download-html book-download-html--glass" href="{esc(book["href"])}" download aria-label="ดาวน์โหลด HTML: {esc(book["title"])}" title="ดาวน์โหลด HTML">
+      <a class="book-download-html book-download-html--glass" href="{esc(book["href"])}" download aria-label="ดาวน์โหลด {download_format}: {esc(book["title"])}" title="ดาวน์โหลด {download_format}">
         <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
           <path d="M12 3v11m0 0 4-4m-4 4-4-4M5 16v3h14v-3" />
         </svg>
@@ -42,7 +45,7 @@ def render_book(book: dict) -> str:
     </div>
     <p class="book-summary">{esc(book["summary"])}</p>
   </div>
-  <a class="book-link book-cover-link" href="{esc(book["href"])}" target="_blank" rel="noopener" aria-label="เปิดอ่าน {esc(book["title"])} ในแท็บใหม่">
+  <a class="book-link book-cover-link" href="{esc(read_href)}" target="_blank" rel="noopener" aria-label="เปิดอ่าน {esc(book["title"])} ในแท็บใหม่">
     <div class="book-cover-wrap">
       <div class="book-cover-volume">
         <img class="book-cover" src="{esc(book["cover"])}" alt="ปกหนังสือ {esc(book["short_title"])}" width="600" height="900" loading="lazy" draggable="false">

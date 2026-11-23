@@ -62,6 +62,7 @@ tags: [library, index]
 - [Imported content duplicate audit](../reports/IMPORTED_CONTENT_DUPLICATE_AUDIT.md)
 - [App import source and privacy audit](../reports/APP_IMPORT_SOURCE_AUDIT.md)
 - [App room image attribution](../reports/APP_ROOM_IMAGE_ATTRIBUTION.md)
+- [Flip PDF third-party notices](../reports/FLIP_PDF_THIRD_PARTY_NOTICES.md)
 
 ## Continuity
 
