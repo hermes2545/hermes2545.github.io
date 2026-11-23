@@ -1,17 +1,18 @@
 # Library Session Handoff
 
-Updated: 2026-11-23T18:14:17+07:00
+Updated: 2026-11-23T18:20:46+07:00
 
 ## Current state
 
 - Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
-- Latest published remote commit: `958211e715f114998991e9cc08487b6cdd1daa95`.
-- Latest published Reading addition: **Hermes installation manual — การติดตั้ง Hermes บนเครื่องของคุณ**.
-- A Reading Shelf Flip PDF Viewer is implemented and fully verified in the isolated branch `shelfkeeper/reading-flip-pdf`, but remains uncommitted/unpublished pending explicit push approval.
+- Latest published commit: `422e79869aea1215b44fef7d2be53d7033804b53`.
+- Public `origin/main` and private `backup/main` matched that commit before this documentation follow-up.
+- GitHub Pages run `45164104764` completed successfully.
+- Reading Shelf PDF entries now open through the published Flip PDF Viewer; HTML entries retain their established direct-open behavior.
 - The original project working tree still contains unrelated pre-existing changes and was not modified for this implementation.
-- Project-private `.hermes/` routing copied into the isolated worktree remains untracked/private and must not be committed.
+- Project-private `.hermes/` routing remains untracked/private and must not be committed.
 
-## Prepared Flip PDF behavior
+## Published Flip PDF behavior
 
 - Reading artifact routing is automatic from the existing catalog `href`:
   - `.pdf`: title and cover open `flip-viewer.html?id=<catalog-id>`; the separate glass download control downloads the exact original PDF.
@@ -31,7 +32,7 @@ Updated: 2026-11-23T18:14:17+07:00
   - StPageFlip / `page-flip` 2.0.7;
   - all CMaps, standard fonts, WASM fallback files, and license texts.
 - Third-party provenance is recorded in `docs/reports/FLIP_PDF_THIRD_PARTY_NOTICES.md`.
-- The runbook and owner-supplied artifact skill now record PDF-versus-HTML auto-detection for future Reading additions.
+- The runbook and owner-supplied artifact skill record PDF-versus-HTML auto-detection for future Reading additions.
 
 ## Verification completed
 
@@ -41,22 +42,19 @@ Updated: 2026-11-23T18:14:17+07:00
   - Reading, Audio, App, and Gallery generator drift checks → current.
   - `node --check assets/flip-viewer/viewer.js` → OK.
   - `git diff --check` → OK.
-- Real Chrome desktop verification with the 26-page Hermes installation manual:
-  - page 1 rendered successfully with 5 nearby pages prefetched;
-  - next control changed the viewer to page 2 and rendered 6 nearby pages;
+- The staged pre-share scan covered 218 intended files, including 210 new files, and found no concrete home path, private profile/cache path, cache artifact ID, private key, GitHub/OpenAI token, signed URL, or staged `.hermes/` path.
+- Local and Production Chrome verification with the 26-page Hermes installation manual:
+  - page 1 rendered successfully and next changed the viewer to page 2;
   - wheel input changed the transform to `scale(1.1)` and enabled pan mode;
   - left-button drag changed bounded translation to `55px, 35px`;
   - direct download target remained `Hermes-installation-manual.pdf`;
-  - viewer and shelf horizontal overflow were 0.
-- Real Chrome 390×844 mobile verification:
-  - viewer reported all 26 pages and rendered page 1 without error;
-  - 382px control bar fit inside the 390px viewport;
-  - shelf and viewer horizontal overflow were 0;
-  - the first Reading card retained its cover and direct PDF download control.
-- Visual review passed for desktop page 1, page 2 spread, zoom/pan state, mobile viewer, and desktop/mobile Reading shelf.
+  - desktop/mobile viewer and shelf horizontal overflow were 0;
+  - the 390px mobile control bar measured 382px and stayed inside the viewport.
+- Production SHA-256 matched Local for `index.html`, `flip-viewer.html`, viewer JavaScript/CSS, StPageFlip, PDF.js main/worker, and the unchanged owner PDF.
+- Production served correct MIME types for HTML, JavaScript modules, and `application/pdf`.
+- Visual review passed for Production desktop page 1, page 2 spread, zoom/pan state, mobile viewer, and desktop/mobile Reading shelf.
 
-## Pending publication
+## Working-tree note
 
-- Run the final staged pre-share scan, commit only the scoped Flip PDF files, and push both Library remotes after explicit approval.
-- After push, verify matching remote HEADs, the exact GitHub Pages deployment, Production shelf routing, page-turn/zoom/pan behavior, dependency MIME types, direct PDF hash, and desktop/mobile screenshots.
-- Stop the local preview/Chrome processes and remove the isolated worktree after publication or an explicit cancellation.
+- This follow-up documentation update must be committed and pushed to both remotes, then its Pages deployment and Production documentation hashes verified.
+- After that verification, stop the Production Chrome QA process and remove the isolated worktree/temporary branch.
