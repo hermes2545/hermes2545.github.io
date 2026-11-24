@@ -1,5 +1,16 @@
 [
   {
+    "id": "ai-agent-vision-interactive-guide-th",
+    "title": "คู่มือให้ AI Agent มองเห็นและตรวจจับวัตถุ",
+    "short_title": "AI Agent Vision",
+    "href": "AI-Agent-Vision-Interactive-Guide-TH.html",
+    "cover": "assets/covers/custom/ai-agent-vision-interactive-guide-th.webp",
+    "category": "Home Assistant",
+    "summary": "คู่มือ Interactive ภาษาไทยสำหรับให้ AI Agent มองเห็นและตรวจจับคน รถ และวัตถุด้วย Home Assistant, กล้อง Tapo, Frigate และ MQTT พร้อมออกแบบ Zone/Mask การแจ้งเตือนและเสียง TTS บน Android, Retention, Test Plan, Rollback และ Troubleshooting",
+    "accent": "#36C9F4",
+    "published_at": "2026-11-24T10:08:22+07:00"
+  },
+  {
     "id": "hermes-installation-manual",
     "title": "Hermes installation manual — การติดตั้ง Hermes บนเครื่องของคุณ",
     "short_title": "Hermes installation manual",

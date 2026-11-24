@@ -4,7 +4,7 @@ type: meta
 status: active
 visibility: public
 created: 2026-08-23
-updated: 2026-11-23
+updated: 2026-11-24
 sources: [PROJECT.md, AGENTS.md]
 tags: [library, index]
 ---
@@ -38,6 +38,7 @@ tags: [library, index]
 
 ## Public Blueprints
 
+- [คู่มือให้ AI Agent มองเห็นและตรวจจับวัตถุ](../../AI-Agent-Vision-Interactive-Guide-TH.html)
 - [Dedicated Library AI Agent Profile Blueprint](../DEDICATED_LIBRARY_AGENT_PROFILE_BLUEPRINT.md)
 - [Hermes Profile Backup and Restore Public Guide](../guides/HERMES_PROFILE_BACKUP_RESTORE_PUBLIC_GUIDE.md)
 - [Hermes Agent Concepts for Everyone — Thai Guide](../guides/HERMES_AGENT_CONCEPTS_FOR_EVERYONE_TH.md)

@@ -46,7 +46,7 @@ class CatalogTests(unittest.TestCase):
     def test_required_fields_and_unique_ids_and_links(self):
         required = {"id", "title", "short_title", "href", "cover", "category", "summary", "accent", "published_at"}
         self.assertTrue(self.books)
-        self.assertEqual(len(self.books), 45)
+        self.assertEqual(len(self.books), 46)
         self.assertEqual(len({book["id"] for book in self.books}), len(self.books))
         self.assertEqual(len({book["href"] for book in self.books}), len(self.books))
         for book in self.books:
@@ -56,7 +56,7 @@ class CatalogTests(unittest.TestCase):
             self.assertRegex(book["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
 
     def test_every_reading_book_uses_an_approved_custom_cover(self):
-        self.assertEqual(len(self.books), 45)
+        self.assertEqual(len(self.books), 46)
         for book in self.books:
             self.assertEqual(book["cover"], f'assets/covers/custom/{book["id"]}.webp')
             self.assertEqual(Path(book["cover"]).suffix, ".webp")
@@ -82,6 +82,7 @@ class CatalogTests(unittest.TestCase):
 
     def test_all_reading_books_use_approved_thai_titles(self):
         expected = {
+            "ai-agent-vision-interactive-guide-th": "AI Agent Vision",
             "hermes-installation-manual": "Hermes installation manual",
             "hermes-full-disaster-recovery": "Hermes Full Disaster Recovery",
             "windows-ai-agent-remote-maintenance-guide": "ดูแล Windows ระยะไกลด้วย AI",

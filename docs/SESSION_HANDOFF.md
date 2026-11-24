@@ -1,60 +1,59 @@
 # Library Session Handoff
 
-Updated: 2026-11-23T18:20:46+07:00
+Updated: 2026-11-24T10:08:22+07:00
 
-## Current state
+## Current task
 
-- Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
-- Latest published commit: `422e79869aea1215b44fef7d2be53d7033804b53`.
-- Public `origin/main` and private `backup/main` matched that commit before this documentation follow-up.
-- GitHub Pages run `45164104764` completed successfully.
-- Reading Shelf PDF entries now open through the published Flip PDF Viewer; HTML entries retain their established direct-open behavior.
-- The original project working tree still contains unrelated pre-existing changes and was not modified for this implementation.
-- Project-private `.hermes/` routing remains untracked/private and must not be committed.
+- Add and publish the project-owner supplied **คู่มือให้ AI Agent มองเห็นและตรวจจับวัตถุ** as the newest Reading Shelf entry.
+- The current-turn instruction explicitly authorizes immediate scoped commit and push.
+- Work is isolated from the original dirty project working tree in a clean temporary Git worktree based on matching `origin/main` and `backup/main` commit `9502984abe90ab1b845d84851d87ac4a9147309e`.
 
-## Published Flip PDF behavior
+## Prepared public files
 
-- Reading artifact routing is automatic from the existing catalog `href`:
-  - `.pdf`: title and cover open `flip-viewer.html?id=<catalog-id>`; the separate glass download control downloads the exact original PDF.
-  - HTML: title, cover, and download behavior remain unchanged.
-- The catalog continues storing the stable original PDF path; no second inventory or schema field was added.
-- The viewer resolves only one validated catalog ID and rejects unknown IDs, HTML targets, traversal, absolute paths, and external PDF URLs.
-- Runtime capabilities:
-  - realistic StPageFlip page-turn animation and page-turn audio;
-  - previous/next, direct page number, fullscreen, and shelf-return controls;
-  - mouse-wheel zoom from 100–250%;
-  - bounded left-button drag pan while zoomed;
-  - touch pinch zoom, double-tap zoom, and touch pan;
-  - reduced-motion handling;
-  - direct original-PDF download button.
-- Browser dependencies are vendored locally:
-  - PDF.js / `pdfjs-dist` 6.4.299;
-  - StPageFlip / `page-flip` 2.0.7;
-  - all CMaps, standard fonts, WASM fallback files, and license texts.
-- Third-party provenance is recorded in `docs/reports/FLIP_PDF_THIRD_PARTY_NOTICES.md`.
-- The runbook and owner-supplied artifact skill record PDF-versus-HTML auto-detection for future Reading additions.
+- `AI-Agent-Vision-Interactive-Guide-TH.html`
+  - preserved byte-for-byte from the supplied final HTML;
+  - 394,544 bytes;
+  - SHA-256 `bcb48cd24a68b7e807fa9b09013805a691ac91a99e75a1f978f3ecf30e8187f1`;
+  - 23 interactive pages and 23 navigation entries.
+- `assets/covers/custom/ai-agent-vision-interactive-guide-th.webp`
+  - owner-supplied 1055×1491 RGB PNG normalized to EXIF-free 600×900 RGB WebP;
+  - aspect-preserving 600×848 containment with source-edge extension above and below;
+  - no cropping, stretching, visible-content rewrite, or redesign;
+  - SHA-256 `c876348db2c5c14883d59bc3b9c7b1bdd908247453639b80d7b976d46079a03f`.
+- `data/books.json`
+  - one newest record under `Home Assistant`;
+  - stable ID `ai-agent-vision-interactive-guide-th`;
+  - direct HTML open/download behavior retained.
+- `index.html` regenerated from the 46-item Reading catalog.
+- Focused regression test and public-safe cover provenance added; older fixed-position Reading tests shifted by one.
+- Wiki index/log and this handoff updated.
 
 ## Verification completed
 
-- TDD RED/GREEN was observed before implementing the viewer and generator routing.
-- Full local gates:
-  - `python -m unittest discover -s tests -v` → OK, 190 tests.
-  - Reading, Audio, App, and Gallery generator drift checks → current.
-  - `node --check assets/flip-viewer/viewer.js` → OK.
-  - `git diff --check` → OK.
-- The staged pre-share scan covered 218 intended files, including 210 new files, and found no concrete home path, private profile/cache path, cache artifact ID, private key, GitHub/OpenAI token, signed URL, or staged `.hermes/` path.
-- Local and Production Chrome verification with the 26-page Hermes installation manual:
-  - page 1 rendered successfully and next changed the viewer to page 2;
-  - wheel input changed the transform to `scale(1.1)` and enabled pan mode;
-  - left-button drag changed bounded translation to `55px, 35px`;
-  - direct download target remained `Hermes-installation-manual.pdf`;
-  - desktop/mobile viewer and shelf horizontal overflow were 0;
-  - the 390px mobile control bar measured 382px and stayed inside the viewport.
-- Production SHA-256 matched Local for `index.html`, `flip-viewer.html`, viewer JavaScript/CSS, StPageFlip, PDF.js main/worker, and the unchanged owner PDF.
-- Production served correct MIME types for HTML, JavaScript modules, and `application/pdf`.
-- Visual review passed for Production desktop page 1, page 2 spread, zoom/pan state, mobile viewer, and desktop/mobile Reading shelf.
+- Focused TDD test first failed because the catalog/artifacts were absent, then passed after implementation.
+- Full suite: 193 tests passed.
+- All four generator drift checks passed: Reading 46, Audio 60, Apps 9, Gallery 8.
+- `git diff --check` passed.
+- Real Chrome desktop/mobile checks passed:
+  - Reading Shelf count 46 with **AI Agent Vision** first;
+  - title/cover direct-open links and separate HTML download all target the exact preserved HTML;
+  - live cover is 600×900;
+  - Home Assistant category filter showed two relevant books and restored all 46;
+  - guide page 0 loaded with 23 pages/navigation entries;
+  - navigation, search, dark theme, font enlargement, source download, mobile menu, and mobile chapter selection worked;
+  - desktop and 390px mobile horizontal overflow were 0;
+  - screenshots visually showed no clipping, overlap, crop, stretch, or layout defect.
 
-## Working-tree note
+## Remaining publication steps
 
-- This follow-up documentation update must be committed and pushed to both remotes, then its Pages deployment and Production documentation hashes verified.
-- After that verification, stop the Production Chrome QA process and remove the isolated worktree/temporary branch.
+1. Stage explicit intended public paths only and run the final staged pre-share scan.
+2. Rerun final gates, commit, and push to both Library remotes under the current-turn approval.
+3. Verify remote HEAD equality and exact-sha GitHub Pages deployment.
+4. Cache-bust and compare Production hashes for the shelf, HTML, cover, catalog, and documentation.
+5. Repeat desktop/mobile browser DOM and interaction verification on Production.
+6. Update the durable log/handoff from prepared to published, push the documentation follow-up, verify it, stop local QA processes, and remove the isolated worktree.
+
+## Isolation note
+
+- `.hermes/project-links.json` and `.hermes/document-registry.json` were copied into the isolated worktree only as untracked private test prerequisites; they must never be staged or committed.
+- The original project working tree remains dirty/behind with unrelated pre-existing work and must not be reset, cleaned, stashed, merged, or included in this publication.

@@ -46,7 +46,7 @@ class HermesFullDisasterRecoveryReadingTests(unittest.TestCase):
         self.assertEqual(book["published_at"], "2026-11-23T00:52:34+07:00")
         self.assertIn("30 ภาค", book["summary"])
         self.assertEqual(book["accent"], "#EF352C")
-        self.assertEqual(books[1]["id"], BOOK_ID)
+        self.assertEqual(books[2]["id"], BOOK_ID)
 
     def test_owner_supplied_html_is_preserved_interactive_and_public_safe(self):
         self.assertTrue(HTML_PATH.is_file())

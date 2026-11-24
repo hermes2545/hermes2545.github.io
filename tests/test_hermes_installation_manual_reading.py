@@ -42,7 +42,7 @@ class HermesInstallationManualReadingTests(unittest.TestCase):
         self.assertEqual(book["published_at"], "2026-11-23T17:41:27+07:00")
         self.assertIn("26 หน้า", book["summary"])
         self.assertEqual(book["accent"], "#F5B82E")
-        self.assertEqual(books[0]["id"], BOOK_ID)
+        self.assertEqual(books[1]["id"], BOOK_ID)
 
     def test_owner_supplied_pdf_is_preserved_and_public_safe(self):
         self.assertTrue(PDF_PATH.is_file())
