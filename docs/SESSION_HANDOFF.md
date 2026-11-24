@@ -2,58 +2,50 @@
 
 Updated: 2026-11-24T10:08:22+07:00
 
-## Current task
+## Published state
 
-- Add and publish the project-owner supplied **คู่มือให้ AI Agent มองเห็นและตรวจจับวัตถุ** as the newest Reading Shelf entry.
-- The current-turn instruction explicitly authorizes immediate scoped commit and push.
-- Work is isolated from the original dirty project working tree in a clean temporary Git worktree based on matching `origin/main` and `backup/main` commit `9502984abe90ab1b845d84851d87ac4a9147309e`.
+- Project: The Knowledge Shelf at `https://hermes2545.github.io/`.
+- Published content commit: `2b52b1be7d2af7082566a92d4cdbd63138bcb4cc`.
+- Public `origin/main` and private `backup/main` matched that commit before this documentation follow-up.
+- GitHub Pages content run `45318278058` completed successfully.
+- The 46th and newest Reading entry is **คู่มือให้ AI Agent มองเห็นและตรวจจับวัตถุ**, shown on the shelf as **AI Agent Vision** under `Home Assistant`.
 
-## Prepared public files
+## Published artifact
 
-- `AI-Agent-Vision-Interactive-Guide-TH.html`
-  - preserved byte-for-byte from the supplied final HTML;
+- Stable URL: `AI-Agent-Vision-Interactive-Guide-TH.html`.
+- The project-owner supplied final HTML is preserved byte-for-byte:
   - 394,544 bytes;
   - SHA-256 `bcb48cd24a68b7e807fa9b09013805a691ac91a99e75a1f978f3ecf30e8187f1`;
   - 23 interactive pages and 23 navigation entries.
-- `assets/covers/custom/ai-agent-vision-interactive-guide-th.webp`
-  - owner-supplied 1055×1491 RGB PNG normalized to EXIF-free 600×900 RGB WebP;
-  - aspect-preserving 600×848 containment with source-edge extension above and below;
+- The owner-supplied 1055×1491 RGB PNG cover was normalized only for the shelf:
+  - 600×900 RGB WebP with no EXIF/ICC metadata;
+  - aspect-preserving 600×848 containment and touching-edge pixel extension above/below;
   - no cropping, stretching, visible-content rewrite, or redesign;
   - SHA-256 `c876348db2c5c14883d59bc3b9c7b1bdd908247453639b80d7b976d46079a03f`.
-- `data/books.json`
-  - one newest record under `Home Assistant`;
-  - stable ID `ai-agent-vision-interactive-guide-th`;
-  - direct HTML open/download behavior retained.
-- `index.html` regenerated from the 46-item Reading catalog.
-- Focused regression test and public-safe cover provenance added; older fixed-position Reading tests shifted by one.
-- Wiki index/log and this handoff updated.
+- The catalog continues using its single source of truth at `data/books.json`.
+- Because this artifact is HTML, title/cover open the HTML directly and the glass-circle download control downloads that same original HTML; the PDF Flip Viewer is not involved.
 
 ## Verification completed
 
-- Focused TDD test first failed because the catalog/artifacts were absent, then passed after implementation.
+- TDD RED failed first because the catalog/artifacts were absent, then passed after implementation.
 - Full suite: 193 tests passed.
-- All four generator drift checks passed: Reading 46, Audio 60, Apps 9, Gallery 8.
+- Generator drift checks passed: Reading 46, Audio 60, Apps 9, Gallery 8.
 - `git diff --check` passed.
-- Real Chrome desktop/mobile checks passed:
-  - Reading Shelf count 46 with **AI Agent Vision** first;
-  - title/cover direct-open links and separate HTML download all target the exact preserved HTML;
-  - live cover is 600×900;
-  - Home Assistant category filter showed two relevant books and restored all 46;
-  - guide page 0 loaded with 23 pages/navigation entries;
-  - navigation, search, dark theme, font enlargement, source download, mobile menu, and mobile chapter selection worked;
-  - desktop and 390px mobile horizontal overflow were 0;
-  - screenshots visually showed no clipping, overlap, crop, stretch, or layout defect.
+- The 25-file staged pre-share scan found no concrete home path, private profile/cache path, cache artifact ID, private key, GitHub/OpenAI token, signed URL, or staged `.hermes/` path.
+- Local and Production Chrome checks passed at desktop and 390px mobile:
+  - 46 Reading cards with **AI Agent Vision** first;
+  - exact direct-open and direct-download HTML target;
+  - 600×900 loaded shelf cover;
+  - Home Assistant category filter showed two matching books and restored all 46;
+  - guide page 0, 23-page navigation, search, theme, font enlargement, source download, mobile drawer, and mobile chapter selection worked;
+  - zero horizontal overflow;
+  - visual review found no clipping, overlap, crop, stretch, or layout defect.
+- Cache-busted Production SHA-256 matched Local for the shelf, guide HTML, cover, catalog, wiki index/log, and handoff.
+- Production served the guide as `text/html; charset=utf-8` with 394,544 bytes and the cover as `image/webp` with 112,102 bytes.
 
-## Remaining publication steps
+## Close steps
 
-1. Stage explicit intended public paths only and run the final staged pre-share scan.
-2. Rerun final gates, commit, and push to both Library remotes under the current-turn approval.
-3. Verify remote HEAD equality and exact-sha GitHub Pages deployment.
-4. Cache-bust and compare Production hashes for the shelf, HTML, cover, catalog, and documentation.
-5. Repeat desktop/mobile browser DOM and interaction verification on Production.
-6. Update the durable log/handoff from prepared to published, push the documentation follow-up, verify it, stop local QA processes, and remove the isolated worktree.
-
-## Isolation note
-
-- `.hermes/project-links.json` and `.hermes/document-registry.json` were copied into the isolated worktree only as untracked private test prerequisites; they must never be staged or committed.
-- The original project working tree remains dirty/behind with unrelated pre-existing work and must not be reset, cleaned, stashed, merged, or included in this publication.
+- Commit and push this documentation follow-up to both remotes, wait for its Pages deployment, and verify Production documentation hashes.
+- Stop the local preview server and both QA Chrome processes.
+- Remove the isolated worktree and temporary branch.
+- The original project working tree remains dirty/behind with unrelated pre-existing work and must not be reset, cleaned, stashed, or merged as part of this task.
