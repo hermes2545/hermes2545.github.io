@@ -47,7 +47,7 @@ class AiAgentVisionInteractiveGuideReadingTests(unittest.TestCase):
         self.assertIn("Home Assistant", book["summary"])
         self.assertIn("Frigate", book["summary"])
         self.assertEqual(book["accent"], "#36C9F4")
-        self.assertEqual(books[0]["id"], BOOK_ID)
+        self.assertEqual(books[1]["id"], BOOK_ID)
 
     def test_owner_supplied_html_is_preserved_interactive_and_public_safe(self):
         self.assertTrue(HTML_PATH.is_file())

@@ -46,7 +46,7 @@ class CatalogTests(unittest.TestCase):
     def test_required_fields_and_unique_ids_and_links(self):
         required = {"id", "title", "short_title", "href", "cover", "category", "summary", "accent", "published_at"}
         self.assertTrue(self.books)
-        self.assertEqual(len(self.books), 46)
+        self.assertEqual(len(self.books), 47)
         self.assertEqual(len({book["id"] for book in self.books}), len(self.books))
         self.assertEqual(len({book["href"] for book in self.books}), len(self.books))
         for book in self.books:
@@ -56,7 +56,7 @@ class CatalogTests(unittest.TestCase):
             self.assertRegex(book["published_at"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$")
 
     def test_every_reading_book_uses_an_approved_custom_cover(self):
-        self.assertEqual(len(self.books), 46)
+        self.assertEqual(len(self.books), 47)
         for book in self.books:
             self.assertEqual(book["cover"], f'assets/covers/custom/{book["id"]}.webp')
             self.assertEqual(Path(book["cover"]).suffix, ".webp")
@@ -82,6 +82,7 @@ class CatalogTests(unittest.TestCase):
 
     def test_all_reading_books_use_approved_thai_titles(self):
         expected = {
+            "openbot-all-in-one-handbook": "OpenBot ฉบับสมบูรณ์",
             "ai-agent-vision-interactive-guide-th": "AI Agent Vision",
             "hermes-installation-manual": "Hermes installation manual",
             "hermes-full-disaster-recovery": "Hermes Full Disaster Recovery",
@@ -131,6 +132,32 @@ class CatalogTests(unittest.TestCase):
         }
         actual = {book["id"]: book["short_title"] for book in self.books}
         self.assertEqual(actual, expected)
+
+    def test_openbot_handbook_pdf_is_catalogued_with_owner_cover(self):
+        matches = [book for book in self.books if book["id"] == "openbot-all-in-one-handbook"]
+        self.assertEqual(len(matches), 1)
+        book = matches[0]
+        self.assertEqual(book["title"], "คู่มือการใช้งาน OpenBot ฉบับสมบูรณ์ (All-in-One Handbook)")
+        self.assertEqual(book["short_title"], "OpenBot ฉบับสมบูรณ์")
+        self.assertEqual(book["href"], "OpenBot-All-in-One-Handbook.pdf")
+        self.assertEqual(book["cover"], "assets/covers/custom/openbot-all-in-one-handbook.webp")
+        self.assertEqual(book["category"], "คู่มือ AI")
+        self.assertEqual(book["published_at"], "2026-11-28T11:49:21+07:00")
+
+        pdf = ROOT / book["href"]
+        self.assertTrue(pdf.is_file())
+        self.assertEqual(
+            hashlib.sha256(pdf.read_bytes()).hexdigest(),
+            "cd2d458f28792a1e10aa6f1652652701e1d76ecc65d451e4031d8c541176457d",
+        )
+        cover = ROOT / book["cover"]
+        self.assertTrue(cover.is_file())
+        with Image.open(cover) as image:
+            self.assertEqual(image.format, "WEBP")
+            self.assertEqual(image.size, (600, 900))
+            self.assertEqual(image.mode, "RGB")
+            self.assertEqual(len(image.getexif()), 0)
+            self.assertFalse(image.info.get("icc_profile"))
 
     def test_hermes_profile_backup_restore_guide_is_catalogued(self):
         book = next((book for book in self.books if book["id"] == "hermes-profile-backup-restore"), None)

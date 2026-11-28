@@ -1,5 +1,16 @@
 [
   {
+    "id": "openbot-all-in-one-handbook",
+    "title": "คู่มือการใช้งาน OpenBot ฉบับสมบูรณ์ (All-in-One Handbook)",
+    "short_title": "OpenBot ฉบับสมบูรณ์",
+    "href": "OpenBot-All-in-One-Handbook.pdf",
+    "cover": "assets/covers/custom/openbot-all-in-one-handbook.webp",
+    "category": "คู่มือ AI",
+    "summary": "คู่มือ OpenBot ตั้งแต่แนวคิดพื้นฐาน ฟังก์ชันการทำงาน การตั้งค่าความปลอดภัย และโครงสร้างไฟล์ ไปจนถึงชุดคำสั่งสำเร็จรูป Prompts & Workflows",
+    "accent": "#8B18D6",
+    "published_at": "2026-11-28T11:49:21+07:00"
+  },
+  {
     "id": "ai-agent-vision-interactive-guide-th",
     "title": "คู่มือให้ AI Agent มองเห็นและตรวจจับวัตถุ",
     "short_title": "AI Agent Vision",
